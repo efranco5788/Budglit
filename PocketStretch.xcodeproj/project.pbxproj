@@ -1,0 +1,539 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		89385AF61BB67B4C00441A63 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 89385AF51BB67B4C00441A63 /* main.m */; };
+		89385AF91BB67B4C00441A63 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 89385AF81BB67B4C00441A63 /* AppDelegate.m */; };
+		89385AFC1BB67B4C00441A63 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 89385AFB1BB67B4C00441A63 /* ViewController.m */; };
+		89385AFF1BB67B4C00441A63 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 89385AFD1BB67B4C00441A63 /* Main.storyboard */; };
+		89385B021BB67B4C00441A63 /* PocketStretch.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 89385B001BB67B4C00441A63 /* PocketStretch.xcdatamodeld */; };
+		89385B041BB67B4C00441A63 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 89385B031BB67B4C00441A63 /* Assets.xcassets */; };
+		89385B071BB67B4C00441A63 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 89385B051BB67B4C00441A63 /* LaunchScreen.storyboard */; };
+		89385B121BB67B4C00441A63 /* PocketStretchTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 89385B111BB67B4C00441A63 /* PocketStretchTests.m */; };
+		89385B1D1BB67B4C00441A63 /* PocketStretchUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 89385B1C1BB67B4C00441A63 /* PocketStretchUITests.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		89385B0E1BB67B4C00441A63 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 89385AE91BB67B4B00441A63 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 89385AF01BB67B4B00441A63;
+			remoteInfo = PocketStretch;
+		};
+		89385B191BB67B4C00441A63 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 89385AE91BB67B4B00441A63 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 89385AF01BB67B4B00441A63;
+			remoteInfo = PocketStretch;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		89385AF11BB67B4B00441A63 /* PocketStretch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PocketStretch.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		89385AF51BB67B4C00441A63 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		89385AF71BB67B4C00441A63 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		89385AF81BB67B4C00441A63 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		89385AFA1BB67B4C00441A63 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
+		89385AFB1BB67B4C00441A63 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		89385AFE1BB67B4C00441A63 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		89385B011BB67B4C00441A63 /* PocketStretch.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = PocketStretch.xcdatamodel; sourceTree = "<group>"; };
+		89385B031BB67B4C00441A63 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		89385B061BB67B4C00441A63 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		89385B081BB67B4C00441A63 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		89385B0D1BB67B4C00441A63 /* PocketStretchTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PocketStretchTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		89385B111BB67B4C00441A63 /* PocketStretchTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PocketStretchTests.m; sourceTree = "<group>"; };
+		89385B131BB67B4C00441A63 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		89385B181BB67B4C00441A63 /* PocketStretchUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PocketStretchUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		89385B1C1BB67B4C00441A63 /* PocketStretchUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PocketStretchUITests.m; sourceTree = "<group>"; };
+		89385B1E1BB67B4C00441A63 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		89385AEE1BB67B4B00441A63 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		89385B0A1BB67B4C00441A63 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		89385B151BB67B4C00441A63 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		89385AE81BB67B4B00441A63 = {
+			isa = PBXGroup;
+			children = (
+				89385AF31BB67B4B00441A63 /* PocketStretch */,
+				89385B101BB67B4C00441A63 /* PocketStretchTests */,
+				89385B1B1BB67B4C00441A63 /* PocketStretchUITests */,
+				89385AF21BB67B4B00441A63 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		89385AF21BB67B4B00441A63 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				89385AF11BB67B4B00441A63 /* PocketStretch.app */,
+				89385B0D1BB67B4C00441A63 /* PocketStretchTests.xctest */,
+				89385B181BB67B4C00441A63 /* PocketStretchUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		89385AF31BB67B4B00441A63 /* PocketStretch */ = {
+			isa = PBXGroup;
+			children = (
+				89385AF71BB67B4C00441A63 /* AppDelegate.h */,
+				89385AF81BB67B4C00441A63 /* AppDelegate.m */,
+				89385AFA1BB67B4C00441A63 /* ViewController.h */,
+				89385AFB1BB67B4C00441A63 /* ViewController.m */,
+				89385AFD1BB67B4C00441A63 /* Main.storyboard */,
+				89385B031BB67B4C00441A63 /* Assets.xcassets */,
+				89385B051BB67B4C00441A63 /* LaunchScreen.storyboard */,
+				89385B081BB67B4C00441A63 /* Info.plist */,
+				89385B001BB67B4C00441A63 /* PocketStretch.xcdatamodeld */,
+				89385AF41BB67B4B00441A63 /* Supporting Files */,
+			);
+			path = PocketStretch;
+			sourceTree = "<group>";
+		};
+		89385AF41BB67B4B00441A63 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				89385AF51BB67B4C00441A63 /* main.m */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		89385B101BB67B4C00441A63 /* PocketStretchTests */ = {
+			isa = PBXGroup;
+			children = (
+				89385B111BB67B4C00441A63 /* PocketStretchTests.m */,
+				89385B131BB67B4C00441A63 /* Info.plist */,
+			);
+			path = PocketStretchTests;
+			sourceTree = "<group>";
+		};
+		89385B1B1BB67B4C00441A63 /* PocketStretchUITests */ = {
+			isa = PBXGroup;
+			children = (
+				89385B1C1BB67B4C00441A63 /* PocketStretchUITests.m */,
+				89385B1E1BB67B4C00441A63 /* Info.plist */,
+			);
+			path = PocketStretchUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		89385AF01BB67B4B00441A63 /* PocketStretch */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 89385B211BB67B4C00441A63 /* Build configuration list for PBXNativeTarget "PocketStretch" */;
+			buildPhases = (
+				89385AED1BB67B4B00441A63 /* Sources */,
+				89385AEE1BB67B4B00441A63 /* Frameworks */,
+				89385AEF1BB67B4B00441A63 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = PocketStretch;
+			productName = PocketStretch;
+			productReference = 89385AF11BB67B4B00441A63 /* PocketStretch.app */;
+			productType = "com.apple.product-type.application";
+		};
+		89385B0C1BB67B4C00441A63 /* PocketStretchTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 89385B241BB67B4C00441A63 /* Build configuration list for PBXNativeTarget "PocketStretchTests" */;
+			buildPhases = (
+				89385B091BB67B4C00441A63 /* Sources */,
+				89385B0A1BB67B4C00441A63 /* Frameworks */,
+				89385B0B1BB67B4C00441A63 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				89385B0F1BB67B4C00441A63 /* PBXTargetDependency */,
+			);
+			name = PocketStretchTests;
+			productName = PocketStretchTests;
+			productReference = 89385B0D1BB67B4C00441A63 /* PocketStretchTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		89385B171BB67B4C00441A63 /* PocketStretchUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 89385B271BB67B4C00441A63 /* Build configuration list for PBXNativeTarget "PocketStretchUITests" */;
+			buildPhases = (
+				89385B141BB67B4C00441A63 /* Sources */,
+				89385B151BB67B4C00441A63 /* Frameworks */,
+				89385B161BB67B4C00441A63 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				89385B1A1BB67B4C00441A63 /* PBXTargetDependency */,
+			);
+			name = PocketStretchUITests;
+			productName = PocketStretchUITests;
+			productReference = 89385B181BB67B4C00441A63 /* PocketStretchUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		89385AE91BB67B4B00441A63 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0700;
+				ORGANIZATIONNAME = "Emmanuel Franco";
+				TargetAttributes = {
+					89385AF01BB67B4B00441A63 = {
+						CreatedOnToolsVersion = 7.0;
+						DevelopmentTeam = BZRNX86Q45;
+					};
+					89385B0C1BB67B4C00441A63 = {
+						CreatedOnToolsVersion = 7.0;
+						DevelopmentTeam = BZRNX86Q45;
+						TestTargetID = 89385AF01BB67B4B00441A63;
+					};
+					89385B171BB67B4C00441A63 = {
+						CreatedOnToolsVersion = 7.0;
+						DevelopmentTeam = BZRNX86Q45;
+						TestTargetID = 89385AF01BB67B4B00441A63;
+					};
+				};
+			};
+			buildConfigurationList = 89385AEC1BB67B4B00441A63 /* Build configuration list for PBXProject "PocketStretch" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 89385AE81BB67B4B00441A63;
+			productRefGroup = 89385AF21BB67B4B00441A63 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				89385AF01BB67B4B00441A63 /* PocketStretch */,
+				89385B0C1BB67B4C00441A63 /* PocketStretchTests */,
+				89385B171BB67B4C00441A63 /* PocketStretchUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		89385AEF1BB67B4B00441A63 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				89385B071BB67B4C00441A63 /* LaunchScreen.storyboard in Resources */,
+				89385B041BB67B4C00441A63 /* Assets.xcassets in Resources */,
+				89385AFF1BB67B4C00441A63 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		89385B0B1BB67B4C00441A63 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		89385B161BB67B4C00441A63 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		89385AED1BB67B4B00441A63 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				89385AFC1BB67B4C00441A63 /* ViewController.m in Sources */,
+				89385B021BB67B4C00441A63 /* PocketStretch.xcdatamodeld in Sources */,
+				89385AF91BB67B4C00441A63 /* AppDelegate.m in Sources */,
+				89385AF61BB67B4C00441A63 /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		89385B091BB67B4C00441A63 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				89385B121BB67B4C00441A63 /* PocketStretchTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		89385B141BB67B4C00441A63 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				89385B1D1BB67B4C00441A63 /* PocketStretchUITests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		89385B0F1BB67B4C00441A63 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 89385AF01BB67B4B00441A63 /* PocketStretch */;
+			targetProxy = 89385B0E1BB67B4C00441A63 /* PBXContainerItemProxy */;
+		};
+		89385B1A1BB67B4C00441A63 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 89385AF01BB67B4B00441A63 /* PocketStretch */;
+			targetProxy = 89385B191BB67B4C00441A63 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		89385AFD1BB67B4C00441A63 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				89385AFE1BB67B4C00441A63 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		89385B051BB67B4C00441A63 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				89385B061BB67B4C00441A63 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		89385B1F1BB67B4C00441A63 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		89385B201BB67B4C00441A63 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		89385B221BB67B4C00441A63 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				INFOPLIST_FILE = PocketStretch/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = pocketstretch.net.PocketStretch;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		89385B231BB67B4C00441A63 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				INFOPLIST_FILE = PocketStretch/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = pocketstretch.net.PocketStretch;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		89385B251BB67B4C00441A63 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				INFOPLIST_FILE = PocketStretchTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = pocketstretch.net.PocketStretchTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PocketStretch.app/PocketStretch";
+			};
+			name = Debug;
+		};
+		89385B261BB67B4C00441A63 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				INFOPLIST_FILE = PocketStretchTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = pocketstretch.net.PocketStretchTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PocketStretch.app/PocketStretch";
+			};
+			name = Release;
+		};
+		89385B281BB67B4C00441A63 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INFOPLIST_FILE = PocketStretchUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = pocketstretch.net.PocketStretchUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_TARGET_NAME = PocketStretch;
+				USES_XCTRUNNER = YES;
+			};
+			name = Debug;
+		};
+		89385B291BB67B4C00441A63 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INFOPLIST_FILE = PocketStretchUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = pocketstretch.net.PocketStretchUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_TARGET_NAME = PocketStretch;
+				USES_XCTRUNNER = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		89385AEC1BB67B4B00441A63 /* Build configuration list for PBXProject "PocketStretch" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				89385B1F1BB67B4C00441A63 /* Debug */,
+				89385B201BB67B4C00441A63 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		89385B211BB67B4C00441A63 /* Build configuration list for PBXNativeTarget "PocketStretch" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				89385B221BB67B4C00441A63 /* Debug */,
+				89385B231BB67B4C00441A63 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		89385B241BB67B4C00441A63 /* Build configuration list for PBXNativeTarget "PocketStretchTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				89385B251BB67B4C00441A63 /* Debug */,
+				89385B261BB67B4C00441A63 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		89385B271BB67B4C00441A63 /* Build configuration list for PBXNativeTarget "PocketStretchUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				89385B281BB67B4C00441A63 /* Debug */,
+				89385B291BB67B4C00441A63 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		89385B001BB67B4C00441A63 /* PocketStretch.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				89385B011BB67B4C00441A63 /* PocketStretch.xcdatamodel */,
+			);
+			currentVersion = 89385B011BB67B4C00441A63 /* PocketStretch.xcdatamodel */;
+			path = PocketStretch.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
+	};
+	rootObject = 89385AE91BB67B4B00441A63 /* Project object */;
+}
