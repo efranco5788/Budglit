@@ -1,0 +1,328 @@
+//
+//  LoginPageViewController.m
+//  PocketStretch
+//
+//  Created by Emmanuel Franco on 9/26/15.
+//  Copyright © 2015 Emmanuel Franco. All rights reserved.
+//
+
+#import "LoginPageViewController.h"
+#import "AccountManager.h"
+#import "AppDelegate.h"
+
+#define EMAIL_TF 1
+#define PASSWORD_TF 2
+#define EMAIL_CONFIRMATION_TF 7
+#define FIRST_NAME_TF 3
+#define LAST_NAME_TF 4
+#define EMAIL_FIELD @"user_email"
+#define PASSWORD_FIELD @"user_password"
+#define EMAIL_TEXTFIELD_PLACEHOLDER @"*Email"
+#define PASSWORD_TEXTFIELD_PLACEHOLDER @"*Password"
+#define FIRST_NAME_TEXTFIELD_PLACEHOLDER @"*First Name"
+#define LAST_NAME_TEXTFIELD_PLACEHOLDER @"Last Name"
+
+
+@interface LoginPageViewController () <AccountManagerDelegate>
+{
+    NSLayoutConstraint* kbConstraint;
+    NSLayoutConstraint* newConstraint;
+    CGRect initialLoginButtonFrame;
+    CGRect initialSignupButtonFrame;
+    BOOL keyboardIsVisible;
+}
+/*
+-(void)keyboardWillshow:(NSNotification*)notification;
+-(void)keyboardWasShown:(NSNotification*)notification;
+-(void)keyboardWillHide:(NSNotification*)notification;
+*/
+@end
+
+@implementation LoginPageViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+}
+
+-(void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:YES];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWasShown:) name:UIKeyboardDidShowNotification object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
+    
+}
+
+-(void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:YES];
+
+    initialLoginButtonFrame = self.loginButton.frame;
+    initialSignupButtonFrame = self.signupButton.frame;
+    
+    kbConstraint.active = NO;
+    newConstraint.active = NO;
+}
+
+-(void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:YES];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
+
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardDidShowNotification object:nil];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil];
+}
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+}
+
+-(BOOL)prefersStatusBarHidden
+{
+    return YES;
+}
+
+#pragma mark -
+#pragma mark - Text Field Delegate
+-(void)textFieldDidBeginEditing:(UITextField *)textField
+{
+    [textField becomeFirstResponder];
+    
+    textField.adjustsFontSizeToFitWidth = YES;
+}
+ 
+
+-(BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
+{
+    if ([string isEqualToString:@" "]) {
+        return NO;
+    }
+    
+    return YES;
+}
+
+-(void)textFieldDidEndEditing:(UITextField *)textField
+{
+    
+    if ([textField.text isEqualToString:@""]) {
+        if (textField.tag == EMAIL_TF) {
+            textField.placeholder = EMAIL_TEXTFIELD_PLACEHOLDER;
+        }
+        else if (textField.tag == PASSWORD_TF){
+            textField.placeholder = PASSWORD_TEXTFIELD_PLACEHOLDER;
+        }
+        else if (textField.tag == FIRST_NAME_TF){
+            textField.placeholder = FIRST_NAME_TEXTFIELD_PLACEHOLDER;
+        }
+        else if (textField.tag == LAST_NAME_TF){
+            textField.placeholder = LAST_NAME_TEXTFIELD_PLACEHOLDER;
+        }
+    }
+    
+}
+
+
+-(BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+    [textField resignFirstResponder];
+    
+    return YES;
+}
+
+
+-(void)setupPasswordResetController
+{
+    NSString* resetPasswordTitle = @"Reset Password";
+    NSString* resetPasswordMessage = @"Please enter your email and you will receieve a password reset confirmation.";
+    NSString* doneActionTitle = @"Done";
+    
+    UIAlertController* resetPassword = [UIAlertController alertControllerWithTitle:resetPasswordTitle message:resetPasswordMessage preferredStyle:UIAlertControllerStyleAlert];
+    
+    [resetPassword addTextFieldWithConfigurationHandler:^(UITextField *textField) {
+        textField.tag = EMAIL_CONFIRMATION_TF;
+        textField.placeholder = EMAIL_TEXTFIELD_PLACEHOLDER;
+        textField.delegate = self;
+    }];
+    
+    UIAlertAction* doneAction = [UIAlertAction actionWithTitle:doneActionTitle style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        
+        UITextField* email = [[resetPassword textFields] objectAtIndex:0];
+        
+        if (email.text.length == 0) {
+            [self setupPasswordResetController];
+        }
+        else
+        {
+            
+        }
+    }];
+    
+    [resetPassword addAction:doneAction];
+    
+    [self presentViewController:resetPassword animated:YES completion:nil];
+}
+
+-(void)toggleNameFields
+{
+    if ([self.FNameField isHidden]) {
+        [self.FNameField setHidden:NO];
+        [self.LNameField setHidden:NO];
+    }
+}
+
+#pragma mark - Account Manager delegate
+-(void)loginSucessful
+{
+    AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+    
+    [appDelegate.accountManager setDelegate:self];
+
+    [appDelegate.accountManager saveCredentials];
+}
+
+-(void)loginFailedWithError:(NSError *)error
+{
+    NSString* failedTitle = @"Login Failed";
+    NSString* failedMessage = @"Invalid username or password";
+    NSString* retry = @"Retry";
+    NSString* resetPassword = @"Reset Password";
+    
+    UIAlertAction* actionRetry = [UIAlertAction actionWithTitle:retry style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
+        self.passwordField.text = @"";
+        self.passwordField.placeholder = PASSWORD_TEXTFIELD_PLACEHOLDER;
+    }];
+    
+    UIAlertAction* actionResetPassword = [UIAlertAction actionWithTitle:resetPassword style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        [self setupPasswordResetController];
+    }];
+    
+    UIAlertController* failedAlert = [UIAlertController alertControllerWithTitle:failedTitle message:failedMessage preferredStyle:UIAlertControllerStyleAlert];
+    
+    [failedAlert addAction:actionRetry];
+    [failedAlert addAction:actionResetPassword];
+    
+    [self presentViewController:failedAlert animated:YES completion:nil];
+}
+
+-(void)signupSucessfully
+{
+    AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+    
+    [appDelegate.accountManager setDelegate:self];
+    
+    [appDelegate.accountManager saveCredentials];
+}
+
+-(void)signupFailedWithError:(NSError *)error
+{
+    
+}
+
+-(void)credentialsSaved
+{
+    [self.delegate loginSucessful];
+}
+
+#pragma mark - Keyboard Notifications
+-(void)keyboardWasShown:(NSNotification*)notification
+{
+    NSDictionary* keyboardInfo = [notification userInfo];
+    
+    CGSize keyboardSize = [[keyboardInfo objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
+    
+    double kbAnimationDuration = [[keyboardInfo valueForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue];
+    
+    CGRect keyboardEndFrame = [[keyboardInfo valueForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    
+    CGRect viewableFrame = CGRectInset(self.view.frame, 0, CGRectGetHeight(keyboardEndFrame));
+    
+    
+    if (!CGRectContainsRect(viewableFrame, self.signupButton.frame)) {
+        
+        kbConstraint = [self.loginPageBackground.bottomAnchor constraintEqualToAnchor:self.view.bottomAnchor constant:0];
+        
+        newConstraint = [self.signupButton.bottomAnchor constraintEqualToAnchor:self.view.bottomAnchor constant:-(keyboardSize.height)];
+        
+        [self.view layoutIfNeeded];
+        
+        
+        [UIView animateWithDuration:(kbAnimationDuration / 2) delay:0.0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
+            
+            [self.view layoutIfNeeded];
+            
+            self.signupButtonBottom_Constraint.active = NO;
+            
+            kbConstraint.active = YES;
+            
+            newConstraint.active = YES;
+            
+        } completion:nil];
+        
+    }
+
+}
+
+-(void)keyboardWillHide:(NSNotification *)notification
+{
+    //NSDictionary* keyboardInfo = [notification userInfo];
+    
+    newConstraint.active = NO;
+    
+    //self.signupButtonBottom_Constraint.active = YES;
+}
+
+- (IBAction)loginButtonPressed:(UIButton *)sender {
+    
+    NSString* user_email = self.emailField.text;
+    
+    NSString* user_password = self.passwordField.text;
+    
+    if ([user_email  isEqualToString:@""] || [user_password  isEqualToString:@""]) {
+        NSLog(@"Empty");
+    }
+    else{
+        
+        [[[UIApplication sharedApplication] keyWindow] endEditing:YES];
+        
+        NSDictionary* credentials = [[NSDictionary alloc] initWithObjectsAndKeys:user_email, EMAIL_FIELD, user_password, PASSWORD_FIELD, nil];
+        
+        AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+        
+        [appDelegate.accountManager setDelegate:self];
+        
+        [appDelegate.accountManager login:credentials];
+        
+    }
+    
+}
+
+- (IBAction)signUpButtonPressed:(UIButton *)sender
+{
+    [self toggleNameFields];
+    
+    NSString* user_email = self.emailField.text;
+    
+    NSString* user_password = self.passwordField.text;
+    
+    if ([user_email  isEqualToString:@""] || [user_password  isEqualToString:@""]) {
+        NSLog(@"Empty");
+    }
+    else{
+        
+        [[[UIApplication sharedApplication] keyWindow] endEditing:YES];
+        
+        NSDictionary* credentials = [[NSDictionary alloc] initWithObjectsAndKeys:user_email, EMAIL_FIELD, user_password, PASSWORD_FIELD, nil];
+        
+        AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+        
+        [appDelegate.accountManager setDelegate:self];
+        
+        [appDelegate.accountManager signup:credentials];
+    }
+    
+}
+
+@end

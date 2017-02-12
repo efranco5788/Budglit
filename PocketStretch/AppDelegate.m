@@ -7,6 +7,27 @@
 //
 
 #import "AppDelegate.h"
+#import <QuartzCore/QuartzCore.h>
+#import <CoreLocation/CoreLocation.h>
+#import <Crashlytics/Crashlytics.h>
+#import <Fabric/Fabric.h>
+#import <FBSDKCoreKit/FBSDKCoreKit.h>
+#import "TwitterKit/TwitterKit.h"
+#import "PSAllDealsTableViewController.h"
+#import "MenuTableViewController.h"
+#import "UserAccount.h"
+
+#define PS_HOST_NAME @"https://www.budglit.com"
+#define GN_API_URL @"http://api.geonames.org"
+#define TWITTER_HOST_NAME @"https://api.twitter.com"
+#define INSTAGRAM_HOST_NAME @"https://api.instagram.com"
+#define X_USER_AGENT_HEADER @"X-User-Agent"
+#define GN_API_PARAM_USERNAME @"efranco5788"
+#define TWITTER_CONSUMER_KEY @"vvB776xHclCYeuvqtyQaNeMzc"
+#define TWITTER_CONSUMER_SECRET @"UwnK75h6fSJHmNUJdtDQgnTWWr2EbIoCjfBbKH5fwd7BgFx3MF"
+#define INSTAGRAM_CLIENT_ID @"f14e6defc65e4a2abd9ac34130b8dda0"
+#define INSTAGRAM_CLIENT_SECRET @"48d0454056ce4a4781b2219b6df4591e"
+
 
 @interface AppDelegate ()
 
@@ -14,10 +35,95 @@
 
 @implementation AppDelegate
 
+-(BOOL)application:(UIApplication *)application willFinishLaunchingWithOptions:(NSDictionary *)launchOptions
+{
+    [Fabric with:@[[Crashlytics class], [Twitter class]]];
+    
+    // Verify the users locale
+    NSLocale* usersLocale = [NSLocale autoupdatingCurrentLocale];
+    
+    if ([usersLocale.localeIdentifier isEqualToString:NSLocalizedString(@"USA", nil)]) {
+        
+        NSNumber* launched = [NSNumber numberWithBool:NO];
+        
+        NSMutableDictionary* currentSearchFilters = [[NSMutableDictionary alloc] init];
+        
+        NSUserDefaults* userDefaults = [NSUserDefaults standardUserDefaults];
+        
+        UserAccount* loggedAcount = [userDefaults objectForKey:NSLocalizedString(@"ACCOUNT", nil)];
+        
+        NSArray* defaultObjects;
+        NSArray* defaultKeys;
+        
+        NSLog(@"%@", loggedAcount);
+        
+        if (!loggedAcount) {
+            
+            loggedAcount = [[UserAccount alloc] initWithFirstName:NSLocalizedString(@"DEFAULT_NO_ACCOUNT_NAME", nil) andLastName:nil];
+            
+            NSData* accountData = [NSKeyedArchiver archivedDataWithRootObject:loggedAcount];
+            
+            defaultObjects = [[NSArray alloc] initWithObjects:launched, NSLocalizedString(@"DEFAULT_ZIPCODE", nil), NSLocalizedString(@"DEFAULT", nil), NSLocalizedString(@"DEFAULT", nil), NSLocalizedString(@"DEFAULT", nil), NSLocalizedString (@"DEFAULT_BUDGET", nil), accountData, currentSearchFilters, nil];
+            
+            defaultKeys = [[NSArray alloc] initWithObjects: NSLocalizedString(@"HAS_LAUNCHED_ONCE", nil), NSLocalizedString(@"ZIPCODE", nil), NSLocalizedString(@"CITY", nil), NSLocalizedString(@"STATE", nil), NSLocalizedString(@"ABBRVIATION", nil), NSLocalizedString(@"BUDGET", nil),  NSLocalizedString(@"ACCOUNT", nil), NSLocalizedString(@"CURRENT_SEARCH_FILTERS", nil), nil];
+        }
+        else
+        {
+            defaultObjects = [[NSArray alloc] initWithObjects:launched, NSLocalizedString(@"DEFAULT_ZIPCODE", nil), NSLocalizedString(@"DEFAULT", nil), NSLocalizedString(@"DEFAULT", nil), NSLocalizedString(@"DEFAULT", nil), NSLocalizedString (@"DEFAULT_BUDGET", nil), loggedAcount, currentSearchFilters, nil];
+            
+            defaultKeys = [[NSArray alloc] initWithObjects: NSLocalizedString(@"HAS_LAUNCHED_ONCE", nil), NSLocalizedString(@"ZIPCODE", nil), NSLocalizedString(@"CITY", nil), NSLocalizedString(@"STATE", nil), NSLocalizedString(@"ABBRVIATION", nil), NSLocalizedString(@"BUDGET", nil),  NSLocalizedString(@"ACCOUNT", nil), NSLocalizedString(@"CURRENT_SEARCH_FILTERS", nil), nil];
+        }
+        
+        
+        NSDictionary* appDefaults = [NSDictionary dictionaryWithObjects:defaultObjects forKeys:defaultKeys];
+        
+        [[NSUserDefaults standardUserDefaults] registerDefaults:appDefaults];
+        
+        static dispatch_once_t onceToken;
+        dispatch_once(&onceToken, ^{
+            
+            [self construct_AccountManager];
+            [self construct_DatabaseManager];
+            [self construct_LocationServiceManager];
+            [self construct_BudgetManager];
+            [self construct_FacebookManager];
+            [self construct_TwitterEngine];
+            [self construct_InstagramManager];
+            [self construct_DrawerController];
+            
+        });
+        
+        [self.budgetManager resetBudget];
+        
+        return YES;
+    }
+    else return NO;
+}
 
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    // Override point for customization after application launch.
+/*
+To post-process the results from actions that require you to switch to the native Facebook app or Safari, such as Facebook Login or Facebook Dialogs
+*/
+- (BOOL)application:(UIApplication *)application
+didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    
+    [[FBSDKApplicationDelegate sharedInstance] application:application
+                             didFinishLaunchingWithOptions:launchOptions];
+    
+    // Add any custom logic here.
     return YES;
+}
+
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url
+  sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
+{
+    BOOL handled = [[FBSDKApplicationDelegate sharedInstance] application:application
+                                                                  openURL:url
+                                                        sourceApplication:sourceApplication
+                                                               annotation:annotation
+                    ];
+    // Add any custom logic here.
+    return handled;
+    
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
@@ -41,11 +147,101 @@
 - (void)applicationWillTerminate:(UIApplication *)application {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     // Saves changes in the application's managed object context before the application terminates.
+    [self.imageDataDocManager deleteAllData];
     [self saveContext];
 }
 
-#pragma mark - Core Data stack
+-(BOOL)application:(UIApplication *)application shouldRestoreApplicationState:(NSCoder *)coder
+{
+    return YES;
+}
 
+-(BOOL)application:(UIApplication *)application shouldSaveApplicationState:(NSCoder *)coder
+{
+    return YES;
+}
+
+-(void)application:(UIApplication *)application willEncodeRestorableStateWithCoder:(NSCoder *)coder
+{
+    NSLog(@"%@", self.window.rootViewController);
+    
+    [coder encodeObject:self.window.rootViewController forKey:@"kRootViewControllerKey"];
+}
+
+-(void)application:(UIApplication *)application didDecodeRestorableStateWithCoder:(NSCoder *)coder
+{
+    UINavigationController *navControlller = [coder decodeObjectForKey:@"kRootViewControllerKey"];
+    
+    if (navControlller) {
+        self.window.rootViewController = navControlller;
+    }
+}
+
+#pragma mark -
+#pragma mark - Manager Initializers
+-(void)construct_TwitterEngine
+{
+    NSDictionary* twitterKeys = [[NSDictionary alloc] initWithObjectsAndKeys:TWITTER_CONSUMER_KEY, NSLocalizedString(@"TWITTER_CONSUMER_KEY", nil), TWITTER_CONSUMER_SECRET, NSLocalizedString(@"TWITTER_CONSUMER_SECRET_KEY", nil), nil];
+    
+    self.twitterManager = [[TwitterManager alloc] initWithEngineHostName:TWITTER_HOST_NAME andTwitterKeys:twitterKeys];
+    
+}
+
+-(void)construct_AccountManager
+{
+    self.accountManager = [[AccountManager alloc] initWithEngineHostName:PS_HOST_NAME];
+}
+
+-(void)construct_BudgetManager
+{
+    self.budgetManager = [[BudgetManager alloc] init];
+}
+
+-(void)construct_DatabaseManager
+{
+    self.databaseManager = [[DatabaseManager alloc] initWithEngineHostName:PS_HOST_NAME];
+}
+
+-(void)construct_FacebookManager
+{
+    self.fbManager = [[FacebookManager alloc] initWithEngine];
+}
+
+-(void)construct_InstagramManager
+{
+    self.instagramManager = [[InstagramManager alloc] initWithEngineHostName:INSTAGRAM_HOST_NAME andClientID:INSTAGRAM_CLIENT_ID andClientSecret:INSTAGRAM_CLIENT_SECRET];
+}
+
+-(void)construct_LocationServiceManager
+{
+    self.locationManager = [[LocationSeviceManager alloc] initWithEngineHostName:GN_API_URL];
+}
+
+-(void)construct_DrawerController
+{
+    UIStoryboard* storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    
+    DrawerViewController* drawer = [storyboard instantiateViewControllerWithIdentifier:@"MMDrawer"];
+    
+    PSAllDealsTableViewController* centerView = [storyboard instantiateViewControllerWithIdentifier:@"PSAllDealsTableViewController"];
+    
+    MenuTableViewController* rigthPanel = [[MenuTableViewController alloc] init];
+    
+    [drawer configureCenterViewController:centerView leftDrawerViewController:nil rightDrawerViewController:rigthPanel];
+    
+    [drawer setShowsShadow:YES];
+    
+    self.drawerController = drawer;
+}
+
+-(void)create_imageDocumentDirectory
+{
+    self.imageDataDocManager = [[ImageDataDoc alloc] initDirectory];
+}
+
+
+#pragma mark -
+#pragma mark - Core Data stack
 @synthesize managedObjectContext = _managedObjectContext;
 @synthesize managedObjectModel = _managedObjectModel;
 @synthesize persistentStoreCoordinator = _persistentStoreCoordinator;
@@ -109,8 +305,8 @@
     return _managedObjectContext;
 }
 
+#pragma mark -
 #pragma mark - Core Data Saving support
-
 - (void)saveContext {
     NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
     if (managedObjectContext != nil) {
