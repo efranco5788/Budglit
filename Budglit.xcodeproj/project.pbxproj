@@ -832,8 +832,9 @@
 				895C22B81CB4BC43008BAECE /* TweetDetailViewController.h */,
 				895C22B91CB4BC43008BAECE /* TweetDetailViewController.m */,
 			);
-			path = Twitter;
-			sourceTree = "<group>";
+			name = Twitter;
+			path = /Users/emmanuelfranco/Desktop/Budglit/Budglit/Twitter;
+			sourceTree = "<absolute>";
 		};
 		89EEF9721D482D3C00CCE163 /* ObjectState */ = {
 			isa = PBXGroup;
@@ -1296,7 +1297,7 @@
 					"$(PROJECT_DIR)",
 					"$(PROJECT_DIR)/FBSDKCoreKit.framework/Headers",
 				);
-				GCC_PREFIX_HEADER = "PocketStretch/Budglit-Prefix.pch";
+				GCC_PREFIX_HEADER = "Budglit/Budglit-Prefix.pch";
 				INFOPLIST_FILE = PocketStretch/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = pocketstretch.net.PocketStretch;
@@ -1318,7 +1319,7 @@
 					"$(PROJECT_DIR)",
 					"$(PROJECT_DIR)/FBSDKCoreKit.framework/Headers",
 				);
-				GCC_PREFIX_HEADER = "PocketStretch/Budglit-Prefix.pch";
+				GCC_PREFIX_HEADER = "Budglit/Budglit-Prefix.pch";
 				INFOPLIST_FILE = PocketStretch/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = pocketstretch.net.PocketStretch;
