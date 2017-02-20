@@ -13,4 +13,8 @@
 
 @interface DismissDetailedAnimationController : NSObject<UIViewControllerAnimatedTransitioning>
 
+-(void)setDestinationFrame:(CGRect)frame;
+
+-(CGRect)getDestinationFrame;
+
 @end

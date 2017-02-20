@@ -31,22 +31,44 @@
     CGRect initialSignupButtonFrame;
     BOOL keyboardIsVisible;
 }
-/*
--(void)keyboardWillshow:(NSNotification*)notification;
--(void)keyboardWasShown:(NSNotification*)notification;
--(void)keyboardWillHide:(NSNotification*)notification;
-*/
+
 @end
 
 @implementation LoginPageViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    UIColor *color = [UIColor whiteColor];
+    
+    UIFont* font = [UIFont fontWithName:@"Helvetica" size:17.0f];
+    
+    if ([self.emailField respondsToSelector:@selector(setAttributedPlaceholder:)]) {
+        self.emailField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"Email" attributes:@{NSForegroundColorAttributeName: color}];
+        [self.emailField setFont:font];
+    }
+    
+    if ([self.passwordField respondsToSelector:@selector(setAttributedPlaceholder:)]) {
+        self.passwordField.attributedPlaceholder = [[NSAttributedString alloc]initWithString:@"Password" attributes:@{NSForegroundColorAttributeName:color}];
+        [self.passwordField setFont:font];
+    }
+    
+    if ([self.FNameField respondsToSelector:@selector(setAttributedPlaceholder:)]) {
+        self.FNameField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"First Name" attributes:@{NSForegroundColorAttributeName: color}];
+        [self.FNameField setFont:font];
+    }
+    
+    if ([self.LNameField respondsToSelector:@selector(setAttributedPlaceholder:)]) {
+        self.LNameField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"Last Name" attributes:@{NSForegroundColorAttributeName: color}];
+        [self.LNameField setFont:font];
+    }
 }
 
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:YES];
+    
+    //[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWasShown:) name:UIKeyboardDidShowNotification object:nil];
     
@@ -60,6 +82,13 @@
 
     initialLoginButtonFrame = self.loginButton.frame;
     initialSignupButtonFrame = self.signupButton.frame;
+
+    [self.emailField setLeftViewMode:UITextFieldViewModeAlways];
+    [self.emailField setLeftView:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"icon_username.png"]]];
+    
+    
+    [self.passwordField setLeftViewMode:UITextFieldViewModeAlways];
+    [self.passwordField setLeftView:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"icon_lock.png"]]];
     
     kbConstraint.active = NO;
     newConstraint.active = NO;
@@ -69,7 +98,7 @@
 {
     [super viewWillDisappear:YES];
     
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
+    //[[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
 
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardDidShowNotification object:nil];
     
@@ -106,7 +135,7 @@
 
 -(void)textFieldDidEndEditing:(UITextField *)textField
 {
-    
+    /*
     if ([textField.text isEqualToString:@""]) {
         if (textField.tag == EMAIL_TF) {
             textField.placeholder = EMAIL_TEXTFIELD_PLACEHOLDER;
@@ -121,7 +150,7 @@
             textField.placeholder = LAST_NAME_TEXTFIELD_PLACEHOLDER;
         }
     }
-    
+    */
 }
 
 
@@ -248,7 +277,6 @@
         
         [self.view layoutIfNeeded];
         
-        
         [UIView animateWithDuration:(kbAnimationDuration / 2) delay:0.0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
             
             [self.view layoutIfNeeded];
@@ -259,7 +287,9 @@
             
             newConstraint.active = YES;
             
-        } completion:nil];
+        } completion:^(BOOL finished) {
+            [self.view layoutIfNeeded];
+        }];
         
     }
 

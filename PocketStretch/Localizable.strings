@@ -41,6 +41,7 @@
 "KEY_CURRENT_SEARCH_FILTERS" = "currentSearchFilters";
 "LOGOUT" = "Logout";
 "MINIMUM_AMOUNT_STRING_VALUE" = "0.00";
+"MENU_DRAWER_CONTROLLER" = "MMDrawer";
 "STATE" = "state";
 "STATE_NAME" = "Name";
 "SURROUNDING_ZIPCODES" = "surroundingZipcodes";

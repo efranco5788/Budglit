@@ -27,6 +27,9 @@
 #define TWITTER_CONSUMER_SECRET @"UwnK75h6fSJHmNUJdtDQgnTWWr2EbIoCjfBbKH5fwd7BgFx3MF"
 #define INSTAGRAM_CLIENT_ID @"f14e6defc65e4a2abd9ac34130b8dda0"
 #define INSTAGRAM_CLIENT_SECRET @"48d0454056ce4a4781b2219b6df4591e"
+#define GOOGLE_MAPS_API @"AIzaSyB60WbADxLhP0izZL3upDdiUczawDylfvM"
+
+#define K_ROOT_CONTROLLER_KEY @"kRootViewControllerKey"
 
 
 @interface AppDelegate ()
@@ -108,8 +111,7 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
     [[FBSDKApplicationDelegate sharedInstance] application:application
                              didFinishLaunchingWithOptions:launchOptions];
-    
-    // Add any custom logic here.
+
     return YES;
 }
 
@@ -121,7 +123,7 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
                                                         sourceApplication:sourceApplication
                                                                annotation:annotation
                     ];
-    // Add any custom logic here.
+
     return handled;
     
 }
@@ -163,14 +165,12 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 
 -(void)application:(UIApplication *)application willEncodeRestorableStateWithCoder:(NSCoder *)coder
 {
-    NSLog(@"%@", self.window.rootViewController);
-    
-    [coder encodeObject:self.window.rootViewController forKey:@"kRootViewControllerKey"];
+    [coder encodeObject:self.window.rootViewController forKey:K_ROOT_CONTROLLER_KEY];
 }
 
 -(void)application:(UIApplication *)application didDecodeRestorableStateWithCoder:(NSCoder *)coder
 {
-    UINavigationController *navControlller = [coder decodeObjectForKey:@"kRootViewControllerKey"];
+    UINavigationController *navControlller = [coder decodeObjectForKey:K_ROOT_CONTROLLER_KEY];
     
     if (navControlller) {
         self.window.rootViewController = navControlller;
@@ -221,7 +221,7 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 {
     UIStoryboard* storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     
-    DrawerViewController* drawer = [storyboard instantiateViewControllerWithIdentifier:@"MMDrawer"];
+    DrawerViewController* drawer = [storyboard instantiateViewControllerWithIdentifier:NSLocalizedString(@"MENU_DRAWER_CONTROLLER", nil)];
     
     PSAllDealsTableViewController* centerView = [storyboard instantiateViewControllerWithIdentifier:@"PSAllDealsTableViewController"];
     

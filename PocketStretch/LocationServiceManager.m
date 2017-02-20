@@ -433,6 +433,7 @@ static LocationSeviceManager* sharedManager;
                 
                 NSString* postal = [currentLocation postalCode];
                 
+                
                 CityDataObject* city = [[CityDataObject alloc] initWithCity:cityName State:state stateAbbr:state andPostal:postal];
                 
                 [self attemptToAddCurrentLocation:city addCompletionHandler:^(BOOL success) {

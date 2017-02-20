@@ -18,6 +18,7 @@
 #import "LocationServiceManager.h"
 #import "DealTableViewCell.h"
 #import "DealDetailedAnimationController.h"
+#import "DismissDetailedAnimationController.h"
 #import "PSEditZipcodeOfflineTableViewController.h"
 #import "UINavigationController+CompletionHandler.h"
 #import "UIImageView+AFNetworking.h"
@@ -52,7 +53,7 @@ typedef void(^dimmerDisplayCompletion)(BOOL finished);
 @property (nonatomic, strong) UIImage* placeholderImage;
 @property (nonatomic, strong) NSMutableArray* dealTimers;
 @property (strong, nonatomic) DealDetailedAnimationController* transitionController;
-
+@property (strong, nonatomic) DismissDetailedAnimationController* dismissTransitionController;
 @end
 
 @implementation PSAllDealsTableViewController
@@ -82,6 +83,8 @@ static NSString* const emptyCellIdentifier = @"holderCell";
     [self setNeedsStatusBarAppearanceUpdate];
     
     self.transitionController = [[DealDetailedAnimationController alloc] init];
+    
+    self.dismissTransitionController = [[DismissDetailedAnimationController alloc] init];
     
     self.imageDownloadInProgress = [NSMutableDictionary dictionary];
     
@@ -398,6 +401,11 @@ static NSString* const emptyCellIdentifier = @"holderCell";
 -(id<UIViewControllerAnimatedTransitioning>)animationControllerForPresentedController:(UIViewController *)presented presentingController:(UIViewController *)presenting sourceController:(UIViewController *)source
 {
     return self.transitionController;
+}
+
+-(id<UIViewControllerAnimatedTransitioning>)animationControllerForDismissedController:(UIViewController *)dismissed
+{
+    return self.dismissTransitionController;
 }
 
 // In a storyboard-based application, you will often want to do a little preparation before navigation

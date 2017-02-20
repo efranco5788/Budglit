@@ -38,13 +38,27 @@
     
     UINavigationController* navController = [[UINavigationController alloc] initWithRootViewController:toViewController];
     
+    UIColor* barColor = [UIColor colorWithRed:(float)31/255 green:(float)80/255 blue:(float)155/255 alpha:1.0];
+    
+    [navController.navigationBar setBarTintColor:barColor];
+    
+    [navController.navigationBar setBackgroundColor:[UIColor clearColor]];
+    
+    [navController.navigationBar setTintColor:[UIColor whiteColor]];
+    
+    [navController.navigationBar setTranslucent:YES];
+    
+    [navController.navigationBar setBarStyle:UIBarStyleDefault];
+    
+    [navController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName:[UIColor whiteColor]}];
+    
     [containerView addSubview:fromViewController.view];
     
     [containerView addSubview:navController.view];
     
     [toViewController.view setFrame:startFrame];
     
-    [UIView animateWithDuration:0.7 animations:^{
+    [UIView animateWithDuration:0.4 animations:^{
         
         fromViewController.view.layer.opacity = 0;
         

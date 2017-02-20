@@ -138,7 +138,7 @@
 -(void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:YES];
-    
+
     CGFloat originalTwitterViewX = self.socialMediaContainer.layer.frame.origin.x;
     
     CGFloat originalTwitterViewY = (self.view.frame.size.height - self.socialMediaContainer.layer.frame.size.height);
@@ -614,13 +614,11 @@
 
 
 #pragma mark -
-#pragma mark - Navigation
-// In a storyboard-based application, you will often want to do a little preparation before navigation
+#pragma mark - Navigation Methods
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    
-}
 
+}
 
 -(void) cancelButton_pressed:(UIBarButtonItem *)sender
 {
