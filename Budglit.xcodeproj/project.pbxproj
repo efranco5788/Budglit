@@ -230,7 +230,7 @@
 		89179D2F1BB8F5CC00F60BA7 /* UINavigationController+CompletionHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UINavigationController+CompletionHandler.m"; sourceTree = "<group>"; };
 		89179D311BB8F86500F60BA7 /* ZipcodeSearchDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZipcodeSearchDataSource.h; sourceTree = "<group>"; };
 		89179D321BB8F86500F60BA7 /* ZipcodeSearchDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZipcodeSearchDataSource.m; sourceTree = "<group>"; };
-		89179D391BBDB64100F60BA7 /* Budglit-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Budglit-Prefix.pch"; sourceTree = "<group>"; };
+		89179D391BBDB64100F60BA7 /* Budglit-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Budglit-Prefix.pch"; path = "/Users/emmanuelfranco/Desktop/Budglit/Budglit/Budglit-Prefix.pch"; sourceTree = "<absolute>"; };
 		89179D591BBDEAB600F60BA7 /* AccountEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AccountEngine.h; path = ../AccountEngine.h; sourceTree = "<group>"; };
 		89179D5A1BBDEAB600F60BA7 /* AccountEngine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AccountEngine.m; path = ../AccountEngine.m; sourceTree = "<group>"; };
 		89231DA91D8B7F3000D6B932 /* MMDrawerBarButtonItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MMDrawerBarButtonItem.h; sourceTree = "<group>"; };
@@ -362,10 +362,10 @@
 		897711AF1BE2E3C900028B74 /* PSTwitterWebView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PSTwitterWebView.m; path = ../PSTwitterWebView.m; sourceTree = "<group>"; };
 		897711B11BE2E57F00028B74 /* TwitterManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TwitterManager.h; path = PocketStretch/TwitterManager.h; sourceTree = SOURCE_ROOT; };
 		897711B21BE2E57F00028B74 /* TwitterManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TwitterManager.m; path = PocketStretch/TwitterManager.m; sourceTree = SOURCE_ROOT; };
-		897711B51BE30EC600028B74 /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Fabric.framework; path = PocketStretch/Fabric.framework; sourceTree = "<group>"; };
-		897711B61BE30EC600028B74 /* TwitterKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = TwitterKit.framework; path = PocketStretch/TwitterKit.framework; sourceTree = "<group>"; };
-		897711B71BE30EC600028B74 /* TwitterKitResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = TwitterKitResources.bundle; path = PocketStretch/TwitterKitResources.bundle; sourceTree = "<group>"; };
-		897711B81BE30EC600028B74 /* TwitterCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = TwitterCore.framework; path = PocketStretch/TwitterCore.framework; sourceTree = "<group>"; };
+		897711B51BE30EC600028B74 /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Fabric.framework; path = /Users/emmanuelfranco/Desktop/Budglit/Budglit/Fabric.framework; sourceTree = "<absolute>"; };
+		897711B61BE30EC600028B74 /* TwitterKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = TwitterKit.framework; path = /Users/emmanuelfranco/Desktop/Budglit/Budglit/TwitterKit.framework; sourceTree = "<absolute>"; };
+		897711B71BE30EC600028B74 /* TwitterKitResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = TwitterKitResources.bundle; path = /Users/emmanuelfranco/Desktop/Budglit/Budglit/TwitterKitResources.bundle; sourceTree = "<absolute>"; };
+		897711B81BE30EC600028B74 /* TwitterCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = TwitterCore.framework; path = /Users/emmanuelfranco/Desktop/Budglit/Budglit/TwitterCore.framework; sourceTree = "<absolute>"; };
 		897711BD1BE32A4500028B74 /* SocialMediaView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SocialMediaView.h; path = PocketStretch/SocialMediaView.h; sourceTree = SOURCE_ROOT; };
 		897711BE1BE32A4500028B74 /* SocialMediaView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SocialMediaView.m; path = PocketStretch/SocialMediaView.m; sourceTree = SOURCE_ROOT; };
 		897727321BE4642D00028B74 /* TweetTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TweetTableViewController.h; path = ../TweetTableViewController.h; sourceTree = "<group>"; };
@@ -639,8 +639,8 @@
 				893DF6581C0AE0A500D0A23D /* UIKit+AFNetworking */,
 			);
 			name = Budglit;
-			path = PocketStretch;
-			sourceTree = "<group>";
+			path = /Users/emmanuelfranco/Desktop/Budglit/Budglit;
+			sourceTree = "<absolute>";
 		};
 		89385AF41BB67B4B00441A63 /* Supporting Files */ = {
 			isa = PBXGroup;
@@ -695,8 +695,8 @@
 				89385B131BB67B4C00441A63 /* Info.plist */,
 			);
 			name = BudglitTests;
-			path = PocketStretchTests;
-			sourceTree = "<group>";
+			path = /Users/emmanuelfranco/Desktop/Budglit/BudglitTests;
+			sourceTree = "<absolute>";
 		};
 		89385B1B1BB67B4C00441A63 /* BudglitUITests */ = {
 			isa = PBXGroup;
@@ -705,8 +705,8 @@
 				89385B1E1BB67B4C00441A63 /* Info.plist */,
 			);
 			name = BudglitUITests;
-			path = PocketStretchUITests;
-			sourceTree = "<group>";
+			path = /Users/emmanuelfranco/Desktop/Budglit/BudglitUITests;
+			sourceTree = "<absolute>";
 		};
 		893DF6581C0AE0A500D0A23D /* UIKit+AFNetworking */ = {
 			isa = PBXGroup;
