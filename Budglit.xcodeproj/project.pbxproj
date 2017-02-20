@@ -100,6 +100,7 @@
 		893DF6701C0AE0A500D0A23D /* UIProgressView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = 893DF6661C0AE0A500D0A23D /* UIProgressView+AFNetworking.m */; };
 		893DF6711C0AE0A500D0A23D /* UIRefreshControl+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = 893DF6681C0AE0A500D0A23D /* UIRefreshControl+AFNetworking.m */; };
 		893DF6721C0AE0A500D0A23D /* UIWebView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = 893DF66A1C0AE0A500D0A23D /* UIWebView+AFNetworking.m */; };
+		8946D71F1E5AAE16005BB1E3 /* TwitterKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8946D71E1E5AAE16005BB1E3 /* TwitterKit.framework */; };
 		894AF16E1BDC6969006E3346 /* ImageData.m in Sources */ = {isa = PBXBuildFile; fileRef = 894AF16D1BDC6969006E3346 /* ImageData.m */; };
 		894F93961DED38A300FEF2DC /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 894F93951DED38A300FEF2DC /* Bolts.framework */; };
 		894F93991DED45DC00FEF2DC /* FacebookEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = 894F93981DED45DC00FEF2DC /* FacebookEngine.m */; };
@@ -126,7 +127,6 @@
 		897EDAC41C82F5210042CEAB /* iOS_Launch_Image.png in Resources */ = {isa = PBXBuildFile; fileRef = 897EDAC31C82F5210042CEAB /* iOS_Launch_Image.png */; };
 		897EDAC61C82F6FE0042CEAB /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 897EDAC51C82F6FE0042CEAB /* Media.xcassets */; };
 		897EDAC81C8C136F0042CEAB /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 897EDAC71C8C136F0042CEAB /* Crashlytics.framework */; };
-		898442DA1E5AA39B00A98216 /* TwitterKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 898442D91E5AA39B00A98216 /* TwitterKit.framework */; };
 		89947FA31C149805009D0B75 /* PSAllDealsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 89947FA21C149805009D0B75 /* PSAllDealsTableViewController.m */; };
 		89947FAB1C14A6DB009D0B75 /* DealTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 89947FAA1C14A6DB009D0B75 /* DealTableViewCell.m */; };
 		89947FAE1C2119C0009D0B75 /* CityDataObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 89947FAD1C2119BF009D0B75 /* CityDataObject.m */; };
@@ -332,6 +332,7 @@
 		893DF6681C0AE0A500D0A23D /* UIRefreshControl+AFNetworking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIRefreshControl+AFNetworking.m"; path = "UIKit+AFNetworking/UIRefreshControl+AFNetworking.m"; sourceTree = "<group>"; };
 		893DF6691C0AE0A500D0A23D /* UIWebView+AFNetworking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIWebView+AFNetworking.h"; path = "UIKit+AFNetworking/UIWebView+AFNetworking.h"; sourceTree = "<group>"; };
 		893DF66A1C0AE0A500D0A23D /* UIWebView+AFNetworking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIWebView+AFNetworking.m"; path = "UIKit+AFNetworking/UIWebView+AFNetworking.m"; sourceTree = "<group>"; };
+		8946D71E1E5AAE16005BB1E3 /* TwitterKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = TwitterKit.framework; sourceTree = "<group>"; };
 		894AF16C1BDC6969006E3346 /* ImageData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageData.h; sourceTree = "<group>"; };
 		894AF16D1BDC6969006E3346 /* ImageData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageData.m; sourceTree = "<group>"; };
 		894F93951DED38A300FEF2DC /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Bolts.framework; sourceTree = "<group>"; };
@@ -373,7 +374,6 @@
 		897EDAC31C82F5210042CEAB /* iOS_Launch_Image.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iOS_Launch_Image.png; sourceTree = "<group>"; };
 		897EDAC51C82F6FE0042CEAB /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
 		897EDAC71C8C136F0042CEAB /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
-		898442D91E5AA39B00A98216 /* TwitterKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = TwitterKit.framework; path = ../TwitterKit.framework; sourceTree = "<group>"; };
 		89947FA11C149805009D0B75 /* PSAllDealsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PSAllDealsTableViewController.h; sourceTree = "<group>"; };
 		89947FA21C149805009D0B75 /* PSAllDealsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PSAllDealsTableViewController.m; sourceTree = "<group>"; };
 		89947FA91C14A6DB009D0B75 /* DealTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DealTableViewCell.h; sourceTree = "<group>"; };
@@ -440,7 +440,7 @@
 				89385B2F1BB67BC500441A63 /* Security.framework in Frameworks */,
 				89385B2D1BB67BBA00441A63 /* ImageIO.framework in Frameworks */,
 				894F93961DED38A300FEF2DC /* Bolts.framework in Frameworks */,
-				898442DA1E5AA39B00A98216 /* TwitterKit.framework in Frameworks */,
+				8946D71F1E5AAE16005BB1E3 /* TwitterKit.framework in Frameworks */,
 				89385B2B1BB67BB000441A63 /* MapKit.framework in Frameworks */,
 				897711B91BE30EC600028B74 /* Fabric.framework in Frameworks */,
 				897711BC1BE30EC600028B74 /* TwitterCore.framework in Frameworks */,
@@ -540,10 +540,10 @@
 				894F93951DED38A300FEF2DC /* Bolts.framework */,
 				89B3DBD51DEAB35900DCEDB6 /* FBSDKLoginKit.framework */,
 				89385B3C1BB67C2900441A63 /* Twitter.framework */,
+				8946D71E1E5AAE16005BB1E3 /* TwitterKit.framework */,
 				89385B3A1BB67C1F00441A63 /* Foundation.framework */,
 				89385B381BB67C0500441A63 /* CoreGraphics.framework */,
 				89385B361BB67BFE00441A63 /* libsqlite3.tbd */,
-				898442D91E5AA39B00A98216 /* TwitterKit.framework */,
 				897711B71BE30EC600028B74 /* TwitterKitResources.bundle */,
 				897711B81BE30EC600028B74 /* TwitterCore.framework */,
 				897711B51BE30EC600028B74 /* Fabric.framework */,
@@ -1305,6 +1305,7 @@
 					"$(PROJECT_DIR)",
 					"$(PROJECT_DIR)/FBSDKCoreKit.framework/Headers",
 					"$(PROJECT_DIR)/Budglit",
+					"$(PROJECT_DIR)/Budglit/TwitterKitResources.bundle",
 				);
 				GCC_PREFIX_HEADER = "Budglit/Budglit-Prefix.pch";
 				INFOPLIST_FILE = PocketStretch/Info.plist;
@@ -1328,6 +1329,7 @@
 					"$(PROJECT_DIR)",
 					"$(PROJECT_DIR)/FBSDKCoreKit.framework/Headers",
 					"$(PROJECT_DIR)/Budglit",
+					"$(PROJECT_DIR)/Budglit/TwitterKitResources.bundle",
 				);
 				GCC_PREFIX_HEADER = "Budglit/Budglit-Prefix.pch";
 				INFOPLIST_FILE = PocketStretch/Info.plist;

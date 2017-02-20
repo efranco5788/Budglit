@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <TwitterKit/TwitterKit.h>
+#import <TwitterKit/>
 
 @class Deal;
 @class TwitterFeed;
