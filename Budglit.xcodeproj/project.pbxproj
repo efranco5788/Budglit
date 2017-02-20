@@ -622,6 +622,7 @@
 				89385B031BB67B4C00441A63 /* Assets.xcassets */,
 				89385B081BB67B4C00441A63 /* Info.plist */,
 				89385B001BB67B4C00441A63 /* PocketStretch.xcdatamodeld */,
+				89385AF41BB67B4B00441A63 /* Supporting Files */,
 				89E795391E55460700362F73 /* Animation Controllers */,
 				89231DBD1D937D9500D6B932 /* AppManagers */,
 				89FE46E91D811C6C00574412 /* Engines */,
@@ -636,7 +637,6 @@
 				89B3DBBE1DE2B44800DCEDB6 /* SocialMedia */,
 				89067BD11C784B710058B4DF /* UIDevice-Extension */,
 				893DF6581C0AE0A500D0A23D /* UIKit+AFNetworking */,
-				89385AF41BB67B4B00441A63 /* Supporting Files */,
 			);
 			name = Budglit;
 			path = PocketStretch;

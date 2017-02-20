@@ -53,6 +53,8 @@
         [self.passwordField setFont:font];
     }
     
+    [self.passwordField setSecureTextEntry:YES];
+    
     if ([self.FNameField respondsToSelector:@selector(setAttributedPlaceholder:)]) {
         self.FNameField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"First Name" attributes:@{NSForegroundColorAttributeName: color}];
         [self.FNameField setFont:font];
