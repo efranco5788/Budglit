@@ -1,0 +1,18 @@
+//
+//  PocketStretch-Prefix.pch
+//  PocketStretch
+//
+//  Created by Emmanuel Franco on 10/1/15.
+//  Copyright © 2015 Emmanuel Franco. All rights reserved.
+//
+/*
+#ifndef PocketStretch_Prefix_pch
+#define PocketStretch_Prefix_pch
+*/
+#ifndef Budglit_Prefix_pch
+#define Budglit_Prefix_pch
+// Include any system framework and library headers here that should be included in all compilation units.
+// You will also need to set the Prefix Header build setting of one or more of your targets to reference this file.
+#import "AFNetworking.h"
+#endif /* Budglit_Prefix_pch */
+//#endif /* PocketStretch_Prefix_pch */

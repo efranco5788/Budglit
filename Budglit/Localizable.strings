@@ -1,0 +1,56 @@
+/* 
+  Localizable.strings
+  PocketStretch
+
+  Created by Emmanuel Franco on 9/26/15.
+  Copyright © 2015 Emmanuel Franco. All rights reserved.
+*/
+"ABBREVIATION" = "Abbreviation";
+"ACCOUNT" = "userAccount";
+"BUDGET" = "budget";
+"BUDGET_AMOUNTS" = "budget_amounts";
+"BUDGET_FILTER" = "budget_filter";
+"CANCEL" = "Cancel";
+"CHANGE_LOCATION" = "Change Location";
+"CITY" = "city";
+"CURRENT_SEARCH_FILTERS" = "currentSearchFilters";
+"TWITTER_CONSUMER_KEY" = "consumerKey";
+"TWITTER_CONSUMER_SECRET_KEY" = "consumerSecret";
+"DATE_FILTER" = "date_filter";
+"DATE_FORMAT" = "yyyy-MM-dd";
+"DISTANCE_FILTER" = "distance_filter";
+"DISTANCE_AMOUNTS" = "distance_amounts";
+"DEFAULT" = "default";
+"DEFAULT_BUDGET" = "-1";
+"DEFAULT_DISTANCE_FILTER" = "1";
+"DEFAULT_ZIPCODE" = "0";
+"DEFAULT_NAME" = "User";
+"DEFAULT_NO_ACCOUNT_NAME" = "No Account";
+"DEFAULT_USER_PROFILE" = "user_profile.png";
+"DEFAULT_KEY_FIRST_NAME" = "firstname";
+"DEFAULT_KEY_LAST_NAME" = "lastName";
+"DEFAULT_KEY_EMAIL" = "email";
+"DEFAULT_KEY_IMAGE_URL" = "imgURL";
+"DEFAULT_KEY_PROFILE_IMAGE" = "profileImg";
+"DOLLAR_ROUDED_NEAREST_TENTH" = ".00";
+"EDIT_MY_BUDGET" = "My Budget";
+"EMPTY_SURROUNDING_ZIPCODES" = "-1";
+"FREE" = "Free";
+"FREE_FILTER" = "0.00";
+"HAS_LAUNCHED_ONCE" = "HasLaunchedOnce";
+"KEY_CURRENT_SEARCH_FILTERS" = "currentSearchFilters";
+"LOGOUT" = "Logout";
+"MINIMUM_AMOUNT_STRING_VALUE" = "0.00";
+"MENU_DRAWER_CONTROLLER" = "MMDrawer";
+"STATE" = "state";
+"STATE_NAME" = "Name";
+"SURROUNDING_ZIPCODES" = "surroundingZipcodes";
+"TIMER_LABEL_DEFAULT_TEXT" = "Label";
+"USA" = "en_US";
+"USE_CURRENT_LOCATION" = "Use Current Location";
+"ZIPCODE" = "zipcode";
+"PS_POST_NOTIFICATION_BUDGET_CHAGED" = "PSDealsBudgetHasChanged";
+"PS_POST_NOTIFICATION_LOCATION_CHAGED" = "PSDealsLocationHasChanged";
+"UNWIND_TO_HOME" = "unwindToHome";
+"USER_CHANGED_NOTIFICATION" = "USER_DID_CHANGE";
+
