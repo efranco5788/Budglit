@@ -416,7 +416,7 @@
 		89EEF97A1D503B8F00CCE163 /* BudgetPickerStateWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BudgetPickerStateWrapper.m; sourceTree = "<group>"; };
 		89EEF97C1D5057DF00CCE163 /* ClearState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ClearState.h; sourceTree = "<group>"; };
 		89EEF97D1D5057DF00CCE163 /* ClearState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ClearState.m; sourceTree = "<group>"; };
-		89FE46E61D7A23B000574412 /* MZTimerLabel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MZTimerLabel.h; path = PocketStretch/MZTimerLabel.h; sourceTree = SOURCE_ROOT; };
+		89FE46E61D7A23B000574412 /* MZTimerLabel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MZTimerLabel.h; path = Budglit/MZTimerLabel/MZTimerLabel.h; sourceTree = SOURCE_ROOT; };
 		89FE46E71D7A23E300574412 /* MZTimerLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MZTimerLabel.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
