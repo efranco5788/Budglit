@@ -14,8 +14,8 @@
 
 +(NSArray *)tweetsWithJSONArray:(NSArray *)array
 {
-    NSArray* tweetArray = [super tweetsWithJSONArray:array];
-    
+    //NSArray* tweetArray = [super tweetsWithJSONArray:array];
+    NSArray* tweetArray;
     return tweetArray;
 }
 

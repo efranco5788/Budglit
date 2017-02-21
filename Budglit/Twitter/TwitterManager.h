@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <TwitterKit/TwitterKit.h>
+//#import <TwitterKit/TwitterKit.h>
 
 @class Deal;
 @class TwitterFeed;
@@ -34,7 +34,7 @@
 
 -(NSUInteger)totalTweetsCurrentlyLoaded;
 
--(TWTRTweet*)tweetAtIndex:(NSUInteger)index;
+//-(TWTRTweet*)tweetAtIndex:(NSUInteger)index;
 
 -(BOOL) accessTokenExists;
 

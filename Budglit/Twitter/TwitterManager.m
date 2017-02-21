@@ -82,7 +82,7 @@ typedef NS_ENUM(NSInteger, NSTwitterFilterType) {
 {
     return self.filteredTmpTwitterFeed.totalCount;
 }
-
+/*
 -(TWTRTweet *)tweetAtIndex:(NSUInteger)index
 {        
     NSArray* currentTweets = [self.filteredTmpTwitterFeed getCurrentList];
@@ -96,7 +96,7 @@ typedef NS_ENUM(NSInteger, NSTwitterFilterType) {
         return nil;
     }
 }
-
+*/
 -(BOOL)accessTokenExists
 {
     return [self.engine accessTokenExists];
