@@ -6,8 +6,9 @@
 //  Copyright (c) 2015 Emmanuel Franco. All rights reserved.
 //
 
-#import "TwitterKit/TwitterKit.h"
+//#import "TwitterKit/TwitterKit.h"
 
-@interface TwitterUser : TWTRUser
+//@interface TwitterUser : TWTRUser
+@interface TwitterUser : NSObject
 
 @end

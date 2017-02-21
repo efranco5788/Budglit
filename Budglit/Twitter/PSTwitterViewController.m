@@ -12,7 +12,6 @@
 #import "TweetTableViewController.h"
 #import "TwitterRequestObject.h"
 #import "TweetDetailViewController.h"
-#import "UIDevice-Extension/UIDevice-Hardware.h"
 
 #define kDEFAULT_IMAGE_NAME @"empty_filter_app_icon_unselected.png"
 
@@ -208,6 +207,7 @@
 
 #pragma mark -
 #pragma mark - Twitter Table View Delegate
+/*
 -(void)tableview:(id)sender selectedTweetViewController:(TWTRTweetDetailViewController *)tweetVC
 {
     TweetDetailViewController* tv = (TweetDetailViewController*) tweetVC;
@@ -215,7 +215,7 @@
     [self.navigationController pushViewController:tv animated:YES
      ];
 }
-
+*/
 
 #pragma mark -
 #pragma mark - Twitter Manager Delegate

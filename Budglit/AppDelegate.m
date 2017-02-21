@@ -12,7 +12,7 @@
 #import <Crashlytics/Crashlytics.h>
 #import <Fabric/Fabric.h>
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
-#import "TwitterKit/TwitterKit.h"
+//#import "TwitterKit/TwitterKit.h"
 #import "PSAllDealsTableViewController.h"
 #import "MenuTableViewController.h"
 #import "UserAccount.h"
@@ -40,7 +40,7 @@
 
 -(BOOL)application:(UIApplication *)application willFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    [Fabric with:@[[Crashlytics class], [Twitter class]]];
+    //[Fabric with:@[[Crashlytics class], [Twitter class]]];
     
     // Verify the users locale
     NSLocale* usersLocale = [NSLocale autoupdatingCurrentLocale];

@@ -6,8 +6,9 @@
 //  Copyright © 2016 Emmanuel Franco. All rights reserved.
 //
 
-#import "TwitterKit/TwitterKit.h"
+//#import "TwitterKit/TwitterKit.h"
 
-@interface TweetDetailViewController : TWTRTweetDetailViewController
+//@interface TweetDetailViewController : TWTRTweetDetailViewController
+@interface TweetDetailViewController : UITableViewController
 
 @end

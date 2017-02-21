@@ -7,7 +7,7 @@
 //
 
 #import "Deal.h"
-#import "MZTimerLabel.h"
+#import "MZTimerLabel/MZTimerLabel.h"
 
 #define kDefaultDateFormat @"yyyy-MM-dd HH:mm:ss"
 

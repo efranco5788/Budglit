@@ -8,7 +8,7 @@
 
 #import "TwitterFeed.h"
 #import "Tweet.h"
-#import <TwitterKit/TWTRTweet.h>
+//#import <TwitterKit/TWTRTweet.h>
 
 #define TWITTER_SEARCH_RETURN_ENTITIES_KEY @"entities"
 #define TWITTER_SEARCH_RETURN_HASHTAGS_KEY @"hashtags"

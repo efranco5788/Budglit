@@ -57,7 +57,7 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
-    
+    /*
     Tweet* tweet = (Tweet*) [appDelegate.twitterManager tweetAtIndex:indexPath.row];
     
     TWTRTweetTableViewCell* cell = [[TWTRTweetTableViewCell alloc] init];
@@ -70,6 +70,8 @@
     
     [cell.tweetView setShowBorder:YES];
     
+    */
+    UITableViewCell* cell;
     return cell;
 }
 
@@ -77,14 +79,15 @@
     
     AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
     
-    TWTRTweet* tweet = [appDelegate.twitterManager tweetAtIndex:indexPath.row];
+    //TWTRTweet* tweet = [appDelegate.twitterManager tweetAtIndex:indexPath.row];
     
     // Grab the height for this cell
-    CGFloat height = [TWTRTweetTableViewCell heightForTweet:tweet style:TWTRTweetViewStyleCompact width:CGRectGetWidth(self.view.bounds) showingActions:YES];
+    //CGFloat height = [TWTRTweetTableViewCell heightForTweet:tweet style:TWTRTweetViewStyleCompact width:CGRectGetWidth(self.view.bounds) showingActions:YES];
     
+    CGFloat height = 2;
     return height;
 }
-
+/*
 -(void)tweetView:(TWTRTweetView *)tweetView didTapProfileImageForUser:(TWTRUser *)user
 {
     NSLog(@"Here");
@@ -97,7 +100,7 @@
     
     return NO;
 }
-
+*/
 /*
  // Override to support conditional editing of the table view.
  - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
