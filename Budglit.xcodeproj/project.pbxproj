@@ -893,7 +893,7 @@
 				89385AED1BB67B4B00441A63 /* Sources */,
 				89385AEE1BB67B4B00441A63 /* Frameworks */,
 				89385AEF1BB67B4B00441A63 /* Resources */,
-				897711B41BE30DF800028B74 /* ShellScript */,
+				897711B41BE30DF800028B74 /* Run Script */,
 			);
 			buildRules = (
 			);
@@ -1051,13 +1051,14 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		897711B41BE30DF800028B74 /* ShellScript */ = {
+		897711B41BE30DF800028B74 /* Run Script */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
+			name = "Run Script";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
