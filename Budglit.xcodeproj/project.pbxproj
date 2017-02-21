@@ -51,7 +51,6 @@
 		89231DC11DB5C70500D6B932 /* user_profile@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 89231DC01DB5C70500D6B932 /* user_profile@3x.png */; };
 		892401681CD9BF3A00793EE5 /* DrawerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 892401671CD9BF3A00793EE5 /* DrawerViewController.m */; };
 		8924016C1CEABFC300793EE5 /* MenuTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8924016A1CEABFC300793EE5 /* MenuTableViewController.m */; };
-		8924016D1CEABFC300793EE5 /* MenuTableViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8924016B1CEABFC300793EE5 /* MenuTableViewController.xib */; };
 		892401711CF56AD700793EE5 /* MenuTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8924016F1CF56AD600793EE5 /* MenuTableViewCell.m */; };
 		893633101E25F61D00C64E3D /* InstagramTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8936330E1E25F61500C64E3D /* InstagramTableViewController.m */; };
 		893633111E25F61D00C64E3D /* InstagramTableViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8936330F1E25F61500C64E3D /* InstagramTableViewController.xib */; };
@@ -100,7 +99,6 @@
 		893DF6701C0AE0A500D0A23D /* UIProgressView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = 893DF6661C0AE0A500D0A23D /* UIProgressView+AFNetworking.m */; };
 		893DF6711C0AE0A500D0A23D /* UIRefreshControl+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = 893DF6681C0AE0A500D0A23D /* UIRefreshControl+AFNetworking.m */; };
 		893DF6721C0AE0A500D0A23D /* UIWebView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = 893DF66A1C0AE0A500D0A23D /* UIWebView+AFNetworking.m */; };
-		8946D7261E5AB03D005BB1E3 /* TwitterKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8946D7251E5AB03D005BB1E3 /* TwitterKit.framework */; };
 		894AF16E1BDC6969006E3346 /* ImageData.m in Sources */ = {isa = PBXBuildFile; fileRef = 894AF16D1BDC6969006E3346 /* ImageData.m */; };
 		894F93961DED38A300FEF2DC /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 894F93951DED38A300FEF2DC /* Bolts.framework */; };
 		894F93991DED45DC00FEF2DC /* FacebookEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = 894F93981DED45DC00FEF2DC /* FacebookEngine.m */; };
@@ -139,6 +137,7 @@
 		89B92C5A1C34D8B200336589 /* SocialMediaTabBarViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 89B92C581C34D8B200336589 /* SocialMediaTabBarViewController.xib */; };
 		89DEE6501E4BEC0E00C2A1B2 /* DealDetailedAnimationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 89DEE64F1E4BEC0E00C2A1B2 /* DealDetailedAnimationController.m */; };
 		89DEE6531E4EA42B00C2A1B2 /* DismissDetailedAnimationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 89DEE6521E4EA42900C2A1B2 /* DismissDetailedAnimationController.m */; };
+		89E26DA11E5BEB3F002CCD0C /* MenuTableViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 89E26DA01E5BEB3F002CCD0C /* MenuTableViewController.xib */; };
 		89EB8DEE1BE469A50044833A /* OAuthObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 89EB8DEA1BE469A50044833A /* OAuthObject.m */; };
 		89EB8DEF1BE469A50044833A /* NSString+Encode.m in Sources */ = {isa = PBXBuildFile; fileRef = 89EB8DEB1BE469A50044833A /* NSString+Encode.m */; };
 		89EB8DF21BE469EB0044833A /* TwitterRequestObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 89EB8DF01BE469EB0044833A /* TwitterRequestObject.m */; };
@@ -242,15 +241,14 @@
 		89231DAF1D8B7F3000D6B932 /* MMDrawerVisualState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MMDrawerVisualState.m; sourceTree = "<group>"; };
 		89231DB01D8B7F3000D6B932 /* UIViewController+MMDrawerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+MMDrawerController.h"; sourceTree = "<group>"; };
 		89231DB11D8B7F3000D6B932 /* UIViewController+MMDrawerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+MMDrawerController.m"; sourceTree = "<group>"; };
-		89231DB61D8B911F00D6B932 /* UserAccount.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserAccount.h; sourceTree = SOURCE_ROOT; };
-		89231DB71D8B912000D6B932 /* UserAccount.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserAccount.m; sourceTree = SOURCE_ROOT; };
+		89231DB61D8B911F00D6B932 /* UserAccount.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UserAccount.h; path = Budglit/UserAccount.h; sourceTree = SOURCE_ROOT; };
+		89231DB71D8B912000D6B932 /* UserAccount.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UserAccount.m; path = Budglit/UserAccount.m; sourceTree = SOURCE_ROOT; };
 		89231DBE1DB5C6FC00D6B932 /* user_profile@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "user_profile@2x.png"; sourceTree = "<group>"; };
 		89231DC01DB5C70500D6B932 /* user_profile@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "user_profile@3x.png"; sourceTree = "<group>"; };
 		892401661CD9BF3A00793EE5 /* DrawerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DrawerViewController.h; sourceTree = "<group>"; };
 		892401671CD9BF3A00793EE5 /* DrawerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DrawerViewController.m; sourceTree = "<group>"; };
-		892401691CEABFC300793EE5 /* MenuTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MenuTableViewController.h; sourceTree = SOURCE_ROOT; };
-		8924016A1CEABFC300793EE5 /* MenuTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MenuTableViewController.m; sourceTree = SOURCE_ROOT; };
-		8924016B1CEABFC300793EE5 /* MenuTableViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MenuTableViewController.xib; sourceTree = SOURCE_ROOT; };
+		892401691CEABFC300793EE5 /* MenuTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MenuTableViewController.h; path = Budglit/MenuTableViewController.h; sourceTree = SOURCE_ROOT; };
+		8924016A1CEABFC300793EE5 /* MenuTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MenuTableViewController.m; path = Budglit/MenuTableViewController.m; sourceTree = SOURCE_ROOT; };
 		8924016E1CF56AD600793EE5 /* MenuTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MenuTableViewCell.h; sourceTree = "<group>"; };
 		8924016F1CF56AD600793EE5 /* MenuTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MenuTableViewCell.m; sourceTree = "<group>"; };
 		892401731CFE37B800793EE5 /* MenuOptions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MenuOptions.h; sourceTree = "<group>"; };
@@ -296,14 +294,14 @@
 		89385B481BB7217C00441A63 /* PSDealDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PSDealDetailViewController.m; sourceTree = "<group>"; };
 		89385B4A1BB7221F00441A63 /* PSEditZipcodeOfflineTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PSEditZipcodeOfflineTableViewController.h; sourceTree = "<group>"; };
 		89385B4B1BB7221F00441A63 /* PSEditZipcodeOfflineTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PSEditZipcodeOfflineTableViewController.m; sourceTree = "<group>"; };
-		89385B4D1BB722AD00441A63 /* DatabaseManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DatabaseManager.h; path = ../DatabaseManager.h; sourceTree = "<group>"; };
-		89385B4E1BB722AD00441A63 /* DatabaseManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DatabaseManager.m; path = ../DatabaseManager.m; sourceTree = "<group>"; };
-		89385B501BB722CE00441A63 /* AccountManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AccountManager.h; path = ../AccountManager.h; sourceTree = "<group>"; };
-		89385B511BB722CE00441A63 /* AccountManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AccountManager.m; path = ../AccountManager.m; sourceTree = "<group>"; };
-		89385B531BB722F600441A63 /* BudgetManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BudgetManager.h; path = ../BudgetManager.h; sourceTree = "<group>"; };
-		89385B541BB722F700441A63 /* BudgetManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BudgetManager.m; path = ../BudgetManager.m; sourceTree = "<group>"; };
-		89385B561BB724C000441A63 /* LocationServiceManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LocationServiceManager.h; path = ../LocationServiceManager.h; sourceTree = "<group>"; };
-		89385B571BB724C000441A63 /* LocationServiceManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LocationServiceManager.m; path = ../LocationServiceManager.m; sourceTree = "<group>"; };
+		89385B4D1BB722AD00441A63 /* DatabaseManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DatabaseManager.h; sourceTree = "<group>"; };
+		89385B4E1BB722AD00441A63 /* DatabaseManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DatabaseManager.m; sourceTree = "<group>"; };
+		89385B501BB722CE00441A63 /* AccountManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AccountManager.h; path = Budglit/AppManagers/AccountManager.h; sourceTree = SOURCE_ROOT; };
+		89385B511BB722CE00441A63 /* AccountManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AccountManager.m; sourceTree = "<group>"; };
+		89385B531BB722F600441A63 /* BudgetManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BudgetManager.h; sourceTree = "<group>"; };
+		89385B541BB722F700441A63 /* BudgetManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BudgetManager.m; sourceTree = "<group>"; };
+		89385B561BB724C000441A63 /* LocationServiceManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocationServiceManager.h; sourceTree = "<group>"; };
+		89385B571BB724C000441A63 /* LocationServiceManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocationServiceManager.m; sourceTree = "<group>"; };
 		89385B591BB7272C00441A63 /* Engine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Engine.h; path = ../Engine.h; sourceTree = "<group>"; };
 		89385B5A1BB7272C00441A63 /* Engine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Engine.m; path = ../Engine.m; sourceTree = "<group>"; };
 		89385B5C1BB7282B00441A63 /* GNEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GNEngine.h; path = ../GNEngine.h; sourceTree = "<group>"; };
@@ -332,7 +330,6 @@
 		893DF6681C0AE0A500D0A23D /* UIRefreshControl+AFNetworking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIRefreshControl+AFNetworking.m"; path = "UIKit+AFNetworking/UIRefreshControl+AFNetworking.m"; sourceTree = "<group>"; };
 		893DF6691C0AE0A500D0A23D /* UIWebView+AFNetworking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIWebView+AFNetworking.h"; path = "UIKit+AFNetworking/UIWebView+AFNetworking.h"; sourceTree = "<group>"; };
 		893DF66A1C0AE0A500D0A23D /* UIWebView+AFNetworking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIWebView+AFNetworking.m"; path = "UIKit+AFNetworking/UIWebView+AFNetworking.m"; sourceTree = "<group>"; };
-		8946D7251E5AB03D005BB1E3 /* TwitterKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = TwitterKit.framework; sourceTree = "<group>"; };
 		894AF16C1BDC6969006E3346 /* ImageData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageData.h; sourceTree = "<group>"; };
 		894AF16D1BDC6969006E3346 /* ImageData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageData.m; sourceTree = "<group>"; };
 		894F93951DED38A300FEF2DC /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Bolts.framework; sourceTree = "<group>"; };
@@ -349,7 +346,7 @@
 		894F93A91DEFEF2300FEF2DC /* PSInstagramViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = PSInstagramViewController.xib; path = Facebook/Instagram/PSInstagramViewController.xib; sourceTree = "<group>"; };
 		895C22B81CB4BC43008BAECE /* TweetDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TweetDetailViewController.h; sourceTree = "<group>"; };
 		895C22B91CB4BC43008BAECE /* TweetDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TweetDetailViewController.m; sourceTree = "<group>"; };
-		895C22BA1CB4BC43008BAECE /* TweetDetailViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = TweetDetailViewController.xib; path = Twitter/TweetDetailViewController.xib; sourceTree = "<group>"; };
+		895C22BA1CB4BC43008BAECE /* TweetDetailViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TweetDetailViewController.xib; sourceTree = "<group>"; };
 		896A89731BCE093700A21F30 /* PostalCode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PostalCode.h; sourceTree = "<group>"; };
 		896A89741BCE093700A21F30 /* PostalCode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PostalCode.m; sourceTree = "<group>"; };
 		897711A31BDD99D000028B74 /* ImageDataDoc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageDataDoc.h; sourceTree = "<group>"; };
@@ -394,6 +391,7 @@
 		89DEE64F1E4BEC0E00C2A1B2 /* DealDetailedAnimationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DealDetailedAnimationController.m; path = ../DealDetailedAnimationController.m; sourceTree = "<group>"; };
 		89DEE6511E4EA42900C2A1B2 /* DismissDetailedAnimationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DismissDetailedAnimationController.h; path = ../DismissDetailedAnimationController.h; sourceTree = "<group>"; };
 		89DEE6521E4EA42900C2A1B2 /* DismissDetailedAnimationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DismissDetailedAnimationController.m; path = ../DismissDetailedAnimationController.m; sourceTree = "<group>"; };
+		89E26DA01E5BEB3F002CCD0C /* MenuTableViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MenuTableViewController.xib; sourceTree = "<group>"; };
 		89EB8DEA1BE469A50044833A /* OAuthObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OAuthObject.m; sourceTree = "<group>"; };
 		89EB8DEB1BE469A50044833A /* NSString+Encode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Encode.m"; sourceTree = "<group>"; };
 		89EB8DEC1BE469A50044833A /* OAuthObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OAuthObject.h; sourceTree = "<group>"; };
@@ -430,7 +428,6 @@
 				89385B3B1BB67C1F00441A63 /* Foundation.framework in Frameworks */,
 				89B3DBD61DEAB35900DCEDB6 /* FBSDKLoginKit.framework in Frameworks */,
 				89B3DBD81DEAB54A00DCEDB6 /* FBSDKCoreKit.framework in Frameworks */,
-				89385B3D1BB67C2900441A63 /* Twitter.framework in Frameworks */,
 				89385B391BB67C0500441A63 /* CoreGraphics.framework in Frameworks */,
 				89385B371BB67BFE00441A63 /* libsqlite3.tbd in Frameworks */,
 				89385B351BB67BE100441A63 /* CoreLocation.framework in Frameworks */,
@@ -440,9 +437,9 @@
 				89385B2F1BB67BC500441A63 /* Security.framework in Frameworks */,
 				89385B2D1BB67BBA00441A63 /* ImageIO.framework in Frameworks */,
 				894F93961DED38A300FEF2DC /* Bolts.framework in Frameworks */,
-				8946D7261E5AB03D005BB1E3 /* TwitterKit.framework in Frameworks */,
 				89385B2B1BB67BB000441A63 /* MapKit.framework in Frameworks */,
 				897711B91BE30EC600028B74 /* Fabric.framework in Frameworks */,
+				89385B3D1BB67C2900441A63 /* Twitter.framework in Frameworks */,
 				897711BC1BE30EC600028B74 /* TwitterCore.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -546,7 +543,6 @@
 				897711B71BE30EC600028B74 /* TwitterKitResources.bundle */,
 				897711B81BE30EC600028B74 /* TwitterCore.framework */,
 				897711B51BE30EC600028B74 /* Fabric.framework */,
-				8946D7251E5AB03D005BB1E3 /* TwitterKit.framework */,
 				89385B341BB67BE100441A63 /* CoreLocation.framework */,
 				89385B321BB67BD900441A63 /* QuartzCore.framework */,
 				89385B301BB67BD100441A63 /* SystemConfiguration.framework */,
@@ -675,7 +671,7 @@
 				89179D131BB76F0C00F60BA7 /* LoadingLocalDealsViewController.xib */,
 				89179D181BB76F4300F60BA7 /* LoginPageViewController.xib */,
 				89179D1D1BB7AB2D00F60BA7 /* MapViewController.xib */,
-				8924016B1CEABFC300793EE5 /* MenuTableViewController.xib */,
+				89E26DA01E5BEB3F002CCD0C /* MenuTableViewController.xib */,
 				89B3DBD21DE9F95F00DCEDB6 /* PSFacebookViewController.xib */,
 				894F93A91DEFEF2300FEF2DC /* PSInstagramViewController.xib */,
 				897711AB1BE2DF5F00028B74 /* PSTwitterViewController.xib */,
@@ -998,6 +994,7 @@
 				8938ADDA1E58DD9100CAF965 /* icon_lock.png in Resources */,
 				89231DBF1DB5C6FC00D6B932 /* user_profile@2x.png in Resources */,
 				8938ADD51E58D9EC00CAF965 /* icon_username@2x.png in Resources */,
+				89E26DA11E5BEB3F002CCD0C /* MenuTableViewController.xib in Resources */,
 				89067BE41C795BD80058B4DF /* empty_filter_app_icon_unselected@3x.png in Resources */,
 				89B3DBD41DE9F95F00DCEDB6 /* PSFacebookViewController.xib in Resources */,
 				89067BE71C7A013A0058B4DF /* empty_filter_app_icon_selected@2x.png in Resources */,
@@ -1024,7 +1021,6 @@
 				89EEF96B1D2A600100CCE163 /* phone_icon@2x.png in Resources */,
 				89179D101BB76E6D00F60BA7 /* BudgetPickerViewController.xib in Resources */,
 				89067BE31C795BD80058B4DF /* empty_filter_app_icon_unselected@2x.png in Resources */,
-				8924016D1CEABFC300793EE5 /* MenuTableViewController.xib in Resources */,
 				89179D051BB76BFB00F60BA7 /* Cell_ImagePlaceholder.jpg in Resources */,
 				893633111E25F61D00C64E3D /* InstagramTableViewController.xib in Resources */,
 				89385AFF1BB67B4C00441A63 /* Main.storyboard in Resources */,
@@ -1301,7 +1297,6 @@
 				ENABLE_BITCODE = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/PocketStretch",
 					"$(PROJECT_DIR)",
 					"$(PROJECT_DIR)/FBSDKCoreKit.framework/Headers",
 					"$(PROJECT_DIR)/Budglit",
@@ -1325,7 +1320,6 @@
 				ENABLE_BITCODE = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/PocketStretch",
 					"$(PROJECT_DIR)",
 					"$(PROJECT_DIR)/FBSDKCoreKit.framework/Headers",
 					"$(PROJECT_DIR)/Budglit",
