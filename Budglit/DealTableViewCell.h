@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "MZTimerLabel.h"
+#import "MZTimerLabel/MZTimerLabel.m"
 
 @interface DealTableViewCell : UITableViewCell
 
