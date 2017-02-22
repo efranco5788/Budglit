@@ -9,7 +9,7 @@
 #import "TwitterEngine.h"
 #import "NSString+Encode.h"
 #import "Tweet.h"
-//#import "TwitterKit/TwitterKit.h"
+#import "TwitterKit/TwitterKit.h"
 
 #define CURRENT_OAUTH_VERSION @"1.0"
 #define OAUTH_REQUEST_TOKEN_URL_PATH @"/oauth/request_token"
@@ -205,10 +205,8 @@
         
         Tweet* currentTwt = [tweets objectAtIndex:i];
         
-        //NSString* twtTxt = currentTwt.text.copy;
-        
-        
-        NSString* twtTxt = @"Hello";
+        NSString* twtTxt = currentTwt.text.copy;
+
         twtTxt = twtTxt.lowercaseString;
         
         if ([twtTxt containsString:searchMention]) {
@@ -218,7 +216,7 @@
         
     }
     
-    /*
+    
     for (int i = 0; i < tweets.count; i++){
         
         Tweet* currentTwt = [tweets objectAtIndex:i];
@@ -233,7 +231,7 @@
         }
         
     }
-    */
+    
     return filteredFeed;
 }
 
@@ -263,10 +261,8 @@
         
         Tweet* currentTwt = [tweets objectAtIndex:count];
         
-        //NSString* twtTxt = currentTwt.text.copy;
-        
-        
-        NSString* twtTxt = @"Hello";
+        NSString* twtTxt = currentTwt.text.copy;
+
         twtTxt = twtTxt.lowercaseString;
         
         if ([twtTxt containsString:searchTag]) {
@@ -275,7 +271,7 @@
         }
     }
     
-    /*
+    
     for (int count = 0; count < tweets.count; count++) {
         
         Tweet* currentTwt = [tweets objectAtIndex:count];
@@ -298,7 +294,6 @@
         
         
     }
-    */
     
     return filteredFeed;
 }
@@ -338,10 +333,7 @@
             
             Tweet* currentTwt = [tweets objectAtIndex:count];
             
-            //NSString* twtTxt = currentTwt.text.copy;
-            
-            
-            NSString* twtTxt = @"Hello";
+            NSString* twtTxt = currentTwt.text.copy;
             
             twtTxt = twtTxt.lowercaseString;
             

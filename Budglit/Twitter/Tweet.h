@@ -6,13 +6,12 @@
 //  Copyright (c) 2015 Emmanuel Franco. All rights reserved.
 //
 
-//#import "TwitterKit/TwitterKit.h"
+#import "TwitterKit/TwitterKit.h"
 
 @class Deal;
 @class TWTRTweet;
 
-//@interface Tweet : TWTRTweet
-@interface Tweet : NSObject
+@interface Tweet : TWTRTweet
 
 @property (nonatomic, strong) Deal* deal;
 

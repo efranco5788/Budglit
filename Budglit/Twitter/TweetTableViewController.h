@@ -7,18 +7,17 @@
 //
 
 #import <UIKit/UIKit.h>
-//#import "TwitterKit/TwitterKit.h"
+#import "TwitterKit/TwitterKit.h"
 
 @class TwitterFeed;
 @class Tweet;
 
 @protocol TwitterTableViewDelegate <NSObject>
 @optional
-//-(void)tableview:(id)sender selectedTweetViewController:(TWTRTweetDetailViewController*)tweetVC;
+-(void)tableview:(id)sender selectedTweetViewController:(TWTRTweetDetailViewController*)tweetVC;
 @end
 
-//@interface TweetTableViewController : UITableViewController <TWTRTweetViewDelegate>
-@interface TweetTableViewController : UITableViewController
+@interface TweetTableViewController : UITableViewController <TWTRTweetViewDelegate>
 
 @property (nonatomic, strong) id <TwitterTableViewDelegate> tweetTableViewDelegate ;
 

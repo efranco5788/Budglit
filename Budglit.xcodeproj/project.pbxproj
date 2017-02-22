@@ -125,7 +125,6 @@
 		897EDAC41C82F5210042CEAB /* iOS_Launch_Image.png in Resources */ = {isa = PBXBuildFile; fileRef = 897EDAC31C82F5210042CEAB /* iOS_Launch_Image.png */; };
 		897EDAC61C82F6FE0042CEAB /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 897EDAC51C82F6FE0042CEAB /* Media.xcassets */; };
 		897EDAC81C8C136F0042CEAB /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 897EDAC71C8C136F0042CEAB /* Crashlytics.framework */; };
-		89947FA31C149805009D0B75 /* PSAllDealsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 89947FA21C149805009D0B75 /* PSAllDealsTableViewController.m */; };
 		89947FAB1C14A6DB009D0B75 /* DealTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 89947FAA1C14A6DB009D0B75 /* DealTableViewCell.m */; };
 		89947FAE1C2119C0009D0B75 /* CityDataObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 89947FAD1C2119BF009D0B75 /* CityDataObject.m */; };
 		89B3DBCE1DE9762500DCEDB6 /* SocialMediaViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 89B3DBCD1DE9762500DCEDB6 /* SocialMediaViewController.m */; };
@@ -137,7 +136,8 @@
 		89B92C5A1C34D8B200336589 /* SocialMediaTabBarViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 89B92C581C34D8B200336589 /* SocialMediaTabBarViewController.xib */; };
 		89DEE6501E4BEC0E00C2A1B2 /* DealDetailedAnimationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 89DEE64F1E4BEC0E00C2A1B2 /* DealDetailedAnimationController.m */; };
 		89DEE6531E4EA42B00C2A1B2 /* DismissDetailedAnimationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 89DEE6521E4EA42900C2A1B2 /* DismissDetailedAnimationController.m */; };
-		89E26DA11E5BEB3F002CCD0C /* MenuTableViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 89E26DA01E5BEB3F002CCD0C /* MenuTableViewController.xib */; };
+		89E26DA81E5C093A002CCD0C /* PSAllDealsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 89947FA21C149805009D0B75 /* PSAllDealsTableViewController.m */; };
+		89E26DAA1E5C0B3F002CCD0C /* TwitterKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89E26DA91E5C0B3F002CCD0C /* TwitterKit.framework */; };
 		89EB8DEE1BE469A50044833A /* OAuthObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 89EB8DEA1BE469A50044833A /* OAuthObject.m */; };
 		89EB8DEF1BE469A50044833A /* NSString+Encode.m in Sources */ = {isa = PBXBuildFile; fileRef = 89EB8DEB1BE469A50044833A /* NSString+Encode.m */; };
 		89EB8DF21BE469EB0044833A /* TwitterRequestObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 89EB8DF01BE469EB0044833A /* TwitterRequestObject.m */; };
@@ -391,7 +391,7 @@
 		89DEE64F1E4BEC0E00C2A1B2 /* DealDetailedAnimationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DealDetailedAnimationController.m; path = ../DealDetailedAnimationController.m; sourceTree = "<group>"; };
 		89DEE6511E4EA42900C2A1B2 /* DismissDetailedAnimationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DismissDetailedAnimationController.h; path = ../DismissDetailedAnimationController.h; sourceTree = "<group>"; };
 		89DEE6521E4EA42900C2A1B2 /* DismissDetailedAnimationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DismissDetailedAnimationController.m; path = ../DismissDetailedAnimationController.m; sourceTree = "<group>"; };
-		89E26DA01E5BEB3F002CCD0C /* MenuTableViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MenuTableViewController.xib; sourceTree = "<group>"; };
+		89E26DA91E5C0B3F002CCD0C /* TwitterKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = TwitterKit.framework; path = Budglit/TwitterKit.framework; sourceTree = "<group>"; };
 		89EB8DEA1BE469A50044833A /* OAuthObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OAuthObject.m; sourceTree = "<group>"; };
 		89EB8DEB1BE469A50044833A /* NSString+Encode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Encode.m"; sourceTree = "<group>"; };
 		89EB8DEC1BE469A50044833A /* OAuthObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OAuthObject.h; sourceTree = "<group>"; };
@@ -438,6 +438,7 @@
 				89385B2D1BB67BBA00441A63 /* ImageIO.framework in Frameworks */,
 				894F93961DED38A300FEF2DC /* Bolts.framework in Frameworks */,
 				89385B2B1BB67BB000441A63 /* MapKit.framework in Frameworks */,
+				89E26DAA1E5C0B3F002CCD0C /* TwitterKit.framework in Frameworks */,
 				897711B91BE30EC600028B74 /* Fabric.framework in Frameworks */,
 				89385B3D1BB67C2900441A63 /* Twitter.framework in Frameworks */,
 				897711BC1BE30EC600028B74 /* TwitterCore.framework in Frameworks */,
@@ -540,6 +541,7 @@
 				89385B3A1BB67C1F00441A63 /* Foundation.framework */,
 				89385B381BB67C0500441A63 /* CoreGraphics.framework */,
 				89385B361BB67BFE00441A63 /* libsqlite3.tbd */,
+				89E26DA91E5C0B3F002CCD0C /* TwitterKit.framework */,
 				897711B71BE30EC600028B74 /* TwitterKitResources.bundle */,
 				897711B81BE30EC600028B74 /* TwitterCore.framework */,
 				897711B51BE30EC600028B74 /* Fabric.framework */,
@@ -671,7 +673,6 @@
 				89179D131BB76F0C00F60BA7 /* LoadingLocalDealsViewController.xib */,
 				89179D181BB76F4300F60BA7 /* LoginPageViewController.xib */,
 				89179D1D1BB7AB2D00F60BA7 /* MapViewController.xib */,
-				89E26DA01E5BEB3F002CCD0C /* MenuTableViewController.xib */,
 				89B3DBD21DE9F95F00DCEDB6 /* PSFacebookViewController.xib */,
 				894F93A91DEFEF2300FEF2DC /* PSInstagramViewController.xib */,
 				897711AB1BE2DF5F00028B74 /* PSTwitterViewController.xib */,
@@ -994,7 +995,6 @@
 				8938ADDA1E58DD9100CAF965 /* icon_lock.png in Resources */,
 				89231DBF1DB5C6FC00D6B932 /* user_profile@2x.png in Resources */,
 				8938ADD51E58D9EC00CAF965 /* icon_username@2x.png in Resources */,
-				89E26DA11E5BEB3F002CCD0C /* MenuTableViewController.xib in Resources */,
 				89067BE41C795BD80058B4DF /* empty_filter_app_icon_unselected@3x.png in Resources */,
 				89B3DBD41DE9F95F00DCEDB6 /* PSFacebookViewController.xib in Resources */,
 				89067BE71C7A013A0058B4DF /* empty_filter_app_icon_selected@2x.png in Resources */,
@@ -1068,6 +1068,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				89E26DA81E5C093A002CCD0C /* PSAllDealsTableViewController.m in Sources */,
 				89EEF97B1D503B8F00CCE163 /* BudgetPickerStateWrapper.m in Sources */,
 				89231DB51D8B7F3000D6B932 /* UIViewController+MMDrawerController.m in Sources */,
 				897711B01BE2E3C900028B74 /* PSTwitterWebView.m in Sources */,
@@ -1100,7 +1101,6 @@
 				89EB8DFA1BE46A220044833A /* TwitterUser.m in Sources */,
 				89179D331BB8F86500F60BA7 /* ZipcodeSearchDataSource.m in Sources */,
 				893DF66B1C0AE0A500D0A23D /* AFNetworkActivityIndicatorManager.m in Sources */,
-				89947FA31C149805009D0B75 /* PSAllDealsTableViewController.m in Sources */,
 				89385B581BB724C000441A63 /* LocationServiceManager.m in Sources */,
 				89385B5B1BB7272C00441A63 /* Engine.m in Sources */,
 				89385B5E1BB7282B00441A63 /* GNEngine.m in Sources */,
@@ -1305,7 +1305,7 @@
 					"$(PROJECT_DIR)/Budglit/TwitterKitResources.bundle",
 				);
 				GCC_PREFIX_HEADER = "Budglit/Budglit-Prefix.pch";
-				INFOPLIST_FILE = PocketStretch/Info.plist;
+				INFOPLIST_FILE = Budglit/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = pocketstretch.net.PocketStretch;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1329,7 +1329,7 @@
 					"$(PROJECT_DIR)/Budglit/TwitterKitResources.bundle",
 				);
 				GCC_PREFIX_HEADER = "Budglit/Budglit-Prefix.pch";
-				INFOPLIST_FILE = PocketStretch/Info.plist;
+				INFOPLIST_FILE = Budglit/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = pocketstretch.net.PocketStretch;
 				PRODUCT_NAME = "$(TARGET_NAME)";

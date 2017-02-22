@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <Fabric/Fabric.h>
 #import "SocialMediaFeed.h"
-//#import "TwitterKit/TwitterKit.h"
+#import <TwitterKit/TwitterKit.h>
 
 @class Tweet;
 
