@@ -1,9 +1,9 @@
 //
 //  MenuTableViewController.h
-//  PocketStretch
+//  Budglit
 //
-//  Created by Emmanuel Franco on 5/16/16.
-//  Copyright © 2016 Emmanuel Franco. All rights reserved.
+//  Created by Emmanuel Franco on 2/21/17.
+//  Copyright © 2017 Emmanuel Franco. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
@@ -17,13 +17,13 @@
 @end
 
 /*
-typedef NS_ENUM(NSInteger, menuSection){
-    menuCurrentLocation = 0,
-    menuChangeLocation = 1,
-    menuChangeBudget = 2,
-    menuLogout = 3
-};
-*/
+ typedef NS_ENUM(NSInteger, menuSection){
+ menuCurrentLocation = 0,
+ menuChangeLocation = 1,
+ menuChangeBudget = 2,
+ menuLogout = 3
+ };
+ */
 typedef NS_ENUM(NSInteger, MMDrawerSection){
     MMDrawerSectionViewSelection,
     MMDrawerSectionDrawerWidth,

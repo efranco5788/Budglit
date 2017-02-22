@@ -50,7 +50,6 @@
 		89231DBF1DB5C6FC00D6B932 /* user_profile@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 89231DBE1DB5C6FC00D6B932 /* user_profile@2x.png */; };
 		89231DC11DB5C70500D6B932 /* user_profile@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 89231DC01DB5C70500D6B932 /* user_profile@3x.png */; };
 		892401681CD9BF3A00793EE5 /* DrawerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 892401671CD9BF3A00793EE5 /* DrawerViewController.m */; };
-		8924016C1CEABFC300793EE5 /* MenuTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8924016A1CEABFC300793EE5 /* MenuTableViewController.m */; };
 		892401711CF56AD700793EE5 /* MenuTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8924016F1CF56AD600793EE5 /* MenuTableViewCell.m */; };
 		893633101E25F61D00C64E3D /* InstagramTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8936330E1E25F61500C64E3D /* InstagramTableViewController.m */; };
 		893633111E25F61D00C64E3D /* InstagramTableViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8936330F1E25F61500C64E3D /* InstagramTableViewController.xib */; };
@@ -122,9 +121,10 @@
 		897711BF1BE32A4500028B74 /* SocialMediaView.m in Sources */ = {isa = PBXBuildFile; fileRef = 897711BE1BE32A4500028B74 /* SocialMediaView.m */; };
 		897727351BE4642D00028B74 /* TweetTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 897727331BE4642D00028B74 /* TweetTableViewController.m */; };
 		897727361BE4642D00028B74 /* TweetTableViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 897727341BE4642D00028B74 /* TweetTableViewController.xib */; };
-		897EDAC41C82F5210042CEAB /* iOS_Launch_Image.png in Resources */ = {isa = PBXBuildFile; fileRef = 897EDAC31C82F5210042CEAB /* iOS_Launch_Image.png */; };
 		897EDAC61C82F6FE0042CEAB /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 897EDAC51C82F6FE0042CEAB /* Media.xcassets */; };
 		897EDAC81C8C136F0042CEAB /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 897EDAC71C8C136F0042CEAB /* Crashlytics.framework */; };
+		898894331E5D3C4600A82F7D /* MenuTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 898894311E5D3C4600A82F7D /* MenuTableViewController.m */; };
+		898894341E5D3C4600A82F7D /* MenuTableViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 898894321E5D3C4600A82F7D /* MenuTableViewController.xib */; };
 		89947FAB1C14A6DB009D0B75 /* DealTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 89947FAA1C14A6DB009D0B75 /* DealTableViewCell.m */; };
 		89947FAE1C2119C0009D0B75 /* CityDataObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 89947FAD1C2119BF009D0B75 /* CityDataObject.m */; };
 		89B3DBCE1DE9762500DCEDB6 /* SocialMediaViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 89B3DBCD1DE9762500DCEDB6 /* SocialMediaViewController.m */; };
@@ -247,8 +247,6 @@
 		89231DC01DB5C70500D6B932 /* user_profile@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "user_profile@3x.png"; sourceTree = "<group>"; };
 		892401661CD9BF3A00793EE5 /* DrawerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DrawerViewController.h; sourceTree = "<group>"; };
 		892401671CD9BF3A00793EE5 /* DrawerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DrawerViewController.m; sourceTree = "<group>"; };
-		892401691CEABFC300793EE5 /* MenuTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MenuTableViewController.h; path = Budglit/MenuTableViewController.h; sourceTree = SOURCE_ROOT; };
-		8924016A1CEABFC300793EE5 /* MenuTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MenuTableViewController.m; path = Budglit/MenuTableViewController.m; sourceTree = SOURCE_ROOT; };
 		8924016E1CF56AD600793EE5 /* MenuTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MenuTableViewCell.h; sourceTree = "<group>"; };
 		8924016F1CF56AD600793EE5 /* MenuTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MenuTableViewCell.m; sourceTree = "<group>"; };
 		892401731CFE37B800793EE5 /* MenuOptions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MenuOptions.h; sourceTree = "<group>"; };
@@ -368,9 +366,11 @@
 		897727321BE4642D00028B74 /* TweetTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TweetTableViewController.h; sourceTree = "<group>"; };
 		897727331BE4642D00028B74 /* TweetTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TweetTableViewController.m; sourceTree = "<group>"; };
 		897727341BE4642D00028B74 /* TweetTableViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TweetTableViewController.xib; sourceTree = "<group>"; };
-		897EDAC31C82F5210042CEAB /* iOS_Launch_Image.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iOS_Launch_Image.png; sourceTree = "<group>"; };
 		897EDAC51C82F6FE0042CEAB /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
 		897EDAC71C8C136F0042CEAB /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
+		898894301E5D3C4600A82F7D /* MenuTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MenuTableViewController.h; sourceTree = "<group>"; };
+		898894311E5D3C4600A82F7D /* MenuTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MenuTableViewController.m; sourceTree = "<group>"; };
+		898894321E5D3C4600A82F7D /* MenuTableViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MenuTableViewController.xib; sourceTree = "<group>"; };
 		89947FA11C149805009D0B75 /* PSAllDealsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PSAllDealsTableViewController.h; sourceTree = "<group>"; };
 		89947FA21C149805009D0B75 /* PSAllDealsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PSAllDealsTableViewController.m; sourceTree = "<group>"; };
 		89947FA91C14A6DB009D0B75 /* DealTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DealTableViewCell.h; sourceTree = "<group>"; };
@@ -578,6 +578,8 @@
 				89947FA21C149805009D0B75 /* PSAllDealsTableViewController.m */,
 				89947FA91C14A6DB009D0B75 /* DealTableViewCell.h */,
 				89947FAA1C14A6DB009D0B75 /* DealTableViewCell.m */,
+				898894301E5D3C4600A82F7D /* MenuTableViewController.h */,
+				898894311E5D3C4600A82F7D /* MenuTableViewController.m */,
 				8924016E1CF56AD600793EE5 /* MenuTableViewCell.h */,
 				8924016F1CF56AD600793EE5 /* MenuTableViewCell.m */,
 				892401661CD9BF3A00793EE5 /* DrawerViewController.h */,
@@ -594,8 +596,6 @@
 				89385B481BB7217C00441A63 /* PSDealDetailViewController.m */,
 				89385B4A1BB7221F00441A63 /* PSEditZipcodeOfflineTableViewController.h */,
 				89385B4B1BB7221F00441A63 /* PSEditZipcodeOfflineTableViewController.m */,
-				892401691CEABFC300793EE5 /* MenuTableViewController.h */,
-				8924016A1CEABFC300793EE5 /* MenuTableViewController.m */,
 				89179D1B1BB7AB2D00F60BA7 /* MapViewController.h */,
 				89179D1C1BB7AB2D00F60BA7 /* MapViewController.m */,
 				89231DB61D8B911F00D6B932 /* UserAccount.h */,
@@ -668,11 +668,11 @@
 				8938ADD11E58D9EC00CAF965 /* icon_username.png */,
 				8938ADD21E58D9EC00CAF965 /* icon_username@2x.png */,
 				8938ADD31E58D9EC00CAF965 /* icon_username@3x.png */,
-				897EDAC31C82F5210042CEAB /* iOS_Launch_Image.png */,
 				89179D0E1BB76E6D00F60BA7 /* BudgetPickerViewController.xib */,
 				89179D131BB76F0C00F60BA7 /* LoadingLocalDealsViewController.xib */,
 				89179D181BB76F4300F60BA7 /* LoginPageViewController.xib */,
 				89179D1D1BB7AB2D00F60BA7 /* MapViewController.xib */,
+				898894321E5D3C4600A82F7D /* MenuTableViewController.xib */,
 				89B3DBD21DE9F95F00DCEDB6 /* PSFacebookViewController.xib */,
 				894F93A91DEFEF2300FEF2DC /* PSInstagramViewController.xib */,
 				897711AB1BE2DF5F00028B74 /* PSTwitterViewController.xib */,
@@ -1017,6 +1017,7 @@
 				89B92C5A1C34D8B200336589 /* SocialMediaTabBarViewController.xib in Resources */,
 				89EEF96F1D2C49EF00CCE163 /* address_icon@2x.png in Resources */,
 				897711AD1BE2DF5F00028B74 /* PSTwitterViewController.xib in Resources */,
+				898894341E5D3C4600A82F7D /* MenuTableViewController.xib in Resources */,
 				89231DC11DB5C70500D6B932 /* user_profile@3x.png in Resources */,
 				89EEF96B1D2A600100CCE163 /* phone_icon@2x.png in Resources */,
 				89179D101BB76E6D00F60BA7 /* BudgetPickerViewController.xib in Resources */,
@@ -1024,7 +1025,6 @@
 				89179D051BB76BFB00F60BA7 /* Cell_ImagePlaceholder.jpg in Resources */,
 				893633111E25F61D00C64E3D /* InstagramTableViewController.xib in Resources */,
 				89385AFF1BB67B4C00441A63 /* Main.storyboard in Resources */,
-				897EDAC41C82F5210042CEAB /* iOS_Launch_Image.png in Resources */,
 				8938ADD61E58D9EC00CAF965 /* icon_username@3x.png in Resources */,
 				89179D151BB76F0C00F60BA7 /* LoadingLocalDealsViewController.xib in Resources */,
 			);
@@ -1091,7 +1091,6 @@
 				89179D281BB7B7BA00F60BA7 /* PSTransitionToBudgetViewController.m in Sources */,
 				89179D251BB7B46D00F60BA7 /* ImageStateObject.m in Sources */,
 				89385B021BB67B4C00441A63 /* PocketStretch.xcdatamodeld in Sources */,
-				8924016C1CEABFC300793EE5 /* MenuTableViewController.m in Sources */,
 				89FE46E81D7A23E300574412 /* MZTimerLabel.m in Sources */,
 				897727351BE4642D00028B74 /* TweetTableViewController.m in Sources */,
 				89385B551BB722F700441A63 /* BudgetManager.m in Sources */,
@@ -1110,6 +1109,7 @@
 				89231DB31D8B7F3000D6B932 /* MMDrawerController.m in Sources */,
 				897711A51BDD99D000028B74 /* ImageDataDoc.m in Sources */,
 				89EB8DF91BE46A220044833A /* TwitterFeed.m in Sources */,
+				898894331E5D3C4600A82F7D /* MenuTableViewController.m in Sources */,
 				89EEF97E1D5057DF00CCE163 /* ClearState.m in Sources */,
 				89385AF91BB67B4C00441A63 /* AppDelegate.m in Sources */,
 				897711A81BE014AD00028B74 /* UIImage+Resizing.m in Sources */,

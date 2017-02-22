@@ -15,7 +15,7 @@
 #import <QuartzCore/QuartzCore.h>
 
 #define UNWIND_TO_ALL_CURRENT_DEALS @"unwindToDeals"
-#define TWITTER_VIEW_DRAG_PERCENTAGE 0.70
+//#define TWITTER_VIEW_DRAG_PERCENTAGE 0.85
 #define ALLDEALS_VC_SB_ID @"PSAllDealsTableViewController"
 #define LAST_INDEX 2
 
@@ -175,14 +175,8 @@
         {
             CGPoint velocity = [self.twitterViewGesture velocityInView:self.view];
             
-            if (velocity.y > 0)   // panning down
-            {
-                [self dragSocialMediaViewDown];
-            }
-            else                // panning up
-            {
-                [self dragSocialMediaViewUp];
-            }
+            if (velocity.y > 0)  [self dragSocialMediaViewDown]; // panning down
+            else [self dragSocialMediaViewUp];                   // panning up
         }
         
         
@@ -343,7 +337,7 @@
             
             NSLayoutConstraint* newBottomConstraint = [NSLayoutConstraint constraintWithItem:self.socialMediaContainer attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.bottomLayoutGuide attribute:NSLayoutAttributeBottom multiplier:1.0 constant:-0];
             
-            NSLayoutConstraint* newTopConstraint = [NSLayoutConstraint constraintWithItem:self.socialMediaContainer attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.topLayoutGuide attribute:NSLayoutAttributeTop multiplier:1.0 constant:200];
+            NSLayoutConstraint* newTopConstraint = [NSLayoutConstraint constraintWithItem:self.socialMediaContainer attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.topLayoutGuide attribute:NSLayoutAttributeTop multiplier:1.0 constant:100];
             
             self.adjustedTopConstraint = newTopConstraint;
             
@@ -359,7 +353,7 @@
             
             [self.view addConstraint:self.adjustedBottomConstraint];
             
-            [UIView animateWithDuration:0.7 delay:0 usingSpringWithDamping:1 initialSpringVelocity:3 options:UIViewAnimationOptionTransitionNone animations:^{
+            [UIView animateWithDuration:0.6 delay:0 usingSpringWithDamping:1 initialSpringVelocity:3 options:UIViewAnimationOptionTransitionNone animations:^{
                 
                 [self.view layoutIfNeeded];
                 
