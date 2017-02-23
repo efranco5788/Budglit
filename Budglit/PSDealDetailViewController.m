@@ -15,7 +15,6 @@
 #import <QuartzCore/QuartzCore.h>
 
 #define UNWIND_TO_ALL_CURRENT_DEALS @"unwindToDeals"
-//#define TWITTER_VIEW_DRAG_PERCENTAGE 0.85
 #define ALLDEALS_VC_SB_ID @"PSAllDealsTableViewController"
 #define LAST_INDEX 2
 
@@ -84,7 +83,6 @@
     CGRect barFrame = self.socialMediaNavBar.frame;
     CGRect containerBounds = [self.socialMediaContainer bounds];
     CGRect newInsetFrame = CGRectInset(containerBounds, barFrame.origin.x, barFrame.origin.y);
-    //CGRect newFrame = CGRectOffset(newInsetFrame, barFrame.origin.x, (barFrame.origin.y + 4));
     CGRect newFrame = CGRectOffset(newInsetFrame, barFrame.origin.x, barFrame.size.height);
 
     [self.SMPageViewController.view setFrame:newFrame];

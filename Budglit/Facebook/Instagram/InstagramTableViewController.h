@@ -13,4 +13,6 @@
 
 @interface InstagramTableViewController : UITableViewController
 
+@property (nonatomic, strong) NSArray* instaFeed;
+
 @end

@@ -38,6 +38,10 @@ static NSString* const reuseIdentifier = @"InstagramTableViewCell";
     CGRect frameSize = CGRectMake(self.tableView.frame.origin.x, self.tableView.frame.origin.y, screenSize.size.width, self.tableView.frame.size.height);
     
     [self.tableView setFrame:frameSize];
+    
+    AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+    
+    self.instaFeed = [appDelegate.instagramManager getInstaObjs];
 }
 
 #pragma mark -
@@ -102,11 +106,16 @@ static NSString* const reuseIdentifier = @"InstagramTableViewCell";
         
         //[instaCell setIndex:indexPath];
         
-        [self startImageDownloadForInstaObj:instaObj forIndexPath:indexPath andTableCell:instaCell];
+        if ([instaCell.webView isHidden]) {
+            [self startImageDownloadForInstaObj:instaObj forIndexPath:indexPath andTableCell:instaCell];
+        }
+        
+        //[self startImageDownloadForInstaObj:instaObj forIndexPath:indexPath andTableCell:instaCell];
         
         //[instaCell beginLoadingReuqest:instaObj.link];
         
     }
+    
 }
 
 
