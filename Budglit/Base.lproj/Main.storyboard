@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11762" systemVersion="16A323" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" colorMatched="YES" initialViewController="0Jg-98-CE3">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11762" systemVersion="16D32" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" colorMatched="YES" initialViewController="0Jg-98-CE3">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -165,7 +165,7 @@
                         <viewControllerLayoutGuide type="top" id="yOG-4b-184"/>
                         <viewControllerLayoutGuide type="bottom" id="FQK-Ta-IN1"/>
                     </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" misplaced="YES" id="Y6j-zV-qkB">
+                    <view key="view" contentMode="scaleToFill" id="Y6j-zV-qkB">
                         <rect key="frame" x="0.0" y="64" width="375" height="603"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
@@ -206,7 +206,7 @@
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             </imageView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="J0a-iD-VAU">
-                                <rect key="frame" x="0.0" y="332" width="375" height="335"/>
+                                <rect key="frame" x="0.0" y="332" width="375" height="271"/>
                                 <subviews>
                                     <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="DzZ-61-UTU">
                                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
@@ -278,6 +278,35 @@
             </objects>
             <point key="canvasLocation" x="2423.5" y="80.5"/>
         </scene>
+        <!--Instagram Table View Controller-->
+        <scene sceneID="jDr-ak-urb">
+            <objects>
+                <tableViewController id="M9K-5e-SiF" customClass="InstagramTableViewController" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="639" sectionHeaderHeight="28" sectionFooterHeight="28" id="ICU-Ia-mVo">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="instagramTableViewController" rowHeight="639" id="7Kb-f6-7UV" customClass="InstagramTableViewCell">
+                                <rect key="frame" x="0.0" y="28" width="375" height="639"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="7Kb-f6-7UV" id="IG6-ox-QfG">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="638"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="M9K-5e-SiF" id="Bwh-yb-CYq"/>
+                            <outlet property="delegate" destination="M9K-5e-SiF" id="GcG-wY-UDk"/>
+                        </connections>
+                    </tableView>
+                    <nil key="simulatedStatusBarMetrics"/>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="aiq-d3-341" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3082.5" y="80.5"/>
+        </scene>
         <!--Drawer View Controller-->
         <scene sceneID="MUS-8d-czC">
             <objects>
@@ -307,7 +336,7 @@
                     <toolbarItems/>
                     <nil key="simulatedStatusBarMetrics"/>
                     <nil key="simulatedBottomBarMetrics"/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="P7x-ZW-fKM">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="P7x-ZW-fKM">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="barTintColor" red="0.12156862745098039" green="0.31372549019607843" blue="0.60784313725490191" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>

@@ -27,6 +27,8 @@
 
 -(void)beginLoadingReuqest:(InstagramObject*)obj;
 
+-(void)beginReuqest:(NSURL*)url;
+
 -(void)displayInstagramView;
 
 

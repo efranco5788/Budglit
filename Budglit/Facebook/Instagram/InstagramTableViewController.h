@@ -1,8 +1,8 @@
 //
 //  InstagramTableViewController.h
-//  PocketStretch
+//  Budglit
 //
-//  Created by Emmanuel Franco on 1/11/17.
+//  Created by Emmanuel Franco on 3/2/17.
 //  Copyright © 2017 Emmanuel Franco. All rights reserved.
 //
 
@@ -12,7 +12,5 @@
 @class InstagramTableViewCell;
 
 @interface InstagramTableViewController : UITableViewController
-
-@property (nonatomic, strong) NSArray* instaFeed;
 
 @end

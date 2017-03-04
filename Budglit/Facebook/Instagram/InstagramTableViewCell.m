@@ -38,6 +38,7 @@
     
     [self.activityIndicator stopAnimating];
     
+    
     if (!self.webView) {
         self.webView = [[UIWebView alloc] init];
         
@@ -45,10 +46,15 @@
         
         [self.webView setDelegate:self];
         
-        CGRect frameSize = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
+        CGRect parentViewSize = self.superview.frame;
+        
+        CGRect frameSize = CGRectMake(self.superview.frame.origin.x, self.superview.frame.origin.y, parentViewSize.size.width, parentViewSize.size.height);
+        
+        //CGRect frameSize = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
         
         [self.webView setFrame:frameSize];
     }
+     
     
 }
 
@@ -65,9 +71,20 @@
     }
 }
 
+-(void)beginReuqest:(NSURL*)url
+{
+    NSURLRequest* request = [NSURLRequest requestWithURL:url];
+    
+    if (request) {
+        [self.webView loadRequest:request];
+    }
+}
+
 -(void)displayInstagramView
 {
-    [self addSubview:self.webView];
+    if (self.webView != [self.subviews lastObject]) {
+        [self addSubview:self.webView];
+    }
 }
 
 #pragma mark -

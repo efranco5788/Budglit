@@ -302,25 +302,22 @@ static NSString* const emptyCellIdentifier = @"holderCell";
     
     NSUInteger nodeCount = deals.count;
     
-    if (nodeCount == 0 && indexPath.row == 0) {
+    if (nodeCount < 1 && indexPath.row < 1) {
         
         //dealCell = (DealTableViewCell*) [self.dealsTableView dequeueReusableCellWithIdentifier:emptyCellIdentifier forIndexPath:indexPath];
         
     }
     else{
         
-        if (nodeCount > 0) {
-            
-            Deal* deal = [deals objectAtIndex:indexPath.row];
-            
-            dealCell = (DealTableViewCell*) [self.dealsTableView dequeueReusableCellWithIdentifier:reuseIdentifier];
-            
-            [dealCell.imageLoadingActivityIndicator startAnimating];
-            
-            [[dealCell dealImage] setImage:self.placeholderImage];
-            
-            dealCell.dealDescription.text = deal.dealDescription;
-        }
+        Deal* deal = [deals objectAtIndex:indexPath.row];
+        
+        dealCell = (DealTableViewCell*) [self.dealsTableView dequeueReusableCellWithIdentifier:reuseIdentifier];
+        
+        [dealCell.imageLoadingActivityIndicator startAnimating];
+        
+        [[dealCell dealImage] setImage:self.placeholderImage];
+        
+        dealCell.dealDescription.text = deal.dealDescription;
         
     }
     

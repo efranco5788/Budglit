@@ -1,8 +1,8 @@
 //
 //  InstagramTableViewController.m
-//  PocketStretch
+//  Budglit
 //
-//  Created by Emmanuel Franco on 1/11/17.
+//  Created by Emmanuel Franco on 3/2/17.
 //  Copyright © 2017 Emmanuel Franco. All rights reserved.
 //
 
@@ -24,34 +24,39 @@ static NSString* const reuseIdentifier = @"InstagramTableViewCell";
 @implementation InstagramTableViewController
 
 - (void)viewDidLoad {
-    
     [super viewDidLoad];
     
     [self.tableView registerClass:[InstagramTableViewCell class] forCellReuseIdentifier:reuseIdentifier];
     
     self.restorationIdentifier = RESTORATION_STRING;
     
-    self.mediaDownloadInProgress = [[NSMutableDictionary alloc] init];
+    self.mediaDownloadInProgress = [NSMutableDictionary dictionary];
     
     CGRect screenSize = [[UIScreen mainScreen] bounds];
     
-    CGRect frameSize = CGRectMake(self.tableView.frame.origin.x, self.tableView.frame.origin.y, screenSize.size.width, self.tableView.frame.size.height);
+    //CGRect frameSize = CGRectMake(self.tableView.frame.origin.x, self.tableView.frame.origin.y, screenSize.size.width, self.tableView.frame.size.height);
+    
+    CGRect frameSize = CGRectMake(self.view.frame.origin.x, self.view.frame.origin.y, screenSize.size.width, self.tableView.frame.size.height);
     
     [self.tableView setFrame:frameSize];
     
-    AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+    //self.tableView.contentInset = UIEdgeInsetsMake(0, 0, 88, 0);
     
-    self.instaFeed = [appDelegate.instagramManager getInstaObjs];
+    self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 }
 
-#pragma mark -
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
 #pragma mark - Table view data source
+
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    
     AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
     
     return [appDelegate.instagramManager totalObjectCount];
@@ -60,19 +65,20 @@ static NSString* const reuseIdentifier = @"InstagramTableViewCell";
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
     AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
     
     NSInteger nodeCount = appDelegate.instagramManager.totalObjectCount;
     
-    InstagramTableViewCell* instaCell = nil;
+    InstagramTableViewCell* instaCell;
     
-    if (nodeCount == 0 && indexPath.row == 0) {
-        
+    if (nodeCount < 1 && indexPath.row < 1) {
+        return nil;
     }
     else
     {
-        instaCell = (InstagramTableViewCell*) [self.tableView dequeueReusableCellWithIdentifier:reuseIdentifier];
+        InstagramTableViewCell* instaCell = (InstagramTableViewCell*) [self.tableView dequeueReusableCellWithIdentifier:reuseIdentifier forIndexPath:indexPath];
+        
+        NSLog(@"%@", instaCell);
         
         [instaCell setDelegate:self];
         
@@ -83,12 +89,33 @@ static NSString* const reuseIdentifier = @"InstagramTableViewCell";
         
         [instaCell setFrame:newFrame];
         
-        [instaCell configure];
+        if(instaCell.webView == nil)
+        {
+            [instaCell configure];
+            
+        }
         
+        AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+        
+        NSArray* objs = [appDelegate.instagramManager getInstaObjs];
+        
+        InstagramObject* instaObj = [objs objectAtIndex:indexPath.row];
+        
+        [self startImageDownloadForInstaObj:instaObj forIndexPath:indexPath andTableCell:instaCell];
+        
+        return instaCell;
     }
-    
-    return instaCell;
 }
+
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+    
+    InstagramObject* instaObj = (InstagramObject*) [appDelegate.instagramManager instaAtIndex:indexPath.row];
+    
+    return [instaObj getHeight];
+}
+
 
 -(void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -100,32 +127,12 @@ static NSString* const reuseIdentifier = @"InstagramTableViewCell";
     
     if (nodeCount > 0) {
         
+        InstagramTableViewCell* instaCell = (InstagramTableViewCell*) cell;
+        
         InstagramObject* instaObj = [objs objectAtIndex:indexPath.row];
         
-        InstagramTableViewCell* instaCell = (InstagramTableViewCell*)cell;
-        
-        //[instaCell setIndex:indexPath];
-        
-        if ([instaCell.webView isHidden]) {
-            [self startImageDownloadForInstaObj:instaObj forIndexPath:indexPath andTableCell:instaCell];
-        }
-        
         //[self startImageDownloadForInstaObj:instaObj forIndexPath:indexPath andTableCell:instaCell];
-        
-        //[instaCell beginLoadingReuqest:instaObj.link];
-        
     }
-    
-}
-
-
--(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
-    
-    InstagramObject* instaObj = (InstagramObject*) [appDelegate.instagramManager instaAtIndex:indexPath.row];
-
-    return [instaObj getHeight];
 }
 
 #pragma mark -
@@ -140,6 +147,8 @@ static NSString* const reuseIdentifier = @"InstagramTableViewCell";
         
         fetchingMediaForIG.path = [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section];
         
+        NSURL* link = fetchingMediaForIG.link;
+        
         dispatch_queue_t backgroundQueue;
         
         backgroundQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0);
@@ -150,13 +159,15 @@ static NSString* const reuseIdentifier = @"InstagramTableViewCell";
             // Start the acitivty indicator on the main queue
             dispatch_async(dispatch_get_main_queue(), ^{[cell.activityIndicator startAnimating]; });
             
-            [cell beginLoadingReuqest:fetchingMediaForIG];
+            //[cell beginLoadingReuqest:fetchingMediaForIG];
+            [cell beginReuqest:link];
             
         });
         
         (self.mediaDownloadInProgress)[indexPath] = obj;
         
     }
+    
 }
 
 -(void)loadOnScreenDealImages
@@ -207,6 +218,10 @@ static NSString* const reuseIdentifier = @"InstagramTableViewCell";
 {
     dispatch_async(dispatch_get_main_queue(), ^{
         
+        AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+        
+        NSArray* instaObjs = [NSArray arrayWithArray:[appDelegate.instagramManager getInstaObjs]];
+        
         InstagramTableViewCell* instaCell = (InstagramTableViewCell*) [self.tableView cellForRowAtIndexPath:obj.path];
         
         [instaCell.activityIndicator stopAnimating];
@@ -222,8 +237,15 @@ static NSString* const reuseIdentifier = @"InstagramTableViewCell";
         
         [instaCell displayInstagramView];
         
+        NSLog(@"Height of webview %f", instaCell.webView.frame.size.height);
+        
+        NSLog(@"Here");
+        
     });
+    
+    
 }
+
 
 /*
 // Override to support conditional editing of the table view.
@@ -260,22 +282,6 @@ static NSString* const reuseIdentifier = @"InstagramTableViewCell";
 */
 
 /*
-#pragma mark - Table view delegate
-
-// In a xib-based application, navigation from a table can be handled in -tableView:didSelectRowAtIndexPath:
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Navigation logic may go here, for example:
-    // Create the next view controller.
-    <#DetailViewController#> *detailViewController = [[<#DetailViewController#> alloc] initWithNibName:<#@"Nib name"#> bundle:nil];
-    
-    // Pass the selected object to the new view controller.
-    
-    // Push the view controller.
-    [self.navigationController pushViewController:detailViewController animated:YES];
-}
-*/
-
-/*
 #pragma mark - Navigation
 
 // In a storyboard-based application, you will often want to do a little preparation before navigation
@@ -284,10 +290,5 @@ static NSString* const reuseIdentifier = @"InstagramTableViewCell";
     // Pass the selected object to the new view controller.
 }
 */
-
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
 
 @end

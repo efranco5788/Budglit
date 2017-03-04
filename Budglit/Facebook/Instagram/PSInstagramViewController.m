@@ -55,6 +55,11 @@
     });
 }
 
+-(void)viewDidLayoutSubviews
+{
+    [super viewDidLayoutSubviews];
+}
+
 #pragma mark -
 #pragma mark - Instagram Manager Delegate
 -(void)instagramHTMLResponseSuccess:(NSString *)HTMLResponse
@@ -142,6 +147,12 @@
         self.instagramTableView = [[InstagramTableViewController alloc] initWithNibName:@"InstagramTableViewController" bundle:nil];
         
         NSLog(@"Creating Table");
+        
+        CGRect screenSize = [[UIScreen mainScreen] bounds];
+        
+        CGRect frameSize = CGRectMake(self.view.bounds.origin.x, self.view.bounds.origin.y, screenSize.size.width, self.instagramTableView.view.frame.size.height);
+        
+        [self.instagramTableView.view setFrame:frameSize];
         
         [self.view addSubview:self.instagramTableView.view];
     }
