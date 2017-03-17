@@ -125,7 +125,8 @@
 		898894341E5D3C4600A82F7D /* MenuTableViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 898894321E5D3C4600A82F7D /* MenuTableViewController.xib */; };
 		89947FAB1C14A6DB009D0B75 /* DealTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 89947FAA1C14A6DB009D0B75 /* DealTableViewCell.m */; };
 		89947FAE1C2119C0009D0B75 /* CityDataObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 89947FAD1C2119BF009D0B75 /* CityDataObject.m */; };
-		8994BA951E68E833004600C0 /* InstagramTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8994BA941E68E833004600C0 /* InstagramTableViewController.m */; };
+		8994BA9B1E6B9C32004600C0 /* InstagramTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8994BA991E6B9C32004600C0 /* InstagramTableViewController.m */; };
+		8994BA9C1E6B9C32004600C0 /* InstagramTableViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8994BA9A1E6B9C32004600C0 /* InstagramTableViewController.xib */; };
 		89B3DBCE1DE9762500DCEDB6 /* SocialMediaViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 89B3DBCD1DE9762500DCEDB6 /* SocialMediaViewController.m */; };
 		89B3DBD31DE9F95F00DCEDB6 /* PSFacebookViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 89B3DBD11DE9F95F00DCEDB6 /* PSFacebookViewController.m */; };
 		89B3DBD41DE9F95F00DCEDB6 /* PSFacebookViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 89B3DBD21DE9F95F00DCEDB6 /* PSFacebookViewController.xib */; };
@@ -373,8 +374,9 @@
 		89947FAA1C14A6DB009D0B75 /* DealTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DealTableViewCell.m; sourceTree = "<group>"; };
 		89947FAC1C2119BF009D0B75 /* CityDataObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CityDataObject.h; sourceTree = "<group>"; };
 		89947FAD1C2119BF009D0B75 /* CityDataObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CityDataObject.m; sourceTree = "<group>"; };
-		8994BA931E68E833004600C0 /* InstagramTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InstagramTableViewController.h; sourceTree = "<group>"; };
-		8994BA941E68E833004600C0 /* InstagramTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InstagramTableViewController.m; sourceTree = "<group>"; };
+		8994BA981E6B9C32004600C0 /* InstagramTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = InstagramTableViewController.h; path = ../../InstagramTableViewController.h; sourceTree = "<group>"; };
+		8994BA991E6B9C32004600C0 /* InstagramTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = InstagramTableViewController.m; path = ../../InstagramTableViewController.m; sourceTree = "<group>"; };
+		8994BA9A1E6B9C32004600C0 /* InstagramTableViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InstagramTableViewController.xib; sourceTree = "<group>"; };
 		89B3DBCC1DE9762500DCEDB6 /* SocialMediaViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SocialMediaViewController.h; sourceTree = "<group>"; };
 		89B3DBCD1DE9762500DCEDB6 /* SocialMediaViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SocialMediaViewController.m; sourceTree = "<group>"; };
 		89B3DBD01DE9F95F00DCEDB6 /* PSFacebookViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PSFacebookViewController.h; sourceTree = "<group>"; };
@@ -667,6 +669,7 @@
 				8938ADD21E58D9EC00CAF965 /* icon_username@2x.png */,
 				8938ADD31E58D9EC00CAF965 /* icon_username@3x.png */,
 				89179D0E1BB76E6D00F60BA7 /* BudgetPickerViewController.xib */,
+				8994BA9A1E6B9C32004600C0 /* InstagramTableViewController.xib */,
 				893633141E25F88100C64E3D /* InstagramTableViewCell.xib */,
 				89179D131BB76F0C00F60BA7 /* LoadingLocalDealsViewController.xib */,
 				89179D181BB76F4300F60BA7 /* LoginPageViewController.xib */,
@@ -736,8 +739,8 @@
 				894F93A51DEFEEE300FEF2DC /* InstagramEngine.m */,
 				894F93A71DEFEF2300FEF2DC /* PSInstagramViewController.h */,
 				894F93A81DEFEF2300FEF2DC /* PSInstagramViewController.m */,
-				8994BA931E68E833004600C0 /* InstagramTableViewController.h */,
-				8994BA941E68E833004600C0 /* InstagramTableViewController.m */,
+				8994BA981E6B9C32004600C0 /* InstagramTableViewController.h */,
+				8994BA991E6B9C32004600C0 /* InstagramTableViewController.m */,
 				893633121E25F88100C64E3D /* InstagramTableViewCell.h */,
 				893633131E25F88100C64E3D /* InstagramTableViewCell.m */,
 				8936331A1E275A3C00C64E3D /* InstagramFeed.h */,
@@ -1016,6 +1019,7 @@
 				897711AD1BE2DF5F00028B74 /* PSTwitterViewController.xib in Resources */,
 				898894341E5D3C4600A82F7D /* MenuTableViewController.xib in Resources */,
 				89231DC11DB5C70500D6B932 /* user_profile@3x.png in Resources */,
+				8994BA9C1E6B9C32004600C0 /* InstagramTableViewController.xib in Resources */,
 				89EEF96B1D2A600100CCE163 /* phone_icon@2x.png in Resources */,
 				89179D101BB76E6D00F60BA7 /* BudgetPickerViewController.xib in Resources */,
 				89067BE31C795BD80058B4DF /* empty_filter_app_icon_unselected@2x.png in Resources */,
@@ -1133,7 +1137,6 @@
 				89231DB41D8B7F3000D6B932 /* MMDrawerVisualState.m in Sources */,
 				89179D141BB76F0C00F60BA7 /* LoadingLocalDealsViewController.m in Sources */,
 				89067BC71C76B6780058B4DF /* AFHTTPRequestOperation.m in Sources */,
-				8994BA951E68E833004600C0 /* InstagramTableViewController.m in Sources */,
 				894F939C1DED466D00FEF2DC /* FacebookManager.m in Sources */,
 				89067BCB1C76B6780058B4DF /* AFSecurityPolicy.m in Sources */,
 				89385B521BB722CE00441A63 /* AccountManager.m in Sources */,
@@ -1146,6 +1149,7 @@
 				893DF6701C0AE0A500D0A23D /* UIProgressView+AFNetworking.m in Sources */,
 				89067BCF1C76B6780058B4DF /* AFURLSessionManager.m in Sources */,
 				89179D221BB7AC7200F60BA7 /* Deal.m in Sources */,
+				8994BA9B1E6B9C32004600C0 /* InstagramTableViewController.m in Sources */,
 				89179D011BB7646500F60BA7 /* TwitterEngine.m in Sources */,
 				89179D1E1BB7AB2D00F60BA7 /* MapViewController.m in Sources */,
 				895C22BB1CB4BC43008BAECE /* TweetDetailViewController.m in Sources */,

@@ -60,6 +60,8 @@ typedef void (^generalBlockResponse)(BOOL success);
 
 -(void)startDownloadImageFromURL:(NSString *)url forDeal:(Deal*)deal forIndexPath:(NSIndexPath*)indexPath imageView:(UIImageView*)imgView;
 
+-(void)startDownloadImageFromURL:(NSString *)url forIndexPath:(NSIndexPath*)indexPath andImageView:(UIImageView*)imgView;
+
 -(void)cancelDownloads:(generalBlockResponse)completionHandler;
 
 -(NSInteger)totalCountDealsLoaded;

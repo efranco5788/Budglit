@@ -7,6 +7,8 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <AVFoundation/AVFoundation.h>
+#import <AVKit/AVKit.h>
 
 @interface InstagramObject : NSObject
 
@@ -35,6 +37,14 @@
 @property (nonatomic, strong) NSDictionary* tags;
 
 @property (nonatomic, strong) NSIndexPath* path;
+
+@property (nonatomic, strong) NSNumber* objHeight;
+
+@property (nonatomic, strong) UIImageView* imgView;
+
+@property (strong, nonatomic) AVPlayer* avPlayer;
+
+@property (strong, nonatomic) AVPlayerLayer* playerLayer;
 
 -initWithInstagrameID:(NSString*)idInt andAttribution:(NSString*)attri andCaption:(NSString*)cap andTimestamp:(NSInteger)timestamp andType:(NSString*)aType andInstagramLink:(NSString*)linkString andCommnents:(NSDictionary*)instaComments andImages:(NSDictionary*)imgs andVideos:(NSDictionary*)vids andLocation:(NSDictionary*)instaLocation andTags:(NSDictionary*)instaTags;
 

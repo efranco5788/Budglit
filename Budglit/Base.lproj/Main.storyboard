@@ -278,35 +278,6 @@
             </objects>
             <point key="canvasLocation" x="2423.5" y="80.5"/>
         </scene>
-        <!--Instagram Table View Controller-->
-        <scene sceneID="jDr-ak-urb">
-            <objects>
-                <tableViewController id="M9K-5e-SiF" customClass="InstagramTableViewController" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="639" sectionHeaderHeight="28" sectionFooterHeight="28" id="ICU-Ia-mVo">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="instagramTableViewController" rowHeight="639" id="7Kb-f6-7UV" customClass="InstagramTableViewCell">
-                                <rect key="frame" x="0.0" y="28" width="375" height="639"/>
-                                <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="7Kb-f6-7UV" id="IG6-ox-QfG">
-                                    <rect key="frame" x="0.0" y="0.0" width="375" height="638"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                </tableViewCellContentView>
-                            </tableViewCell>
-                        </prototypes>
-                        <connections>
-                            <outlet property="dataSource" destination="M9K-5e-SiF" id="Bwh-yb-CYq"/>
-                            <outlet property="delegate" destination="M9K-5e-SiF" id="GcG-wY-UDk"/>
-                        </connections>
-                    </tableView>
-                    <nil key="simulatedStatusBarMetrics"/>
-                </tableViewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="aiq-d3-341" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="3082.5" y="80.5"/>
-        </scene>
         <!--Drawer View Controller-->
         <scene sceneID="MUS-8d-czC">
             <objects>

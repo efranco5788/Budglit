@@ -14,8 +14,7 @@
 #define INSTAGRAM_THUMBNAIL @"thumbnail"
 #define INSTAGRAM_LOCATION_ID @"id"
 
-
-CGFloat height;
+//CGFloat height;
 
 @implementation InstagramObject
 
@@ -85,17 +84,24 @@ CGFloat height;
     
     self.tags = instaTags.copy;
     
+    self.objHeight = [[NSNumber alloc] init];
+    
     return self;
     
 }
 
 -(void)setHeight:(CGFloat)aHeight
 {
-    height = aHeight;
+    self.objHeight = [[NSNumber alloc] initWithFloat:aHeight];
+    
 }
 
 -(CGFloat)getHeight
 {
+    CGFloat height = [self.objHeight floatValue];
+    
+    NSLog(@"Height is %f", height);
+    
     return height;
 }
 

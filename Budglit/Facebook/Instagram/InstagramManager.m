@@ -31,6 +31,7 @@
 #define KEY_INSTAGRAM_LONGITUDE @"longitude"
 #define KEY_INSTAGRAM_NAME @"name"
 #define KEY_INSTAGRAM_TAGS @"tags"
+#define KEY_INSTAGRAM_TYPE @"type"
 #define KEY_INSTAGRAM_TYPE_VIDEO @"video"
 #define KEY_INSTAGRAM_TYPE_IMAGE @"image"
 #define KEY_INSTAGRAM_USER @"user"
@@ -128,15 +129,25 @@
                 
                 InstagramObject* insta = [[InstagramObject alloc] init];
                 
-                NSString* instagramLink = [obj valueForKey:KEY_INSTAGRAM_LINK];
+                //NSString* instagramLink = [obj valueForKey:KEY_INSTAGRAM_LINK];
                 
-                NSURL* instaURL = [[NSURL alloc] initWithString:instagramLink];
+                //NSURL* instaURL = [[NSURL alloc] initWithString:instagramLink];
                 
-                CGFloat preferredHeight;
+                CGFloat preferredHeight = 0;
+                NSString* type = [obj objectForKey:KEY_INSTAGRAM_TYPE];
+                NSDictionary* standardResolution;
+                NSString* urlString;
+                NSURL* instaURL;
                 
-                if ([obj valueForKey:KEY_INSTAGRAM_IMAGES]) {
+                if ([type isEqualToString:KEY_INSTAGRAM_TYPE_IMAGE]) {
+                    
                     NSDictionary* images = [obj valueForKey:KEY_INSTAGRAM_IMAGES];
-                    NSDictionary* standardResolution = [images valueForKey:KEY_INSTAGRAM_STANDARD_RESOLUTION];
+                    
+                    if (images) {
+                        standardResolution = [images valueForKey:KEY_INSTAGRAM_STANDARD_RESOLUTION];
+                        urlString = [[NSString alloc] initWithString:[standardResolution valueForKey:KEY_INSTAGRAM_URL]];
+                        instaURL = [[NSURL alloc] initWithString:urlString];
+                    }
                     
                     id height = [standardResolution valueForKey:KEY_INSTAGRAM_HEIGHT];
                     
@@ -144,13 +155,23 @@
                         preferredHeight = [height floatValue];
                     }
                     
+                    [insta setType:type];
                     [insta setImages:images];
                     [insta setHeight:preferredHeight];
-                }
+                    
+                }// End of Image if statement
                 
-                if ([obj valueForKey:KEY_INSTAGRAM_VIDEOS]) {
+                
+                if ([type isEqualToString:KEY_INSTAGRAM_TYPE_VIDEO]) {
+                    
                     NSDictionary* videos = [obj valueForKey:KEY_INSTAGRAM_VIDEOS];
-                    NSDictionary* standardResolution = [videos valueForKey:KEY_INSTAGRAM_STANDARD_RESOLUTION];
+                    
+                    if (videos) {
+                        standardResolution = [videos valueForKey:KEY_INSTAGRAM_STANDARD_RESOLUTION];
+                        urlString = [[NSString alloc] initWithString:[standardResolution valueForKey:KEY_INSTAGRAM_URL]];
+                        instaURL = [[NSURL alloc] initWithString:urlString];
+                        
+                    }
                     
                     id height = [standardResolution valueForKey:KEY_INSTAGRAM_HEIGHT];
                     
@@ -158,9 +179,11 @@
                         preferredHeight = [height floatValue];
                     }
                     
+                    [insta setType:type];
                     [insta setVideos:videos];
                     [insta setHeight:preferredHeight];
-                }
+                    
+                } // End of Video if statement
                 
                 [insta setLink:instaURL];
                 

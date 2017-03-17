@@ -7,19 +7,18 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <WebKit/WebKit.h>
+#import <AVFoundation/AVFoundation.h>
+#import <AVKit/AVKit.h>
 #import "InstagramObject.h"
 
 @protocol InstaTableViewCellDelegate <NSObject>
 @optional
--(void) webViewLoadedForObject:(InstagramObject*)obj;
+-(void) loadedForObject:(InstagramObject*)obj;
 @end
 
-@interface InstagramTableViewCell : UITableViewCell<UIWebViewDelegate>
+@interface InstagramTableViewCell : UITableViewCell
 
 @property (strong, nonatomic) id <InstaTableViewCellDelegate> delegate;
-
-@property (strong, nonatomic) IBOutlet UIWebView *webView;
 
 @property (strong, nonatomic) UIActivityIndicatorView* activityIndicator;
 
@@ -27,10 +26,7 @@
 
 -(void)beginLoadingReuqest:(InstagramObject*)obj;
 
--(void)beginReuqest:(NSURL*)url;
-
--(void)displayInstagramView;
-
+-(void)cellDidDisappear;
 
 
 @end

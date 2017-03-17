@@ -314,6 +314,15 @@ static DatabaseManager* sharedManager;
     }];
 }
 
+-(void)startDownloadImageFromURL:(NSString *)url forIndexPath:(NSIndexPath *)indexPath andImageView:(UIImageView *)imgView
+{
+    [self.engine downloadImageFromURL:url forImageView:imgView addCompletionHandler:^(UIImage *imageResponse, NSHTTPURLResponse *response, NSURLRequest *request) {
+        
+        [self.delegate imageFetchedForDeal:nil forIndexPath:indexPath andImage:imageResponse andImageView:imgView];
+        
+    }];
+}
+
 -(void)cancelDownloads:(generalBlockResponse)completionHandler
 {
     [self.engine cancelOperations:^(BOOL success) {
