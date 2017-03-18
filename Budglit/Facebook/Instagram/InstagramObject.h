@@ -10,41 +10,27 @@
 #import <AVFoundation/AVFoundation.h>
 #import <AVKit/AVKit.h>
 
+@class ImageStateObject;
+
 @interface InstagramObject : NSObject
 
 @property (nonatomic, strong) NSString* instagramID;
-
 @property (nonatomic, strong) NSString* attribution;
-
 @property (nonatomic, strong) NSString* caption;
-
 @property (nonatomic, strong) NSString* timeCreatedString;
-
 @property (nonatomic, strong) NSString* type;
-
 @property (nonatomic, strong) NSURL* link;
-
 @property (nonatomic, strong) NSString* likesString;
-
 @property (nonatomic, strong) NSDictionary* comments;
-
 @property (nonatomic, strong) NSDictionary* images;
-
 @property (nonatomic,strong) NSDictionary* videos;
-
 @property (nonatomic, strong) NSDictionary* location;
-
 @property (nonatomic, strong) NSDictionary* tags;
-
 @property (nonatomic, strong) NSIndexPath* path;
-
 @property (nonatomic, strong) NSNumber* objHeight;
-
 @property (nonatomic, strong) UIImageView* imgView;
-
-@property (strong, nonatomic) AVPlayer* avPlayer;
-
-@property (strong, nonatomic) AVPlayerLayer* playerLayer;
+@property (nonatomic, strong) AVPlayer* avPlayer;
+@property (nonatomic, strong) AVPlayerLayer* playerLayer;
 
 -initWithInstagrameID:(NSString*)idInt andAttribution:(NSString*)attri andCaption:(NSString*)cap andTimestamp:(NSInteger)timestamp andType:(NSString*)aType andInstagramLink:(NSString*)linkString andCommnents:(NSDictionary*)instaComments andImages:(NSDictionary*)imgs andVideos:(NSDictionary*)vids andLocation:(NSDictionary*)instaLocation andTags:(NSDictionary*)instaTags;
 
