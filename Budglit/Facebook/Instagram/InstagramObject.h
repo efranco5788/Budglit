@@ -38,4 +38,8 @@
 
 -(CGFloat)getHeight;
 
+-(CGRect)getMediaFrame;
+
+-(void)toggleMuteButton;
+
 @end

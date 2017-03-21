@@ -38,39 +38,6 @@
     
     [self.activityIndicator stopAnimating];
     
-    /*
-    if (!self.avPlayer) {
-        NSURL* url = [NSURL URLWithString:@"https://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4"];
-        self.avPlayer = [[AVPlayer alloc] initWithURL:url];
-        self.playerLayer = [AVPlayerLayer playerLayerWithPlayer:self.avPlayer];
-        [self.avPlayer setActionAtItemEnd:AVPlayerActionAtItemEndNone];
-        
-        CGRect parentViewSize = self.contentView.frame;
-        CGRect frameSize = CGRectMake(self.superview.frame.origin.x, self.superview.frame.origin.y, parentViewSize.size.width, parentViewSize.size.height);
-        [self.playerLayer setFrame:frameSize];
-        [self.playerLayer setBackgroundColor:[[UIColor greenColor] CGColor]];
-        [self.layer addSublayer:self.playerLayer];
-    }
-    */
-    
-    /*
-    if (!self.webView) {
-        self.webView = [[UIWebView alloc] init];
-        
-        [self.webView.scrollView setScrollEnabled:NO];
-        
-        self.webView.contentMode = UIViewContentModeScaleAspectFit;
-        
-        [self.webView setDelegate:self];
-        
-        CGRect parentViewSize = self.contentView.frame;
-        
-        CGRect frameSize = CGRectMake(self.superview.frame.origin.x, self.superview.frame.origin.y, parentViewSize.size.width, parentViewSize.size.height);
-        
-        [self.webView setFrame:frameSize];
-    }
-    */
-    
 }
 
 
@@ -80,26 +47,6 @@
     if (!self.object) {
         self.object = obj;
     }
-    /*
-    NSURLRequest* request = [NSURLRequest requestWithURL:obj.link];
-    
-    if (request) {
-        [self.webView loadRequest:request];
-    }
-     */
-    
-    /*
-    
-    CGRect parentViewSize = self.contentView.frame;
-    CGRect frameSize = CGRectMake(self.superview.frame.origin.x, self.superview.frame.origin.y, parentViewSize.size.width, parentViewSize.size.height);
-    [self.object.playerLayer setFrame:frameSize];
-    [self.object.playerLayer setBackgroundColor:[[UIColor greenColor] CGColor]];
-    [self.layer addSublayer:self.object.playerLayer];
-    
-    [self.object.avPlayer play];
-    [self.delegate loadedForObject:self.object];
-     
-    */
 }
 
 -(void)cellDidDisappear

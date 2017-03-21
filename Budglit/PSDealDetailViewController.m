@@ -293,9 +293,9 @@
     self.tapDealView = tempTapDealView;
     self.tapTwitterView = tempTapTwitterView;
     
-    [self.view addGestureRecognizer:self.tapDealView];
+    //[self.view addGestureRecognizer:self.tapDealView];
     
-    [self.view addGestureRecognizer:self.tapTwitterView];
+    //[self.view addGestureRecognizer:self.tapTwitterView];
     
     if (self.addressImage) {
         UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapDetect:)];

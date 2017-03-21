@@ -105,11 +105,6 @@ static NSString* const emptyCellIdentifier = @"holderCell";
     [self.refreshControl addTarget:self action:@selector(refreshDeals) forControlEvents:UIControlEventValueChanged];
 }
 
--(void)viewWillDisappear:(BOOL)animated
-{
-    //[self terminateDownloadingImages];
-}
-
 -(void)constructBackgroundDimmer
 {
     UIView* newView = [[UIView alloc] initWithFrame:CGRectZero];

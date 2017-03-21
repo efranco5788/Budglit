@@ -211,5 +211,68 @@
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Budglit/InstagramTableViewController.m"
+            timestampString = "511766947.846756"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "196"
+            endingLineNumber = "196"
+            landmarkName = "-startImageDownloadForInstaObj:forIndexPath:andTableCell:"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__88-[InstagramTableViewController startImageDownloadForInstaObj:forIndexPath:andTableCell:]_block_invoke_2"
+                  moduleName = "Budglit"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/emmanuelfranco/Desktop/Budglit/Budglit/InstagramTableViewController.m"
+                  timestampString = "511766948.919277"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "197"
+                  endingLineNumber = "197"
+                  offsetFromSymbolStart = "1252">
+               </Location>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__copy_helper_block_"
+                  moduleName = "Budglit"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/emmanuelfranco/Desktop/Budglit/Budglit/InstagramTableViewController.m"
+                  timestampString = "511766948.921363"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "197"
+                  endingLineNumber = "197"
+                  offsetFromSymbolStart = "96">
+               </Location>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__destroy_helper_block_"
+                  moduleName = "Budglit"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/emmanuelfranco/Desktop/Budglit/Budglit/InstagramTableViewController.m"
+                  timestampString = "511766948.923356"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "197"
+                  endingLineNumber = "197"
+                  offsetFromSymbolStart = "64">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
    </Breakpoints>
 </Bucket>

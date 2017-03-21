@@ -140,11 +140,6 @@ static NSString* const reuseIdentifier = @"InstagramTableViewCell";
 
 - (void)tableView:(UITableView *)tableView didEndDisplayingCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    /*
-    InstagramTableViewCell* instaCell = (InstagramTableViewCell*) [self.tableView dequeueReusableCellWithIdentifier:reuseIdentifier forIndexPath:indexPath];
-    
-    [instaCell cellDidDisappear];
-    */
     
     AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
     
@@ -152,8 +147,9 @@ static NSString* const reuseIdentifier = @"InstagramTableViewCell";
     
     InstagramObject* instaObj = [objs objectAtIndex:indexPath.row];
     
-    [instaObj.avPlayer pause];
-    
+    if (instaObj.avPlayer) {
+        [instaObj.avPlayer pause];
+    }
 }
 
 #pragma mark -
@@ -186,8 +182,17 @@ static NSString* const reuseIdentifier = @"InstagramTableViewCell";
                     CGRect frameSize = CGRectMake(cell.superview.frame.origin.x, cell.superview.frame.origin.y, parentViewSize.size.width, parentViewSize.size.height);
                     [fetchingMediaForIG.playerLayer setFrame:frameSize];
                     [fetchingMediaForIG.playerLayer setBackgroundColor:[[UIColor greenColor] CGColor]];
+                    UITapGestureRecognizer* tap = [UITapGestureRecognizer alloc];
+                    [tap addTarget:fetchingMediaForIG action:@selector(toggleMuteButton)];
+                    UIView* underview = [[UIView alloc] initWithFrame:fetchingMediaForIG.getMediaFrame];
+                    [underview setBackgroundColor:[UIColor whiteColor]];
+                    [underview addGestureRecognizer:tap];
                     [cell.layer addSublayer:fetchingMediaForIG.playerLayer];
+                    [cell.layer addSublayer:underview.layer];
+                    fetchingMediaForIG.avPlayer.muted = YES;
                     [fetchingMediaForIG.avPlayer play];
+                    
+                    NSLog(@"Frame is %@", underview);
                     
                 });
                 

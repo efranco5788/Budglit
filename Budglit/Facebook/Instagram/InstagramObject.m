@@ -105,4 +105,32 @@
     return height;
 }
 
+-(CGRect)getMediaFrame
+{
+    CGFloat width;
+    CGFloat height;
+    CGRect frame;
+    
+    if (self.images) {
+        width = [[self.images valueForKey:@"width"] floatValue];
+        height = [[self.images valueForKey:@"height"] floatValue];
+    }
+    else if (self.videos)
+    {
+        width = [[self.videos valueForKey:@"width"] floatValue];
+        height = [[self.videos valueForKey:@"height"] floatValue];
+    }
+    else return CGRectNull;
+    
+    frame = CGRectMake(0, 0, width, height);
+    
+    return frame;
+}
+
+-(void)toggleMuteButton
+{
+    if ([self.avPlayer isMuted]) self.avPlayer.muted = NO;
+    else self.avPlayer.muted = YES;
+}
+
 @end
