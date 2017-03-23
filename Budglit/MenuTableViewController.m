@@ -78,6 +78,10 @@ static NSString *CellIdentifier = @"Cell";
         return 3;
     }
     
+    if (section == 2) {
+        return 1;
+    }
+    
     return 1;
 }
 

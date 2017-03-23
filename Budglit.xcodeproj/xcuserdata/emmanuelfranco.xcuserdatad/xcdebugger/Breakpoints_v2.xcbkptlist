@@ -234,12 +234,12 @@
                   moduleName = "Budglit"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/emmanuelfranco/Desktop/Budglit/Budglit/InstagramTableViewController.m"
-                  timestampString = "511930897.023598"
+                  timestampString = "511941231.591709"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "197"
                   endingLineNumber = "197"
-                  offsetFromSymbolStart = "1252">
+                  offsetFromSymbolStart = "1688">
                </Location>
                <Location
                   shouldBeEnabled = "Yes"
@@ -249,12 +249,12 @@
                   moduleName = "Budglit"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/emmanuelfranco/Desktop/Budglit/Budglit/InstagramTableViewController.m"
-                  timestampString = "511930897.025731"
+                  timestampString = "511941231.59381"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "197"
                   endingLineNumber = "197"
-                  offsetFromSymbolStart = "96">
+                  offsetFromSymbolStart = "94">
                </Location>
                <Location
                   shouldBeEnabled = "Yes"
@@ -264,14 +264,30 @@
                   moduleName = "Budglit"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/emmanuelfranco/Desktop/Budglit/Budglit/InstagramTableViewController.m"
-                  timestampString = "511930897.027734"
+                  timestampString = "511941231.596106"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "197"
                   endingLineNumber = "197"
-                  offsetFromSymbolStart = "64">
+                  offsetFromSymbolStart = "57">
                </Location>
             </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Budglit/MenuTableViewController.m"
+            timestampString = "511941033.516699"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "61"
+            endingLineNumber = "61"
+            landmarkName = "-updateUser:"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

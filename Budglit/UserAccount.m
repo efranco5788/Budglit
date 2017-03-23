@@ -8,7 +8,6 @@
 
 #import "UserAccount.h"
 
-
 /*
 #define DEFAULT_NAME @"User"
 #define DEFAULT_USER_PROFILE @"user_profile.png"
@@ -33,7 +32,6 @@ static UserAccount* loggedAccount;
 {
     if (loggedAccount == nil) {
         loggedAccount = [[super alloc] init];
-        
         [loggedAccount.firstName isEqualToString:NSLocalizedString(@"DEFAULT_NAME", nil)];
         [loggedAccount.lastName isEqualToString:@""];
         loggedAccount.profileImage = [UIImage imageNamed:NSLocalizedString(@"DEFAULT_PROFILE_IMAGE", nil)];
@@ -51,11 +49,8 @@ static UserAccount* loggedAccount;
     }
     
     self.firstName = [aDecoder decodeObjectForKey:NSLocalizedString(@"DEFAULT_KEY_FIRST_NAME", nil)];
-    
     self.lastName = [aDecoder decodeObjectForKey:NSLocalizedString(@"DEFAULT_KEY_LAST_NAME", nil)];
-    
     self.email = [aDecoder decodeObjectForKey:NSLocalizedString(@"DEFAULT_KEY_EMAIL", nil)];
-    
     self.imageURL = [aDecoder decodeObjectForKey:NSLocalizedString(@"DEFAULT_KEY_IMAGE_URL", nil)];
     
     return self;
@@ -63,7 +58,6 @@ static UserAccount* loggedAccount;
 
 -(void)encodeWithCoder:(NSCoder *)aCoder
 {
-    
     [aCoder encodeObject:self.firstName forKey:NSLocalizedString(@"DEFAULT_KEY_FIRST_NAME", nil)];
     [aCoder encodeObject:self.lastName forKey:NSLocalizedString(@"DEFAULT_KEY_LAST_NAME", nil)];
     [aCoder encodeObject:self.email forKey:NSLocalizedString(@"DEFAULT_KEY_EMAIL", nil)];

@@ -135,7 +135,7 @@ static NSString* const emptyCellIdentifier = @"holderCell";
 
 #pragma mark -
 #pragma mark - Image Handling Methods
--(void) startImageDownloadForDeal:(Deal*)deal forIndexPath:(NSIndexPath*) indexPath andTableCell:(DealTableViewCell*)cell
+-(void)startImageDownloadForDeal:(Deal*)deal forIndexPath:(NSIndexPath*) indexPath andTableCell:(DealTableViewCell*)cell
 {
     __block Deal* fetchingImageForDeal = (self.imageDownloadInProgress)[indexPath];
     
@@ -405,23 +405,8 @@ static NSString* const emptyCellIdentifier = @"holderCell";
         
         ACDDVC.image = self.placeholderImage;
         
-        /*
-        if ([selectedDeal.imgStateObject imageExists]) {
-            
-        AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
-            
-            [appDelegate.databaseManager fetchImageForRequest:selectedDeal.imgStateObject.request addCompletion:^(UIImage *image) {
-                
-                ACDDVC.image = image;
-                
-            }];
-            
-        }
-        */
-        
     }
-    else if ([segue.identifier isEqualToString:SEGUE_ALL_CURRENT_DEAL_TO_EDIT_ZIPCODE_OFFLINE_CONTROLLER])
-    {
+    else if ([segue.identifier isEqualToString:SEGUE_ALL_CURRENT_DEAL_TO_EDIT_ZIPCODE_OFFLINE_CONTROLLER]) {
         AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
         
         NSString* zipcode = [appDelegate.locationManager getCurrentZipcode];
