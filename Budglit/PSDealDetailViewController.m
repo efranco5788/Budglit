@@ -7,6 +7,8 @@
 //
 
 #import "PSDealDetailViewController.h"
+#import "AppDelegate.h"
+#import "DatabaseEngine.h"
 #import "Deal.h"
 #import "PSFacebookViewController.h"
 #import "PSTwitterViewController.h"
@@ -18,7 +20,7 @@
 #define ALLDEALS_VC_SB_ID @"PSAllDealsTableViewController"
 #define LAST_INDEX 2
 
-@interface PSDealDetailViewController ()<UIGestureRecognizerDelegate, TwitterViewDelegate, UIPageViewControllerDelegate, UIPageViewControllerDataSource, PSAllDealsTableViewControllerDelegate>
+@interface PSDealDetailViewController ()<UIGestureRecognizerDelegate, TwitterViewDelegate, UIPageViewControllerDelegate, UIPageViewControllerDataSource, PSAllDealsTableViewControllerDelegate, DatabaseManagerDelegate>
 {
     CGRect originalTwitterView;
     UIView* backgroundDimmerMainView;
@@ -99,6 +101,19 @@
 {
     [super viewWillAppear:YES];
     
+    AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+    
+    if ([self.dealSelected.imgStateObject imageExists]) {
+        
+        [appDelegate.databaseManager fetchImageForRequest:self.dealSelected.imgStateObject.request addCompletion:^(UIImage *image) {
+            
+            self.image = image;
+            
+            [self.venueImage setImage:self.image];
+            
+        }];
+    }
+    
     UIBarButtonItem* backButton = [[UIBarButtonItem alloc] init];
     
     [backButton setTitle:@"Back"];
@@ -148,6 +163,10 @@
 -(void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:YES];
+    
+    AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+    
+    [appDelegate.databaseManager setDelegate:nil];
 
 }
 

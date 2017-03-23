@@ -181,6 +181,8 @@ static NSString* const emptyCellIdentifier = @"holderCell";
             
             if (![visibleDeal.imgStateObject imageExists]) {
                 
+                [visibleCell setUserInteractionEnabled:NO]; // Disable any interaction if image for the deal has not loaded yet
+                
                 [weakSelf startImageDownloadForDeal:visibleDeal forIndexPath:index andTableCell:visibleCell];
             }
         }
@@ -204,32 +206,6 @@ static NSString* const emptyCellIdentifier = @"holderCell";
 -(void)logoutSucessfully
 {
     [self performSegueWithIdentifier:UNWIND_TO_HOME sender:self];
-}
-
-
-#pragma mark -
-#pragma mark - Database Manager Delegate
--(void)imageFetchedForDeal:(Deal *)deal forIndexPath:(NSIndexPath *)indexPath andImage:(UIImage *)image andImageView:(UIImageView *)imageView
-{
-    // Load the images on the main queue
-    dispatch_async(dispatch_get_main_queue(), ^{
-        
-        DealTableViewCell* dealCell = (DealTableViewCell*) [self.dealsTableView cellForRowAtIndexPath:indexPath];
-        
-        [dealCell.imageLoadingActivityIndicator stopAnimating];
-        
-        [self.imageDownloadInProgress removeObjectForKey:indexPath];
-        
-        CATransition* transition = [CATransition animation];
-        transition.duration = 0.1f;
-        transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn];
-        transition.type = kCATransitionFade;
-        
-        [imageView.layer addAnimation:transition forKey:nil];
-        
-        [imageView setImage:image];
-    });
-    
 }
 
 #pragma mark -
@@ -334,7 +310,12 @@ static NSString* const emptyCellIdentifier = @"holderCell";
         
         DealTableViewCell* dealCell = (DealTableViewCell*) cell;
         
-        [self startImageDownloadForDeal:deal forIndexPath:indexPath andTableCell:dealCell];
+        if (![deal.imgStateObject imageExists]) {
+            
+            [cell setUserInteractionEnabled:NO]; // Disable any interaction if image for the deal has not loaded yet
+            
+            [self startImageDownloadForDeal:deal forIndexPath:indexPath andTableCell:dealCell];
+        }
         
         if ([dealCell.dealTimer.text isEqualToString:NSLocalizedString(@"TIMER_LABEL_DEFAULT_TEXT", nil)]) {
             
@@ -424,6 +405,7 @@ static NSString* const emptyCellIdentifier = @"holderCell";
         
         ACDDVC.image = self.placeholderImage;
         
+        /*
         if ([selectedDeal.imgStateObject imageExists]) {
             
         AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
@@ -435,8 +417,7 @@ static NSString* const emptyCellIdentifier = @"holderCell";
             }];
             
         }
-        else ACDDVC.image = self.placeholderImage;
-        
+        */
         
     }
     else if ([segue.identifier isEqualToString:SEGUE_ALL_CURRENT_DEAL_TO_EDIT_ZIPCODE_OFFLINE_CONTROLLER])
@@ -494,7 +475,7 @@ static NSString* const emptyCellIdentifier = @"holderCell";
 
 
 #pragma mark -
-#pragma mark - Database Delegate
+#pragma mark - Database Manager Delegate
 -(void)DealsDidLoad:(BOOL)result
 {
     if (self.refreshControl) {
@@ -519,6 +500,31 @@ static NSString* const emptyCellIdentifier = @"holderCell";
     if (self.refreshControl) {
         [self.refreshControl endRefreshing];
     }
+}
+
+-(void)imageFetchedForDeal:(Deal *)deal forIndexPath:(NSIndexPath *)indexPath andImage:(UIImage *)image andImageView:(UIImageView *)imageView
+{
+    // Load the images on the main queue
+    dispatch_async(dispatch_get_main_queue(), ^{
+        
+        DealTableViewCell* dealCell = (DealTableViewCell*) [self.dealsTableView cellForRowAtIndexPath:indexPath];
+        
+        [dealCell setUserInteractionEnabled:YES];
+        
+        [dealCell.imageLoadingActivityIndicator stopAnimating];
+        
+        [self.imageDownloadInProgress removeObjectForKey:indexPath];
+        
+        CATransition* transition = [CATransition animation];
+        transition.duration = 0.1f;
+        transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn];
+        transition.type = kCATransitionFade;
+        
+        [imageView.layer addAnimation:transition forKey:nil];
+        
+        [imageView setImage:image];
+    });
+    
 }
 
 #pragma mark -

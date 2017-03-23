@@ -10,6 +10,7 @@
 #import "SocialMedia/SocialMediaViewController.h"
 
 @class Deal;
+@class AppDelegate;
 @class PSTwitterViewController;
 @class PSFacebookViewController;
 @class PSInstagramViewController;
