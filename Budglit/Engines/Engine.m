@@ -11,7 +11,6 @@
 @interface Engine()
 
 @property (nonatomic, strong) NSArray* requestHistory;
-
 @property (nonatomic, strong) NSArray* failedRequestHistory;
 
 @end

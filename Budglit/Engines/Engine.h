@@ -12,11 +12,7 @@
 @interface Engine : NSObject
 
 @property (nonatomic, strong) AFHTTPSessionManager* sessionManager;
-
 @property (strong, nonatomic) OAuthObject* OAuth;
-
-//@property (nonatomic, strong) AFHTTPRequestOperationManager* requestManager;
-
 @property (readonly) NSString* baseURLString;
 
 -(id)init;

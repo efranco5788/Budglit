@@ -11,8 +11,6 @@
 #define LOGIN_PATH @"login_authentication.php"
 #define SIGNUP_PATH @"signup.php"
 #define RESET_PASSWORD @"reset_password.php"
-
-
 #define KEY_PASSWORD @"user_password"
 #define KEY_AUTHENTICATED @"authenticated"
 #define KEY_EMAIL_SENT @"email_sent"
@@ -41,7 +39,7 @@
 -(void) loginWithCredentials:(NSDictionary *)userCredentials
 {
     self.sessionManager.responseSerializer = [AFJSONResponseSerializer serializer];
-    
+
     self.sessionManager.requestSerializer = [AFHTTPRequestSerializer serializer];
     
     [self.sessionManager POST:LOGIN_PATH parameters:userCredentials progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
@@ -131,6 +129,9 @@
     //    [self enqueueOperation:resetPasswordOperation];
 }
 
-
+-(void)updatesReceived:(NSNotification*)notification
+{
+    
+}
 
 @end

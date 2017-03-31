@@ -48,6 +48,4 @@
 
 -(void) passwordResetEmail:(NSDictionary*) emailCredentials;
 
--(void) updates;
-
 @end

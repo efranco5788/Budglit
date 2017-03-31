@@ -284,10 +284,6 @@ static NSString* const emptyCellIdentifier = @"holderCell";
         
         dealCell = (DealTableViewCell*) [self.dealsTableView dequeueReusableCellWithIdentifier:reuseIdentifier];
         
-        [dealCell.imageLoadingActivityIndicator startAnimating];
-        
-        [[dealCell dealImage] setImage:self.placeholderImage];
-        
         dealCell.dealDescription.text = deal.dealDescription;
         
     }
@@ -313,6 +309,10 @@ static NSString* const emptyCellIdentifier = @"holderCell";
         if (![deal.imgStateObject imageExists]) {
             
             [cell setUserInteractionEnabled:NO]; // Disable any interaction if image for the deal has not loaded yet
+            
+            [dealCell.imageLoadingActivityIndicator startAnimating];
+            
+            [[dealCell dealImage] setImage:self.placeholderImage];
             
             [self startImageDownloadForDeal:deal forIndexPath:indexPath andTableCell:dealCell];
         }
