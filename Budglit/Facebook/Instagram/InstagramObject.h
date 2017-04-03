@@ -29,6 +29,7 @@
 @property (nonatomic, strong) NSIndexPath* path;
 @property (nonatomic, strong) NSNumber* objHeight;
 @property (nonatomic, strong) UIImageView* imgView;
+@property (nonatomic, strong) ImageStateObject* mediaStateHandler;
 @property (nonatomic, strong) AVPlayer* avPlayer;
 @property (nonatomic, strong) AVPlayerLayer* playerLayer;
 

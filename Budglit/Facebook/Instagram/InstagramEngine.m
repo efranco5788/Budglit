@@ -193,6 +193,7 @@
         }
         else if (code == 400)
         {
+            NSLog(@"Failed");
             completionBlock(nil);
         }
         else completionBlock(nil);

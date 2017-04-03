@@ -7,6 +7,7 @@
 //
 
 #import "InstagramObject.h"
+#import "ImageStateObject.h"
 
 #define INSTAGRAM_COUNT @"count"
 #define INSTAGRAM_LOW_RESOLUTION @"low_resolution"
@@ -26,29 +27,18 @@
     if (!self) return nil;
     
     self.instagramID = [[NSString alloc] init];
-    
     self.attribution = [[NSString alloc] init];
-    
     self.caption = [[NSString alloc] init];
-    
     self.timeCreatedString = [[NSString alloc] init];
-    
     self.type = [[NSString alloc] init];
-    
     self.link = [[NSURL alloc] init];
-    
     self.likesString = [[NSString alloc] init];
-    
     self.comments = [[NSDictionary alloc] init];
-    
     self.images = [[NSDictionary alloc] init];
-    
     self.videos = [[NSDictionary alloc] init];
-    
     self.location = [[NSDictionary alloc] init];
-    
     self.tags = [[NSDictionary alloc] init];
-    
+    self.mediaStateHandler = [[ImageStateObject alloc] init];
     return self;
 }
 
