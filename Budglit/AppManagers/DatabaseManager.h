@@ -13,6 +13,7 @@
 
 @class DatabaseEngine;
 @class Deal;
+@class InstagramObject;
 @class BudgetPickerViewController;
 @class LocationSeviceManager;
 
@@ -29,6 +30,7 @@ typedef void (^generalBlockResponse)(BOOL success);
 -(void)totalCountSucess;
 -(void)totalCountFailed;
 -(void)totalCountReattempt:(NSDictionary*) criteria;
+-(void)imageFetchedForObject:(id)obj forIndexPath:(NSIndexPath*)indexPath andImage:(UIImage*)image andImageView:(UIImageView*)imageView;
 -(void)imageFetchedForDeal:(Deal*)deal forIndexPath:(NSIndexPath*)indexPath andImage:(UIImage*)image andImageView:(UIImageView*)imageView;
 -(void)imagesFetched;
 @end
@@ -57,6 +59,8 @@ typedef void (^generalBlockResponse)(BOOL success);
 -(void) fetchTotalDealCountOnly: (NSDictionary*) searchCriteria andSender:(id) sender;
 
 -(void) fetchImageForRequest:(NSURLRequest*)request addCompletion:(fetchedImageResponse)completionHandler;
+
+-(void)startDownloadImageFromURL:(NSString *)url forObject:(id)object forIndexPath:(NSIndexPath*)indexPath imageView:(UIImageView*)imgView;
 
 -(void)startDownloadImageFromURL:(NSString *)url forDeal:(Deal*)deal forIndexPath:(NSIndexPath*)indexPath imageView:(UIImageView*)imgView;
 

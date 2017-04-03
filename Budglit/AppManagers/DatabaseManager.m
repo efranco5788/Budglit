@@ -12,6 +12,7 @@
 #import <dispatch/dispatch.h>
 #import "BudgetPickerViewController.h"
 #import "Deal.h"
+#import "InstagramObject.h"
 
 #define DEFAULT_ATTEMPT_RETRIES 1
 
@@ -296,16 +297,45 @@ static DatabaseManager* sharedManager;
     }];
 }
 
+-(void)startDownloadImageFromURL:(NSString *)url forObject:(id)object forIndexPath:(NSIndexPath *)indexPath imageView:(UIImageView *)imgView
+{
+    [self.engine downloadImageFromURL:url forImageView:imgView addCompletionHandler:^(UIImage *imageResponse, NSHTTPURLResponse *response, NSURLRequest *request) {
+        
+        BOOL imgExist = NO;
+        
+        if (imageResponse) {
+            imgExist = YES;
+        }
+        
+        if ([object isMemberOfClass:[InstagramObject class]]) {
+            
+            InstagramObject* obj = (InstagramObject*) object;
+            
+            [obj.mediaStateHandler recordImageHTTPResponse:response andRequest:request hasImage:imgExist];
+            
+            [self.delegate imageFetchedForObject:obj forIndexPath:indexPath andImage:imageResponse andImageView:imgView];
+            
+        }
+        else if ([object isMemberOfClass:[Deal class]]){
+            Deal* obj = (Deal*) object;
+            
+            [obj.imgStateObject recordImageHTTPResponse:response andRequest:request hasImage:imgExist];
+            
+            [self.delegate imageFetchedForObject:obj forIndexPath:indexPath andImage:imageResponse andImageView:imgView];
+        }
+        
+    }];
+}
+
 -(void)startDownloadImageFromURL:(NSString *)url forDeal:(Deal *)deal forIndexPath:(NSIndexPath *)indexPath imageView:(UIImageView *)imgView
 {    
     [self.engine downloadImageFromURL:url forImageView:imgView addCompletionHandler:^(UIImage* imageResponse, NSHTTPURLResponse* response, NSURLRequest* request) {
         
-        BOOL imageExist;
+        BOOL imageExist = NO;
         
         if (imageResponse) {
             imageExist = YES;
         }
-        else imageExist = NO;
         
         [deal.imgStateObject recordImageHTTPResponse:response andRequest:request hasImage:imageExist];
         

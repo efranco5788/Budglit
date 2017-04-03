@@ -35,6 +35,8 @@
 
 -initWithInstagrameID:(NSString*)idInt andAttribution:(NSString*)attri andCaption:(NSString*)cap andTimestamp:(NSInteger)timestamp andType:(NSString*)aType andInstagramLink:(NSString*)linkString andCommnents:(NSDictionary*)instaComments andImages:(NSDictionary*)imgs andVideos:(NSDictionary*)vids andLocation:(NSDictionary*)instaLocation andTags:(NSDictionary*)instaTags;
 
+-(void)recordMedia:(NSHTTPURLResponse*)response andRequest:(NSURLRequest*)request;
+
 -(void)setHeight:(CGFloat)aHeight;
 
 -(CGFloat)getHeight;

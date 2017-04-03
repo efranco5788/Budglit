@@ -80,6 +80,13 @@
     
 }
 
+-(void)recordMedia:(NSHTTPURLResponse *)response andRequest:(NSURLRequest *)request
+{
+    if (response && request) {
+        [self.mediaStateHandler recordImageHTTPResponse:response andRequest:request hasImage:YES];
+    }
+}
+
 -(void)setHeight:(CGFloat)aHeight
 {
     self.objHeight = [[NSNumber alloc] initWithFloat:aHeight];
@@ -90,8 +97,7 @@
 {
     CGFloat height = [self.objHeight floatValue];
     
-    NSLog(@"Height is %f", height);
-    
+    //NSLog(@"Height is %f", height);
     return height;
 }
 
