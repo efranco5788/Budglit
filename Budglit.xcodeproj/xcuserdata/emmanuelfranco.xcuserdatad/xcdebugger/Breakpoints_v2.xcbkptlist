@@ -214,16 +214,16 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Budglit/Facebook/Instagram/InstagramObject.m"
-            timestampString = "512777983.667066"
+            filePath = "Budglit/MenuTableViewController.m"
+            timestampString = "511941033.516699"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "28"
-            endingLineNumber = "28"
-            landmarkName = "-init"
+            startingLineNumber = "61"
+            endingLineNumber = "61"
+            landmarkName = "-updateUser:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

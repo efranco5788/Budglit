@@ -86,6 +86,11 @@ static NSString* const reuseIdentifier = @"InstagramTableViewCell";
     [super viewDidLayoutSubviews];
 }
 
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return 800;
+}
+
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
@@ -112,12 +117,6 @@ static NSString* const reuseIdentifier = @"InstagramTableViewCell";
         
         return cell;
     }
-}
-
-
--(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    return 800;
 }
 
 
