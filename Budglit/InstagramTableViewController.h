@@ -10,6 +10,7 @@
 
 @class InstagramObject;
 @class InstagramTableViewCell;
+@class ImageStateObject;
 
 @interface InstagramTableViewController : UITableViewController
 

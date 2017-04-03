@@ -10,6 +10,7 @@
 #import "AppDelegate.h"
 #import "InstagramObject.h"
 #import "InstagramTableViewCell.h"
+#import "ImageStateObject.h"
 
 #define RESTORATION_STRING @"instagramTableViewController"
 #define KEY_INSTAGRAM_TYPE @"type"
@@ -134,7 +135,10 @@ static NSString* const reuseIdentifier = @"InstagramTableViewCell";
         
         InstagramObject* instaObj = [objs objectAtIndex:indexPath.row];
         
-        [self startImageDownloadForInstaObj:instaObj forIndexPath:indexPath andTableCell:instaCell];
+        if (![instaObj.mediaStateHandler imageExists]) {
+            [self startImageDownloadForInstaObj:instaObj forIndexPath:indexPath andTableCell:instaCell];
+        }
+        
     }
 }
 
@@ -226,7 +230,7 @@ static NSString* const reuseIdentifier = @"InstagramTableViewCell";
     
 }
 
--(void)loadOnScreenDealImages
+-(void)loadOnScreenCells
 {
     AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
     
@@ -244,7 +248,10 @@ static NSString* const reuseIdentifier = @"InstagramTableViewCell";
             
             __block InstagramObject* visibleObj = [instaObjs objectAtIndex:index.row];
             
-            [weakSelf startImageDownloadForInstaObj:visibleObj forIndexPath:index andTableCell:visibleCell];
+            if (![visibleObj.mediaStateHandler imageExists]) {
+                [weakSelf startImageDownloadForInstaObj:visibleObj forIndexPath:index andTableCell:visibleCell];
+            }
+            
         }
     }
 }
@@ -255,13 +262,13 @@ static NSString* const reuseIdentifier = @"InstagramTableViewCell";
 {
     if(!decelerate)
     {
-        [self loadOnScreenDealImages];
+        [self loadOnScreenCells];
     }
 }
 
 -(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
 {
-    [self loadOnScreenDealImages];
+    [self loadOnScreenCells];
 }
 
 
