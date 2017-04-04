@@ -38,6 +38,7 @@
     self.videos = [[NSDictionary alloc] init];
     self.location = [[NSDictionary alloc] init];
     self.tags = [[NSDictionary alloc] init];
+    self.imgView = [[UIImageView alloc] init];
     self.mediaStateHandler = [[ImageStateObject alloc] init];
     return self;
 }

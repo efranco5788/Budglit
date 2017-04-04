@@ -143,7 +143,6 @@ static NSString* const reuseIdentifier = @"InstagramTableViewCell";
 
 - (void)tableView:(UITableView *)tableView didEndDisplayingCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    
     AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
     
     NSArray* objs = [appDelegate.instagramManager getInstaObjs];
@@ -204,7 +203,7 @@ static NSString* const reuseIdentifier = @"InstagramTableViewCell";
                 
                 AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
                 
-                fetchingMediaForIG.imgView = [[UIImageView alloc] init];
+                //fetchingMediaForIG.imgView = [[UIImageView alloc] init];
                 
                 //[appDelegate.databaseManager startDownloadImageFromURL:fetchingMediaForIG.link.absoluteString forIndexPath:indexPath andImageView:fetchingMediaForIG.imgView];
                 
@@ -219,11 +218,11 @@ static NSString* const reuseIdentifier = @"InstagramTableViewCell";
                     [fetchingMediaForIG.imgView setBackgroundColor:[UIColor redColor]];
                     
                 });
+                
+                (self.mediaDownloadInProgress)[indexPath] = obj;
             }
             
         });
-        
-        (self.mediaDownloadInProgress)[indexPath] = obj;
         
     }
     
