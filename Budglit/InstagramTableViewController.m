@@ -164,7 +164,7 @@ static NSString* const reuseIdentifier = @"InstagramTableViewCell";
         
         fetchingMediaForIG = obj;
         
-        fetchingMediaForIG.path = [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section];
+        //fetchingMediaForIG.path = [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section];
         
         dispatch_queue_t backgroundQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0);
         
@@ -274,7 +274,7 @@ static NSString* const reuseIdentifier = @"InstagramTableViewCell";
 #pragma mark - Table View Cell Delegate
 -(void)loadedForObject:(InstagramObject *)obj
 {
-    [self.mediaDownloadInProgress removeObjectForKey:obj.path];
+    //[self.mediaDownloadInProgress removeObjectForKey:obj.path];
     
 }
 
@@ -290,7 +290,7 @@ static NSString* const reuseIdentifier = @"InstagramTableViewCell";
     
     [obj.imgView setImage:image];
     
-    [self.mediaDownloadInProgress removeObjectForKey:obj.path];
+    [self.mediaDownloadInProgress removeObjectForKey:indexPath];
 }
 
 -(void)imageFetchedForObject:(id)obj forIndexPath:(NSIndexPath *)indexPath andImage:(UIImage *)image andImageView:(UIImageView *)imageView
