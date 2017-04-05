@@ -299,16 +299,22 @@ static NSString* const reuseIdentifier = @"InstagramTableViewCell";
         
         InstagramObject* object = (InstagramObject*) obj;
         
+        InstagramTableViewCell* cell = [self.tableView cellForRowAtIndexPath:indexPath];
+        
         CATransition* transition = [CATransition animation];
         transition.duration = 0.1f;
         transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn];
         transition.type = kCATransitionFade;
         
-        [imageView.layer addAnimation:transition forKey:nil];
+        //[imageView.layer addAnimation:transition forKey:nil];
         
-        [imageView setImage:image];
+        //[imageView setImage:image];
         
-        [self.mediaDownloadInProgress removeObjectForKey:object.path];
+        [cell.imageView.layer addAnimation:transition forKey:nil];
+        
+        [cell.imageView setImage:image];
+        
+        [self.mediaDownloadInProgress removeObjectForKey:indexPath];
     });
 }
 
