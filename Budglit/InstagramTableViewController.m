@@ -289,8 +289,6 @@ static NSString* const reuseIdentifier = @"InstagramTableViewCell";
                 
                 //[appDelegate.databaseManager startDownloadImageFromURL:fetchingMediaForIG.link.absoluteString forIndexPath:indexPath andImageView:fetchingMediaForIG.imgView];
                 
-                [appDelegate.databaseManager startDownloadImageFromURL:fetchingMediaForIG.link.absoluteString forObject:fetchingMediaForIG forIndexPath:indexPath imageView:fetchingMediaForIG.imgView];
-                
                 dispatch_async(dispatch_get_main_queue(), ^{ // Run on the main queue
                     CGRect parentViewSize = cell.contentView.frame;
                     CGRect frameSize = CGRectMake(cell.superview.frame.origin.x, cell.superview.frame.origin.y, parentViewSize.size.width, parentViewSize.size.height);
@@ -300,6 +298,8 @@ static NSString* const reuseIdentifier = @"InstagramTableViewCell";
                     //[fetchingMediaForIG.imgView setBackgroundColor:[UIColor redColor]];
                     
                 });
+                
+                [appDelegate.databaseManager startDownloadImageFromURL:fetchingMediaForIG.link.absoluteString forObject:fetchingMediaForIG forIndexPath:indexPath imageView:fetchingMediaForIG.imgView];
                 
                 (self.mediaDownloadInProgress)[indexPath] = obj;
             }
