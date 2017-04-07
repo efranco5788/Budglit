@@ -485,8 +485,7 @@
 				89067BC51C76B6780058B4DF /* AFURLSessionManager.h */,
 				89067BC61C76B6780058B4DF /* AFURLSessionManager.m */,
 			);
-			name = AFNetworking;
-			path = ../AFNetworking;
+			path = AFNetworking;
 			sourceTree = "<group>";
 		};
 		89067BD11C784B710058B4DF /* UIDevice-Extension */ = {
