@@ -34,6 +34,8 @@
         [self.activityIndicator setActivityIndicatorViewStyle:UIActivityIndicatorViewStyleGray];
         
         [self.contentView addSubview:self.activityIndicator];
+        
+        self.instaImageView = [[UIImageView alloc] init];
     }
     
     [self.activityIndicator stopAnimating];

@@ -299,6 +299,7 @@ static DatabaseManager* sharedManager;
 
 -(void)startDownloadImageFromURL:(NSString *)url forObject:(id)object forIndexPath:(NSIndexPath *)indexPath imageView:(UIImageView *)imgView
 {
+    
     [self.engine downloadImageFromURL:url forImageView:imgView addCompletionHandler:^(UIImage *imageResponse, NSHTTPURLResponse *response, NSURLRequest *request) {
         
         BOOL imgExist = NO;
@@ -328,7 +329,8 @@ static DatabaseManager* sharedManager;
 }
 
 -(void)startDownloadImageFromURL:(NSString *)url forDeal:(Deal *)deal forIndexPath:(NSIndexPath *)indexPath imageView:(UIImageView *)imgView
-{    
+{
+    
     [self.engine downloadImageFromURL:url forImageView:imgView addCompletionHandler:^(UIImage* imageResponse, NSHTTPURLResponse* response, NSURLRequest* request) {
         
         BOOL imageExist = NO;
@@ -346,6 +348,7 @@ static DatabaseManager* sharedManager;
 
 -(void)startDownloadImageFromURL:(NSString *)url forIndexPath:(NSIndexPath *)indexPath andImageView:(UIImageView *)imgView
 {
+    
     [self.engine downloadImageFromURL:url forImageView:imgView addCompletionHandler:^(UIImage *imageResponse, NSHTTPURLResponse *response, NSURLRequest *request) {
         
         [self.delegate imageFetchedForDeal:nil forIndexPath:indexPath andImage:imageResponse andImageView:imgView];

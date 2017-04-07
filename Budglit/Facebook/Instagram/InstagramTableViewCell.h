@@ -22,6 +22,8 @@
 
 @property (strong, nonatomic) UIActivityIndicatorView* activityIndicator;
 
+@property (strong, nonatomic) IBOutlet UIImageView *instaImageView;
+
 -(void)configure;
 
 -(void)beginLoadingReuqest:(InstagramObject*)obj;
