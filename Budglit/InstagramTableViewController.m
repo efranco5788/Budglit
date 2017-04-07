@@ -297,7 +297,7 @@ static NSString* const reuseIdentifier = @"InstagramTableViewCell";
 {
     dispatch_async(dispatch_get_main_queue(), ^{
         
-        InstagramObject* object = (InstagramObject*) obj;
+        //InstagramObject* object = (InstagramObject*) obj;
         
         InstagramTableViewCell* cell = [self.tableView cellForRowAtIndexPath:indexPath];
         
