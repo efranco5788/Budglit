@@ -234,7 +234,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Budglit/InstagramTableViewController.m"
-            timestampString = "513234323.338448"
+            timestampString = "513489347.878205"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "320"
@@ -313,7 +313,7 @@
                   moduleName = "Budglit"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/emmanuelfranco/Desktop/Budglit/Budglit/AppManagers/DatabaseManager.m"
-                  timestampString = "513235199.543939"
+                  timestampString = "513489535.973558"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "352"
@@ -328,7 +328,7 @@
                   moduleName = "Budglit"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/emmanuelfranco/Desktop/Budglit/Budglit/AppManagers/DatabaseManager.m"
-                  timestampString = "513235199.546019"
+                  timestampString = "513489535.976215"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "352"
@@ -336,22 +336,6 @@
                   offsetFromSymbolStart = "24">
                </Location>
             </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Budglit/InstagramTableViewController.m"
-            timestampString = "513234822.038403"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "140"
-            endingLineNumber = "140"
-            landmarkName = "-tableView:willDisplayCell:forRowAtIndexPath:"
-            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

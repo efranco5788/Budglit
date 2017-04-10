@@ -19,12 +19,13 @@
 @interface InstagramTableViewCell : UITableViewCell
 
 @property (strong, nonatomic) id <InstaTableViewCellDelegate> delegate;
-
-@property (strong, nonatomic) UIActivityIndicatorView* activityIndicator;
-
+@property (strong, nonatomic) IBOutlet UIActivityIndicatorView *activityIndicator;
 @property (strong, nonatomic) IBOutlet UIImageView *instaImageView;
+@property (strong, nonatomic) IBOutlet UILabel* instaUsername;
+@property (strong, nonatomic) IBOutlet UIImageView* instaUserProfile;
 
--(void)configure;
+
+//-(void)configure;
 
 -(void)beginLoadingReuqest:(InstagramObject*)obj;
 

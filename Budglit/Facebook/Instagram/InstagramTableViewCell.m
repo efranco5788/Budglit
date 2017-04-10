@@ -13,7 +13,7 @@
 @end
 
 @implementation InstagramTableViewCell
-
+@synthesize activityIndicator, instaImageView;
 - (void)awakeFromNib {
     [super awakeFromNib];
 }
@@ -21,7 +21,7 @@
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];
 }
-
+/*
 -(void)configure
 {
     if (!self.activityIndicator) {
@@ -34,14 +34,12 @@
         [self.activityIndicator setActivityIndicatorViewStyle:UIActivityIndicatorViewStyleGray];
         
         [self.contentView addSubview:self.activityIndicator];
-        
-        self.instaImageView = [[UIImageView alloc] init];
     }
     
     [self.activityIndicator stopAnimating];
     
 }
-
+*/
 
 -(void)beginLoadingReuqest:(InstagramObject *)obj
 {

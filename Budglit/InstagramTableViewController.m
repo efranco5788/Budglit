@@ -31,7 +31,7 @@ static NSString* const reuseIdentifier = @"InstagramTableViewCell";
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    [self.tableView registerClass:[InstagramTableViewCell class] forCellReuseIdentifier:reuseIdentifier];
+    [self.tableView registerNib:[UINib nibWithNibName:reuseIdentifier bundle:nil] forCellReuseIdentifier:reuseIdentifier];
     
     self.restorationIdentifier = RESTORATION_STRING;
     
@@ -62,11 +62,6 @@ static NSString* const reuseIdentifier = @"InstagramTableViewCell";
     [appDelegate.databaseManager setDelegate:nil];
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
 #pragma mark -
 #pragma mark - Table view data source
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -86,9 +81,16 @@ static NSString* const reuseIdentifier = @"InstagramTableViewCell";
     [super viewDidLayoutSubviews];
 }
 
+
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 800;
+    AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+    
+    NSArray* objs = [appDelegate.instagramManager getInstaObjs];
+    
+    InstagramObject* instaObj = [objs objectAtIndex:indexPath.row];
+    
+    return [instaObj getHeight];
 }
 
 
@@ -103,21 +105,6 @@ static NSString* const reuseIdentifier = @"InstagramTableViewCell";
     else
     {
         InstagramTableViewCell* cell = (InstagramTableViewCell*) [self.tableView dequeueReusableCellWithIdentifier:reuseIdentifier forIndexPath:indexPath];
-        
-        //[cell setDelegate:self];
-        
-        NSArray* instaObjs = [NSArray arrayWithArray:[appDelegate.instagramManager getInstaObjs]];
-        
-        InstagramObject* fetchingMediaForIG = (InstagramObject*) [instaObjs objectAtIndex:indexPath.row];
-        
-        CGRect barFrame = self.navigationController.navigationBar.frame;
-        CGRect containerBounds = [self.view bounds];
-        CGRect newInsetFrame = CGRectInset(containerBounds, barFrame.origin.x, barFrame.origin.y);
-        CGRect newFrame = CGRectOffset(newInsetFrame, barFrame.origin.x, barFrame.origin.y);
-        
-        [cell setFrame:newFrame];
-        
-        [cell configure];
         
         return cell;
     }
@@ -139,6 +126,17 @@ static NSString* const reuseIdentifier = @"InstagramTableViewCell";
         InstagramObject* instaObj = [objs objectAtIndex:indexPath.row];
         
         if (![instaObj.mediaStateHandler imageExists]) {
+            
+            instaCell.instaImageView.autoresizingMask =
+            ( UIViewAutoresizingFlexibleBottomMargin
+             | UIViewAutoresizingFlexibleHeight
+             | UIViewAutoresizingFlexibleLeftMargin
+             | UIViewAutoresizingFlexibleRightMargin
+             | UIViewAutoresizingFlexibleTopMargin
+             | UIViewAutoresizingFlexibleWidth );
+            
+            [instaCell.activityIndicator startAnimating];
+            
             [self startImageDownloadForInstaObj:instaObj forIndexPath:indexPath andTableCell:instaCell];
         }
         
@@ -303,9 +301,9 @@ static NSString* const reuseIdentifier = @"InstagramTableViewCell";
 {
     dispatch_async(dispatch_get_main_queue(), ^{
         
-        //InstagramObject* object = (InstagramObject*) obj;
-        
         InstagramTableViewCell* cell = [self.tableView cellForRowAtIndexPath:indexPath];
+        
+        [cell.instaImageView setHidden:NO];
         
         CATransition* transition = [CATransition animation];
         transition.duration = 0.1f;
@@ -319,6 +317,13 @@ static NSString* const reuseIdentifier = @"InstagramTableViewCell";
         [self.mediaDownloadInProgress removeObjectForKey:indexPath];
         
     });
+}
+
+#pragma mark -
+#pragma mark - Memory Management Methods
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
 }
 
 
