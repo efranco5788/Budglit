@@ -21,6 +21,8 @@
 #define PASSWORD_TEXTFIELD_PLACEHOLDER @"*Password"
 #define FIRST_NAME_TEXTFIELD_PLACEHOLDER @"*First Name"
 #define LAST_NAME_TEXTFIELD_PLACEHOLDER @"Last Name"
+#define USERNAME_IMAGE @"icon_username.png"
+#define PASSWORD_IMAGE @"icon_lock.png"
 
 
 @interface LoginPageViewController () <AccountManagerDelegate>
@@ -39,36 +41,13 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    UIColor *color = [UIColor whiteColor];
-    
-    UIFont* font = [UIFont fontWithName:@"Helvetica" size:17.0f];
-    
-    if ([self.emailField respondsToSelector:@selector(setAttributedPlaceholder:)]) {
-        self.emailField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"Email" attributes:@{NSForegroundColorAttributeName: color}];
-        [self.emailField setFont:font];
-    }
-    
-    if ([self.passwordField respondsToSelector:@selector(setAttributedPlaceholder:)]) {
-        self.passwordField.attributedPlaceholder = [[NSAttributedString alloc]initWithString:@"Password" attributes:@{NSForegroundColorAttributeName:color}];
-        [self.passwordField setFont:font];
-    }
-    
-    [self.passwordField setSecureTextEntry:YES];
-    
-    if ([self.FNameField respondsToSelector:@selector(setAttributedPlaceholder:)]) {
-        self.FNameField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"First Name" attributes:@{NSForegroundColorAttributeName: color}];
-        [self.FNameField setFont:font];
-    }
-    
-    if ([self.LNameField respondsToSelector:@selector(setAttributedPlaceholder:)]) {
-        self.LNameField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"Last Name" attributes:@{NSForegroundColorAttributeName: color}];
-        [self.LNameField setFont:font];
-    }
 }
 
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:YES];
+    
+    [self refreshInterface];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWasShown:) name:UIKeyboardDidShowNotification object:nil];
     
@@ -96,12 +75,18 @@
     initialLoginButtonFrame = self.loginButton.frame;
     initialSignupButtonFrame = self.signupButton.frame;
 
+    UIImageView* imgUsrView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 20, 20)];
+    [imgUsrView setImage:[UIImage imageNamed:USERNAME_IMAGE]];
+    
+    UIImageView* imgPasswrdView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 20, 20)];
+    [imgPasswrdView setImage:[UIImage imageNamed:PASSWORD_IMAGE]];
+
     [self.emailField setLeftViewMode:UITextFieldViewModeAlways];
-    [self.emailField setLeftView:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"icon_username.png"]]];
+    [self.emailField setLeftView:imgUsrView];
     
     
     [self.passwordField setLeftViewMode:UITextFieldViewModeAlways];
-    [self.passwordField setLeftView:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"icon_lock.png"]]];
+    [self.passwordField setLeftView:imgPasswrdView];
     
     kbConstraint.active = NO;
     newConstraint.active = NO;
@@ -120,10 +105,41 @@
     [super didReceiveMemoryWarning];
 }
 
--(BOOL)prefersStatusBarHidden
-{
+-(BOOL)prefersStatusBarHidden{
     return YES;
 }
+
+-(void)refreshInterface{
+    
+    UIColor *color = [UIColor whiteColor];
+    
+    UIFont* font = [UIFont fontWithName:@"Helvetica" size:17.0f];
+    
+    if ([self.emailField respondsToSelector:@selector(setAttributedPlaceholder:)]) {
+        self.emailField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"Email" attributes:@{NSForegroundColorAttributeName: color}];
+        [self.emailField setFont:font];
+    }
+    
+    if ([self.passwordField respondsToSelector:@selector(setAttributedPlaceholder:)]) {
+        self.passwordField.attributedPlaceholder = [[NSAttributedString alloc]initWithString:@"Password" attributes:@{NSForegroundColorAttributeName:color}];
+        [self.passwordField setFont:font];
+    }
+    
+    [self.passwordField setSecureTextEntry:YES];
+    
+    if ([self.FNameField respondsToSelector:@selector(setAttributedPlaceholder:)]) {
+        self.FNameField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"First Name" attributes:@{NSForegroundColorAttributeName: color}];
+        [self.FNameField setFont:font];
+    }
+    
+    if ([self.LNameField respondsToSelector:@selector(setAttributedPlaceholder:)]) {
+        self.LNameField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"Last Name" attributes:@{NSForegroundColorAttributeName: color}];
+        [self.LNameField setFont:font];
+    }
+    
+    [self.passwordVisibility setSelected:YES];
+}
+
 
 #pragma mark -
 #pragma mark - Text Field Delegate
@@ -343,7 +359,7 @@
 - (IBAction)signUpButtonPressed:(UIButton *)sender
 {
     [self toggleNameFields];
-    
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
     NSString* user_email = self.emailField.text;
     
     NSString* user_password = self.passwordField.text;
@@ -366,4 +382,15 @@
     
 }
 
+- (IBAction)passwordVisibilityPressed:(id)sender {
+    
+    if (self.passwordVisibility.isSelected) {
+        [self.passwordField setSecureTextEntry:NO];
+        [self.passwordVisibility setSelected:NO];
+    }
+    else{
+        [self.passwordField setSecureTextEntry:YES];
+        [self.passwordVisibility setSelected:YES];
+    }
+}
 @end

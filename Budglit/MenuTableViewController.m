@@ -24,7 +24,7 @@
 
 @end
 
-static NSString *CellIdentifier = @"Cell";
+static NSString *CellIdentifier = @"cell";
 
 @implementation MenuTableViewController
 

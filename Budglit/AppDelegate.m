@@ -31,7 +31,6 @@
 
 #define K_ROOT_CONTROLLER_KEY @"kRootViewControllerKey"
 
-
 @interface AppDelegate ()
 
 @end

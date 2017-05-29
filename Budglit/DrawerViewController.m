@@ -188,7 +188,7 @@
 
 -(void)changeBudget
 {
-    [self.navigationController completionhandler_pushViewController:self.loadingPage withController:self.navigationController animated:YES completion:^{
+    [self.navigationController completionhandler_pushViewController:self.loadingPage withController:self.navigationController animated:NO completion:^{
         
         [self.loadingPage setDelegate:self];
        

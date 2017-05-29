@@ -42,6 +42,9 @@
 		89179D301BB8F5CC00F60BA7 /* UINavigationController+CompletionHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 89179D2F1BB8F5CC00F60BA7 /* UINavigationController+CompletionHandler.m */; };
 		89179D331BB8F86500F60BA7 /* ZipcodeSearchDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 89179D321BB8F86500F60BA7 /* ZipcodeSearchDataSource.m */; };
 		89179D5B1BBDEAB600F60BA7 /* AccountEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = 89179D5A1BBDEAB600F60BA7 /* AccountEngine.m */; };
+		8921B32F1EC19022005BD8EB /* dollar_disabled.png in Resources */ = {isa = PBXBuildFile; fileRef = 8921B32C1EC19022005BD8EB /* dollar_disabled.png */; };
+		8921B3301EC19022005BD8EB /* dollar_disabled@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8921B32D1EC19022005BD8EB /* dollar_disabled@2x.png */; };
+		8921B3311EC19022005BD8EB /* dollar_disabled@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8921B32E1EC19022005BD8EB /* dollar_disabled@3x.png */; };
 		89231DB21D8B7F3000D6B932 /* MMDrawerBarButtonItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 89231DAA1D8B7F3000D6B932 /* MMDrawerBarButtonItem.m */; };
 		89231DB31D8B7F3000D6B932 /* MMDrawerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 89231DAD1D8B7F3000D6B932 /* MMDrawerController.m */; };
 		89231DB41D8B7F3000D6B932 /* MMDrawerVisualState.m in Sources */ = {isa = PBXBuildFile; fileRef = 89231DAF1D8B7F3000D6B932 /* MMDrawerVisualState.m */; };
@@ -134,6 +137,12 @@
 		89B3DBD81DEAB54A00DCEDB6 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89B3DBD71DEAB54A00DCEDB6 /* FBSDKCoreKit.framework */; };
 		89B92C591C34D8B200336589 /* SocialMediaTabBarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 89B92C571C34D8B200336589 /* SocialMediaTabBarViewController.m */; };
 		89B92C5A1C34D8B200336589 /* SocialMediaTabBarViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 89B92C581C34D8B200336589 /* SocialMediaTabBarViewController.xib */; };
+		89CA7CD81EB80E7A006C7F4B /* visible_eye@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 89CA7CD61EB80E79006C7F4B /* visible_eye@3x.png */; };
+		89CA7CD91EB80E7A006C7F4B /* visible_eye@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 89CA7CD71EB80E79006C7F4B /* visible_eye@2x.png */; };
+		89CA7CDB1EB80EBF006C7F4B /* visible_eye.png in Resources */ = {isa = PBXBuildFile; fileRef = 89CA7CDA1EB80EBF006C7F4B /* visible_eye.png */; };
+		89CA7CDF1EB810DC006C7F4B /* hidden_eye@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 89CA7CDC1EB810DC006C7F4B /* hidden_eye@3x.png */; };
+		89CA7CE01EB810DC006C7F4B /* hidden_eye@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 89CA7CDD1EB810DC006C7F4B /* hidden_eye@2x.png */; };
+		89CA7CE11EB810DC006C7F4B /* hidden_eye.png in Resources */ = {isa = PBXBuildFile; fileRef = 89CA7CDE1EB810DC006C7F4B /* hidden_eye.png */; };
 		89DEE6501E4BEC0E00C2A1B2 /* DealDetailedAnimationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 89DEE64F1E4BEC0E00C2A1B2 /* DealDetailedAnimationController.m */; };
 		89DEE6531E4EA42B00C2A1B2 /* DismissDetailedAnimationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 89DEE6521E4EA42900C2A1B2 /* DismissDetailedAnimationController.m */; };
 		89E26DA81E5C093A002CCD0C /* PSAllDealsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 89947FA21C149805009D0B75 /* PSAllDealsTableViewController.m */; };
@@ -232,6 +241,9 @@
 		89179D391BBDB64100F60BA7 /* Budglit-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Budglit-Prefix.pch"; path = "/Users/emmanuelfranco/Desktop/Budglit/Budglit/Budglit-Prefix.pch"; sourceTree = "<absolute>"; };
 		89179D591BBDEAB600F60BA7 /* AccountEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AccountEngine.h; sourceTree = "<group>"; };
 		89179D5A1BBDEAB600F60BA7 /* AccountEngine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AccountEngine.m; sourceTree = "<group>"; };
+		8921B32C1EC19022005BD8EB /* dollar_disabled.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = dollar_disabled.png; sourceTree = "<group>"; };
+		8921B32D1EC19022005BD8EB /* dollar_disabled@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dollar_disabled@2x.png"; sourceTree = "<group>"; };
+		8921B32E1EC19022005BD8EB /* dollar_disabled@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dollar_disabled@3x.png"; sourceTree = "<group>"; };
 		89231DA91D8B7F3000D6B932 /* MMDrawerBarButtonItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MMDrawerBarButtonItem.h; sourceTree = "<group>"; };
 		89231DAA1D8B7F3000D6B932 /* MMDrawerBarButtonItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MMDrawerBarButtonItem.m; sourceTree = "<group>"; };
 		89231DAB1D8B7F3000D6B932 /* MMDrawerController+Subclass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "MMDrawerController+Subclass.h"; sourceTree = "<group>"; };
@@ -387,6 +399,12 @@
 		89B92C561C34D8B200336589 /* SocialMediaTabBarViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SocialMediaTabBarViewController.h; path = Budglit/SocialMedia/SocialMediaTabBarViewController.h; sourceTree = SOURCE_ROOT; };
 		89B92C571C34D8B200336589 /* SocialMediaTabBarViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SocialMediaTabBarViewController.m; path = Budglit/SocialMedia/SocialMediaTabBarViewController.m; sourceTree = SOURCE_ROOT; };
 		89B92C581C34D8B200336589 /* SocialMediaTabBarViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SocialMediaTabBarViewController.xib; sourceTree = "<group>"; };
+		89CA7CD61EB80E79006C7F4B /* visible_eye@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "visible_eye@3x.png"; sourceTree = "<group>"; };
+		89CA7CD71EB80E79006C7F4B /* visible_eye@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "visible_eye@2x.png"; sourceTree = "<group>"; };
+		89CA7CDA1EB80EBF006C7F4B /* visible_eye.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = visible_eye.png; sourceTree = "<group>"; };
+		89CA7CDC1EB810DC006C7F4B /* hidden_eye@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "hidden_eye@3x.png"; sourceTree = "<group>"; };
+		89CA7CDD1EB810DC006C7F4B /* hidden_eye@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "hidden_eye@2x.png"; sourceTree = "<group>"; };
+		89CA7CDE1EB810DC006C7F4B /* hidden_eye.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = hidden_eye.png; sourceTree = "<group>"; };
 		89DEE64E1E4BEC0E00C2A1B2 /* DealDetailedAnimationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DealDetailedAnimationController.h; path = ../DealDetailedAnimationController.h; sourceTree = "<group>"; };
 		89DEE64F1E4BEC0E00C2A1B2 /* DealDetailedAnimationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DealDetailedAnimationController.m; path = ../DealDetailedAnimationController.m; sourceTree = "<group>"; };
 		89DEE6511E4EA42900C2A1B2 /* DismissDetailedAnimationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DismissDetailedAnimationController.h; path = ../DismissDetailedAnimationController.h; sourceTree = "<group>"; };
@@ -667,6 +685,15 @@
 				8938ADD11E58D9EC00CAF965 /* icon_username.png */,
 				8938ADD21E58D9EC00CAF965 /* icon_username@2x.png */,
 				8938ADD31E58D9EC00CAF965 /* icon_username@3x.png */,
+				8921B32C1EC19022005BD8EB /* dollar_disabled.png */,
+				8921B32D1EC19022005BD8EB /* dollar_disabled@2x.png */,
+				8921B32E1EC19022005BD8EB /* dollar_disabled@3x.png */,
+				89CA7CDC1EB810DC006C7F4B /* hidden_eye@3x.png */,
+				89CA7CDD1EB810DC006C7F4B /* hidden_eye@2x.png */,
+				89CA7CDE1EB810DC006C7F4B /* hidden_eye.png */,
+				89CA7CDA1EB80EBF006C7F4B /* visible_eye.png */,
+				89CA7CD71EB80E79006C7F4B /* visible_eye@2x.png */,
+				89CA7CD61EB80E79006C7F4B /* visible_eye@3x.png */,
 				89179D0E1BB76E6D00F60BA7 /* BudgetPickerViewController.xib */,
 				8994BA9A1E6B9C32004600C0 /* InstagramTableViewController.xib */,
 				893633141E25F88100C64E3D /* InstagramTableViewCell.xib */,
@@ -994,6 +1021,7 @@
 				8938ADDA1E58DD9100CAF965 /* icon_lock.png in Resources */,
 				89231DBF1DB5C6FC00D6B932 /* user_profile@2x.png in Resources */,
 				8938ADD51E58D9EC00CAF965 /* icon_username@2x.png in Resources */,
+				8921B32F1EC19022005BD8EB /* dollar_disabled.png in Resources */,
 				89067BE41C795BD80058B4DF /* empty_filter_app_icon_unselected@3x.png in Resources */,
 				89B3DBD41DE9F95F00DCEDB6 /* PSFacebookViewController.xib in Resources */,
 				89067BE71C7A013A0058B4DF /* empty_filter_app_icon_selected@2x.png in Resources */,
@@ -1003,14 +1031,20 @@
 				8938ADD41E58D9EC00CAF965 /* icon_username.png in Resources */,
 				89179D031BB76BA100F60BA7 /* Localizable.strings in Resources */,
 				89067BE81C7A013A0058B4DF /* empty_filter_app_icon_selected@3x.png in Resources */,
+				89CA7CE11EB810DC006C7F4B /* hidden_eye.png in Resources */,
 				893633161E25F88100C64E3D /* InstagramTableViewCell.xib in Resources */,
+				89CA7CD81EB80E7A006C7F4B /* visible_eye@3x.png in Resources */,
+				8921B3311EC19022005BD8EB /* dollar_disabled@3x.png in Resources */,
 				8938ADDB1E58DD9100CAF965 /* icon_lock@2x.png in Resources */,
 				89179D071BB76C1E00F60BA7 /* States.plist in Resources */,
 				894F93AB1DEFEF2300FEF2DC /* PSInstagramViewController.xib in Resources */,
+				89CA7CE01EB810DC006C7F4B /* hidden_eye@2x.png in Resources */,
 				89385B041BB67B4C00441A63 /* Assets.xcassets in Resources */,
 				8938ADDC1E58DD9100CAF965 /* icon_lock@3x.png in Resources */,
 				897EDAC61C82F6FE0042CEAB /* Media.xcassets in Resources */,
+				89CA7CDB1EB80EBF006C7F4B /* visible_eye.png in Resources */,
 				89EEF96D1D2A602000CCE163 /* phone_icon@3x.png in Resources */,
+				8921B3301EC19022005BD8EB /* dollar_disabled@2x.png in Resources */,
 				89179D1F1BB7AB2D00F60BA7 /* MapViewController.xib in Resources */,
 				897711BB1BE30EC600028B74 /* TwitterKitResources.bundle in Resources */,
 				89B92C5A1C34D8B200336589 /* SocialMediaTabBarViewController.xib in Resources */,
@@ -1018,6 +1052,7 @@
 				897711AD1BE2DF5F00028B74 /* PSTwitterViewController.xib in Resources */,
 				898894341E5D3C4600A82F7D /* MenuTableViewController.xib in Resources */,
 				89231DC11DB5C70500D6B932 /* user_profile@3x.png in Resources */,
+				89CA7CD91EB80E7A006C7F4B /* visible_eye@2x.png in Resources */,
 				8994BA9C1E6B9C32004600C0 /* InstagramTableViewController.xib in Resources */,
 				89EEF96B1D2A600100CCE163 /* phone_icon@2x.png in Resources */,
 				89179D101BB76E6D00F60BA7 /* BudgetPickerViewController.xib in Resources */,
@@ -1026,6 +1061,7 @@
 				89385AFF1BB67B4C00441A63 /* Main.storyboard in Resources */,
 				8938ADD61E58D9EC00CAF965 /* icon_username@3x.png in Resources */,
 				89179D151BB76F0C00F60BA7 /* LoadingLocalDealsViewController.xib in Resources */,
+				89CA7CDF1EB810DC006C7F4B /* hidden_eye@3x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -16,22 +16,17 @@
 @interface LoginPageViewController : UIViewController <UITextFieldDelegate, UIScrollViewDelegate>
 
 @property (nonatomic, assign) id<LoginPageDelegate> delegate;
-
 @property (weak, nonatomic) IBOutlet UIImageView *loginPageBackground;
-
 @property (weak, nonatomic) IBOutlet UITextField *emailField;
-
 @property (weak, nonatomic) IBOutlet UITextField *passwordField;
-
 @property (weak, nonatomic) IBOutlet UITextField *FNameField;
-
 @property (weak, nonatomic) IBOutlet UITextField *LNameField;
-
 @property (weak, nonatomic) IBOutlet UIButton *loginButton;
-
 @property (weak, nonatomic) IBOutlet UIButton *signupButton;
-
+@property (strong, nonatomic) IBOutlet UIButton *passwordVisibility;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *signupButtonBottom_Constraint;
+
+- (IBAction)passwordVisibilityPressed:(id)sender;
 
 - (IBAction)loginButtonPressed:(UIButton *)sender;
 
