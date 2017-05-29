@@ -7,6 +7,7 @@
 //
 
 #import "AccountManager.h"
+#import "AppDelegate.h"
 #import "AccountEngine.h"
 #import "BudgetManager.h"
 #import "DatabaseEngine.h"
@@ -143,10 +144,10 @@ static AccountManager* sharedManager;
     
     [[NSNotificationCenter defaultCenter] postNotificationName:NSLocalizedString(@"USER_CHANGED_NOTIFICATION", nil) object:nil];
     
-    // Reset the budget amount
-    BudgetManager* budgetManager = [[BudgetManager alloc] init];
+    AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
     
-    [budgetManager resetBudget];
+    // Reset the budget amount
+    [appDelegate.budgetManager resetBudget];
     
     [self.delegate logoutSucessfully];
 }

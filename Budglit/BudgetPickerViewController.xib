@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="12118" systemVersion="16E195" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
-    <device id="retina4_7" orientation="portrait">
+    <device id="retina5_5" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
@@ -21,11 +21,11 @@
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <view opaque="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
-            <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+            <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="pbg-xD-Fwf">
-                    <rect key="frame" x="39" y="198" width="297" height="29"/>
+                    <rect key="frame" x="39" y="198" width="336" height="29"/>
                     <segments>
                         <segment title="1"/>
                         <segment title="5"/>
@@ -38,7 +38,7 @@
                     </connections>
                 </segmentedControl>
                 <button opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="247" verticalCompressionResistancePriority="751" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="F1v-eD-U5X">
-                    <rect key="frame" x="0.0" y="576" width="375" height="91"/>
+                    <rect key="frame" x="0.0" y="576" width="414" height="160"/>
                     <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <fontDescription key="fontDescription" name="Helvetica-Bold" family="Helvetica" pointSize="19"/>
                     <state key="normal" title="View All Results">
@@ -50,7 +50,7 @@
                     </connections>
                 </button>
                 <slider opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="253" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="20" translatesAutoresizingMaskIntoConstraints="NO" id="GNh-1M-p0v">
-                    <rect key="frame" x="34" y="446" width="307" height="31"/>
+                    <rect key="frame" x="34" y="446" width="346" height="31"/>
                     <color key="tintColor" red="0.12156862745098039" green="0.31372549019607843" blue="0.60784313725490191" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <connections>
                         <action selector="dragEnded:" destination="-1" eventType="touchUpInside" id="3Uk-XE-C94"/>
@@ -61,37 +61,37 @@
                     </connections>
                 </slider>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Current Location" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="V8q-AM-aj3">
-                    <rect key="frame" x="113" y="65" width="149" height="23"/>
+                    <rect key="frame" x="133" y="65" width="149" height="23"/>
                     <fontDescription key="fontDescription" name="Helvetica-Light" family="Helvetica" pointSize="20"/>
                     <color key="textColor" red="0.031372549019607843" green="0.12549019607843137" blue="0.23529411764705882" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <nil key="highlightedColor"/>
                 </label>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" text="Distance (Miles)" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ie0-3D-788">
-                    <rect key="frame" x="126" y="146" width="123" height="20"/>
+                    <rect key="frame" x="146" y="146" width="123" height="20"/>
                     <fontDescription key="fontDescription" name="Helvetica-Light" family="Helvetica" pointSize="17"/>
                     <color key="textColor" red="0.031372549019607843" green="0.12549019607843137" blue="0.23529411764705882" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <nil key="highlightedColor"/>
                 </label>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Budget" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZvP-Tp-zXR">
-                    <rect key="frame" x="159.5" y="376" width="56" height="20"/>
+                    <rect key="frame" x="179" y="376" width="56" height="20"/>
                     <fontDescription key="fontDescription" name="Helvetica-Light" family="Helvetica" pointSize="17"/>
                     <color key="textColor" red="0.031372549019607843" green="0.12549019607843137" blue="0.23529411764705882" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <nil key="highlightedColor"/>
                 </label>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QhG-TL-16d">
-                    <rect key="frame" x="121" y="297" width="29" height="29"/>
+                    <rect key="frame" x="141" y="297" width="29" height="29"/>
                     <state key="normal" image="dollar_disabled.png"/>
                 </button>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1Op-hG-P2h">
-                    <rect key="frame" x="194" y="297" width="29" height="29"/>
+                    <rect key="frame" x="214" y="297" width="29" height="29"/>
                     <state key="normal" image="dollar_disabled.png"/>
                 </button>
                 <button opaque="NO" contentMode="scaleToFill" verticalCompressionResistancePriority="751" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Kt2-w5-kdo">
-                    <rect key="frame" x="158" y="297" width="29" height="29"/>
+                    <rect key="frame" x="178" y="297" width="29" height="29"/>
                     <state key="normal" image="dollar_disabled.png"/>
                 </button>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9bo-Rp-nrP">
-                    <rect key="frame" x="229" y="297" width="32" height="29"/>
+                    <rect key="frame" x="249" y="297" width="32" height="29"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="32" id="cSy-tT-1F8"/>
                     </constraints>

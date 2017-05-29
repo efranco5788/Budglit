@@ -17,7 +17,8 @@
 #define MAX_SECTION_DEFAULT_HEIGHT 44
 #define MAX_SECTION_LOGIN_HEIGHT 0.30
 #define MAX_SECTION_SECOND_HEIGHT 0.60
-#define MAX_SECTION_THIRD_HEIGHT 5
+//#define MAX_SECTION_THIRD_HEIGHT 5
+#define MAX_SECTION_THIRD_HEIGHT 0.50
 #define RESTORATION_STRING @"menuTableViewController"
 
 @interface MenuTableViewController ()
@@ -69,8 +70,7 @@ static NSString *CellIdentifier = @"cell";
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if(section == 0)
-    {
+    if(section == 0) {
         return 1;
     }
     
@@ -82,7 +82,7 @@ static NSString *CellIdentifier = @"cell";
         return 1;
     }
     
-    return 1;
+    return 0;
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
@@ -112,10 +112,15 @@ static NSString *CellIdentifier = @"cell";
         }
         default:
         {
-            return MAX_SECTION_DEFAULT_HEIGHT;
+            //return MAX_SECTION_DEFAULT_HEIGHT;
+            return 0;
             break;
         }
     }
+    
+    //CGFloat additionalHeight = (MAX_SECTION_DEFAULT_HEIGHT * MAX_SECTION_THIRD_HEIGHT);
+    //CGFloat newHeight = (additionalHeight + MAX_SECTION_DEFAULT_HEIGHT);
+    //return newHeight;
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -130,11 +135,18 @@ static NSString *CellIdentifier = @"cell";
 
 - (UIView *) tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
-    if (section == 0) {
-        UIView *headerView = [[UIView alloc] init];
-        [headerView setBackgroundColor:[UIColor blueColor]];
-        return headerView;
-    }
+    UITableViewHeaderFooterView* header = [tableView headerViewForSection:section];
+    UIView *headerView = [[UIView alloc] init];
+    [headerView setFrame:header.frame];
+    
+    UIColor* toColor = [UIColor colorWithRed:44.0f/255.0f
+                                       green:83.0f/255.0f
+                                        blue:143.0f/255.0f
+                                       alpha:1.0f];
+    
+    [headerView setBackgroundColor:toColor];
+    
+    //return headerView;
     
     return nil;
 }
@@ -184,6 +196,7 @@ static NSString *CellIdentifier = @"cell";
         [cell setMenuOption:menuLogout];
         cell.textLabel.text = [NSString stringWithFormat:@"%@", NSLocalizedString(@"LOGOUT", nil)];
     }
+    //else cell.textLabel.text = [NSString stringWithFormat:@"%li", (long)indexPath.section];
     
     return cell;
 }

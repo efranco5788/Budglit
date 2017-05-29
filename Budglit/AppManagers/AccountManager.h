@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
+@class AppDelegate;
 @class DatabaseEngine;
 @class BudgetManager;
 @class AccountEngine;
