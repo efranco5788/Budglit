@@ -43,7 +43,7 @@ typedef void (^newDataFetchedResponse)(UIBackgroundFetchResult result);
 
 +(DatabaseManager*) sharedDatabaseManager;
 
-@property (nonatomic, strong) NSArray* currentDeals;
+@property (nonatomic, strong) NSMutableArray* currentDeals;
 
 @property (nonatomic, strong) UIImageView* tmpImageView;
 

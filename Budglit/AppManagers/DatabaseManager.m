@@ -388,8 +388,7 @@ static DatabaseManager* sharedManager;
 
 -(void)resetDeals
 {
-    NSMutableArray* emptyDealList = [[NSMutableArray alloc] init];
-    self.currentDeals = emptyDealList.copy;
+    [self.currentDeals removeAllObjects];
     totalLoadedDeals_Count = 0;
     NSLog(@"Deals removed!");
 }
@@ -411,8 +410,6 @@ static DatabaseManager* sharedManager;
 
 -(void)dealsReturned:(NSDictionary *)deals
 {
-    NSMutableArray* tempList = [[NSMutableArray alloc] init];
-    
     // Reset Deals first
     [self resetDeals];
     
@@ -473,9 +470,7 @@ static DatabaseManager* sharedManager;
                 
             }];
             
-            //[self.currentDeals addObject:newDeal];
-            [tempList addObject:newDeal];
-            
+            [self.currentDeals addObject:newDeal];
             
             [self.delegate DealsDidLoad:YES];
             
