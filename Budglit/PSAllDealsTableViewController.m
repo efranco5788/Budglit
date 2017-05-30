@@ -282,7 +282,9 @@ static NSString* const emptyCellIdentifier = @"holderCell";
         
         Deal* deal = [deals objectAtIndex:indexPath.row];
         
-        dealCell = (DealTableViewCell*) [self.dealsTableView dequeueReusableCellWithIdentifier:reuseIdentifier];
+        //dealCell = (DealTableViewCell*) [self.dealsTableView dequeueReusableCellWithIdentifier:reuseIdentifier];
+        
+        dealCell = (DealTableViewCell*) [self.dealsTableView dequeueReusableCellWithIdentifier:reuseIdentifier forIndexPath:indexPath];
         
         dealCell.dealDescription.text = deal.dealDescription;
         
