@@ -297,6 +297,11 @@ static DatabaseManager* sharedManager;
     }];
 }
 
+-(void)fetchNewDataWithCompletion:(newDataFetchedResponse)completionHandler
+{
+    
+}
+
 -(void)startDownloadImageFromURL:(NSString *)url forObject:(id)object forIndexPath:(NSIndexPath *)indexPath imageView:(UIImageView *)imgView
 {
     
@@ -348,7 +353,6 @@ static DatabaseManager* sharedManager;
 
 -(void)startDownloadImageFromURL:(NSString *)url forIndexPath:(NSIndexPath *)indexPath andImageView:(UIImageView *)imgView
 {
-    
     [self.engine downloadImageFromURL:url forImageView:imgView addCompletionHandler:^(UIImage *imageResponse, NSHTTPURLResponse *response, NSURLRequest *request) {
         
         [self.delegate imageFetchedForDeal:nil forIndexPath:indexPath andImage:imageResponse andImageView:imgView];
@@ -384,9 +388,9 @@ static DatabaseManager* sharedManager;
 
 -(void)resetDeals
 {
-    [self.currentDeals removeAllObjects];
+    NSMutableArray* emptyDealList = [[NSMutableArray alloc] init];
+    self.currentDeals = emptyDealList.copy;
     totalLoadedDeals_Count = 0;
-    
     NSLog(@"Deals removed!");
 }
 
@@ -407,6 +411,7 @@ static DatabaseManager* sharedManager;
 
 -(void)dealsReturned:(NSDictionary *)deals
 {
+    NSMutableArray* tempList = [[NSMutableArray alloc] init];
     
     // Reset Deals first
     [self resetDeals];
@@ -468,7 +473,9 @@ static DatabaseManager* sharedManager;
                 
             }];
             
-            [self.currentDeals addObject:newDeal];
+            //[self.currentDeals addObject:newDeal];
+            [tempList addObject:newDeal];
+            
             
             [self.delegate DealsDidLoad:YES];
             

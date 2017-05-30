@@ -110,6 +110,8 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
     [[FBSDKApplicationDelegate sharedInstance] application:application
                              didFinishLaunchingWithOptions:launchOptions];
+    
+    [application setMinimumBackgroundFetchInterval:UIApplicationBackgroundFetchIntervalMinimum];
 
     return YES;
 }
@@ -126,6 +128,16 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     return handled;
     
 }
+
+-(void)application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
+{
+    if (self.databaseManager) {
+        [self.databaseManager fetchNewDataWithCompletion:^(UIBackgroundFetchResult result) {
+            completionHandler(result);
+        }];
+    }
+}
+
 
 - (void)applicationWillResignActive:(UIApplication *)application {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.

@@ -20,6 +20,7 @@
 
 typedef void (^fetchedImageResponse)(UIImage* image);
 typedef void (^generalBlockResponse)(BOOL success);
+typedef void (^newDataFetchedResponse)(UIBackgroundFetchResult result);
 
 @protocol DatabaseManagerDelegate <NSObject>
 @optional
@@ -42,7 +43,7 @@ typedef void (^generalBlockResponse)(BOOL success);
 
 +(DatabaseManager*) sharedDatabaseManager;
 
-@property (nonatomic, strong) NSMutableArray* currentDeals;
+@property (nonatomic, strong) NSArray* currentDeals;
 
 @property (nonatomic, strong) UIImageView* tmpImageView;
 
@@ -59,6 +60,8 @@ typedef void (^generalBlockResponse)(BOOL success);
 -(void) fetchTotalDealCountOnly: (NSDictionary*) searchCriteria andSender:(id) sender;
 
 -(void) fetchImageForRequest:(NSURLRequest*)request addCompletion:(fetchedImageResponse)completionHandler;
+
+-(void) fetchNewDataWithCompletion:(newDataFetchedResponse)completionHandler;
 
 -(void)startDownloadImageFromURL:(NSString *)url forObject:(id)object forIndexPath:(NSIndexPath*)indexPath imageView:(UIImageView*)imgView;
 

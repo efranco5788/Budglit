@@ -976,6 +976,11 @@
 						CreatedOnToolsVersion = 7.0;
 						DevelopmentTeam = BZRNX86Q45;
 						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+						};
 					};
 					89385B0C1BB67B4C00441A63 = {
 						CreatedOnToolsVersion = 7.0;
