@@ -297,11 +297,6 @@ static DatabaseManager* sharedManager;
     }];
 }
 
--(void)fetchNewDataWithCompletion:(newDataFetchedResponse)completionHandler
-{
-    
-}
-
 -(void)startDownloadImageFromURL:(NSString *)url forObject:(id)object forIndexPath:(NSIndexPath *)indexPath imageView:(UIImageView *)imgView
 {
     

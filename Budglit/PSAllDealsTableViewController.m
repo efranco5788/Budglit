@@ -151,7 +151,6 @@ static NSString* const emptyCellIdentifier = @"holderCell";
         
         // Background Thread Queue
         dispatch_async(backgroundQueue, ^{
-            
             [appDelegate.databaseManager startDownloadImageFromURL:url forDeal:deal forIndexPath:indexPath imageView:cell.dealImage];
             
         });
@@ -284,8 +283,6 @@ static NSString* const emptyCellIdentifier = @"holderCell";
         
         dealCell = (DealTableViewCell*) [self.dealsTableView dequeueReusableCellWithIdentifier:reuseIdentifier];
         
-        //dealCell = (DealTableViewCell*) [self.dealsTableView dequeueReusableCellWithIdentifier:reuseIdentifier forIndexPath:indexPath];
-        
         dealCell.dealDescription.text = deal.dealDescription;
         
     }
@@ -315,9 +312,9 @@ static NSString* const emptyCellIdentifier = @"holderCell";
             [dealCell.imageLoadingActivityIndicator startAnimating];
             
             [[dealCell dealImage] setImage:self.placeholderImage];
-            
-            [self startImageDownloadForDeal:deal forIndexPath:indexPath andTableCell:dealCell];
         }
+        
+        [self startImageDownloadForDeal:deal forIndexPath:indexPath andTableCell:dealCell];
         
         if ([dealCell.dealTimer.text isEqualToString:NSLocalizedString(@"TIMER_LABEL_DEFAULT_TEXT", nil)]) {
             
@@ -491,10 +488,10 @@ static NSString* const emptyCellIdentifier = @"holderCell";
 
 -(void)imageFetchedForDeal:(Deal *)deal forIndexPath:(NSIndexPath *)indexPath andImage:(UIImage *)image andImageView:(UIImageView *)imageView
 {
+    DealTableViewCell* dealCell = (DealTableViewCell*) [self.dealsTableView cellForRowAtIndexPath:indexPath];
+    
     // Load the images on the main queue
     dispatch_async(dispatch_get_main_queue(), ^{
-        
-        DealTableViewCell* dealCell = (DealTableViewCell*) [self.dealsTableView cellForRowAtIndexPath:indexPath];
         
         [dealCell setUserInteractionEnabled:YES];
         

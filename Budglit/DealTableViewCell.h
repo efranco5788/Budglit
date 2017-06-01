@@ -11,7 +11,7 @@
 
 @interface DealTableViewCell : UITableViewCell
 
-@property (strong, nonatomic) IBOutlet UIImageView* dealImage;
+@property (weak, nonatomic) IBOutlet UIImageView* dealImage;
 
 @property (strong, nonatomic) IBOutlet UITextView* dealDescription;
 
