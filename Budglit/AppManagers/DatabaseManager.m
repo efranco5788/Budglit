@@ -328,6 +328,8 @@ static DatabaseManager* sharedManager;
             [obj.imgStateObject recordImageHTTPResponse:response andRequest:request hasImage:imgExist];
             
             [self.delegate imageFetchedForObject:obj forIndexPath:indexPath andImage:imageResponse andImageView:imgView];
+            
+            //[self.delegate imageFetchedForDeal:obj forIndexPath:indexPath andImage:imageResponse andImageView:imgView];
         }
         
     }];

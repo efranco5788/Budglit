@@ -290,5 +290,53 @@
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Budglit/PSAllDealsTableViewController.m"
+            timestampString = "518332538.070669"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "498"
+            endingLineNumber = "498"
+            landmarkName = "-imageFetchedForDeal:forIndexPath:andImage:andImageView:"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "-[PSAllDealsTableViewController imageFetchedForDeal:forIndexPath:andImage:andImageView:]"
+                  moduleName = "Budglit"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/emmanuelfranco/Desktop/Budglit/Budglit/PSAllDealsTableViewController.m"
+                  timestampString = "518330502.292301"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "499"
+                  endingLineNumber = "499"
+                  offsetFromSymbolStart = "400">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__88-[PSAllDealsTableViewController imageFetchedForDeal:forIndexPath:andImage:andImageView:]_block_invoke"
+                  moduleName = "Budglit"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/emmanuelfranco/Desktop/Budglit/Budglit/PSAllDealsTableViewController.m"
+                  timestampString = "518330502.294549"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "499"
+                  endingLineNumber = "499"
+                  offsetFromSymbolStart = "24">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
    </Breakpoints>
 </Bucket>

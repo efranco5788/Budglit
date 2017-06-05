@@ -151,6 +151,7 @@ static NSString* const emptyCellIdentifier = @"holderCell";
         
         // Background Thread Queue
         dispatch_async(backgroundQueue, ^{
+            
             [appDelegate.databaseManager startDownloadImageFromURL:url forDeal:deal forIndexPath:indexPath imageView:cell.dealImage];
             
         });
@@ -312,6 +313,7 @@ static NSString* const emptyCellIdentifier = @"holderCell";
             [dealCell.imageLoadingActivityIndicator startAnimating];
             
             [[dealCell dealImage] setImage:self.placeholderImage];
+            
         }
         
         [self startImageDownloadForDeal:deal forIndexPath:indexPath andTableCell:dealCell];
@@ -488,14 +490,14 @@ static NSString* const emptyCellIdentifier = @"holderCell";
 
 -(void)imageFetchedForDeal:(Deal *)deal forIndexPath:(NSIndexPath *)indexPath andImage:(UIImage *)image andImageView:(UIImageView *)imageView
 {
-    DealTableViewCell* dealCell = (DealTableViewCell*) [self.dealsTableView cellForRowAtIndexPath:indexPath];
+    DealTableViewCell* dealCell = [self.dealsTableView cellForRowAtIndexPath:indexPath];
+    
+    NSLog(@"section is %ld and row is %ld and table is %@", (long)indexPath.section, indexPath.row, dealCell);
     
     [self.imageDownloadInProgress removeObjectForKey:indexPath];
     
     // Load the images on the main queue
     dispatch_async(dispatch_get_main_queue(), ^{
-        
-        [dealCell setUserInteractionEnabled:YES];
         
         [dealCell.imageLoadingActivityIndicator stopAnimating];
         
@@ -507,6 +509,8 @@ static NSString* const emptyCellIdentifier = @"holderCell";
         [imageView.layer addAnimation:transition forKey:nil];
         
         [imageView setImage:image];
+        
+        [dealCell setUserInteractionEnabled:YES];
     });
     
 }
