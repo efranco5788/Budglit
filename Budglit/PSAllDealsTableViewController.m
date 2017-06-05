@@ -490,14 +490,14 @@ static NSString* const emptyCellIdentifier = @"holderCell";
 {
     DealTableViewCell* dealCell = (DealTableViewCell*) [self.dealsTableView cellForRowAtIndexPath:indexPath];
     
+    [self.imageDownloadInProgress removeObjectForKey:indexPath];
+    
     // Load the images on the main queue
     dispatch_async(dispatch_get_main_queue(), ^{
         
         [dealCell setUserInteractionEnabled:YES];
         
         [dealCell.imageLoadingActivityIndicator stopAnimating];
-        
-        [self.imageDownloadInProgress removeObjectForKey:indexPath];
         
         CATransition* transition = [CATransition animation];
         transition.duration = 0.1f;
