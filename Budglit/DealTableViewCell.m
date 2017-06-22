@@ -33,6 +33,23 @@
 }
 */
 
+-(void)animateLabel
+{
+    self.endTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 repeats:YES block:^(NSTimer * _Nonnull timer) {
+        
+        [UIView animateWithDuration:0.2 animations:^{
+            [self.dealTimer setAlpha:0.0];
+        } completion:^(BOOL finished) {
+            if (finished) {
+                [self.dealTimer setAlpha:1.0];
+            }
+        }];
+        
+    }];
+    
+    [self.endTimer fire];
+}
+
 - (void)awakeFromNib {
     [super awakeFromNib];
 }

@@ -29,6 +29,7 @@
 #define UNWIND_TO_HOME @"unwindToHome"
 #define LOADING_PAGE_VIEW_CONTROLLER @"LoadingLocalDealsViewController"
 #define DEFAULT_NO_DEALS_TEXT @"Just stay in and watch a movie. "
+#define kDefaultEventEndNotification @"EventEndNotification"
 
 #define SLIDE_TIMING .42
 #define PANEL_WIDTH .15
@@ -39,7 +40,7 @@
 #define PERCENTAGE_CELL_HEIGHT 0.15
 #define customRowCount 1
 
-@interface PSAllDealsTableViewController ()<LoadingPageDelegate, AccountManagerDelegate, DatabaseManagerDelegate, UIViewControllerTransitioningDelegate>
+@interface PSAllDealsTableViewController ()<LoadingPageDelegate, AccountManagerDelegate, DatabaseManagerDelegate, UIViewControllerTransitioningDelegate, DealDelegate>
 
 typedef NS_ENUM(NSInteger, UICurrentState) {
     CLEAR = 0,
@@ -69,11 +70,9 @@ static NSString* const emptyCellIdentifier = @"holderCell";
 
 - (id)initWithCoder:(NSCoder *)aDecoder{
     self = [super initWithCoder:aDecoder];
-    if (self) {
-        
-        
-        
-    }
+    
+    if (!self) return nil;
+    
     return self;
 }
 
@@ -103,6 +102,20 @@ static NSString* const emptyCellIdentifier = @"holderCell";
     self.refreshControl.tintColor = [UIColor blackColor];
     
     [self.refreshControl addTarget:self action:@selector(refreshDeals) forControlEvents:UIControlEventValueChanged];
+}
+
+-(void)viewWillAppear:(BOOL)animated
+{
+    NSNotificationCenter* center = [NSNotificationCenter defaultCenter];
+    
+    [center addObserver:self selector:@selector(dealEnded:) name:kDefaultEventEndNotification object:nil];
+}
+
+-(void)viewDidDisappear:(BOOL)animated
+{
+    NSNotificationCenter* center = [NSNotificationCenter defaultCenter];
+    
+    [center removeObserver:self name:kDefaultEventEndNotification object:nil];
 }
 
 -(void)constructBackgroundDimmer
@@ -139,6 +152,8 @@ static NSString* const emptyCellIdentifier = @"holderCell";
 {
     __block Deal* fetchingImageForDeal = (self.imageDownloadInProgress)[indexPath];
     
+    NSLog(@"The cell is ---------------------------------------------------------------------  %@", cell);
+    
     if (fetchingImageForDeal == nil) {
         
         AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
@@ -147,12 +162,16 @@ static NSString* const emptyCellIdentifier = @"holderCell";
         
         NSString* url = deal.imgStateObject.imagePath;
         
+        NSIndexPath* path = indexPath;
+        
+        NSLog(@"Index Path is %@", indexPath);
+        
         backgroundQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0);
         
         // Background Thread Queue
         dispatch_async(backgroundQueue, ^{
             
-            [appDelegate.databaseManager startDownloadImageFromURL:url forDeal:deal forIndexPath:indexPath imageView:cell.dealImage];
+            [appDelegate.databaseManager startDownloadImageFromURL:url forDeal:deal forIndexPath:path imageView:cell.dealImage];
             
         });
         
@@ -282,7 +301,9 @@ static NSString* const emptyCellIdentifier = @"holderCell";
         
         Deal* deal = [deals objectAtIndex:indexPath.row];
         
-        dealCell = (DealTableViewCell*) [self.dealsTableView dequeueReusableCellWithIdentifier:reuseIdentifier];
+        //dealCell = (DealTableViewCell*) [self.dealsTableView dequeueReusableCellWithIdentifier:reuseIdentifier];
+        
+        dealCell = (DealTableViewCell*) [self.dealsTableView dequeueReusableCellWithIdentifier:reuseIdentifier forIndexPath:indexPath];
         
         dealCell.dealDescription.text = deal.dealDescription;
         
@@ -310,7 +331,7 @@ static NSString* const emptyCellIdentifier = @"holderCell";
             
             [cell setUserInteractionEnabled:NO]; // Disable any interaction if image for the deal has not loaded yet
             
-            [dealCell.imageLoadingActivityIndicator startAnimating];
+            //[dealCell.imageLoadingActivityIndicator startAnimating];
             
             [[dealCell dealImage] setImage:self.placeholderImage];
             
@@ -327,6 +348,7 @@ static NSString* const emptyCellIdentifier = @"holderCell";
     
 }
 
+ 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
@@ -490,7 +512,8 @@ static NSString* const emptyCellIdentifier = @"holderCell";
 
 -(void)imageFetchedForDeal:(Deal *)deal forIndexPath:(NSIndexPath *)indexPath andImage:(UIImage *)image andImageView:(UIImageView *)imageView
 {
-    DealTableViewCell* dealCell = [self.dealsTableView cellForRowAtIndexPath:indexPath];
+    
+    DealTableViewCell* dealCell = (DealTableViewCell*) [self.dealsTableView cellForRowAtIndexPath:indexPath];
     
     NSLog(@"section is %ld and row is %ld and table is %@", (long)indexPath.section, indexPath.row, dealCell);
     
@@ -499,7 +522,7 @@ static NSString* const emptyCellIdentifier = @"holderCell";
     // Load the images on the main queue
     dispatch_async(dispatch_get_main_queue(), ^{
         
-        [dealCell.imageLoadingActivityIndicator stopAnimating];
+        //[dealCell.imageLoadingActivityIndicator stopAnimating];
         
         CATransition* transition = [CATransition animation];
         transition.duration = 0.1f;
@@ -514,6 +537,7 @@ static NSString* const emptyCellIdentifier = @"holderCell";
     });
     
 }
+
 
 #pragma mark -
 #pragma mark - Scroll View Delegate
@@ -581,6 +605,47 @@ static NSString* const emptyCellIdentifier = @"holderCell";
     [self loadDeals];
 }
 
+-(void)dealEnded:(NSNotification*)notification
+{
+    
+    if (!notification) {
+        return;
+    }
+    
+    dispatch_queue_t backgroundToken = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0);
+    
+    // Background Thread Queue
+    dispatch_async(backgroundToken, ^{
+        AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+        
+        NSArray* deals = [NSArray arrayWithArray:[appDelegate.databaseManager currentDeals]];
+        
+        Deal* endedDeal = (Deal*) [notification object];
+        
+        NSInteger indexRow = -1;
+        
+        for (Deal* deal in deals) {
+            if ([deal isEqual:endedDeal]) {
+                indexRow = [deals indexOfObject:deal];
+            }
+        }
+        
+        NSIndexPath* indexPath = [NSIndexPath indexPathForRow:indexRow inSection:0];
+        
+        DealTableViewCell* cell = [self.dealsTableView cellForRowAtIndexPath:indexPath];
+        
+        if (cell) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.dealsTableView beginUpdates];
+                cell.dealTimer = [endedDeal animateCountdownEndDate:cell.dealTimer];
+                [cell animateLabel];
+                [self.dealsTableView endUpdates];
+            });
+        }
+        
+        
+    });
+}
 
 #pragma mark -
 #pragma mark - Memory Warning Methods

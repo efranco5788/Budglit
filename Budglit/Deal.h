@@ -12,6 +12,11 @@
 
 @class MZTimerLabel;
 
+@protocol DealDelegate <NSObject>
+@optional
+-(void)eventEnded;
+@end
+
 @interface Deal : NSObject
 {
     NSInteger dealID;
@@ -19,6 +24,9 @@
     CLLocationCoordinate2D coordinates;
 }
 
+extern NSString* const kDefaultEventEndNotification;
+
+@property (nonatomic, assign) id<DealDelegate> delegate;
 @property (nonatomic, strong) NSString* venueName;
 @property (nonatomic, strong) NSString* venueDescription;
 @property (nonatomic, strong) NSString* venueTwtrUsername;
@@ -48,6 +56,8 @@
 -(void)addTags:(NSArray*)tags;
 
 -(UILabel*)generateCountDownEndDate:(UILabel*)aLabel;
+
+-(UILabel*)animateCountdownEndDate:(UILabel*)aLabel;
 
 -(void)setOriginalPosition:(CGRect)frame;
 

@@ -10,8 +10,9 @@
 #import "MZTimerLabel/MZTimerLabel.h"
 
 #define kDefaultDateFormat @"yyyy-MM-dd HH:mm:ss"
+#define kEventEnded @"Event Ended"
 
-@interface Deal()
+@interface Deal() <MZTimerLabelDelegate>
 {
     CGRect tableCellPosition;
 }
@@ -20,11 +21,15 @@
 
 @implementation Deal
 
+NSString* const kDefaultEventEndNotification = @"EventEndNotification";
+
 @synthesize venueName, venueDescription, dealDescription, address, phoneNumber, city, state;
 
 -(id)initWithVenueName:(NSString *)venue andVenueAddress:(NSString *)anAddress andVenueDescription:(NSString *)aVenueDes andVenueTwtrUsername:(NSString *)useranme andDate:(NSString *)dateString andStartDate:(NSString *)start andEndDate:(NSString *)end andDealDescription:(NSString *)aDealDescription andPhoneNumber:(NSString *)aNumber andCity:(NSString *)aCity andState:(NSString *)aState andZipcode:(NSString *)aZip andBudget:(double)aBudget andDealID:(NSInteger)aDealID andURLImage:(NSString *)url andAddTags:(NSArray *)dealTags
 {
     self = [super init];
+    
+    if (!self) return nil;
     
     if(self)
     {
@@ -110,11 +115,15 @@
     
 }
 
+#pragma mark - 
+#pragma mark - Timer Label Methods
 -(UILabel*)generateCountDownEndDate:(UILabel*)aLabel
 {
     if (!self.eventCountDwn){
 
         self.eventCountDwn = [[MZTimerLabel alloc] initWithLabel:aLabel andTimerType:MZTimerLabelTypeTimer];
+        
+        [self.eventCountDwn setDelegate:self];
         
         self.eventCountDwn.timeFormat = @"dd:HH:mm:ss ";
         
@@ -126,8 +135,6 @@
         
         NSDate* evntEndDate = [formatter dateFromString:self.endDate];
         
-        NSLog(@"%@", evntEndDate);
-        
         [self.eventCountDwn setCountDownToDate:evntEndDate];
     }
     
@@ -136,6 +143,24 @@
     return aLabel;
 }
 
+-(UILabel*)animateCountdownEndDate:(UILabel *)aLabel
+{
+    [aLabel setText:kEventEnded];
+    
+    return aLabel;
+}
+
+#pragma mark -
+#pragma mark - Timer Delegate Methods
+-(void)timerLabel:(MZTimerLabel *)timerLabel finshedCountDownTimerWithTime:(NSTimeInterval)countTime
+{
+    NSNotificationCenter* center = [NSNotificationCenter defaultCenter];
+    
+    [center postNotificationName:kDefaultEventEndNotification object:self];
+}
+
+#pragma mark -
+#pragma mark - Memory Warning Methods
 -(void)dealloc
 {
     

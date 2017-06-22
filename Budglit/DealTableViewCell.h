@@ -12,11 +12,11 @@
 @interface DealTableViewCell : UITableViewCell
 
 @property (weak, nonatomic) IBOutlet UIImageView* dealImage;
-
 @property (strong, nonatomic) IBOutlet UITextView* dealDescription;
-
 @property (weak, nonatomic) IBOutlet UILabel* dealTimer;
-
 @property (strong, nonatomic) IBOutlet UIActivityIndicatorView*imageLoadingActivityIndicator;
+@property (strong, nonatomic) NSTimer* endTimer;
+
+-(void) animateLabel;
 
 @end

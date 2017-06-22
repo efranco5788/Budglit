@@ -339,7 +339,6 @@ static DatabaseManager* sharedManager;
 {
     
     [self.engine downloadImageFromURL:url forImageView:imgView addCompletionHandler:^(UIImage* imageResponse, NSHTTPURLResponse* response, NSURLRequest* request) {
-        
         BOOL imageExist = NO;
         
         if (imageResponse) {
