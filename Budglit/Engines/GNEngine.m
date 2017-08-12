@@ -11,7 +11,8 @@
 #define PARAM_USERNAME @"efranco5788"
 #define KEY_FOR_USERNAME @"username"
 //#define POSTAL_CODE_NEARBY_SEARCH_URL @"http://api.geonames.org/findNearbyPostalCodesJSON"
-#define POSTAL_CODE_NEARBY_SEARCH_URL @"findNearbyPostalCodesJSON"
+//#define POSTAL_CODE_NEARBY_SEARCH_URL @"findNearbyPostalCodesJSON"
+#define POSTAL_CODE_NEARBY_SEARCH_URL @"zipcode"
 
 @implementation GNEngine
 
@@ -70,6 +71,8 @@
     [self.sessionManager GET:POSTAL_CODE_NEARBY_SEARCH_URL parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         
         [self addToRequestHistory:task];
+        
+        NSLog(@"%@", responseObject);
         
         if (responseObject) {
             [self.delegate nearbyPostalCodesFound:responseObject];

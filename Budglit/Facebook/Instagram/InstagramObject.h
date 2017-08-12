@@ -14,6 +14,8 @@
 
 @interface InstagramObject : NSObject
 
+@property (nonatomic, strong) NSString* username;
+@property (nonatomic, strong) NSString* userImgURLString;
 @property (nonatomic, strong) NSString* instagramID;
 @property (nonatomic, strong) NSString* attribution;
 @property (nonatomic, strong) NSString* caption;

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="12118" systemVersion="16E195" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="12121" systemVersion="16F73" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina5_5" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12086"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12089"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -61,7 +61,7 @@
                     </connections>
                 </slider>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Current Location" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="V8q-AM-aj3">
-                    <rect key="frame" x="133" y="65" width="149" height="23"/>
+                    <rect key="frame" x="133" y="70" width="149" height="23"/>
                     <fontDescription key="fontDescription" name="Helvetica-Light" family="Helvetica" pointSize="20"/>
                     <color key="textColor" red="0.031372549019607843" green="0.12549019607843137" blue="0.23529411764705882" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <nil key="highlightedColor"/>
@@ -114,7 +114,7 @@
                 <constraint firstAttribute="trailing" secondItem="F1v-eD-U5X" secondAttribute="trailing" id="4Px-jz-S0C"/>
                 <constraint firstItem="Kt2-w5-kdo" firstAttribute="bottom" secondItem="ZvP-Tp-zXR" secondAttribute="top" constant="-50" id="4nR-b4-Rdc"/>
                 <constraint firstItem="Kt2-w5-kdo" firstAttribute="leading" secondItem="QhG-TL-16d" secondAttribute="trailing" constant="8" id="9ZU-gJ-BOA"/>
-                <constraint firstItem="V8q-AM-aj3" firstAttribute="bottom" secondItem="Ie0-3D-788" secondAttribute="top" constant="-58" id="CAi-mr-w65"/>
+                <constraint firstItem="V8q-AM-aj3" firstAttribute="bottom" secondItem="Ie0-3D-788" secondAttribute="top" constant="-53" id="CAi-mr-w65"/>
                 <constraint firstItem="V8q-AM-aj3" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="EtA-bN-t2I"/>
                 <constraint firstItem="QhG-TL-16d" firstAttribute="top" secondItem="pbg-xD-Fwf" secondAttribute="bottom" constant="71" id="J9e-7G-zak"/>
                 <constraint firstItem="Kt2-w5-kdo" firstAttribute="top" secondItem="1Op-hG-P2h" secondAttribute="top" id="Jn9-MJ-Pw5"/>
@@ -133,7 +133,7 @@
                 <constraint firstItem="F1v-eD-U5X" firstAttribute="bottom" secondItem="i5M-Pr-FkT" secondAttribute="bottom" id="tFx-Rj-BVw"/>
                 <constraint firstItem="Ie0-3D-788" firstAttribute="bottom" secondItem="pbg-xD-Fwf" secondAttribute="top" constant="-32" id="uXi-7p-Odr"/>
                 <constraint firstItem="GNh-1M-p0v" firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="F1v-eD-U5X" secondAttribute="top" priority="250" constant="-100" id="ubU-Pd-3Uz"/>
-                <constraint firstItem="V8q-AM-aj3" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="65" id="wit-Kx-prR"/>
+                <constraint firstItem="V8q-AM-aj3" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="70" id="wit-Kx-prR"/>
                 <constraint firstItem="9bo-Rp-nrP" firstAttribute="leading" secondItem="1Op-hG-P2h" secondAttribute="trailing" constant="6" id="xip-I3-JYO"/>
                 <constraint firstItem="Kt2-w5-kdo" firstAttribute="top" secondItem="9bo-Rp-nrP" secondAttribute="top" id="ykO-Ka-Wwl"/>
             </constraints>

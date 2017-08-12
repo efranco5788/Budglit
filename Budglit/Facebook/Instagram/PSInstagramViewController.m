@@ -39,16 +39,16 @@
         // Start the activity loader in the main queue
         dispatch_async(dispatch_get_main_queue(), ^{
             
-            [self.webView setHidden:YES];
+            [self toggleWebView:YES];
             [self.pageActivityIndicator startAnimating];
         });
         
         
         if (![appDelegate.instagramManager.engine accessTokenExists]) {
-            
             NSString* apiURL = [appDelegate.instagramManager getAuthorizationURL_String];
             NSURL* url = [NSURL URLWithString:apiURL];
             NSURLRequest* request = [NSURLRequest requestWithURL:url];
+            NSLog(@"String is %@", request.URL);
             [self.webView loadRequest:request];
         }
         
@@ -77,13 +77,15 @@
     
     NSLog(@"request host URL %@", requestURL.host);
     
-    NSLog(@"request URL %@", requestURL);
+    NSLog(@"Logs ------------------ %@", request);
+    
+    //NSLog(@"request URL %@", requestURL);
     
     if([host isEqualToString:@"restart"])
     {
         return NO;
     }
-    if ([host isEqualToString:@"www.budglit.com"])
+    else if ([host isEqualToString:@"www.budglit.com"])
     {
         AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
         
@@ -97,6 +99,10 @@
             
         }];
         
+        return YES;
+    }
+    else if ([host isEqualToString:@"www.instagram.com"]) {
+        [self toggleWebView:NO];
         return YES;
     }
     else return YES;
@@ -116,7 +122,7 @@
 
 -(void)instagramUserInfoRetrieved
 {
-    [self toggleWebView];
+    [self toggleWebView:NO];
     
     [self toggleInstagramTableView];
 }
@@ -130,12 +136,13 @@
     [self.webView setFrame:frameSize];
 }
 
--(void)toggleWebView
+-(void)toggleWebView:(BOOL)isHidden
 {
-    if (self.webView.isHidden) {
+    if (self.webView.isHidden || isHidden == NO) {
         [self.webView setHidden:NO];
+        [self.pageActivityIndicator stopAnimating];
     }
-    else{
+    else if(isHidden == YES){
         [self.webView setHidden:YES];
     }
 }

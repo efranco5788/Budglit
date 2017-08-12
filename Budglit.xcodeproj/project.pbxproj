@@ -109,6 +109,7 @@
 		894F93AB1DEFEF2300FEF2DC /* PSInstagramViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 894F93A91DEFEF2300FEF2DC /* PSInstagramViewController.xib */; };
 		895C22BB1CB4BC43008BAECE /* TweetDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 895C22B91CB4BC43008BAECE /* TweetDetailViewController.m */; };
 		895C22BC1CB4BC43008BAECE /* TweetDetailViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 895C22BA1CB4BC43008BAECE /* TweetDetailViewController.xib */; };
+		8966280A1F31748E00339957 /* DealParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 896628091F31748E00339957 /* DealParser.m */; };
 		896A89751BCE093800A21F30 /* PostalCode.m in Sources */ = {isa = PBXBuildFile; fileRef = 896A89741BCE093700A21F30 /* PostalCode.m */; };
 		897711A51BDD99D000028B74 /* ImageDataDoc.m in Sources */ = {isa = PBXBuildFile; fileRef = 897711A41BDD99D000028B74 /* ImageDataDoc.m */; };
 		897711A81BE014AD00028B74 /* UIImage+Resizing.m in Sources */ = {isa = PBXBuildFile; fileRef = 897711A71BE014AD00028B74 /* UIImage+Resizing.m */; };
@@ -137,6 +138,8 @@
 		89B3DBD81DEAB54A00DCEDB6 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89B3DBD71DEAB54A00DCEDB6 /* FBSDKCoreKit.framework */; };
 		89B92C591C34D8B200336589 /* SocialMediaTabBarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 89B92C571C34D8B200336589 /* SocialMediaTabBarViewController.m */; };
 		89B92C5A1C34D8B200336589 /* SocialMediaTabBarViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 89B92C581C34D8B200336589 /* SocialMediaTabBarViewController.xib */; };
+		89C5623A1F03761C00737608 /* UserProfileTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 89C562381F03761C00737608 /* UserProfileTableViewCell.m */; };
+		89C5623B1F03761C00737608 /* UserProfileTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 89C562391F03761C00737608 /* UserProfileTableViewCell.xib */; };
 		89CA7CD81EB80E7A006C7F4B /* visible_eye@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 89CA7CD61EB80E79006C7F4B /* visible_eye@3x.png */; };
 		89CA7CD91EB80E7A006C7F4B /* visible_eye@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 89CA7CD71EB80E79006C7F4B /* visible_eye@2x.png */; };
 		89CA7CDB1EB80EBF006C7F4B /* visible_eye.png in Resources */ = {isa = PBXBuildFile; fileRef = 89CA7CDA1EB80EBF006C7F4B /* visible_eye.png */; };
@@ -354,6 +357,8 @@
 		895C22B81CB4BC43008BAECE /* TweetDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TweetDetailViewController.h; sourceTree = "<group>"; };
 		895C22B91CB4BC43008BAECE /* TweetDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TweetDetailViewController.m; sourceTree = "<group>"; };
 		895C22BA1CB4BC43008BAECE /* TweetDetailViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TweetDetailViewController.xib; sourceTree = "<group>"; };
+		896628081F31748E00339957 /* DealParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DealParser.h; path = Budglit/DealParser.h; sourceTree = SOURCE_ROOT; };
+		896628091F31748E00339957 /* DealParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DealParser.m; path = Budglit/DealParser.m; sourceTree = SOURCE_ROOT; };
 		896A89731BCE093700A21F30 /* PostalCode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PostalCode.h; sourceTree = "<group>"; };
 		896A89741BCE093700A21F30 /* PostalCode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PostalCode.m; sourceTree = "<group>"; };
 		897711A31BDD99D000028B74 /* ImageDataDoc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageDataDoc.h; sourceTree = "<group>"; };
@@ -399,6 +404,9 @@
 		89B92C561C34D8B200336589 /* SocialMediaTabBarViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SocialMediaTabBarViewController.h; path = Budglit/SocialMedia/SocialMediaTabBarViewController.h; sourceTree = SOURCE_ROOT; };
 		89B92C571C34D8B200336589 /* SocialMediaTabBarViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SocialMediaTabBarViewController.m; path = Budglit/SocialMedia/SocialMediaTabBarViewController.m; sourceTree = SOURCE_ROOT; };
 		89B92C581C34D8B200336589 /* SocialMediaTabBarViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SocialMediaTabBarViewController.xib; sourceTree = "<group>"; };
+		89C562371F03761C00737608 /* UserProfileTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserProfileTableViewCell.h; sourceTree = "<group>"; };
+		89C562381F03761C00737608 /* UserProfileTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserProfileTableViewCell.m; sourceTree = "<group>"; };
+		89C562391F03761C00737608 /* UserProfileTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = UserProfileTableViewCell.xib; sourceTree = "<group>"; };
 		89CA7CD61EB80E79006C7F4B /* visible_eye@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "visible_eye@3x.png"; sourceTree = "<group>"; };
 		89CA7CD71EB80E79006C7F4B /* visible_eye@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "visible_eye@2x.png"; sourceTree = "<group>"; };
 		89CA7CDA1EB80EBF006C7F4B /* visible_eye.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = visible_eye.png; sourceTree = "<group>"; };
@@ -597,6 +605,8 @@
 				89947FAA1C14A6DB009D0B75 /* DealTableViewCell.m */,
 				898894301E5D3C4600A82F7D /* MenuTableViewController.h */,
 				898894311E5D3C4600A82F7D /* MenuTableViewController.m */,
+				89C562371F03761C00737608 /* UserProfileTableViewCell.h */,
+				89C562381F03761C00737608 /* UserProfileTableViewCell.m */,
 				8924016E1CF56AD600793EE5 /* MenuTableViewCell.h */,
 				8924016F1CF56AD600793EE5 /* MenuTableViewCell.m */,
 				892401661CD9BF3A00793EE5 /* DrawerViewController.h */,
@@ -701,6 +711,7 @@
 				89179D181BB76F4300F60BA7 /* LoginPageViewController.xib */,
 				89179D1D1BB7AB2D00F60BA7 /* MapViewController.xib */,
 				898894321E5D3C4600A82F7D /* MenuTableViewController.xib */,
+				89C562391F03761C00737608 /* UserProfileTableViewCell.xib */,
 				89B3DBD21DE9F95F00DCEDB6 /* PSFacebookViewController.xib */,
 				894F93A91DEFEF2300FEF2DC /* PSInstagramViewController.xib */,
 				897711AB1BE2DF5F00028B74 /* PSTwitterViewController.xib */,
@@ -878,6 +889,8 @@
 				89EEF9771D4ABC4E00CCE163 /* ReadyState.m */,
 				89EEF9791D503B8F00CCE163 /* BudgetPickerStateWrapper.h */,
 				89EEF97A1D503B8F00CCE163 /* BudgetPickerStateWrapper.m */,
+				896628081F31748E00339957 /* DealParser.h */,
+				896628091F31748E00339957 /* DealParser.m */,
 			);
 			path = ObjectState;
 			sourceTree = "<group>";
@@ -1020,6 +1033,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				89C5623B1F03761C00737608 /* UserProfileTableViewCell.xib in Resources */,
 				89179D091BB76C6F00F60BA7 /* sign_in_with_twitter.png in Resources */,
 				895C22BC1CB4BC43008BAECE /* TweetDetailViewController.xib in Resources */,
 				89179D1A1BB76F4300F60BA7 /* LoginPageViewController.xib in Resources */,
@@ -1127,6 +1141,7 @@
 				89EEF9751D482D9F00CCE163 /* State.m in Sources */,
 				896A89751BCE093800A21F30 /* PostalCode.m in Sources */,
 				89067BD61C784BE80058B4DF /* UIDevice-Hardware.m in Sources */,
+				8966280A1F31748E00339957 /* DealParser.m in Sources */,
 				89179D281BB7B7BA00F60BA7 /* PSTransitionToBudgetViewController.m in Sources */,
 				89179D251BB7B46D00F60BA7 /* ImageStateObject.m in Sources */,
 				89385B021BB67B4C00441A63 /* PocketStretch.xcdatamodeld in Sources */,
@@ -1152,6 +1167,7 @@
 				89EEF97E1D5057DF00CCE163 /* ClearState.m in Sources */,
 				89385AF91BB67B4C00441A63 /* AppDelegate.m in Sources */,
 				897711A81BE014AD00028B74 /* UIImage+Resizing.m in Sources */,
+				89C5623A1F03761C00737608 /* UserProfileTableViewCell.m in Sources */,
 				89067BCD1C76B6780058B4DF /* AFURLRequestSerialization.m in Sources */,
 				89385B4F1BB722AD00441A63 /* DatabaseManager.m in Sources */,
 				894F93991DED45DC00FEF2DC /* FacebookEngine.m in Sources */,
@@ -1359,6 +1375,7 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "Brand Assets";
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = NO;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = BZRNX86Q45;
 				ENABLE_BITCODE = YES;
 				FRAMEWORK_SEARCH_PATHS = (

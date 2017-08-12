@@ -95,9 +95,11 @@ static NSString* const reuseIdentifier = @"InstagramTableViewCell";
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
     
+    AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
     NSInteger nodeCount = appDelegate.instagramManager.totalObjectCount;
+    NSArray* list = appDelegate.instagramManager.getInstaObjs;
+    InstagramObject* obj = [list objectAtIndex:indexPath.row];
     
     if (nodeCount < 1 && indexPath.row < 1) {
         return nil;
@@ -105,6 +107,8 @@ static NSString* const reuseIdentifier = @"InstagramTableViewCell";
     else
     {
         InstagramTableViewCell* cell = (InstagramTableViewCell*) [self.tableView dequeueReusableCellWithIdentifier:reuseIdentifier forIndexPath:indexPath];
+        
+        [cell.instaUsername setText:obj.username];
         
         return cell;
     }
@@ -164,6 +168,8 @@ static NSString* const reuseIdentifier = @"InstagramTableViewCell";
     
     if (fetchingMediaForIG == nil) {
         
+        AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+        
         fetchingMediaForIG = obj;
         
         //fetchingMediaForIG.path = [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section];
@@ -172,6 +178,8 @@ static NSString* const reuseIdentifier = @"InstagramTableViewCell";
         
         // Background Thread Queue
         dispatch_async(backgroundQueue, ^{// Run on the background queue
+            
+            [appDelegate.databaseManager startDownloadImageFromURL:fetchingMediaForIG.userImgURLString forIndexPath:indexPath andImageView:cell.instaUserProfile];
             
             if ([fetchingMediaForIG.type isEqualToString:KEY_INSTAGRAM_TYPE_VIDEO]) {
                 /*
@@ -203,8 +211,6 @@ static NSString* const reuseIdentifier = @"InstagramTableViewCell";
  
             }
             else if ([fetchingMediaForIG.type isEqualToString:KEY_INSTAGRAM_TYPE_IMAGE]) {
-                
-                AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
                 
                 //fetchingMediaForIG.imgView = [[UIImageView alloc] init];
                 
@@ -284,6 +290,7 @@ static NSString* const reuseIdentifier = @"InstagramTableViewCell";
 
 #pragma mark -
 #pragma mark - Database Manager Delegate
+/*
 -(void)imageFetchedForDeal:(Deal*)deal forIndexPath:(NSIndexPath *)indexPath andImage:(UIImage *)image andImageView:(UIImageView *)imageView
 {
     AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
@@ -296,25 +303,28 @@ static NSString* const reuseIdentifier = @"InstagramTableViewCell";
     
     [self.mediaDownloadInProgress removeObjectForKey:indexPath];
 }
-
+*/
 -(void)imageFetchedForObject:(id)obj forIndexPath:(NSIndexPath *)indexPath andImage:(UIImage *)image andImageView:(UIImageView *)imageView
 {
     dispatch_async(dispatch_get_main_queue(), ^{
         
         InstagramTableViewCell* cell = [self.tableView cellForRowAtIndexPath:indexPath];
         
-        [cell.instaImageView setHidden:NO];
-        
-        CATransition* transition = [CATransition animation];
-        transition.duration = 0.1f;
-        transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn];
-        transition.type = kCATransitionFade;
-        
-        [cell.instaImageView.layer addAnimation:transition forKey:nil];
-        
-        [cell.instaImageView setImage:image];
-        
-        [self.mediaDownloadInProgress removeObjectForKey:indexPath];
+        if (obj) {
+            [cell.instaImageView setHidden:NO];
+            
+            CATransition* transition = [CATransition animation];
+            transition.duration = 0.1f;
+            transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn];
+            transition.type = kCATransitionFade;
+            
+            [cell.instaImageView.layer addAnimation:transition forKey:nil];
+            
+            [cell.instaImageView setImage:image];
+            
+            [self.mediaDownloadInProgress removeObjectForKey:indexPath];
+        }
+        else [imageView setImage:image];
         
     });
 }

@@ -152,8 +152,6 @@ static NSString* const emptyCellIdentifier = @"holderCell";
 {
     __block Deal* fetchingImageForDeal = (self.imageDownloadInProgress)[indexPath];
     
-    NSLog(@"The cell is ---------------------------------------------------------------------  %@", cell);
-    
     if (fetchingImageForDeal == nil) {
         
         AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
@@ -162,20 +160,15 @@ static NSString* const emptyCellIdentifier = @"holderCell";
         
         NSString* url = deal.imgStateObject.imagePath;
         
-        NSIndexPath* path = indexPath;
-        
-        NSLog(@"Index Path is %@", indexPath);
-        
         backgroundQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0);
         
-        // Background Thread Queue
-        dispatch_async(backgroundQueue, ^{
+        dispatch_async(backgroundQueue, ^{ // Background Thread Queue
             
-            [appDelegate.databaseManager startDownloadImageFromURL:url forDeal:deal forIndexPath:path imageView:cell.dealImage];
+            [appDelegate.databaseManager startDownloadImageFromURL:url forObject:cell forIndexPath:indexPath imageView:cell.dealImage];
+            
+            (self.imageDownloadInProgress)[indexPath] = deal;
             
         });
-        
-        (self.imageDownloadInProgress)[indexPath] = deal;
         
     }
 }
@@ -226,6 +219,7 @@ static NSString* const emptyCellIdentifier = @"holderCell";
 {
     [self performSegueWithIdentifier:UNWIND_TO_HOME sender:self];
 }
+
 
 #pragma mark -
 #pragma mark - Table View Data Source
@@ -301,8 +295,6 @@ static NSString* const emptyCellIdentifier = @"holderCell";
         
         Deal* deal = [deals objectAtIndex:indexPath.row];
         
-        //dealCell = (DealTableViewCell*) [self.dealsTableView dequeueReusableCellWithIdentifier:reuseIdentifier];
-        
         dealCell = (DealTableViewCell*) [self.dealsTableView dequeueReusableCellWithIdentifier:reuseIdentifier forIndexPath:indexPath];
         
         dealCell.dealDescription.text = deal.dealDescription;
@@ -331,7 +323,7 @@ static NSString* const emptyCellIdentifier = @"holderCell";
             
             [cell setUserInteractionEnabled:NO]; // Disable any interaction if image for the deal has not loaded yet
             
-            //[dealCell.imageLoadingActivityIndicator startAnimating];
+            [dealCell.imageLoadingActivityIndicator startAnimating];
             
             [[dealCell dealImage] setImage:self.placeholderImage];
             
@@ -340,12 +332,20 @@ static NSString* const emptyCellIdentifier = @"holderCell";
         [self startImageDownloadForDeal:deal forIndexPath:indexPath andTableCell:dealCell];
         
         if ([dealCell.dealTimer.text isEqualToString:NSLocalizedString(@"TIMER_LABEL_DEFAULT_TEXT", nil)]) {
-            
             dealCell.dealTimer = [deal generateCountDownEndDate:dealCell.dealTimer];
         }        
         
     }
     
+}
+
+-(void)tableView:(UITableView *)tableView didEndDisplayingCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    DealTableViewCell* dealCell = (DealTableViewCell*) cell;
+    
+    if (dealCell) {
+        [dealCell endAnimationLabel];
+    }
 }
 
  
@@ -510,19 +510,17 @@ static NSString* const emptyCellIdentifier = @"holderCell";
     }
 }
 
--(void)imageFetchedForDeal:(Deal *)deal forIndexPath:(NSIndexPath *)indexPath andImage:(UIImage *)image andImageView:(UIImageView *)imageView
+-(void)imageFetchedForObject:(id)obj forIndexPath:(NSIndexPath *)indexPath andImage:(UIImage *)image andImageView:(UIImageView *)imageView
 {
+    DealTableViewCell* cell = (DealTableViewCell*) obj;
     
-    DealTableViewCell* dealCell = (DealTableViewCell*) [self.dealsTableView cellForRowAtIndexPath:indexPath];
-    
-    NSLog(@"section is %ld and row is %ld and table is %@", (long)indexPath.section, indexPath.row, dealCell);
-    
-    [self.imageDownloadInProgress removeObjectForKey:indexPath];
-    
-    // Load the images on the main queue
-    dispatch_async(dispatch_get_main_queue(), ^{
+    dispatch_async(dispatch_get_main_queue(), ^{ // Load the images on the main queue
         
-        //[dealCell.imageLoadingActivityIndicator stopAnimating];
+        [cell.imageLoadingActivityIndicator stopAnimating];
+        
+        [self.imageDownloadInProgress removeObjectForKey:indexPath];
+        
+        [cell setUserInteractionEnabled:YES];
         
         CATransition* transition = [CATransition animation];
         transition.duration = 0.1f;
@@ -532,10 +530,7 @@ static NSString* const emptyCellIdentifier = @"holderCell";
         [imageView.layer addAnimation:transition forKey:nil];
         
         [imageView setImage:image];
-        
-        [dealCell setUserInteractionEnabled:YES];
     });
-    
 }
 
 

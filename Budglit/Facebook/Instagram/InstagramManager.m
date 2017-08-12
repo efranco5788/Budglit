@@ -37,7 +37,9 @@
 #define KEY_INSTAGRAM_USER @"user"
 #define KEY_INSTAGRAM_FULL_NAME @"full_name"
 #define KEY_INSTAGRAM_PROFILE_PICTURE @"profile_picture"
+#define KEY_INSTAGRAM_USER @"user"
 #define KEY_INSTAGRAM_USERNAME @"username"
+#define KEY_INSTAGRAM_USER_PROFILE_PICTURE @"profile_picture"
 #define KEY_INSTAGRAM_VIDEOS @"videos"
 #define KEY_INSTAGRAM_LOW_BANDWIDTH @"low_bandwidth"
 
@@ -139,6 +141,12 @@
                 NSString* urlString;
                 NSURL* instaURL;
                 
+                NSDictionary* usrInfo = [obj valueForKey:KEY_INSTAGRAM_USER];
+                
+                NSString* usr = [usrInfo valueForKey:KEY_INSTAGRAM_USERNAME];
+                
+                NSString* imgString = [usrInfo valueForKey:KEY_INSTAGRAM_USER_PROFILE_PICTURE];
+                
                 if ([type isEqualToString:KEY_INSTAGRAM_TYPE_IMAGE]) {
                     
                     NSDictionary* images = [obj valueForKey:KEY_INSTAGRAM_IMAGES];
@@ -185,6 +193,8 @@
                     
                 } // End of Video if statement
                 
+                [insta setUsername:usr];
+                [insta setUserImgURLString:imgString];
                 [insta setLink:instaURL];
                 
                 [self.instagramFeed addObjectToFeed:insta];

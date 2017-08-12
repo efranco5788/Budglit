@@ -8,9 +8,12 @@
 
 #import "AccountEngine.h"
 
-#define LOGIN_PATH @"login_authentication.php"
-#define SIGNUP_PATH @"signup.php"
-#define RESET_PASSWORD @"reset_password.php"
+//#define LOGIN_PATH @"login_authentication.php"
+//#define SIGNUP_PATH @"signup.php"
+//#define RESET_PASSWORD @"reset_password.php"
+#define LOGIN_PATH @"authentication"
+#define SIGNUP_PATH @"signup"
+#define RESET_PASSWORD @"reset_password"
 #define KEY_PASSWORD @"user_password"
 #define KEY_AUTHENTICATED @"authenticated"
 #define KEY_EMAIL_SENT @"email_sent"
@@ -46,16 +49,21 @@
         
         [self addToRequestHistory:task];
         
-        NSDictionary* response = (NSDictionary*) responseObject;
+        //NSDictionary* response = (NSDictionary*) responseObject;
         
-        NSDictionary* user = [response valueForKey:KEY_USER_INFO];
+        NSDictionary* response = [responseObject objectAtIndex:0];
         
-        NSString* loginValue = [response valueForKey:KEY_AUTHENTICATED];
+        //NSDictionary* user = [response valueForKey:KEY_USER_INFO];
         
-        NSUInteger loginIntValue = [loginValue integerValue];
+        //NSString* loginValue = [response valueForKey:KEY_AUTHENTICATED];
         
-        NSLog(@"%@", response);
+        //NSUInteger loginIntValue = [loginValue integerValue];
         
+        NSLog(@"%@", [response valueForKey:@"email"]);
+        
+        [self.delegate loginSucessful:response];
+        
+        /*
         if (loginIntValue == 1) {
             [self.delegate loginSucessful:user];
         }
@@ -63,7 +71,7 @@
         {
             [self.delegate loginFailedWithError:nil];
         }
-        
+        */
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         
         [self logFailedRequest:task];

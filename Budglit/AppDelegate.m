@@ -17,8 +17,9 @@
 #import "MenuTableViewController.h"
 #import "UserAccount.h"
 
-#define PS_HOST_NAME @"https://www.budglit.com"
-#define GN_API_URL @"http://api.geonames.org"
+#define HOST_NAME @"https://www.budglit.com"
+//#define GN_API_URL @"http://api.geonames.org"
+//#define GN_API_URL @"https://budglit.com"
 #define TWITTER_HOST_NAME @"https://api.twitter.com"
 #define INSTAGRAM_HOST_NAME @"https://api.instagram.com"
 #define X_USER_AGENT_HEADER @"X-User-Agent"
@@ -198,7 +199,7 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 
 -(void)construct_AccountManager
 {
-    self.accountManager = [[AccountManager alloc] initWithEngineHostName:PS_HOST_NAME];
+    self.accountManager = [[AccountManager alloc] initWithEngineHostName:HOST_NAME];
 }
 
 -(void)construct_BudgetManager
@@ -208,7 +209,7 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 
 -(void)construct_DatabaseManager
 {
-    self.databaseManager = [[DatabaseManager alloc] initWithEngineHostName:PS_HOST_NAME];
+    self.databaseManager = [[DatabaseManager alloc] initWithEngineHostName:HOST_NAME];
 }
 
 -(void)construct_FacebookManager
@@ -223,7 +224,7 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 
 -(void)construct_LocationServiceManager
 {
-    self.locationManager = [[LocationSeviceManager alloc] initWithEngineHostName:GN_API_URL];
+    self.locationManager = [[LocationSeviceManager alloc] initWithEngineHostName:HOST_NAME];
 }
 
 -(void)construct_DrawerController

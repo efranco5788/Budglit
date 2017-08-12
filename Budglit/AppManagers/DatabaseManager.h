@@ -13,6 +13,7 @@
 
 @class DatabaseEngine;
 @class Deal;
+@class DealParser;
 @class InstagramObject;
 @class BudgetPickerViewController;
 @class LocationSeviceManager;
@@ -44,11 +45,9 @@ typedef void (^newDataFetchedResponse)(UIBackgroundFetchResult result);
 +(DatabaseManager*) sharedDatabaseManager;
 
 @property (nonatomic, strong) NSMutableArray* currentDeals;
-
 @property (nonatomic, strong) UIImageView* tmpImageView;
-
+@property (nonatomic, strong) DealParser* dealParser;
 @property (nonatomic, strong) id<DatabaseManagerDelegate> delegate;
-
 @property (nonatomic, strong) DatabaseEngine* engine;
 
 -(id) initWithEngineHostName:(NSString*)hostName;

@@ -26,6 +26,15 @@
 				<string>fb213664499077423</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>com.budglit</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>twitterclient</string>
+				<string>instagramclient</string>
+			</array>
+		</dict>
 	</array>
 	<key>CFBundleVersion</key>
 	<string>1</string>

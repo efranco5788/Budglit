@@ -12,14 +12,14 @@
 #import "UIImage+Resizing.h"
 #import "UIImageView+AFNetworking.h"
 
-#define SEARCH_DEALS @"search_deals.php"
-#define TEMP_SEARCH_RESULTS @"temp_search_results.php"
-
+#define SEARCH_DEALS @"search"
+#define TEMP_SEARCH_RESULTS @"tempsearch"
 #define HTTP_POST_METHOD @"POST"
 #define KEY_EMPTY_VALUES @"emptyValues"
 #define KEY_ERROR @"error"
 #define KEY_DEALS @"allDeals"
-#define DEAL_COUNT @"dealCount"
+#define KEY_LIST @"parsedList"
+#define DEAL_COUNT @"count"
 
 #define RESCALE_IMAGE_WIDTH 1024
 #define RESCALE_IMAGE_HEIGHT 1024
@@ -75,9 +75,13 @@
             }
             else{
                 
-                NSInteger totalCount = [[responseObject valueForKey:DEAL_COUNT] integerValue];
+                NSArray* list = [responseObject valueForKey:KEY_LIST];
                 
-                [self.delegate totalDealCountReturned:totalCount];
+                NSDictionary* obj = [list objectAtIndex:0];
+                
+                NSInteger total = [[obj valueForKey:DEAL_COUNT] integerValue];
+                
+                [self.delegate totalDealCountReturned:total];
                 
             }
             
@@ -105,13 +109,16 @@
         
         [self addToRequestHistory:task];
         
-        NSLog(@"%@", responseObject);
-        
         if (responseObject) {
             
-            BOOL isEmpty = [[responseObject valueForKey:KEY_EMPTY_VALUES] boolValue];
             
-            if (isEmpty) {
+            NSArray* dict = [responseObject valueForKey:KEY_LIST];
+            
+            NSDictionary* obj = [dict objectAtIndex:0];
+            
+            NSInteger total = [[obj valueForKey:DEAL_COUNT] integerValue];
+            
+            if (total <= 0) {
                 
                 NSString* errorMessage = [responseObject valueForKey:KEY_ERROR];
                 
@@ -119,7 +126,9 @@
             }
             else{
                 
-                NSDictionary* deals = [responseObject valueForKey:KEY_DEALS];
+                NSArray* deals = [responseObject valueForKey:@"deals"];
+                
+                NSLog(@"%@", deals);
                 
                 [self.delegate dealsReturned:deals];
                 

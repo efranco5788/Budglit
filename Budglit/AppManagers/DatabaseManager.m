@@ -7,11 +7,13 @@
 //
 
 #import "DatabaseManager.h"
+#import <dispatch/dispatch.h>
 #import "AppDelegate.h"
 #import "DatabaseEngine.h"
-#import <dispatch/dispatch.h>
 #import "BudgetPickerViewController.h"
 #import "Deal.h"
+#import "DealParser.h"
+#import "DealTableViewCell.h"
 #import "InstagramObject.h"
 
 #define DEFAULT_ATTEMPT_RETRIES 1
@@ -20,22 +22,6 @@
 
 #define KEY_FOR_RETURNED_DEALS @"allDeals"
 #define KEY_FOR_TOTAL_COUNT @"totalDeals"
-
-#define KEY_DEAL_ID @"@dealID"
-#define KEY_DEAL_BUDGET @"dealBudget"
-#define KEY_VENUE_ZIPCODE @"venueZipcode"
-#define KEY_DEAL_DESCRIPTION @"dealDescription"
-#define KEY_DEAL_DATE @"dealDate"
-#define KEY_DEAL_START @"duration_start"
-#define KEY_DEAL_END @"duration_end"
-#define KEY_DEAL_TAGS @"tags"
-#define KEY_VENUE_PHONE_NUMBER @"venuePhoneNumber"
-#define KEY_VENUE_NAME @"venueName"
-#define KEY_VENUE_ADDRESS @"venueAddress"
-#define KEY_VENUE_CITY @"city"
-#define KEY_VENUE_STATE @"state"
-#define KEY_VENUE_IMAGE_URL @"imageURL"
-#define KEY_VENUE_TWTR_USERNAME @"twtrUsername"
 
 static DatabaseManager* sharedManager;
 
@@ -71,6 +57,8 @@ static DatabaseManager* sharedManager;
     }
     
     self.engine = [[DatabaseEngine alloc] initWithHostName:hostName];
+    
+    self.dealParser = [[DealParser alloc] initParser];
     
     [self.engine setDelegate:self];
     
@@ -322,14 +310,19 @@ static DatabaseManager* sharedManager;
             [self.delegate imageFetchedForObject:obj forIndexPath:indexPath andImage:imageResponse andImageView:imgView];
             
         }
-        else if ([object isMemberOfClass:[Deal class]]){
-            Deal* obj = (Deal*) object;
+        else if ([object isMemberOfClass:[DealTableViewCell class]]){
             
-            [obj.imgStateObject recordImageHTTPResponse:response andRequest:request hasImage:imgExist];
+            AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
             
-            [self.delegate imageFetchedForObject:obj forIndexPath:indexPath andImage:imageResponse andImageView:imgView];
+            NSArray* list = appDelegate.databaseManager.currentDeals;
             
-            //[self.delegate imageFetchedForDeal:obj forIndexPath:indexPath andImage:imageResponse andImageView:imgView];
+            Deal* objDeal = [list objectAtIndex:indexPath.row];
+            
+            [objDeal.imgStateObject recordImageHTTPResponse:response andRequest:request hasImage:imgExist];
+            
+            //[self.delegate imageFetchedForObject:objDeal forIndexPath:indexPath andImage:imageResponse andImageView:imgView];
+            
+            [self.delegate imageFetchedForObject:object forIndexPath:indexPath andImage:imageResponse andImageView:imgView];
         }
         
     }];
@@ -352,12 +345,12 @@ static DatabaseManager* sharedManager;
     }];
 }
 
+// Methods to download general images
 -(void)startDownloadImageFromURL:(NSString *)url forIndexPath:(NSIndexPath *)indexPath andImageView:(UIImageView *)imgView
 {
     [self.engine downloadImageFromURL:url forImageView:imgView addCompletionHandler:^(UIImage *imageResponse, NSHTTPURLResponse *response, NSURLRequest *request) {
         
-        [self.delegate imageFetchedForDeal:nil forIndexPath:indexPath andImage:imageResponse andImageView:imgView];
-        
+        [self.delegate imageFetchedForObject:nil forIndexPath:indexPath andImage:imageResponse andImageView:imgView];
     }];
 }
 
@@ -409,76 +402,24 @@ static DatabaseManager* sharedManager;
     
 }
 
--(void)dealsReturned:(NSDictionary *)deals
+-(void)dealsReturned:(NSArray *)deals
 {
     // Reset Deals first
     [self resetDeals];
     
-    for (id object in deals) {
-        
-        if (![object  isEqual: KEY_FOR_TOTAL_COUNT]) {
+    [self.dealParser parseDeals:deals addCompletionHandler:^(NSArray *parsedList) {
+        if (parsedList) {
             
-            NSDictionary* deal = [deals valueForKey:object];
+            NSLog(@"%@", parsedList);
             
-            NSInteger dealID = [[deal objectForKey:@"dealID"] integerValue];
-
-            NSString* dealDate = [deal objectForKey:KEY_DEAL_DATE];
-            
-            NSString* startDate = [deal objectForKey:KEY_DEAL_START];
-            
-            NSString* endDate = [deal objectForKey:KEY_DEAL_END];
-            
-            double dealBudget = [[deal objectForKey:KEY_DEAL_BUDGET] doubleValue];
-            
-            NSString* dealDescription = [deal objectForKey:KEY_DEAL_DESCRIPTION];
-            
-            NSString* dealTags = [deal objectForKey:KEY_DEAL_TAGS];
-            
-            NSString* venue = [deal objectForKey:KEY_VENUE_NAME];
-            
-            NSString* venueAddress = [deal objectForKey:KEY_VENUE_ADDRESS];
-            
-            NSString* venueCity = [deal objectForKey:KEY_VENUE_CITY];
-            
-            NSString* venueState = [deal objectForKey:KEY_VENUE_STATE];
-            
-            NSString* twtrUsername = [deal objectForKey:KEY_VENUE_TWTR_USERNAME];
-            
-            NSString* zipcode = [[deal objectForKey:KEY_VENUE_ZIPCODE] stringValue];
-            
-            NSString* venuePhone = [deal objectForKey:KEY_VENUE_PHONE_NUMBER];
-            
-            NSString* imgURL = [deal objectForKey:KEY_VENUE_IMAGE_URL];
-            
-            NSArray* arryOfTags;
-            
-            if ([dealTags isEqual:[NSNull null]]) {
-                
-                arryOfTags = NULL;
-                
+            for (Deal* node in parsedList) {
+                [self.currentDeals addObject:node];
             }
-            else arryOfTags = [dealTags componentsSeparatedByString:@","];
-            
-            Deal* newDeal = [[Deal alloc] initWithVenueName:venue andVenueAddress:venueAddress andVenueDescription:nil andVenueTwtrUsername:twtrUsername andDate:dealDate andStartDate:startDate andEndDate:endDate andDealDescription:dealDescription andPhoneNumber:venuePhone andCity:venueCity andState:venueState andZipcode:zipcode andBudget:dealBudget andDealID:dealID andURLImage:imgURL andAddTags:arryOfTags];
-            
-            AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
-            
-            [appDelegate.locationManager fetchCoordinates:newDeal addCompletionHandler:^(BOOL success) {
-                
-                //CLLocationCoordinate2D c = [newDeal getCoordinates];
-                
-                //NSLog(@"Long %f and Lat %f", c.longitude, c.latitude);
-                
-            }];
-            
-            [self.currentDeals addObject:newDeal];
             
             [self.delegate DealsDidLoad:YES];
             
         }
-        else [self.delegate DealsDidLoad:NO];
-        
-    }
+    }];
     
 }
 
@@ -487,7 +428,6 @@ static DatabaseManager* sharedManager;
     NSLog(@"%@", error);
     
     [self.delegate DealsDidNotLoad];
-    
 }
 
 -(void)operationsCancelled

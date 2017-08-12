@@ -140,6 +140,10 @@
     [self.passwordVisibility setSelected:YES];
 }
 
+-(void)refreshInterface:(UITextField*)field {
+    if (field) field.text = @"";
+}
+
 
 #pragma mark -
 #pragma mark - Text Field Delegate
@@ -247,8 +251,7 @@
     NSString* resetPassword = @"Reset Password";
     
     UIAlertAction* actionRetry = [UIAlertAction actionWithTitle:retry style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
-        self.passwordField.text = @"";
-        self.passwordField.placeholder = PASSWORD_TEXTFIELD_PLACEHOLDER;
+        [self refreshInterface:self.passwordField];
     }];
     
     UIAlertAction* actionResetPassword = [UIAlertAction actionWithTitle:resetPassword style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
@@ -334,7 +337,6 @@
 - (IBAction)loginButtonPressed:(UIButton *)sender {
     
     NSString* user_email = self.emailField.text;
-    
     NSString* user_password = self.passwordField.text;
     
     if ([user_email  isEqualToString:@""] || [user_password  isEqualToString:@""]) {

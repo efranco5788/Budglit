@@ -50,6 +50,13 @@
     [self.endTimer fire];
 }
 
+-(void)endAnimationLabel
+{
+    if (self.endTimer) {
+        [self.endTimer invalidate];
+    }
+}
+
 - (void)awakeFromNib {
     [super awakeFromNib];
 }

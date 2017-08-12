@@ -60,6 +60,9 @@ NSString* const kDefaultEventEndNotification = @"EventEndNotification";
         NSDate* date = [dateFormatter dateFromString:dateString];
         
         self.dealDate = date;
+        
+        NSLog(@"%@", date);
+        
     }
     
     return self;

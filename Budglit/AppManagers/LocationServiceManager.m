@@ -30,11 +30,14 @@
 #define LOCATION_TIME_THRESHOLD 600
 #define DISTANCE_FILTER_THRESHOLD 1609.34
 #define KM_PER_MILE 1.60934
-#define KEY_FOR_ALL_POSTAL_CODES @"postalCodes"
-#define KEY_FOR_POSTAL_CODE @"postalCode"
+//#define KEY_FOR_ALL_POSTAL_CODES @"postalCodes"
+//#define KEY_FOR_POSTAL_CODE @"postalCode"
+#define KEY_FOR_ALL_POSTAL_CODES @"zipcodes"
+#define KEY_FOR_POSTAL_CODE @"zipcode"
 #define KEY_FOR_LATITUDE @"lat"
 #define KEY_FOR_LONGTITUDE @"lng"
-#define KEY_FOR_RADIUS @"radius"
+//#define KEY_FOR_RADIUS @"radius"
+#define KEY_FOR_RADIUS @"distance"
 #define KEY_FOR_ROWS @"maxRows"
 #define KEY_FOR_COUNTRY @"country"
 #define KEY_FOR_LOCAL_COUNTRY @"localCountry"
@@ -666,9 +669,13 @@ static LocationSeviceManager* sharedManager;
     
     NSString* postal = [KEY_FOR_POSTAL_CODE lowercaseString];
     
-    NSArray* keys = [NSArray arrayWithObjects:postal, KEY_FOR_COUNTRY, KEY_FOR_RADIUS, KEY_FOR_ROWS, KEY_FOR_USERNAME, nil];
+    NSArray* keys = [NSArray arrayWithObjects:postal, KEY_FOR_RADIUS, nil];
     
-    NSArray* objects = [NSArray arrayWithObjects: postalCode, country, kmRadius, rows, GN_API_PARAM_USERNAME, nil];
+    NSArray* objects = [NSArray arrayWithObjects: postalCode, kmRadius, nil];
+    
+    //NSArray* keys = [NSArray arrayWithObjects:postal, KEY_FOR_COUNTRY, KEY_FOR_RADIUS, KEY_FOR_ROWS, KEY_FOR_USERNAME, nil];
+    
+    //NSArray* objects = [NSArray arrayWithObjects: postalCode, country, kmRadius, rows, GN_API_PARAM_USERNAME, nil];
     
     NSDictionary* parameters = [NSDictionary dictionaryWithObjects:objects forKeys:keys];
     

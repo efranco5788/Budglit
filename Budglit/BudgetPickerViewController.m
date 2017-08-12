@@ -118,7 +118,6 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
     [self toggleButtons];
     
     [self updateSearchLables:^(BOOL success) {
-        
         [self.delegate updateViewLabels:self.currentFilterCriteria_Labels];
         
         [self fetchSurroundingZipcodes:criteria];
@@ -169,7 +168,6 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
     [self updateSearchLables:^(BOOL success) {
         
         [self.delegate updateViewLabels:self.currentFilterCriteria_Labels];
-        
     }];
 }
 
@@ -286,8 +284,7 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
     
     NSInteger budgetValue = floorf(self.budgetSlider.value);
     
-    // Set the current values of the pickers
-    currentBudgetPickerValue = budgetValue;
+    currentBudgetPickerValue = budgetValue; // Set the current values of the pickers
     
     NSString* budgetCriteria = [@(budgetValue) stringValue];
     
@@ -316,10 +313,7 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
         filterCriteria = [self getCurrentSearchCriteriaWithSurrondingZipcodes:currentSurroundingZipcodes];
         
     }
-    else{
-        
-        filterCriteria = [self getCurrentSearchCriteriaWithSurrondingZipcodes:nil];
-        
+    else{filterCriteria = [self getCurrentSearchCriteriaWithSurrondingZipcodes:nil];
     }
     
     return filterCriteria;
@@ -431,13 +425,7 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
         NSLog(@"Buttons are now disabled");
     }
     else{
-        
         currentState = CLEAR;
-        
-        //colorButtonAnimation.duration = 0.5;
-        //colorButtonAnimation.autoreverses = NO;
-        //colorButtonAnimation.removedOnCompletion = NO;
-        //colorButtonAnimation.fillMode = kCAFillModeForwards;
         colorButtonAnimation.fromValue = (__bridge id _Nullable)([[UIColor whiteColor] CGColor]);
         
         UIColor* toColor = [UIColor colorWithRed:249.0f/255.0f
@@ -533,7 +521,15 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
 
 -(void)DealsDidNotLoad
 {
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"" message:@"There was a connectivity issue." preferredStyle:UIAlertControllerStyleAlert];
     
+    UIAlertAction* attempt = [UIAlertAction actionWithTitle:@"Try Again" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [self toggleButtons];
+    }];
+    
+    [alert addAction:attempt];
+    
+    [self presentViewController:alert animated:NO completion:nil];
 }
 
 -(void)DisplayDealsOnMap:(NSMutableArray *)fetchedDeals

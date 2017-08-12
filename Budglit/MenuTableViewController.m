@@ -7,25 +7,28 @@
 //
 
 #import "MenuTableViewController.h"
+#import "DrawerViewController.h"
 #import "MenuTableViewCell.h"
 #import "LocationServiceManager.h"
 #import "MenuOptions.h"
 #import "UserAccount.h"
+#import "UserProfileTableViewCell.h"
 #import "AppDelegate.h"
 #import <QuartzCore/QuartzCore.h>
 
 #define MAX_SECTION_DEFAULT_HEIGHT 44
 #define MAX_SECTION_LOGIN_HEIGHT 0.30
 #define MAX_SECTION_SECOND_HEIGHT 0.60
-//#define MAX_SECTION_THIRD_HEIGHT 5
-#define MAX_SECTION_THIRD_HEIGHT 0.50
+#define MAX_SECTION_THIRD_HEIGHT 0.55
+#define MAX_USER_ROW_HEIGHT 60
 #define RESTORATION_STRING @"menuTableViewController"
 
 @interface MenuTableViewController ()
 
 @end
 
-static NSString *CellIdentifier = @"cell";
+static NSString *cellIdentifier = @"cell";
+static NSString *userProfileIdentifier = @"profileCell";
 
 @implementation MenuTableViewController
 
@@ -34,34 +37,30 @@ static NSString *CellIdentifier = @"cell";
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUser:) name:NSLocalizedString(@"USER_CHANGED_NOTIFICATION", nil) object:nil];
     
-    [self.tableView registerClass:[MenuTableViewCell self] forCellReuseIdentifier:CellIdentifier];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUser:) name:kDefaultNotificationProfileCellDrawn object:nil];
+    
+    [self.tableView registerClass:[MenuTableViewCell self] forCellReuseIdentifier:cellIdentifier];
+    
+    [self.tableView registerClass:[UserProfileTableViewCell self] forCellReuseIdentifier:userProfileIdentifier];
     
     self.restorationIdentifier = RESTORATION_STRING;
 }
 
--(void)updateUser:(MenuTableViewCell*)cell;
+-(void)updateUser:(NSNotification*)notification
 {
-    
-    if(![cell isKindOfClass:[MenuTableViewCell class]])
-    {
-        NSIndexPath* path = [NSIndexPath indexPathForRow:0 inSection:0];
-        
-        cell = (MenuTableViewCell*) [self.tableView cellForRowAtIndexPath:path];
-    }
-    
     AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
     
     UserAccount* user = [appDelegate.accountManager getSignedAccount];
     
+    UserProfileTableViewCell* profileCell = (UserProfileTableViewCell*) notification.object;
+
+    [profileCell.textLabel setText:user.firstName];
+    
     UIImage* image = [user getProfileImage];
     
-    cell.imageView.clipsToBounds = YES;
-    cell.imageView.layer.masksToBounds = YES;
-    
-    [cell.imageView setImage:image];
-    
-    cell.textLabel.text = user.firstName;
+    [profileCell.imageView setImage:image];
 }
+
 
 #pragma mark -
 #pragma mark - Table view data source
@@ -90,9 +89,6 @@ static NSString *CellIdentifier = @"cell";
     switch (section) {
         case 0:
         {
-            //CGFloat additionalHeight = (MAX_SECTION_DEFAULT_HEIGHT * MAX_SECTION_LOGIN_HEIGHT);
-            //CGFloat newHeight = (additionalHeight + MAX_SECTION_DEFAULT_HEIGHT);
-            //return newHeight;
             return 0.1f;
             break;
         }
@@ -105,77 +101,60 @@ static NSString *CellIdentifier = @"cell";
         }
         case 2:
         {
-            CGFloat additionalHeight = (MAX_SECTION_DEFAULT_HEIGHT * MAX_SECTION_THIRD_HEIGHT);
-            CGFloat newHeight = (additionalHeight + MAX_SECTION_DEFAULT_HEIGHT);
-            return newHeight;
+            CGFloat startingHeight = (self.view.frame.size.height - ((MAX_SECTION_DEFAULT_HEIGHT * MAX_SECTION_SECOND_HEIGHT) + MAX_SECTION_DEFAULT_HEIGHT));
+            
+            CGFloat rowsIncludedHeight = startingHeight - (MAX_USER_ROW_HEIGHT + (MAX_SECTION_DEFAULT_HEIGHT * 3));
+            
+            CGFloat finalHeight = rowsIncludedHeight - MAX_SECTION_DEFAULT_HEIGHT;
+            
+            return finalHeight;
             break;
         }
         default:
         {
-            //return MAX_SECTION_DEFAULT_HEIGHT;
             return 0;
             break;
         }
     }
-    
-    //CGFloat additionalHeight = (MAX_SECTION_DEFAULT_HEIGHT * MAX_SECTION_THIRD_HEIGHT);
-    //CGFloat newHeight = (additionalHeight + MAX_SECTION_DEFAULT_HEIGHT);
-    //return newHeight;
+
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (indexPath.section == 0) {
-        return 60;
+        return MAX_USER_ROW_HEIGHT;
     }
     
     return 44;
 }
 
-
-- (UIView *) tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
-{
-    UITableViewHeaderFooterView* header = [tableView headerViewForSection:section];
-    UIView *headerView = [[UIView alloc] init];
-    [headerView setFrame:header.frame];
-    
-    UIColor* toColor = [UIColor colorWithRed:44.0f/255.0f
-                                       green:83.0f/255.0f
-                                        blue:143.0f/255.0f
-                                       alpha:1.0f];
-    
-    [headerView setBackgroundColor:toColor];
-    
-    //return headerView;
-    
-    return nil;
-}
-
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    MenuTableViewCell* cell = (MenuTableViewCell*) [self.tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     
     // First cell contains signed user's info
     if (indexPath.section == 0) {
-        /*
-         AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
-         
-         UserAccount* user = [appDelegate.accountManager getSignedAccount];
-         
-         UIImage* image = [user getProfileImage];
-         
-         cell.imageView.clipsToBounds = YES;
-         cell.imageView.layer.masksToBounds = YES;
-         //cell.imageView.layer.cornerRadius = 45.0f;
-         
-         [cell.imageView setImage:image];
-         
-         cell.textLabel.text = user.firstName;
-         */
         
-        [self updateUser:cell];
+        UserProfileTableViewCell* cell = (UserProfileTableViewCell*) [self.tableView dequeueReusableCellWithIdentifier:userProfileIdentifier];
+        
+        CGRect frame = CGRectMake(10, 0, MAX_USER_ROW_HEIGHT, MAX_USER_ROW_HEIGHT);
+        [cell.imageView setBounds:frame];
+        [cell.imageView setFrame:frame];
+        
+        CGRect labelFrame = CGRectMake((frame.size.width + 20), cell.center.y, (cell.frame.size.width / 2), (cell.frame.size.height / 2));
+        
+        [cell.textLabel setFrame:labelFrame];
+        
+        [cell.imageView.layer setMasksToBounds:YES];
+        [cell.imageView.layer setCornerRadius:(cell.imageView.frame.size.width / 2)];
+        [cell.textLabel setAdjustsFontSizeToFitWidth:YES];
+        [cell setContentMode:UIViewContentModeScaleAspectFit];
+        
+        return cell;
     }
     else if (indexPath.section == 1) {
+        
+        MenuTableViewCell* cell = (MenuTableViewCell*) [self.tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+        
+        [cell.textLabel setAdjustsFontSizeToFitWidth:YES];
         
         if (indexPath.row == menuCurrentLocation) {
             [cell setMenuOption:menuCurrentLocation];
@@ -191,14 +170,22 @@ static NSString *CellIdentifier = @"cell";
             [cell setMenuOption:menuChangeBudget];
             cell.textLabel.text = [NSString stringWithFormat:@"%@", NSLocalizedString(@"EDIT_MY_BUDGET", nil)];
         }
+        
+        return cell;
     }
     else if (indexPath.section == 2){
+        MenuTableViewCell* cell = (MenuTableViewCell*) [self.tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+        
+        [cell.textLabel setAdjustsFontSizeToFitWidth:YES];
+        
         [cell setMenuOption:menuLogout];
         cell.textLabel.text = [NSString stringWithFormat:@"%@", NSLocalizedString(@"LOGOUT", nil)];
+        
+        return cell;
     }
-    //else cell.textLabel.text = [NSString stringWithFormat:@"%li", (long)indexPath.section];
     
-    return cell;
+    return nil;
+    //else cell.textLabel.text = [NSString stringWithFormat:@"%li", (long)indexPath.section];
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
@@ -221,6 +208,8 @@ static NSString *CellIdentifier = @"cell";
 -(void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:NSLocalizedString(@"USER_CHANGED_NOTIFICATION", nil) object:nil];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kDefaultNotificationProfileCellDrawn object:nil];
 }
 
 /*

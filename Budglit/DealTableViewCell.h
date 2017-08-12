@@ -18,5 +18,6 @@
 @property (strong, nonatomic) NSTimer* endTimer;
 
 -(void) animateLabel;
+-(void) endAnimationLabel;
 
 @end

@@ -46,9 +46,7 @@ static AccountManager* sharedManager;
 {
     self = [super init];
     
-    if (!self) {
-        return nil;
-    }
+    if (!self) return nil;
     
     self.engine = [[AccountEngine alloc] initWithHostName:hostName];
     

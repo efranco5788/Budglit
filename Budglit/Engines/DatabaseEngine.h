@@ -17,7 +17,7 @@ typedef void (^operationCancelResponse)(BOOL success);
 @protocol DatabaseEngineDelegate <NSObject>
 -(void)totalDealCountReturned:(NSInteger)responseCount;
 -(void)totalDealCountFailedWithError:(NSError*)error;
--(void)dealsReturned:(NSDictionary*)deals;
+-(void)dealsReturned:(NSArray*)deals;
 -(void)dealsFailedWithError:(NSError*)error;
 -(void)operationsCancelled;
 @optional
