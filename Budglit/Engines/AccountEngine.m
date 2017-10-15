@@ -44,9 +44,7 @@
 {
     self = [super initWithHostName:hostName];
     
-    if (!self) {
-        return nil;
-    }
+    if (!self) return nil;
     
     return self;
 }

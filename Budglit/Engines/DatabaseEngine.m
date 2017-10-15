@@ -28,7 +28,11 @@
 
 -(instancetype) init
 {
-    return [self initWithHostName:nil];
+    self = [self initWithHostName:nil];
+    
+    if(!self) return nil;
+    
+    return self;
 }
 
 -(instancetype) initWithHostName:(NSString*)hostName

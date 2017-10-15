@@ -35,8 +35,6 @@
     
     NSURL* baseURL = [NSURL URLWithString:_baseURLString];
     
-    //self.requestManager = [[AFHTTPRequestOperationManager alloc] initWithBaseURL:baseURL];
-    
     self.OAuth = [[OAuthObject alloc] init];
     
     self.sessionManager = [[AFHTTPSessionManager alloc] initWithBaseURL:baseURL];

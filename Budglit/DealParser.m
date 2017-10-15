@@ -67,9 +67,9 @@
             
             NSString* endDate = deal[KEY_DEAL_END];
             
-            id dayObj = deal[KEY_DEAL_END_OF_DAY];
+            //id dayObj = deal[KEY_DEAL_END_OF_DAY];
             
-            BOOL endOfDay = [dayObj boolValue];
+            //BOOL endOfDay = [dayObj boolValue];
             
             double dealBudget = [deal[KEY_DEAL_BUDGET] doubleValue];
             

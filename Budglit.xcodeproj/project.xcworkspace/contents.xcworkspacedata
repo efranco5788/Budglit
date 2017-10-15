@@ -2,6 +2,12 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:/Users/emmanuelfranco/Desktop/PocketStretch/Budglit.xcodeproj">
+      location = "group:/Users/emmanuelfranco/Desktop/Budglit/UIKit+AFNetworking">
+   </FileRef>
+   <FileRef
+      location = "group:UIKit+AFNetworking">
+   </FileRef>
+   <FileRef
+      location = "self:">
    </FileRef>
 </Workspace>
