@@ -42,7 +42,7 @@ static UserAccount* loggedAccount;
 
 -(instancetype)initWithCoder:(NSCoder *)aDecoder
 {
-    self = [super init];
+    self = [self initWithFirstName:nil andLastName:nil andProfileImage:nil andEmail:nil andSessionID:nil];
     
     if (!self) {
         return nil;
@@ -64,7 +64,7 @@ static UserAccount* loggedAccount;
     [aCoder encodeObject:self.imageURL forKey:NSLocalizedString(@"DEFAULT_KEY_IMAGE_URL", nil)];
 }
 
--(id)init
+-(instancetype)init
 {
     self = [self initWithFirstName:nil andLastName:nil andProfileImage:nil andEmail:nil andSessionID:nil];
     
@@ -75,7 +75,7 @@ static UserAccount* loggedAccount;
     return self;
 }
 
--(id)initWithFirstName:(NSString*)fName andLastName:(NSString*)lName
+-(instancetype)initWithFirstName:(NSString*)fName andLastName:(NSString*)lName
 {
     self = [self initWithFirstName:fName andLastName:lName andProfileImage:nil andEmail:nil andSessionID:nil];
     
@@ -86,7 +86,7 @@ static UserAccount* loggedAccount;
     return self;
 }
 
--(id)initWithFirstName:(NSString*)fName andLastName:(NSString*)lName andProfileImage:(NSString*)URL
+-(instancetype)initWithFirstName:(NSString*)fName andLastName:(NSString*)lName andProfileImage:(NSString*)URL
 {
     self = [self initWithFirstName:fName andLastName:lName andProfileImage:URL andEmail:nil andSessionID:nil];
     
@@ -97,18 +97,16 @@ static UserAccount* loggedAccount;
     return self;
 }
 
--(id)initWithFirstName:(NSString *)fName andLastName:(NSString *)lName andProfileImage:(NSString*)URL andEmail:(NSString *)anEmail
+-(instancetype)initWithFirstName:(NSString *)fName andLastName:(NSString *)lName andProfileImage:(NSString*)URL andEmail:(NSString *)anEmail
 {
     self = [self initWithFirstName:fName andLastName:lName andProfileImage:URL andEmail:anEmail andSessionID:nil];
     
-    if (!self) {
-        return nil;
-    }
+    if (!self) return nil;
     
     return self;
 }
 
--(id)initWithFirstName:(NSString *)fName andLastName:(NSString *)lName andProfileImage:(NSString*)URL andEmail:(NSString *)anEmail andSessionID:(NSString *)sID
+-(instancetype)initWithFirstName:(NSString *)fName andLastName:(NSString *)lName andProfileImage:(NSString*)URL andEmail:(NSString *)anEmail andSessionID:(NSString *)sID
 {
     self = [super init];
     
@@ -116,16 +114,15 @@ static UserAccount* loggedAccount;
         return nil;
     }
     
-    if (!fName || [fName isEqual:[NSNull null]]) {
-        self.firstName = NSLocalizedString(@"DEFAULT_NAME", nil);
-    }
+    if (!fName || [fName isEqual:[NSNull null]]) self.firstName = NSLocalizedString(@"DEFAULT_NAME", nil);
     else self.firstName = fName;
     
     
-    if (!lName || [lName isEqual:[NSNull null]]) {
-        self.lastName = @"";
-    }
+    if (!lName || [lName isEqual:[NSNull null]]) self.lastName = @"";
     else self.lastName = lName;
+    
+    if (!anEmail || [anEmail isEqual:[NSNull null]]) self.email = @"";
+    else self.email = anEmail;
     
     self.imageURL = URL;
     

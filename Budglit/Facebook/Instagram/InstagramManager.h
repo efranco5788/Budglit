@@ -26,19 +26,15 @@
 @property (nonatomic, strong) InstagramFeed* filteredTmpInstaFeed;
 @property (nonatomic, strong) id <InstagramManagerDelegate> delegate;
 
--(id)initWithEngine;
-
--(id) initWithEngineHostName:(NSString*)hostName andClientID:(NSString*)cID andClientSecret:(NSString*)cSecret;
-
+- (instancetype)init NS_UNAVAILABLE;
+-(instancetype)initWithEngine;
+-(instancetype) initWithEngineHostName:(NSString*)hostName andClientID:(NSString*)cID andClientSecret:(NSString*)cSecret NS_DESIGNATED_INITIALIZER;
 -(InstagramObject*)instaAtIndex:(NSUInteger)index;
 
--(NSString*)getAuthorizationURL_String;
-
--(NSString*)getAPI_URI;
-
--(NSInteger)totalObjectCount;
-
--(NSArray*)getInstaObjs;
+@property (NS_NONATOMIC_IOSONLY, getter=getAuthorizationURL_String, readonly, copy) NSString *authorizationURL_String;
+@property (NS_NONATOMIC_IOSONLY, getter=getAPI_URI, readonly, copy) NSString *API_URI;
+@property (NS_NONATOMIC_IOSONLY, readonly) NSInteger totalObjectCount;
+@property (NS_NONATOMIC_IOSONLY, getter=getInstaObjs, readonly, copy) NSArray *instaObjs;
 
 -(void)pullRecentFeed;
 

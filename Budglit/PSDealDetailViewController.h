@@ -55,9 +55,8 @@
 
 -(IBAction)tapDetect:(UITapGestureRecognizer*)sender;
 
--(CGRect)getOriginalPosition;
+@property (NS_NONATOMIC_IOSONLY, getter=getOriginalPosition) CGRect originalPosition;
 
--(void)setOriginalPosition:(CGRect)frame;
 
 
 @end

@@ -16,12 +16,12 @@
 
 @implementation GNEngine
 
--(id)init
+-(instancetype)init
 {
     return [self initWithHostName:nil];
 }
 
--(id)initWithHostName:(NSString *)hostName
+-(instancetype)initWithHostName:(NSString *)hostName
 {
     self = [super initWithHostName:hostName];
     

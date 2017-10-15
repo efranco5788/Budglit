@@ -58,7 +58,7 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
     
     self.transitioningDelegate = self;
     
-    AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
     NSString* location = [appDelegate.locationManager retrieveCurrentLocation];
     
@@ -74,7 +74,7 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
     self.currentLocationText.text = location;
     
     if (self.budgetAmounts == nil) {
-        self.budgetAmounts = [NSArray arrayWithObjects:@"Free", @"5", @"10", @"15", @"20", @"25", @"30", @"35", @"40", @"45", @"50", @"55", @"60", @"65", @"70", @"75", @"80", @"85", @"90", @"95", @"100", nil];
+        self.budgetAmounts = @[@"Free", @"5", @"10", @"15", @"20", @"25", @"30", @"35", @"40", @"45", @"50", @"55", @"60", @"65", @"70", @"75", @"80", @"85", @"90", @"95", @"100"];
     }
     
     currentDistanceValue = 1;
@@ -112,7 +112,7 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
     NSString* distance = [NSString stringWithFormat:@"%li", (long)currentDistanceValue];
     
     // Update the current results
-    NSDictionary* criteria = [[NSDictionary alloc] initWithObjectsAndKeys:distance, NSLocalizedString(@"DISTANCE_FILTER", nil), nil];
+    NSDictionary* criteria = @{NSLocalizedString(@"DISTANCE_FILTER", nil): distance};
     
     
     [self toggleButtons];
@@ -143,7 +143,7 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
         }
         else
         {
-            NSString* dollarAmountToNearestTenth = [NSString stringWithFormat:@"%@%@",[weakSelf.budgetAmounts  objectAtIndex:budgetValue], NSLocalizedString(@"DOLLAR_ROUDED_NEAREST_TENTH", nil)];
+            NSString* dollarAmountToNearestTenth = [NSString stringWithFormat:@"%@%@",(weakSelf.budgetAmounts)[budgetValue], NSLocalizedString(@"DOLLAR_ROUDED_NEAREST_TENTH", nil)];
             
             budgetCriteria = dollarAmountToNearestTenth;
         }
@@ -186,7 +186,7 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
     }
     else if (currentState == BUSY) {
         
-        AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+        AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
         
         [appDelegate.databaseManager cancelDownloads:^(BOOL success) {
             
@@ -208,7 +208,7 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
     
     if (currentState == BUSY) {
         
-        AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+        AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
         
         [appDelegate.databaseManager cancelDownloads:^(BOOL success) {
             
@@ -236,7 +236,7 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
                 NSString* distance = [NSString stringWithFormat:@"%li", (long)currentDistanceValue];
                 
                 // Update the current results
-                NSDictionary* criteria = [[NSDictionary alloc] initWithObjectsAndKeys:distance, NSLocalizedString(@"DISTANCE_FILTER", nil), nil];
+                NSDictionary* criteria = @{NSLocalizedString(@"DISTANCE_FILTER", nil): distance};
                 
                 [self fetchSurroundingZipcodes:criteria];
                 
@@ -269,7 +269,7 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
         NSString* distance = [NSString stringWithFormat:@"%li", (long)currentDistanceValue];
         
         // Update the current results
-        NSDictionary* criteria = [[NSDictionary alloc] initWithObjectsAndKeys:distance, NSLocalizedString(@"DISTANCE_FILTER", nil), nil];
+        NSDictionary* criteria = @{NSLocalizedString(@"DISTANCE_FILTER", nil): distance};
         
         [self fetchSurroundingZipcodes:criteria];
     }
@@ -286,11 +286,11 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
     
     currentBudgetPickerValue = budgetValue; // Set the current values of the pickers
     
-    NSString* budgetCriteria = [@(budgetValue) stringValue];
+    NSString* budgetCriteria = (@(budgetValue)).stringValue;
     
-    NSArray* keys = [NSArray arrayWithObjects:NSLocalizedString(@"BUDGET_FILTER", nil), NSLocalizedString(@"BUDGET_AMOUNTS", nil), NSLocalizedString(@"ZIPCODE", nil), nil];
+    NSArray* keys = @[NSLocalizedString(@"BUDGET_FILTER", nil), NSLocalizedString(@"BUDGET_AMOUNTS", nil), NSLocalizedString(@"ZIPCODE", nil)];
     
-    NSArray* values = [NSArray arrayWithObjects: budgetCriteria, self.budgetAmounts, userZipcode, nil];
+    NSArray* values = @[budgetCriteria, self.budgetAmounts, userZipcode];
     
     NSDictionary* filterCriteria = [NSDictionary dictionaryWithObjects:values forKeys:keys];
     
@@ -329,22 +329,22 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
     
     NSString* userZipcode = [defaults valueForKey:NSLocalizedString(@"ZIPCODE", nil)];
     
-    AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
     NSString* currentDate = [appDelegate.databaseManager getCurrentDate];
     
-    NSArray* keys = [NSArray arrayWithObjects:NSLocalizedString(@"DISTANCE_FILTER", nil), NSLocalizedString(@"BUDGET_FILTER", nil), NSLocalizedString(@"DATE_FILTER", nil), NSLocalizedString(@"ZIPCODE", nil), NSLocalizedString(@"SURROUNDING_ZIPCODES", nil), nil];
+    NSArray* keys = @[NSLocalizedString(@"DISTANCE_FILTER", nil), NSLocalizedString(@"BUDGET_FILTER", nil), NSLocalizedString(@"DATE_FILTER", nil), NSLocalizedString(@"ZIPCODE", nil), NSLocalizedString(@"SURROUNDING_ZIPCODES", nil)];
     
     NSArray* values;
     
     if (zipcodes.count < 2) {
         
-        values = [NSArray arrayWithObjects:distanceCriteria, budgetCriteria, currentDate, userZipcode, NSLocalizedString(@"EMPTY_SURROUNDING_ZIPCODES", nil), nil];
+        values = @[distanceCriteria, budgetCriteria, currentDate, userZipcode, NSLocalizedString(@"EMPTY_SURROUNDING_ZIPCODES", nil)];
         
     }
     else{
         
-        values = [NSArray arrayWithObjects:distanceCriteria, budgetCriteria, currentDate, userZipcode, zipcodes, nil];
+        values = @[distanceCriteria, budgetCriteria, currentDate, userZipcode, zipcodes];
     }
     
     NSDictionary* filterCriteria = [NSDictionary dictionaryWithObjects:values forKeys:keys];
@@ -362,9 +362,9 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
 
 -(void)reloadDealResultsReturnCount:(NSDictionary *)searchCriteria
 {
-    AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
-    [appDelegate.databaseManager setDelegate:self];
+    (appDelegate.databaseManager).delegate = self;
     
     [appDelegate.databaseManager fetchTotalDealCountOnly:searchCriteria andSender:self];
     
@@ -397,7 +397,7 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
         
         DatabaseManager* dbManager = [DatabaseManager sharedDatabaseManager];
         
-        [dbManager setDelegate:self];
+        dbManager.delegate = self;
         
         NSDictionary* criteria = [self getCurrentSearchCriteria];
         
@@ -413,7 +413,7 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
 
 -(void)toggleButtons
 {
-    if ([self.doneButton isEnabled] || [self.viewResultsButton isEnabled]) {
+    if ((self.doneButton).enabled || (self.viewResultsButton).enabled) {
         
         currentState = BUSY;
         
@@ -426,21 +426,21 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
     }
     else{
         currentState = CLEAR;
-        colorButtonAnimation.fromValue = (__bridge id _Nullable)([[UIColor whiteColor] CGColor]);
+        colorButtonAnimation.fromValue = (__bridge id _Nullable)([UIColor whiteColor].CGColor);
         
         UIColor* toColor = [UIColor colorWithRed:249.0f/255.0f
                         green:60.0f/255.0f
                          blue:43.0f/255.0f
                         alpha:1.0f];
         
-        colorButtonAnimation.toValue = (__bridge id _Nullable)([toColor CGColor]);
+        colorButtonAnimation.toValue = (__bridge id _Nullable)(toColor.CGColor);
         
         
-        [colorFillTransitionAnimation setType:kCATransitionMoveIn];
-        [colorFillTransitionAnimation setSubtype:kCATransitionFromLeft];
+        colorFillTransitionAnimation.type = kCATransitionMoveIn;
+        colorFillTransitionAnimation.subtype = kCATransitionFromLeft;
         
         CAAnimationGroup* animationGroup = [CAAnimationGroup animation];
-        animationGroup.animations = [NSArray arrayWithObjects:colorFillTransitionAnimation, colorButtonAnimation, nil];
+        animationGroup.animations = @[colorFillTransitionAnimation, colorButtonAnimation];
         animationGroup.duration = 0.3;
         animationGroup.removedOnCompletion = NO;
         animationGroup.fillMode = kCAFillModeForwards;
@@ -456,9 +456,9 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
 
 -(void)fetchSurroundingZipcodes:(NSDictionary *)criteria
 {
-    AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
-    [appDelegate.locationManager setDelegate:self];
+    (appDelegate.locationManager).delegate = self;
     
     NSString* usersZipcode = [appDelegate.locationManager getCurrentZipcode];
     

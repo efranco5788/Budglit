@@ -14,8 +14,8 @@
 
 @property (nonatomic, strong) FacebookEngine* engine;
 
--(id) initWithEngine;
+-(instancetype) initWithEngine NS_DESIGNATED_INITIALIZER;
 
--(BOOL) isLoggedIn;
+@property (NS_NONATOMIC_IOSONLY, getter=isLoggedIn, readonly) BOOL loggedIn;
 
 @end

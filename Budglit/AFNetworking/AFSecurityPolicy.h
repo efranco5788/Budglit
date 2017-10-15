@@ -78,7 +78,7 @@ NS_ASSUME_NONNULL_BEGIN
  Returns the shared default security policy, which does not allow invalid certificates, validates domain name, and does not validate against pinned certificates or public keys.
  @return The default security policy.
  */
-+ (instancetype)defaultPolicy;
++ (AFSecurityPolicy*)defaultPolicy;
 
 ///---------------------
 /// @name Initialization

@@ -25,11 +25,11 @@
     
     self.restorationIdentifier = RESTORATION_STRING;
     
-    CGRect screenSize = [[UIScreen mainScreen] bounds];
+    CGRect screenSize = [UIScreen mainScreen].bounds;
     
     CGRect frameSize = CGRectMake(self.tableView.frame.origin.x, self.tableView.frame.origin.y, screenSize.size.width, self.tableView.frame.size.height);
     
-    [self.tableView setFrame:frameSize];
+    (self.tableView).frame = frameSize;
 }
 
 -(void)reloadDataWithNewData
@@ -46,7 +46,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
-    AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
     NSUInteger rows = [appDelegate.twitterManager totalTweetsCurrentlyLoaded];
     
@@ -56,7 +56,7 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
     Tweet* tweet = (Tweet*) [appDelegate.twitterManager tweetAtIndex:indexPath.row];
     
@@ -64,7 +64,7 @@
     
     [cell configureWithTweet:tweet];
     
-    [cell.tweetView setDelegate:self];
+    (cell.tweetView).delegate = self;
     
     [cell.tweetView setShowActionButtons:YES];
     
@@ -75,7 +75,7 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
     TWTRTweet* tweet = [appDelegate.twitterManager tweetAtIndex:indexPath.row];
     

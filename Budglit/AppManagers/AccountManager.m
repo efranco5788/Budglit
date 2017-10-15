@@ -27,7 +27,7 @@ static AccountManager* sharedManager;
     
 }
 
-@property (nonatomic, strong) UserAccount* signedAccount;
+//@property (nonatomic, strong) UserAccount* signedAccount;
 
 @end
 
@@ -42,7 +42,16 @@ static AccountManager* sharedManager;
     return sharedManager;
 }
 
--(id)initWithEngineHostName:(NSString *)hostName
+-(instancetype)init
+{
+    self = [self initWithEngineHostName:nil];
+    
+    if(!self) return nil;
+    
+    return self;
+}
+
+-(instancetype)initWithEngineHostName:(NSString *)hostName
 {
     self = [super init];
     
@@ -50,22 +59,59 @@ static AccountManager* sharedManager;
     
     self.engine = [[AccountEngine alloc] initWithHostName:hostName];
     
-    [self.engine setDelegate:self];
+    (self.engine).delegate = self;
     
     //self.signedAccount = [[UserAccount alloc] init];
     
     return self;
 }
 
+-(void)sessionValidator
+{
+    [self.engine validateSessionAddCompletion:^(BOOL success) {
+        
+    }];
+}
+
+// Get User information already stored in device
 -(UserAccount*)getSignedAccount
 {
     NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
     
     NSData* userData = [defaults valueForKey:NSLocalizedString(@"ACCOUNT", nil)];
     
+    if (!userData) return nil;
+    
     UserAccount* user = [NSKeyedUnarchiver unarchiveObjectWithData:userData];
     
     return user;
+}
+
+// Fetch User Account from server
+-(void)getSessionAccount:(NSString *)sessionID AddCompletion:(generalReturnBlockResponse)completionHandler
+{
+    NSString* sID;
+    
+    if(sessionID) sID = [NSString stringWithString:sessionID];
+    else sID = [self.engine getSessionID];
+    
+    if(!sID) [self.delegate loginFailedWithError:nil];
+    
+    [self.engine fetchSessionUserAccountAddCompletionHandler:^(id dataResponse) {
+        
+        NSLog(@"request brought back %@", dataResponse);
+        
+    }];
+}
+
+-(NSString *)getSessionID
+{
+    return [self.engine getSessionID];
+}
+
+-(void)clearSessionInfo
+{
+    [self.engine clearSession];
 }
 
 -(void)login:(NSDictionary *)loginCredentials
@@ -97,19 +143,22 @@ static AccountManager* sharedManager;
 
 -(void)saveCredentials
 {
+    
     if (!self.signedAccount) {
         [self.delegate credentialsNotSaved];
         return;
     }
     
+    NSLog(@"here %@", self.signedAccount);
+    
     NSUserDefaults* userDefaults = [NSUserDefaults standardUserDefaults];
     
     NSData* accountData = [NSKeyedArchiver archivedDataWithRootObject:self.signedAccount];
     
-    [userDefaults setValue:accountData forKey:NSLocalizedString(@"ACCOUNT", nil)];
+    [userDefaults setObject:accountData forKey:NSLocalizedString(@"ACCOUNT", nil)];
     
     [userDefaults synchronize];
-    
+
     [[NSNotificationCenter defaultCenter] postNotificationName:NSLocalizedString(@"USER_CHANGED_NOTIFICATION", nil) object:nil];
     
     [self.delegate credentialsSaved];
@@ -130,24 +179,38 @@ static AccountManager* sharedManager;
 
 -(void)logout
 {
-    [self.signedAccount clear];
+    [self.engine logout];
+}
+
+-(void)logoutAddCompletion:(generalReturnBlockResponse)completionHandler
+{
     
-    NSUserDefaults* userDefaults = [NSUserDefaults standardUserDefaults];
+    [self.engine logoutAddCompletion:^(BOOL success) {
+        if (success) {
+            
+            [self.engine clearSession];
+            
+            [self.signedAccount clear];
+            
+            NSUserDefaults* userDefaults = [NSUserDefaults standardUserDefaults];
+            
+            NSData* accountData = [NSKeyedArchiver archivedDataWithRootObject:self.signedAccount];
+            
+            [userDefaults setValue:accountData forKey:NSLocalizedString(@"ACCOUNT", nil)];
+            
+            [userDefaults synchronize];
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:NSLocalizedString(@"USER_CHANGED_NOTIFICATION", nil) object:nil];
+            
+            AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
+            
+            // Reset the budget amount
+            [appDelegate.budgetManager resetBudget];
+            
+            [self.delegate logoutSucessfully];
+        }
+    }];
     
-    NSData* accountData = [NSKeyedArchiver archivedDataWithRootObject:self.signedAccount];
-    
-    [userDefaults setValue:accountData forKey:NSLocalizedString(@"ACCOUNT", nil)];
-    
-    [userDefaults synchronize];
-    
-    [[NSNotificationCenter defaultCenter] postNotificationName:NSLocalizedString(@"USER_CHANGED_NOTIFICATION", nil) object:nil];
-    
-    AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
-    
-    // Reset the budget amount
-    [appDelegate.budgetManager resetBudget];
-    
-    [self.delegate logoutSucessfully];
 }
 
 #pragma mark -

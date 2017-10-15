@@ -82,7 +82,7 @@ static dispatch_group_t http_request_operation_completion_group() {
 
 - (id)responseObject {
     [self.lock lock];
-    if (!_responseObject && [self isFinished] && !self.error) {
+    if (!_responseObject && self.finished && !self.error) {
         NSError *error = nil;
         self.responseObject = [self.responseSerializer responseObjectForResponse:self.response data:self.responseData error:&error];
         if (error) {
@@ -98,7 +98,7 @@ static dispatch_group_t http_request_operation_completion_group() {
     if (_responseSerializationError) {
         return _responseSerializationError;
     } else {
-        return [super error];
+        return super.error;
     }
 }
 
@@ -155,14 +155,14 @@ static dispatch_group_t http_request_operation_completion_group() {
 
     u_int64_t offset = 0;
     if ([self.outputStream propertyForKey:NSStreamFileCurrentOffsetKey]) {
-        offset = [(NSNumber *)[self.outputStream propertyForKey:NSStreamFileCurrentOffsetKey] unsignedLongLongValue];
+        offset = ((NSNumber *)[self.outputStream propertyForKey:NSStreamFileCurrentOffsetKey]).unsignedLongLongValue;
     } else {
-        offset = [(NSData *)[self.outputStream propertyForKey:NSStreamDataWrittenToMemoryStreamKey] length];
+        offset = ((NSData *)[self.outputStream propertyForKey:NSStreamDataWrittenToMemoryStreamKey]).length;
     }
 
     NSMutableURLRequest *mutableURLRequest = [self.request mutableCopy];
-    if ([self.response respondsToSelector:@selector(allHeaderFields)] && [[self.response allHeaderFields] valueForKey:@"ETag"]) {
-        [mutableURLRequest setValue:[[self.response allHeaderFields] valueForKey:@"ETag"] forHTTPHeaderField:@"If-Range"];
+    if ([self.response respondsToSelector:@selector(allHeaderFields)] && [(self.response).allHeaderFields valueForKey:@"ETag"]) {
+        [mutableURLRequest setValue:[(self.response).allHeaderFields valueForKey:@"ETag"] forHTTPHeaderField:@"If-Range"];
     }
     [mutableURLRequest setValue:[NSString stringWithFormat:@"bytes=%llu-", offset] forHTTPHeaderField:@"Range"];
     self.request = mutableURLRequest;
@@ -174,7 +174,7 @@ static dispatch_group_t http_request_operation_completion_group() {
     return YES;
 }
 
-- (id)initWithCoder:(NSCoder *)decoder {
+- (instancetype)initWithCoder:(NSCoder *)decoder {
     self = [super initWithCoder:decoder];
     if (!self) {
         return nil;

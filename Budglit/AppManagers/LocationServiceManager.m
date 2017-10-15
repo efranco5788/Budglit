@@ -72,12 +72,12 @@ static LocationSeviceManager* sharedManager;
     return sharedManager;
 }
 
-- (id)init
+- (instancetype)init
 {
     return [self initWithEngineHostName:nil];
 }
 
--(id)initWithEngineHostName:(NSString *)hostName
+-(instancetype)initWithEngineHostName:(NSString *)hostName
 {
     self = [super init];
     
@@ -87,7 +87,7 @@ static LocationSeviceManager* sharedManager;
     
     self.engine = [[GNEngine alloc] initWithHostName:hostName];
     
-    [self.engine setDelegate:self];
+    (self.engine).delegate = self;
     
     self.locationHistory = [[NSArray alloc] init];
     
@@ -114,7 +114,7 @@ static LocationSeviceManager* sharedManager;
     
     for (NSString* state in allStates) {
         
-        NSMutableDictionary* cityPostal = [[dictionary objectForKey:state] mutableCopy];
+        NSMutableDictionary* cityPostal = [dictionary[state] mutableCopy];
         
         NSString* stateAbbr = [[NSString alloc] initWithString:[cityPostal valueForKey:ABBREVIATION]];
         
@@ -135,7 +135,7 @@ static LocationSeviceManager* sharedManager;
         
     }
     
-    [self setCities:cityList.copy];
+    self.cities = cityList.copy;
     
     NSLog(@"Offline Location Database loaded");
 }
@@ -233,7 +233,7 @@ static LocationSeviceManager* sharedManager;
         zipcode = nil;
         
         // Check if user input is 5 digits long
-        if ([aZipcode length] < 5 || [aZipcode length] > 5) {
+        if (aZipcode.length < 5 || aZipcode.length > 5) {
             return NO;
         }
         else
@@ -260,13 +260,13 @@ static LocationSeviceManager* sharedManager;
 {
     if (self.locationManager == nil) {
         self.locationManager = [[CLLocationManager alloc] init];
-        [self.locationManager setDesiredAccuracy:kCLLocationAccuracyNearestTenMeters];
+        (self.locationManager).desiredAccuracy = kCLLocationAccuracyNearestTenMeters;
         [self.locationManager setDistanceFilter:DISTANCE_FILTER_THRESHOLD];
         self.locationHistory = [[NSArray alloc] init];
         attempts = 0;
     }
     
-    [self.locationManager setDelegate:self];
+    (self.locationManager).delegate = self;
     
     if ([CLLocationManager authorizationStatus] != kCLAuthorizationStatusAuthorizedWhenInUse) {
         [self.locationManager requestWhenInUseAuthorization];
@@ -312,7 +312,7 @@ static LocationSeviceManager* sharedManager;
 {
     [self stopUpdates];
     
-    CLLocation* recentLocation = [locations lastObject];
+    CLLocation* recentLocation = locations.lastObject;
     
     if (recentLocation.horizontalAccuracy < 0) {
         NSLog(@"horizontal accuracy error");
@@ -321,7 +321,7 @@ static LocationSeviceManager* sharedManager;
     
     NSDate* locationDate = recentLocation.timestamp;
     
-    NSTimeInterval locationAge = [locationDate timeIntervalSinceNow];
+    NSTimeInterval locationAge = locationDate.timeIntervalSinceNow;
     
     float ageOfLocation = fabs(locationAge);
     
@@ -332,7 +332,7 @@ static LocationSeviceManager* sharedManager;
         
         NSDate* recordedTime = [NSDate date];
         
-        NSDictionary* currentLocation = [[NSDictionary alloc] initWithObjectsAndKeys:recentLocation, LOCATION, recordedTime, RECORDED_TIME, nil];
+        NSDictionary* currentLocation = @{LOCATION: recentLocation, RECORDED_TIME: recordedTime};
         
         [self recordLocation:currentLocation];
         
@@ -414,9 +414,9 @@ static LocationSeviceManager* sharedManager;
     
     if (locations == nil) {
         
-        NSDictionary* tempRecentLocation = [self.locationHistory lastObject];
+        NSDictionary* tempRecentLocation = (self.locationHistory).lastObject;
         
-        CLLocation* mostRecentLocation = [tempRecentLocation objectForKey:LOCATION];
+        CLLocation* mostRecentLocation = tempRecentLocation[LOCATION];
         
         [coder reverseGeocodeLocation: mostRecentLocation completionHandler:^(NSArray* placemarks, NSError* error){
             
@@ -426,15 +426,15 @@ static LocationSeviceManager* sharedManager;
             }
             else
             {
-                CLPlacemark* currentLocation = [placemarks objectAtIndex:0];
+                CLPlacemark* currentLocation = placemarks[0];
                 
-                NSDictionary* address = [currentLocation addressDictionary];
+                NSDictionary* address = currentLocation.addressDictionary;
                 
                 NSString* cityName = [address valueForKey:@"City"] ;
                 
                 NSString* state = [address valueForKey:@"State"];
                 
-                NSString* postal = [currentLocation postalCode];
+                NSString* postal = currentLocation.postalCode;
                 
                 
                 CityDataObject* city = [[CityDataObject alloc] initWithCity:cityName State:state stateAbbr:state andPostal:postal];
@@ -475,9 +475,9 @@ static LocationSeviceManager* sharedManager;
                 }
                 else
                 {
-                    CLPlacemark* currentLocation = [placemarks objectAtIndex:0];
+                    CLPlacemark* currentLocation = placemarks[0];
                     
-                    NSString* recentZipcode = [currentLocation postalCode];
+                    NSString* recentZipcode = currentLocation.postalCode;
                     
                     NSLog(@"Zipcode: %@", recentZipcode);
                     
@@ -499,7 +499,7 @@ static LocationSeviceManager* sharedManager;
     
     [coder geocodeAddressString:stringAddress inRegion:nil completionHandler:^(NSArray<CLPlacemark *> * _Nullable placemarks, NSError * _Nullable error) {
         
-        CLPlacemark* location = [placemarks objectAtIndex:0];
+        CLPlacemark* location = placemarks[0];
         
         CLLocationCoordinate2D coordinates = location.location.coordinate;
         
@@ -513,11 +513,11 @@ static LocationSeviceManager* sharedManager;
 
 -(BOOL)hasMetLocationTimeThreshold
 {
-    NSDictionary* currentLocation = [self.locationHistory lastObject];
+    NSDictionary* currentLocation = (self.locationHistory).lastObject;
     
-    NSDate* timestamp = [currentLocation objectForKey:RECORDED_TIME];
+    NSDate* timestamp = currentLocation[RECORDED_TIME];
     
-    NSTimeInterval age = [timestamp timeIntervalSinceNow];
+    NSTimeInterval age = timestamp.timeIntervalSinceNow;
     
     if (fabs(age) <= LOCATION_TIME_THRESHOLD) {
         return NO;
@@ -544,7 +544,7 @@ static LocationSeviceManager* sharedManager;
 {
     NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
     
-    NSNumber* launchedOnce = [NSNumber numberWithBool:YES];
+    NSNumber* launchedOnce = @YES;
     
     [defaults setObject:launchedOnce forKey:HAS_LAUNCHED_ONCE];
     
@@ -563,7 +563,7 @@ static LocationSeviceManager* sharedManager;
         return YES;
     }
     
-    if ([oldString length] >= ZIPCODE_LENGTH) {
+    if (oldString.length >= ZIPCODE_LENGTH) {
         return NO;
     }
     else return YES;
@@ -576,7 +576,7 @@ static LocationSeviceManager* sharedManager;
     }
     else
     {
-        CLLocation* currentLocation = [[self.locationHistory lastObject] valueForKey:LOCATION];
+        CLLocation* currentLocation = [(self.locationHistory).lastObject valueForKey:LOCATION];
         
         return currentLocation;
     }
@@ -595,7 +595,7 @@ static LocationSeviceManager* sharedManager;
 {
     CLLocation* currentLocation = [self getCurrentLocation];
     
-    NSDictionary* objectDictionary = [NSDictionary dictionary];
+    NSDictionary* objectDictionary = @{};
     
     [self fetchSurroundingZipcodesWithCurrentLocation:currentLocation andObjects:objectDictionary];
 }
@@ -607,13 +607,13 @@ static LocationSeviceManager* sharedManager;
         currentLocation = [self getCurrentLocation];
     }
 
-    NSNumber* latitude = [NSNumber numberWithDouble:currentLocation.coordinate.latitude];
+    NSNumber* latitude = @(currentLocation.coordinate.latitude);
     
-    NSNumber* longtitude = [NSNumber numberWithDouble:currentLocation.coordinate.longitude];
+    NSNumber* longtitude = @(currentLocation.coordinate.longitude);
     
-    NSString* lat = [latitude stringValue];
+    NSString* lat = latitude.stringValue;
     
-    NSString* lng = [longtitude stringValue];
+    NSString* lng = longtitude.stringValue;
     
     
     
@@ -623,19 +623,19 @@ static LocationSeviceManager* sharedManager;
         miRadius = DEFAULT_RADIUS;
     }
     
-    double milesToKM = ([miRadius doubleValue] * KM_PER_MILE);
+    double milesToKM = (miRadius.doubleValue * KM_PER_MILE);
     
-    NSNumber* totalKM = [NSNumber numberWithDouble:milesToKM];
+    NSNumber* totalKM = @(milesToKM);
     
-    NSString* kmRadius = [totalKM stringValue];
+    NSString* kmRadius = totalKM.stringValue;
     
     NSString* rows = MAX_ROWS;
     
     NSString* country = @"US";
     
-    NSArray* keys = [NSArray arrayWithObjects:KEY_FOR_LATITUDE, KEY_FOR_LONGTITUDE, KEY_FOR_RADIUS, KEY_FOR_ROWS, KEY_FOR_COUNTRY, KEY_FOR_LOCAL_COUNTRY, KEY_FOR_USERNAME, nil];
+    NSArray* keys = @[KEY_FOR_LATITUDE, KEY_FOR_LONGTITUDE, KEY_FOR_RADIUS, KEY_FOR_ROWS, KEY_FOR_COUNTRY, KEY_FOR_LOCAL_COUNTRY, KEY_FOR_USERNAME];
     
-    NSArray* objects = [NSArray arrayWithObjects:lat, lng, kmRadius, rows, country, @"true", GN_API_PARAM_USERNAME, nil];
+    NSArray* objects = @[lat, lng, kmRadius, rows, country, @"true", GN_API_PARAM_USERNAME];
     
     NSDictionary* parameters = [NSDictionary dictionaryWithObjects:objects forKeys:keys];
     
@@ -657,21 +657,21 @@ static LocationSeviceManager* sharedManager;
         miRadius = DEFAULT_RADIUS;
     }
     
-    double milesToKM = ([miRadius doubleValue] * KM_PER_MILE);
+    double milesToKM = (miRadius.doubleValue * KM_PER_MILE);
     
-    NSNumber* totalKM = [NSNumber numberWithDouble:milesToKM];
+    NSNumber* totalKM = @(milesToKM);
     
-    NSString* kmRadius = [totalKM stringValue];
+    NSString* kmRadius = totalKM.stringValue;
     
-    NSString* rows = MAX_ROWS;
+    //NSString* rows = MAX_ROWS;
     
-    NSString* country = @"US";
+    //NSString* country = @"US";
     
-    NSString* postal = [KEY_FOR_POSTAL_CODE lowercaseString];
+    NSString* postal = (KEY_FOR_POSTAL_CODE).lowercaseString;
     
-    NSArray* keys = [NSArray arrayWithObjects:postal, KEY_FOR_RADIUS, nil];
+    NSArray* keys = @[postal, KEY_FOR_RADIUS];
     
-    NSArray* objects = [NSArray arrayWithObjects: postalCode, kmRadius, nil];
+    NSArray* objects = @[postalCode, kmRadius];
     
     //NSArray* keys = [NSArray arrayWithObjects:postal, KEY_FOR_COUNTRY, KEY_FOR_RADIUS, KEY_FOR_ROWS, KEY_FOR_USERNAME, nil];
     
@@ -725,7 +725,7 @@ static LocationSeviceManager* sharedManager;
 {
     __block NSMutableArray* allPostalCodes = [[NSMutableArray alloc] init];
     
-    NSArray* fetchedPostalCodes = [postalCodes objectForKey:KEY_FOR_ALL_POSTAL_CODES];
+    NSArray* fetchedPostalCodes = postalCodes[KEY_FOR_ALL_POSTAL_CODES];
     
     for (NSDictionary* postalCode in fetchedPostalCodes) {
         
@@ -735,7 +735,7 @@ static LocationSeviceManager* sharedManager;
         
         NSString* longtitude = [[postalCode valueForKey:KEY_FOR_LONGTITUDE] stringValue];
         
-        NSDictionary* coordinates = [[NSDictionary alloc] initWithObjectsAndKeys:longtitude, KEY_FOR_LONGTITUDE, latitude, KEY_FOR_LATITUDE, nil];
+        NSDictionary* coordinates = @{KEY_FOR_LONGTITUDE: longtitude, KEY_FOR_LATITUDE: latitude};
         
         PostalCode* newPostalCode = [[PostalCode alloc] initWithPostalCode:Pcode andCoordinates:coordinates];
         

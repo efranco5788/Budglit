@@ -21,11 +21,11 @@
 
 @property (nonatomic, copy) NSArray* budgetHistory;
 
--(id) init;
+-(instancetype) init;
 
--(BOOL) isBudgetExists;
+@property (NS_NONATOMIC_IOSONLY, getter=isBudgetExists, readonly) BOOL budgetExists;
 
--(NSString*) retreieveBudget;
+@property (NS_NONATOMIC_IOSONLY, readonly, copy) NSString *retreieveBudget;
 
 -(void) addBudget:(NSString*)aBudget;
 

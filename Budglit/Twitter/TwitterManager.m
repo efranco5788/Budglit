@@ -51,7 +51,16 @@ typedef NS_ENUM(NSInteger, NSTwitterFilterType) {
 
 @implementation TwitterManager
 
--(id)initWithEngineHostName:(NSString *)hostName andTwitterKeys:(NSDictionary *)keys
+-(instancetype)init
+{
+    self = [self initWithEngineHostName:nil andTwitterKeys:nil];
+    
+    if (!self) return nil;
+    
+    return self;
+}
+
+-(instancetype)initWithEngineHostName:(NSString *)hostName andTwitterKeys:(NSDictionary *)keys
 {
     self = [super init];
     
@@ -89,7 +98,7 @@ typedef NS_ENUM(NSInteger, NSTwitterFilterType) {
     
     if (currentTweets != nil) {
         
-        TWTRTweet* tweet = [currentTweets objectAtIndex:index];
+        TWTRTweet* tweet = currentTweets[index];
         return tweet;
     }
     else{
@@ -159,17 +168,17 @@ typedef NS_ENUM(NSInteger, NSTwitterFilterType) {
 
     NSString* query = mutableQuery.copy;
     
-    [params setObject:query forKey:TWITTER_SEARCH_QUERY_KEY];
+    params[TWITTER_SEARCH_QUERY_KEY] = query;
     
     CLLocationCoordinate2D coord = [deal getCoordinates];
     
     NSString* geocode = [NSString stringWithFormat:@"%f,%f,%@km", coord.latitude, coord.longitude, TWITTER_SEARCH_GEOCODE_RADIUS_KM_DEFAULT];
     
-    [params setObject:TWITTER_SEARCH_COUNT_DEFAULT forKey:TWITTER_SEARCH_COUNT_KEY];
+    params[TWITTER_SEARCH_COUNT_KEY] = TWITTER_SEARCH_COUNT_DEFAULT;
     
-    [params setObject:geocode forKey:TWITTER_SEARCH_GEOCODE_KEY];
+    params[TWITTER_SEARCH_GEOCODE_KEY] = geocode;
     
-    [params setObject:TWITTER_SEARCH_RESULT_TYPE_DEFAULT forKey:TWITTER_SEARCH_RESULT_TYPE_KEY];
+    params[TWITTER_SEARCH_RESULT_TYPE_KEY] = TWITTER_SEARCH_RESULT_TYPE_DEFAULT;
     
     return [self.engine constructSearchRequestWithParams:params.copy];
 }

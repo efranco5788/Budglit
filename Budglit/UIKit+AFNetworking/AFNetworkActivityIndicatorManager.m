@@ -32,13 +32,13 @@
 static NSTimeInterval const kAFNetworkActivityIndicatorInvisibilityDelay = 0.17;
 
 static NSURLRequest * AFNetworkRequestFromNotification(NSNotification *notification) {
-    if ([[notification object] isKindOfClass:[AFURLConnectionOperation class]]) {
-        return [(AFURLConnectionOperation *)[notification object] request];
+    if ([notification.object isKindOfClass:[AFURLConnectionOperation class]]) {
+        return ((AFURLConnectionOperation *)notification.object).request;
     }
 
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
-    if ([[notification object] respondsToSelector:@selector(originalRequest)]) {
-        return [(NSURLSessionTask *)[notification object] originalRequest];
+    if ([notification.object respondsToSelector:@selector(originalRequest)]) {
+        return ((NSURLSessionTask *)notification.object).originalRequest;
     }
 #endif
 
@@ -57,7 +57,7 @@ static NSURLRequest * AFNetworkRequestFromNotification(NSNotification *notificat
 @implementation AFNetworkActivityIndicatorManager
 @dynamic networkActivityIndicatorVisible;
 
-+ (instancetype)sharedManager {
++ (AFNetworkActivityIndicatorManager*)sharedManager {
     static AFNetworkActivityIndicatorManager *_sharedManager = nil;
     static dispatch_once_t oncePredicate;
     dispatch_once(&oncePredicate, ^{
@@ -71,7 +71,7 @@ static NSURLRequest * AFNetworkRequestFromNotification(NSNotification *notificat
     return [NSSet setWithObject:@"activityCount"];
 }
 
-- (id)init {
+- (instancetype)init {
     self = [super init];
     if (!self) {
         return nil;
@@ -98,7 +98,7 @@ static NSURLRequest * AFNetworkRequestFromNotification(NSNotification *notificat
 - (void)updateNetworkActivityIndicatorVisibilityDelayed {
     if (self.enabled) {
         // Delay hiding of activity indicator for a short interval, to avoid flickering
-        if (![self isNetworkActivityIndicatorVisible]) {
+        if (!self.isNetworkActivityIndicatorVisible) {
             [self.activityIndicatorVisibilityTimer invalidate];
             self.activityIndicatorVisibilityTimer = [NSTimer timerWithTimeInterval:kAFNetworkActivityIndicatorInvisibilityDelay target:self selector:@selector(updateNetworkActivityIndicatorVisibility) userInfo:nil repeats:NO];
             [[NSRunLoop mainRunLoop] addTimer:self.activityIndicatorVisibilityTimer forMode:NSRunLoopCommonModes];
@@ -113,7 +113,7 @@ static NSURLRequest * AFNetworkRequestFromNotification(NSNotification *notificat
 }
 
 - (void)updateNetworkActivityIndicatorVisibility {
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:[self isNetworkActivityIndicatorVisible]];
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = self.isNetworkActivityIndicatorVisible;
 }
 
 - (void)setActivityCount:(NSInteger)activityCount {
@@ -154,13 +154,13 @@ static NSURLRequest * AFNetworkRequestFromNotification(NSNotification *notificat
 }
 
 - (void)networkRequestDidStart:(NSNotification *)notification {
-    if ([AFNetworkRequestFromNotification(notification) URL]) {
+    if (AFNetworkRequestFromNotification(notification).URL) {
         [self incrementActivityCount];
     }
 }
 
 - (void)networkRequestDidFinish:(NSNotification *)notification {
-    if ([AFNetworkRequestFromNotification(notification) URL]) {
+    if (AFNetworkRequestFromNotification(notification).URL) {
         [self decrementActivityCount];
     }
 }

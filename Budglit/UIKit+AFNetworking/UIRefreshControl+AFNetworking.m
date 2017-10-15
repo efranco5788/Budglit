@@ -33,7 +33,7 @@
 
 @interface AFRefreshControlNotificationObserver : NSObject
 @property (readonly, nonatomic, weak) UIRefreshControl *refreshControl;
-- (instancetype)initWithActivityRefreshControl:(UIRefreshControl *)refreshControl;
+- (instancetype)initWithActivityRefreshControl:(UIRefreshControl *)refreshControl NS_DESIGNATED_INITIALIZER;
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED >= 70000
 - (void)setRefreshingWithStateOfTask:(NSURLSessionTask *)task;
@@ -66,6 +66,15 @@
 @end
 
 @implementation AFRefreshControlNotificationObserver
+
+-(instancetype)init
+{
+    self = [self initWithActivityRefreshControl:nil];
+    
+    if (!self) return nil;
+    
+    return self;
+}
 
 - (instancetype)initWithActivityRefreshControl:(UIRefreshControl *)refreshControl
 {
@@ -112,8 +121,8 @@
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wreceiver-is-weak"
 #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
-        if (![operation isFinished]) {
-            if ([operation isExecuting]) {
+        if (!operation.finished) {
+            if (operation.executing) {
                 [self.refreshControl beginRefreshing];
             } else {
                 [self.refreshControl endRefreshing];

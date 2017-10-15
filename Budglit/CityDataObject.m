@@ -15,7 +15,7 @@
     return [self initWithCity:nil State:nil stateAbbr:nil andPostal:nil];
 }
 
--(id)initWithCity:(NSString *)city State:(NSString *)state stateAbbr:(NSString *)abbr andPostal:(NSString *)postalCode
+-(instancetype)initWithCity:(NSString *)city State:(NSString *)state stateAbbr:(NSString *)abbr andPostal:(NSString *)postalCode
 {
     
     self = [super init];

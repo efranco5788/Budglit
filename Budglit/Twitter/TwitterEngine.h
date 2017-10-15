@@ -22,13 +22,13 @@ typedef void (^TwitterResponseResult)(BOOL response, id responseObject);
 
 @property (strong, nonatomic) NSMutableArray* twitterRequestHistory;
 
--(id)initWithHostName:(NSString*)hostName andConsumerKey:(NSString*)key andConsumerSecret:(NSString*)secret;
+-(instancetype)initWithHostName:(NSString*)hostName andConsumerKey:(NSString*)key andConsumerSecret:(NSString*)secret NS_DESIGNATED_INITIALIZER;
 
 -(void)extractTokenVerifierFromURL:(NSString*)URL;
 
--(NSDictionary*)getTokenVerifier;
+@property (NS_NONATOMIC_IOSONLY, getter=getTokenVerifier, readonly, copy) NSDictionary *tokenVerifier;
 
--(BOOL)accessTokenExists;
+@property (NS_NONATOMIC_IOSONLY, readonly) BOOL accessTokenExists;
 
 -(TwitterFeed*)filterTwitterFeed:(TwitterFeed*)feed ByUserMention:(NSString*)username;
 
@@ -38,11 +38,11 @@ typedef void (^TwitterResponseResult)(BOOL response, id responseObject);
 
 -(TwitterRequestObject*) constructAuthorizationParam:(TwitterRequestObject*)requestObject;
 
--(TwitterRequestObject*) constructAuthenticateRequest;
+@property (NS_NONATOMIC_IOSONLY, readonly, strong) TwitterRequestObject *constructAuthenticateRequest;
 
 -(TwitterRequestObject*) constructTokenRequest:(NSDictionary*) additionalParams;
 
--(TwitterRequestObject*) constructAccessTokenRequest;
+@property (NS_NONATOMIC_IOSONLY, readonly, strong) TwitterRequestObject *constructAccessTokenRequest;
 
 -(TwitterRequestObject*) constructSearchRequestWithParams:(NSDictionary*)params;
 

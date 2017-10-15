@@ -13,7 +13,7 @@
 
 typedef void(^parseCompletionBlock)(NSArray* parsedList);
 
--(id)initParser;
+-(instancetype)initParser NS_DESIGNATED_INITIALIZER;
 
 -(void)parseDeals:(NSArray*)list addCompletionHandler:(parseCompletionBlock)completionBlock;
 

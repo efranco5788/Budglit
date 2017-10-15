@@ -48,17 +48,17 @@ static NSString *userProfileIdentifier = @"profileCell";
 
 -(void)updateUser:(NSNotification*)notification
 {
-    AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
     UserAccount* user = [appDelegate.accountManager getSignedAccount];
     
     UserProfileTableViewCell* profileCell = (UserProfileTableViewCell*) notification.object;
 
-    [profileCell.textLabel setText:user.firstName];
+    (profileCell.textLabel).text = user.firstName;
     
     UIImage* image = [user getProfileImage];
     
-    [profileCell.imageView setImage:image];
+    (profileCell.imageView).image = image;
 }
 
 
@@ -136,17 +136,18 @@ static NSString *userProfileIdentifier = @"profileCell";
         UserProfileTableViewCell* cell = (UserProfileTableViewCell*) [self.tableView dequeueReusableCellWithIdentifier:userProfileIdentifier];
         
         CGRect frame = CGRectMake(10, 0, MAX_USER_ROW_HEIGHT, MAX_USER_ROW_HEIGHT);
-        [cell.imageView setBounds:frame];
-        [cell.imageView setFrame:frame];
+        (cell.imageView).bounds = frame;
+        (cell.imageView).frame = frame;
         
         CGRect labelFrame = CGRectMake((frame.size.width + 20), cell.center.y, (cell.frame.size.width / 2), (cell.frame.size.height / 2));
         
-        [cell.textLabel setFrame:labelFrame];
+        (cell.textLabel).frame = labelFrame;
         
         [cell.imageView.layer setMasksToBounds:YES];
-        [cell.imageView.layer setCornerRadius:(cell.imageView.frame.size.width / 2)];
+        (cell.imageView.layer).cornerRadius = (cell.imageView.frame.size.width / 2);
         [cell.textLabel setAdjustsFontSizeToFitWidth:YES];
-        [cell setContentMode:UIViewContentModeScaleAspectFit];
+        cell.contentMode = UIViewContentModeScaleAspectFit;
+        cell.imageView.contentMode = UIViewContentModeScaleAspectFit;
         
         return cell;
     }

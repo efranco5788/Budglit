@@ -43,15 +43,14 @@ extern NSString* const kDefaultEventEndNotification;
 @property (nonatomic, strong) ImageStateObject* imgStateObject;
 @property (nonatomic, strong) MZTimerLabel* eventCountDwn;
 
-- (id) initWithVenueName:(NSString*) venue andVenueAddress:(NSString*) anAddress andVenueDescription:(NSString*) aVenueDes andVenueTwtrUsername:(NSString*)useranme andDate:(NSString*)dateString andStartDate:(NSString*)start andEndDate:(NSString*)end andDealDescription:(NSString*) aDealDescription andPhoneNumber:(NSString*) aNumber andCity:(NSString*) aCity andState:(NSString*) aState andZipcode:(NSString*)aZip andBudget:(double) aBudget andDealID:(NSInteger) aDealID andURLImage:(NSString*) url andAddTags:(NSArray*) dealTags;
+- (instancetype) initWithVenueName:(NSString*) venue andVenueAddress:(NSString*) anAddress andVenueDescription:(NSString*) aVenueDes andVenueTwtrUsername:(NSString*)useranme andDate:(NSString*)dateString andStartDate:(NSString*)start andEndDate:(NSString*)end andDealDescription:(NSString*) aDealDescription andPhoneNumber:(NSString*) aNumber andCity:(NSString*) aCity andState:(NSString*) aState andZipcode:(NSString*)aZip andBudget:(double) aBudget andDealID:(NSInteger) aDealID andURLImage:(NSString*) url andAddTags:(NSArray*) dealTags NS_DESIGNATED_INITIALIZER;
 
--(void) setCoordinates:(CLLocationCoordinate2D) locationCoordinates;
 
--(NSString*)getAddressString;
+@property (NS_NONATOMIC_IOSONLY, getter=getAddressString, readonly, copy) NSString *addressString;
 
--(CLLocationCoordinate2D) getCoordinates;
+@property (NS_NONATOMIC_IOSONLY, getter=getCoordinates) CLLocationCoordinate2D coordinates;
 
--(NSString*)detailDescription;
+@property (NS_NONATOMIC_IOSONLY, readonly, copy) NSString *detailDescription;
 
 -(void)addTags:(NSArray*)tags;
 
@@ -59,7 +58,6 @@ extern NSString* const kDefaultEventEndNotification;
 
 -(UILabel*)animateCountdownEndDate:(UILabel*)aLabel;
 
--(void)setOriginalPosition:(CGRect)frame;
 
--(CGRect)getOriginalPosition;
+@property (NS_NONATOMIC_IOSONLY, getter=getOriginalPosition) CGRect originalPosition;
 @end

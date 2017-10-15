@@ -17,8 +17,7 @@
 
 @property (nonatomic, strong) id <SocialMediaViewDelegate> delegate;
 
--(void)setPageIndex:(NSInteger)pageNum;
 
--(NSInteger)getPageIndex;
+@property (NS_NONATOMIC_IOSONLY, getter=getPageIndex) NSInteger pageIndex;
 
 @end

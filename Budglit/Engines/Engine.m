@@ -8,6 +8,8 @@
 
 #import "Engine.h"
 
+#define KEY_SESSION_ID @"sessionID"
+
 @interface Engine()
 
 @property (nonatomic, strong) NSArray* requestHistory;
@@ -18,19 +20,16 @@
 @implementation Engine
 @synthesize baseURLString = _baseURLString;
 
--(id) init
+-(instancetype) init
 {
     return [self initWithHostName:nil];
 }
 
--(id) initWithHostName:(NSString*)hostName
-{
-    
+-(instancetype) initWithHostName:(NSString*)hostName
+{    
     self = [super init];
     
-    if (!self) {
-        return nil;
-    }
+    if (!self) return nil;
     
     _baseURLString = hostName;
     
@@ -46,7 +45,33 @@
     
     self.failedRequestHistory = [[NSArray alloc] init];
     
+    self.sessionID = @"";
+    
     return self;
+}
+
+-(void)setSessionID:(NSString *)sessionID addCompletetion:(generalBlockResponse)completionHandler
+{
+    if (!sessionID) completionHandler(FALSE);
+    
+    NSUserDefaults* userDefaults = [NSUserDefaults standardUserDefaults];
+    [userDefaults setObject:sessionID forKey:KEY_SESSION_ID];
+    completionHandler(TRUE);
+}
+
+-(NSString *)getSessionID
+{
+    NSUserDefaults* userDefault = [NSUserDefaults standardUserDefaults];
+    id object = [userDefault objectForKey:KEY_SESSION_ID];
+    if (!object) return nil;
+    
+    NSString* sessionID = object;
+    return sessionID;
+}
+
+-(void)clearSession
+{
+    self.sessionID = @"";
 }
 
 -(void)addToRequestHistory:(id)request
@@ -95,5 +120,9 @@
     return finalURL;
 }
 
+-(void)logout
+{
+    
+}
 
 @end

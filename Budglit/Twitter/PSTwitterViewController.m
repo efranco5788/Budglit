@@ -25,17 +25,17 @@
     
     [super viewDidLoad];
     
-    [self.webView setDelegate:self];
+    (self.webView).delegate = self;
     
     [self.webView setHidden:YES];
     
     [self.twitterFilterToolBar setHidden:YES];
     
-    [self.filterButton setImage:[UIImage imageNamed:kDEFAULT_IMAGE_NAME]];
+    (self.filterButton).image = [UIImage imageNamed:kDEFAULT_IMAGE_NAME];
     
-    AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
-    [appDelegate.twitterManager setDelegate:self];
+    (appDelegate.twitterManager).delegate = self;
     
     BOOL tokenStatus = [appDelegate.twitterManager accessTokenExists];
     
@@ -75,7 +75,7 @@
     
     //self.signInButton.center = CGPointMake(self.view.frame.size.width / 2, self.signInButton.center.y);
     
-    [self.signInButton setFrame:newFrame];
+    (self.signInButton).frame = newFrame;
     
     [super viewDidLayoutSubviews];
 }
@@ -85,9 +85,9 @@
     
     [self toggleSignInButton];
     
-    AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
-    [appDelegate.twitterManager setDelegate:self];
+    (appDelegate.twitterManager).delegate = self;
     
     BOOL tokenStatus = [appDelegate.twitterManager accessTokenExists];
     
@@ -118,11 +118,11 @@
 
 -(void)frameWebView
 {
-    CGRect screenSize = [[UIScreen mainScreen] bounds];
+    CGRect screenSize = [UIScreen mainScreen].bounds;
     
     CGRect frameSize = CGRectMake(self.view.bounds.origin.x, self.view.bounds.origin.y, screenSize.size.width, self.view.bounds.size.height);
     
-    [self.webView setFrame:frameSize];
+    (self.webView).frame = frameSize;
 }
 
 -(void)toggleWebView
@@ -151,7 +151,7 @@
         
         self.tweetsView = [[TweetTableViewController alloc] initWithNibName:@"TweetTableViewController" bundle:nil];
         
-        [self.tweetsView setTweetTableViewDelegate:self];
+        (self.tweetsView).tweetTableViewDelegate = self;
         
         [self.view addSubview:self.tweetsView.view];
     }
@@ -162,10 +162,10 @@
     
     if ([self.filterButton.image isEqual:[UIImage imageNamed:@"empty_filter_app_icon_unselected.png"]]) {
         
-        [self.filterButton setImage:[UIImage imageNamed:@"empty_filter_app_icon_selected.png"]];
+        (self.filterButton).image = [UIImage imageNamed:@"empty_filter_app_icon_selected.png"];
         
     }
-    else [self.filterButton setImage:[UIImage imageNamed:@"empty_filter_app_icon_unselected.png"]];
+    else (self.filterButton).image = [UIImage imageNamed:@"empty_filter_app_icon_unselected.png"];
 }
 
 -(void)toggleTwitterFilterToolbar
@@ -180,7 +180,7 @@
 
 -(BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
 {
-    NSURL* requestURL = [request URL];
+    NSURL* requestURL = request.URL;
     
     NSString* host = requestURL.host;
     
@@ -188,9 +188,9 @@
     
     if([host isEqualToString:@"restart"])
     {
-        AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+        AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
         
-        NSString* URL = [requestURL absoluteString];
+        NSString* URL = requestURL.absoluteString;
         
         [appDelegate.twitterManager twitterExtractTokenVerifierFromURL:URL];
         
@@ -221,7 +221,7 @@
 #pragma mark - Twitter Manager Delegate
 -(void)twitterTokenGranted
 {
-    AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
     [self toggleWebView];
     
@@ -232,7 +232,7 @@
 
 -(void)twitterAccessTokenGranted
 {
-    AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
     TwitterRequestObject* searchTweets = [appDelegate.twitterManager constructTwitterSearchRequestForDeal:self.currentDeal];
     
@@ -272,7 +272,7 @@
 
 - (IBAction)filterPressed:(UIBarButtonItem *)sender {
     
-    AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
     NSString* entity;
 
@@ -285,7 +285,7 @@
         case 1:{
             NSArray* dealTags = self.currentDeal.tags.copy;
             if (dealTags.count == 1) {
-                entity = [dealTags firstObject];
+                entity = dealTags.firstObject;
             }
             else if ([dealTags isEqual:[NSNull null]])
             {

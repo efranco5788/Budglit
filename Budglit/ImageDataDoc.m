@@ -28,7 +28,7 @@ static ImageDataDoc* sharedManager;
 }
 
 
--(id)init
+-(instancetype)init
 {
     self = [super init];
     
@@ -40,7 +40,7 @@ static ImageDataDoc* sharedManager;
 }
 
 
--(id)initDirectory
+-(instancetype)initDirectory
 {
     self = [super init];
     
@@ -57,11 +57,11 @@ static ImageDataDoc* sharedManager;
 #pragma mark - File Methods
 -(NSString*)saveData:(NSData*)imageData
 {
-    NSString* documentDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
+    NSString* documentDir = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES).firstObject;
     
     NSString* imageDir = [documentDir stringByAppendingPathComponent:self.dirName];
     
-    NSString* identifier = [[NSProcessInfo processInfo] globallyUniqueString];
+    NSString* identifier = [NSProcessInfo processInfo].globallyUniqueString;
     
     NSString* fileIdentifierPath = [imageDir stringByAppendingPathComponent:identifier];
     
@@ -120,7 +120,7 @@ static ImageDataDoc* sharedManager;
 {
     NSFileManager* fileMngr = [NSFileManager defaultManager];
     
-    NSString* userDocumentsPath= [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
+    NSString* userDocumentsPath= NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES).firstObject;
     
     NSString* newDirectoryPath = [userDocumentsPath stringByAppendingPathComponent:aDirName];
     
@@ -130,9 +130,9 @@ static ImageDataDoc* sharedManager;
     
     if ([fileMngr fileExistsAtPath:newDirectoryPath isDirectory:&isDir]) {
         
-        [self setDirName:aDirName];
-        [self setDocPath:newDirectoryPath];
-        [self setDocPathURL:newDirectoryURL];
+        self.dirName = aDirName;
+        self.docPath = newDirectoryPath;
+        self.docPathURL = newDirectoryURL;
         
         return NO;
         
@@ -144,9 +144,9 @@ static ImageDataDoc* sharedManager;
         
         NSLog(@"New Directory created");
         
-        [self setDirName:aDirName];
-        [self setDocPath:newDirectoryPath];
-        [self setDocPathURL:newDirectoryURL];
+        self.dirName = aDirName;
+        self.docPath = newDirectoryPath;
+        self.docPathURL = newDirectoryURL;
         
         return YES;
     }

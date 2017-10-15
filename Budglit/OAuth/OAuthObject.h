@@ -14,15 +14,15 @@
 
 //-(void)setOAuthVersion:(NSInteger)version;
 
--(NSString*) generate_NONCEToken;
+@property (NS_NONATOMIC_IOSONLY, readonly, copy) NSString *generate_NONCEToken;
 
--(NSString*) generate_Timestamp;
+@property (NS_NONATOMIC_IOSONLY, readonly, copy) NSString *generate_Timestamp;
 
--(NSString*) getSignautreMethod;
+@property (NS_NONATOMIC_IOSONLY, getter=getSignautreMethod, readonly, copy) NSString *signautreMethod;
 
--(NSString*) getOAUTHVersion;
+@property (NS_NONATOMIC_IOSONLY, getter=getOAUTHVersion, readonly, copy) NSString *OAUTHVersion;
 
--(NSString*) getAuthorizationHeaderKey;
+@property (NS_NONATOMIC_IOSONLY, getter=getAuthorizationHeaderKey, readonly, copy) NSString *authorizationHeaderKey;
 
 -(NSString*) encodeParameters:(NSDictionary*) parameters;
 
@@ -38,16 +38,16 @@
 
 -(NSString*) encryptRequestWithSignatureBase:(NSString*)signatureBase andSigningKey:(NSString*)signingKey;
 
--(NSString*) getAccessTokenKey;
+@property (NS_NONATOMIC_IOSONLY, getter=getAccessTokenKey, readonly, copy) NSString *accessTokenKey;
 
--(NSString*) getConsumerKey;
+@property (NS_NONATOMIC_IOSONLY, getter=getConsumerKey, readonly, copy) NSString *consumerKey;
 
--(NSString*) getConsumerSecretKey;
+@property (NS_NONATOMIC_IOSONLY, getter=getConsumerSecretKey, readonly, copy) NSString *consumerSecretKey;
 
--(NSString*) getTokenKey;
+@property (NS_NONATOMIC_IOSONLY, getter=getTokenKey, readonly, copy) NSString *tokenKey;
 
--(NSString*) getTokenSecretKey;
+@property (NS_NONATOMIC_IOSONLY, getter=getTokenSecretKey, readonly, copy) NSString *tokenSecretKey;
 
--(NSString*) getTokenVerifierKey;
+@property (NS_NONATOMIC_IOSONLY, getter=getTokenVerifierKey, readonly, copy) NSString *tokenVerifierKey;
 
 @end

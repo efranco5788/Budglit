@@ -10,7 +10,6 @@
 #import <FBSDKLoginKit/FBSDKLoginKit.h>
 
 @interface PSFacebookViewController : SocialMediaViewController
-
 @property (strong, nonatomic) IBOutlet FBSDKLoginButton *loginButton;
 
 @end

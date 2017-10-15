@@ -24,6 +24,8 @@ typedef void (^UILablesUpdated)(BOOL success);
 @end
 @interface BudgetPickerViewController : UIViewController
 
+@property (nonatomic, copy) NSString* (^budgetFilterBlock)(void);
+
 @property (nonatomic, assign) id<BudgetPickerDelegate> delegate;
 
 @property (strong, nonatomic) MapViewController* mapView;
@@ -46,9 +48,7 @@ typedef void (^UILablesUpdated)(BOOL success);
 
 @property (strong, nonatomic) NSDictionary* currentFilterCriteria_Labels;
 
-@property (nonatomic, copy) NSString* (^budgetFilterBlock)();
-
--(NSDictionary*) getCurrentSearchCriteria;
+@property (NS_NONATOMIC_IOSONLY, getter=getCurrentSearchCriteria, readonly, copy) NSDictionary *currentSearchCriteria;
 
 -(NSDictionary*)getCurrentSearchCriteriaWithSurrondingZipcodes:(NSArray*) zipcodes;
 

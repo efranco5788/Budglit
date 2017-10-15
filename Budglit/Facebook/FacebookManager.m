@@ -12,8 +12,16 @@
 
 @implementation FacebookManager
 
+-(instancetype)init
+{
+    self = [self initWithEngine];
+    
+    if(!self) return nil;
+    
+    return self;
+}
 
--(id)initWithEngine
+-(instancetype)initWithEngine
 {
     self = [super init];
     

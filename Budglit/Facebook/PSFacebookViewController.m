@@ -29,9 +29,9 @@
 
 -(void)viewWillAppear:(BOOL)animated
 {
-    [self.loginButton isHidden];
+    [self.loginButton setHidden:YES];
     
-    AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
     NSLog(@"%d", [appDelegate.fbManager isLoggedIn]);
     

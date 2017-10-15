@@ -68,7 +68,7 @@ typedef void(^dimmerDisplayCompletion)(BOOL finished);
 static NSString* const reuseIdentifier = @"Cell";
 static NSString* const emptyCellIdentifier = @"holderCell";
 
-- (id)initWithCoder:(NSCoder *)aDecoder{
+- (instancetype)initWithCoder:(NSCoder *)aDecoder{
     self = [super initWithCoder:aDecoder];
     
     if (!self) return nil;
@@ -122,18 +122,18 @@ static NSString* const emptyCellIdentifier = @"holderCell";
 {
     UIView* newView = [[UIView alloc] initWithFrame:CGRectZero];
     
-    [newView setBackgroundColor:[UIColor blackColor]];
+    newView.backgroundColor = [UIColor blackColor];
     
-    [newView setAlpha:0.5];
+    newView.alpha = 0.5;
     
     self.backgroundDimmer = newView;
 }
 
 -(void)refreshDeals
 {
-    AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
-    [appDelegate.databaseManager setDelegate:self];
+    (appDelegate.databaseManager).delegate = self;
     
     [appDelegate.databaseManager fetchDeals:nil];
 }
@@ -154,9 +154,9 @@ static NSString* const emptyCellIdentifier = @"holderCell";
     
     if (fetchingImageForDeal == nil) {
         
-        AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+        AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
         
-        [appDelegate.databaseManager setDelegate:self];
+        (appDelegate.databaseManager).delegate = self;
         
         NSString* url = deal.imgStateObject.imagePath;
         
@@ -175,21 +175,21 @@ static NSString* const emptyCellIdentifier = @"holderCell";
 
 -(void)loadOnScreenDealImages
 {
-    AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
-    NSArray* deals = [NSArray arrayWithArray:[appDelegate.databaseManager currentDeals]];
+    NSArray* deals = [NSArray arrayWithArray:(appDelegate.databaseManager).currentDeals];
     
     if (deals.count > 0) {
         
         PSAllDealsTableViewController* __weak weakSelf = self;
         
-        NSArray* visibleOnScreenDeals = [weakSelf.dealsTableView visibleCells];
+        NSArray* visibleOnScreenDeals = (weakSelf.dealsTableView).visibleCells;
         
         for (DealTableViewCell* visibleCell in visibleOnScreenDeals) {
             
             NSIndexPath* index = [self.dealsTableView indexPathForCell:visibleCell];
             
-            __block Deal* visibleDeal = [deals objectAtIndex:index.row];
+            __block Deal* visibleDeal = deals[index.row];
             
             if (![visibleDeal.imgStateObject imageExists]) {
                 
@@ -203,7 +203,7 @@ static NSString* const emptyCellIdentifier = @"holderCell";
 
 -(void)terminateDownloadingImages
 {
-    AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
     [appDelegate.databaseManager cancelDownloads:^(BOOL success) {
         
@@ -225,9 +225,9 @@ static NSString* const emptyCellIdentifier = @"holderCell";
 #pragma mark - Table View Data Source
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     
-    AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
-    NSArray* deals = [NSArray arrayWithArray:[appDelegate.databaseManager currentDeals]];
+    NSArray* deals = [NSArray arrayWithArray:(appDelegate.databaseManager).currentDeals];
     
     if (deals && deals.count >= 1) {
         return 1;
@@ -256,9 +256,9 @@ static NSString* const emptyCellIdentifier = @"holderCell";
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
-    AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
-    NSArray* deals = [NSArray arrayWithArray:[appDelegate.databaseManager currentDeals]];
+    NSArray* deals = [NSArray arrayWithArray:(appDelegate.databaseManager).currentDeals];
     
     if (deals == nil) {
         return customRowCount;
@@ -278,9 +278,9 @@ static NSString* const emptyCellIdentifier = @"holderCell";
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
-    NSArray* deals = [NSArray arrayWithArray:[appDelegate.databaseManager currentDeals]];
+    NSArray* deals = [NSArray arrayWithArray:(appDelegate.databaseManager).currentDeals];
     
     DealTableViewCell* dealCell = nil;
     
@@ -293,7 +293,7 @@ static NSString* const emptyCellIdentifier = @"holderCell";
     }
     else{
         
-        Deal* deal = [deals objectAtIndex:indexPath.row];
+        Deal* deal = deals[indexPath.row];
         
         dealCell = (DealTableViewCell*) [self.dealsTableView dequeueReusableCellWithIdentifier:reuseIdentifier forIndexPath:indexPath];
         
@@ -307,15 +307,15 @@ static NSString* const emptyCellIdentifier = @"holderCell";
 
 -(void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
-    NSArray* deals = [NSArray arrayWithArray:[appDelegate.databaseManager currentDeals]];
+    NSArray* deals = [NSArray arrayWithArray:(appDelegate.databaseManager).currentDeals];
     
     NSUInteger nodeCount = deals.count;
     
     if (nodeCount > 0) {
         
-        Deal* deal = [deals objectAtIndex:indexPath.row];
+        Deal* deal = deals[indexPath.row];
         
         DealTableViewCell* dealCell = (DealTableViewCell*) cell;
         
@@ -325,7 +325,7 @@ static NSString* const emptyCellIdentifier = @"holderCell";
             
             [dealCell.imageLoadingActivityIndicator startAnimating];
             
-            [[dealCell dealImage] setImage:self.placeholderImage];
+            dealCell.dealImage.image = self.placeholderImage;
             
         }
         
@@ -351,14 +351,14 @@ static NSString* const emptyCellIdentifier = @"holderCell";
  
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
-    NSArray* deals = [NSArray arrayWithArray:[appDelegate.databaseManager currentDeals]];
+    NSArray* deals = [NSArray arrayWithArray:(appDelegate.databaseManager).currentDeals];
     
     CGRect cellPosition = [tableView rectForRowAtIndexPath: indexPath];
     CGRect positionInSuperview = [tableView convertRect:cellPosition toView:tableView.superview];
     
-    selectedDeal = [deals objectAtIndex:indexPath.item];
+    selectedDeal = deals[indexPath.item];
     
     [selectedDeal setOriginalPosition:positionInSuperview];
     
@@ -430,7 +430,7 @@ static NSString* const emptyCellIdentifier = @"holderCell";
         
     }
     else if ([segue.identifier isEqualToString:SEGUE_ALL_CURRENT_DEAL_TO_EDIT_ZIPCODE_OFFLINE_CONTROLLER]) {
-        AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+        AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
         
         NSString* zipcode = [appDelegate.locationManager getCurrentZipcode];
         
@@ -489,9 +489,9 @@ static NSString* const emptyCellIdentifier = @"holderCell";
     if (self.refreshControl) {
         
         NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
-        [formatter setDateFormat:@"MMM d, h:mm a"];
+        formatter.dateFormat = @"MMM d, h:mm a";
         NSString* title = [NSString stringWithFormat:@"Last update %@", [formatter stringFromDate:[NSDate date]]];
-        NSDictionary* attrsDictionary = [NSDictionary dictionaryWithObject:[UIColor blackColor] forKey:NSForegroundColorAttributeName];
+        NSDictionary* attrsDictionary = @{NSForegroundColorAttributeName: [UIColor blackColor]};
         
         NSAttributedString* attrTitle = [[NSAttributedString alloc] initWithString:title attributes:attrsDictionary];
         
@@ -529,7 +529,7 @@ static NSString* const emptyCellIdentifier = @"holderCell";
         
         [imageView.layer addAnimation:transition forKey:nil];
         
-        [imageView setImage:image];
+        imageView.image = image;
     });
 }
 
@@ -561,7 +561,7 @@ static NSString* const emptyCellIdentifier = @"holderCell";
 
 -(void)locationHasFinished
 {
-    AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
     if (![appDelegate.budgetManager isBudgetExists]) {
         [self.loadingPage inputBudget];
@@ -574,7 +574,7 @@ static NSString* const emptyCellIdentifier = @"holderCell";
         
         [currentCriteria removeObjectForKey:NSLocalizedString(@"DATE_FILTER", nil)];
         
-        [currentCriteria setObject:currentDate forKey:NSLocalizedString(@"DATE_FILTER", nil)];
+        currentCriteria[NSLocalizedString(@"DATE_FILTER", nil)] = currentDate;
         
         NSDictionary* updatedCriteria = [NSDictionary dictionaryWithDictionary:currentCriteria];
         
@@ -586,11 +586,11 @@ static NSString* const emptyCellIdentifier = @"holderCell";
 
 -(void)budgetHasFinished
 {
-    AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
     NSString* currentBudget = [NSString stringWithString:[appDelegate.budgetManager retreieveBudget]];
     
-    [self.budgetButton setTitle:currentBudget];
+    (self.budgetButton).title = currentBudget;
     
     [self.loadingPage reloadDeals];
 }
@@ -611,11 +611,11 @@ static NSString* const emptyCellIdentifier = @"holderCell";
     
     // Background Thread Queue
     dispatch_async(backgroundToken, ^{
-        AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+        AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
         
-        NSArray* deals = [NSArray arrayWithArray:[appDelegate.databaseManager currentDeals]];
+        NSArray* deals = [NSArray arrayWithArray:(appDelegate.databaseManager).currentDeals];
         
-        Deal* endedDeal = (Deal*) [notification object];
+        Deal* endedDeal = (Deal*) notification.object;
         
         NSInteger indexRow = -1;
         

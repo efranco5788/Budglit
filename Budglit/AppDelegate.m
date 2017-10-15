@@ -47,41 +47,6 @@
     
     if ([usersLocale.localeIdentifier isEqualToString:NSLocalizedString(@"USA", nil)]) {
         
-        NSNumber* launched = [NSNumber numberWithBool:NO];
-        
-        NSMutableDictionary* currentSearchFilters = [[NSMutableDictionary alloc] init];
-        
-        NSUserDefaults* userDefaults = [NSUserDefaults standardUserDefaults];
-        
-        UserAccount* loggedAcount = [userDefaults objectForKey:NSLocalizedString(@"ACCOUNT", nil)];
-        
-        NSArray* defaultObjects;
-        NSArray* defaultKeys;
-        
-        NSLog(@"%@", loggedAcount);
-        
-        if (!loggedAcount) {
-            
-            loggedAcount = [[UserAccount alloc] initWithFirstName:NSLocalizedString(@"DEFAULT_NO_ACCOUNT_NAME", nil) andLastName:nil];
-            
-            NSData* accountData = [NSKeyedArchiver archivedDataWithRootObject:loggedAcount];
-            
-            defaultObjects = [[NSArray alloc] initWithObjects:launched, NSLocalizedString(@"DEFAULT_ZIPCODE", nil), NSLocalizedString(@"DEFAULT", nil), NSLocalizedString(@"DEFAULT", nil), NSLocalizedString(@"DEFAULT", nil), NSLocalizedString (@"DEFAULT_BUDGET", nil), accountData, currentSearchFilters, nil];
-            
-            defaultKeys = [[NSArray alloc] initWithObjects: NSLocalizedString(@"HAS_LAUNCHED_ONCE", nil), NSLocalizedString(@"ZIPCODE", nil), NSLocalizedString(@"CITY", nil), NSLocalizedString(@"STATE", nil), NSLocalizedString(@"ABBRVIATION", nil), NSLocalizedString(@"BUDGET", nil),  NSLocalizedString(@"ACCOUNT", nil), NSLocalizedString(@"CURRENT_SEARCH_FILTERS", nil), nil];
-        }
-        else
-        {
-            defaultObjects = [[NSArray alloc] initWithObjects:launched, NSLocalizedString(@"DEFAULT_ZIPCODE", nil), NSLocalizedString(@"DEFAULT", nil), NSLocalizedString(@"DEFAULT", nil), NSLocalizedString(@"DEFAULT", nil), NSLocalizedString (@"DEFAULT_BUDGET", nil), loggedAcount, currentSearchFilters, nil];
-            
-            defaultKeys = [[NSArray alloc] initWithObjects: NSLocalizedString(@"HAS_LAUNCHED_ONCE", nil), NSLocalizedString(@"ZIPCODE", nil), NSLocalizedString(@"CITY", nil), NSLocalizedString(@"STATE", nil), NSLocalizedString(@"ABBRVIATION", nil), NSLocalizedString(@"BUDGET", nil),  NSLocalizedString(@"ACCOUNT", nil), NSLocalizedString(@"CURRENT_SEARCH_FILTERS", nil), nil];
-        }
-        
-        
-        NSDictionary* appDefaults = [NSDictionary dictionaryWithObjects:defaultObjects forKeys:defaultKeys];
-        
-        [[NSUserDefaults standardUserDefaults] registerDefaults:appDefaults];
-        
         static dispatch_once_t onceToken;
         dispatch_once(&onceToken, ^{
             
@@ -97,6 +62,33 @@
         });
         
         [self.budgetManager resetBudget];
+        
+        /*******TESTING OUT LOGGING OUT SYSTEM******/
+        //[self.accountManager logout];
+        
+        NSString* sessionID = [self.accountManager getSessionID];
+        
+        NSDictionary* appDefaults;
+        
+        NSLog(@"Session ID %@", sessionID);
+        
+        // If Session ID does not exists
+        if (!sessionID) appDefaults = [self constructDefaultObjects:nil];
+        else{
+            
+            UserAccount* loggedAcount = [self.accountManager getSignedAccount];
+            
+            if (!loggedAcount) {
+                // Session ID exists but no User Account
+                [self.accountManager clearSessionInfo];
+                
+                appDefaults = [self constructDefaultObjects:nil];
+            }
+            else appDefaults = [self constructDefaultObjects:loggedAcount];
+            
+        }
+        
+        [[NSUserDefaults standardUserDefaults] registerDefaults:appDefaults];
         
         return YES;
     }
@@ -146,6 +138,12 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 - (void)applicationDidEnterBackground:(UIApplication *)application {
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+    
+    NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
+    
+    [defaults synchronize];
+    
+    NSLog(@"Default information saved. App will enter background.");
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
@@ -187,11 +185,34 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     }
 }
 
+-(NSDictionary *)constructDefaultObjects:(UserAccount *)account
+{
+    NSNumber* launched = @NO;
+    
+    NSMutableDictionary* currentSearchFilters = [[NSMutableDictionary alloc] init];
+    
+    UserAccount* loggedAccount;
+    
+    if (!account) loggedAccount = [[UserAccount alloc] initWithFirstName:NSLocalizedString(@"DEFAULT_NO_ACCOUNT_NAME", nil) andLastName:nil];
+    else [loggedAccount isEqual:account];
+    
+    
+    NSData* accountData = [NSKeyedArchiver archivedDataWithRootObject:loggedAccount];
+    
+    NSArray* defaultObjects = @[launched, NSLocalizedString(@"DEFAULT_ZIPCODE", nil), NSLocalizedString(@"DEFAULT", nil), NSLocalizedString(@"DEFAULT", nil), NSLocalizedString(@"DEFAULT", nil), NSLocalizedString (@"DEFAULT_BUDGET", nil), accountData, currentSearchFilters];
+    
+    NSArray* defaultKeys = @[NSLocalizedString(@"HAS_LAUNCHED_ONCE", nil), NSLocalizedString(@"ZIPCODE", nil), NSLocalizedString(@"CITY", nil), NSLocalizedString(@"STATE", nil), NSLocalizedString(@"ABBRVIATION", nil), NSLocalizedString(@"BUDGET", nil),  NSLocalizedString(@"ACCOUNT", nil), NSLocalizedString(@"CURRENT_SEARCH_FILTERS", nil)];
+    
+    NSDictionary* appDefaults = [NSDictionary dictionaryWithObjects:defaultObjects forKeys:defaultKeys];
+    
+    return appDefaults;
+}
+
 #pragma mark -
 #pragma mark - Manager Initializers
 -(void)construct_TwitterEngine
 {
-    NSDictionary* twitterKeys = [[NSDictionary alloc] initWithObjectsAndKeys:TWITTER_CONSUMER_KEY, NSLocalizedString(@"TWITTER_CONSUMER_KEY", nil), TWITTER_CONSUMER_SECRET, NSLocalizedString(@"TWITTER_CONSUMER_SECRET_KEY", nil), nil];
+    NSDictionary* twitterKeys = @{NSLocalizedString(@"TWITTER_CONSUMER_KEY", nil): TWITTER_CONSUMER_KEY, NSLocalizedString(@"TWITTER_CONSUMER_SECRET_KEY", nil): TWITTER_CONSUMER_SECRET};
     
     self.twitterManager = [[TwitterManager alloc] initWithEngineHostName:TWITTER_HOST_NAME andTwitterKeys:twitterKeys];
     
@@ -258,7 +279,7 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 
 - (NSURL *)applicationDocumentsDirectory {
     // The directory the application uses to store the Core Data store file. This code uses a directory named "pocketstretch.net.PocketStretch" in the application's documents directory.
-    return [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
+    return [[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask].lastObject;
 }
 
 - (NSManagedObjectModel *)managedObjectModel {
@@ -279,7 +300,7 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
     // Create the coordinator and store
     
-    _persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];
+    _persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:self.managedObjectModel];
     NSURL *storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:@"PocketStretch.sqlite"];
     NSError *error = nil;
     NSString *failureReason = @"There was an error creating or loading the application's saved data.";
@@ -292,7 +313,7 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
         error = [NSError errorWithDomain:@"YOUR_ERROR_DOMAIN" code:9999 userInfo:dict];
         // Replace this with code to handle the error appropriately.
         // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+        NSLog(@"Unresolved error %@, %@", error, error.userInfo);
         abort();
     }
     
@@ -306,12 +327,12 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
         return _managedObjectContext;
     }
     
-    NSPersistentStoreCoordinator *coordinator = [self persistentStoreCoordinator];
+    NSPersistentStoreCoordinator *coordinator = self.persistentStoreCoordinator;
     if (!coordinator) {
         return nil;
     }
     _managedObjectContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
-    [_managedObjectContext setPersistentStoreCoordinator:coordinator];
+    _managedObjectContext.persistentStoreCoordinator = coordinator;
     return _managedObjectContext;
 }
 
@@ -321,10 +342,10 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
     if (managedObjectContext != nil) {
         NSError *error = nil;
-        if ([managedObjectContext hasChanges] && ![managedObjectContext save:&error]) {
+        if (managedObjectContext.hasChanges && ![managedObjectContext save:&error]) {
             // Replace this implementation with code to handle the error appropriately.
             // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+            NSLog(@"Unresolved error %@, %@", error, error.userInfo);
             abort();
         }
     }

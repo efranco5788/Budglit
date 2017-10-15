@@ -30,25 +30,25 @@
 @property (nonatomic, strong) TwitterFeed* filteredTmpTwitterFeed;
 @property (nonatomic, strong) id <TwitterManagerDelegate> delegate;
 
--(id) initWithEngineHostName:(NSString*)hostName andTwitterKeys:(NSDictionary*) keys;
+-(instancetype) initWithEngineHostName:(NSString*)hostName andTwitterKeys:(NSDictionary*) keys NS_DESIGNATED_INITIALIZER;
 
--(NSUInteger)totalTweetsCurrentlyLoaded;
+@property (NS_NONATOMIC_IOSONLY, readonly) NSUInteger totalTweetsCurrentlyLoaded;
 
 -(TWTRTweet*)tweetAtIndex:(NSUInteger)index;
 
--(BOOL) accessTokenExists;
+@property (NS_NONATOMIC_IOSONLY, readonly) BOOL accessTokenExists;
 
--(BOOL) userSignedIn;
+@property (NS_NONATOMIC_IOSONLY, readonly) BOOL userSignedIn;
 
 -(void)twitterExtractTokenVerifierFromURL:(NSString*)URL;
 
 -(TwitterRequestObject*)constructTwitterSearchRequestForDeal:(Deal*)deal;
 
--(TwitterRequestObject*)constructTwitterTokenRequest;
+@property (NS_NONATOMIC_IOSONLY, readonly, strong) TwitterRequestObject *constructTwitterTokenRequest;
 
--(TwitterRequestObject*)constructTwitterAccessTokenRequest;
+@property (NS_NONATOMIC_IOSONLY, readonly, strong) TwitterRequestObject *constructTwitterAccessTokenRequest;
 
--(TwitterRequestObject*)constructTwitterAuthenticateRequest;
+@property (NS_NONATOMIC_IOSONLY, readonly, strong) TwitterRequestObject *constructTwitterAuthenticateRequest;
 
 -(TwitterRequestObject*) constructTwitterRateLimitRequest:(NSArray*)query;
 

@@ -64,8 +64,6 @@
 		89385AFF1BB67B4C00441A63 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 89385AFD1BB67B4C00441A63 /* Main.storyboard */; };
 		89385B021BB67B4C00441A63 /* PocketStretch.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 89385B001BB67B4C00441A63 /* PocketStretch.xcdatamodeld */; };
 		89385B041BB67B4C00441A63 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 89385B031BB67B4C00441A63 /* Assets.xcassets */; };
-		89385B121BB67B4C00441A63 /* BudglitTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 89385B111BB67B4C00441A63 /* BudglitTests.m */; };
-		89385B1D1BB67B4C00441A63 /* BudglitUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 89385B1C1BB67B4C00441A63 /* BudglitUITests.m */; };
 		89385B2B1BB67BB000441A63 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89385B2A1BB67BB000441A63 /* MapKit.framework */; };
 		89385B2D1BB67BBA00441A63 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89385B2C1BB67BBA00441A63 /* ImageIO.framework */; };
 		89385B2F1BB67BC500441A63 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89385B2E1BB67BC500441A63 /* Security.framework */; };
@@ -167,23 +165,6 @@
 		89FE46E81D7A23E300574412 /* MZTimerLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 89FE46E71D7A23E300574412 /* MZTimerLabel.m */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXContainerItemProxy section */
-		89385B0E1BB67B4C00441A63 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 89385AE91BB67B4B00441A63 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 89385AF01BB67B4B00441A63;
-			remoteInfo = PocketStretch;
-		};
-		89385B191BB67B4C00441A63 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 89385AE91BB67B4B00441A63 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 89385AF01BB67B4B00441A63;
-			remoteInfo = PocketStretch;
-		};
-/* End PBXContainerItemProxy section */
-
 /* Begin PBXFileReference section */
 		89067BB41C76B6780058B4DF /* AFHTTPRequestOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPRequestOperation.h; sourceTree = "<group>"; };
 		89067BB51C76B6780058B4DF /* AFHTTPRequestOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPRequestOperation.m; sourceTree = "<group>"; };
@@ -233,10 +214,10 @@
 		89179D211BB7AC7200F60BA7 /* Deal.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Deal.m; sourceTree = "<group>"; };
 		89179D231BB7B46D00F60BA7 /* ImageStateObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageStateObject.h; sourceTree = "<group>"; };
 		89179D241BB7B46D00F60BA7 /* ImageStateObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageStateObject.m; sourceTree = "<group>"; };
-		89179D261BB7B7BA00F60BA7 /* PSTransitionToBudgetViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PSTransitionToBudgetViewController.h; path = ../PSTransitionToBudgetViewController.h; sourceTree = "<group>"; };
-		89179D271BB7B7BA00F60BA7 /* PSTransitionToBudgetViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PSTransitionToBudgetViewController.m; path = ../PSTransitionToBudgetViewController.m; sourceTree = "<group>"; };
-		89179D2B1BB7BAA500F60BA7 /* PSDismissTransitionFromBudgetViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PSDismissTransitionFromBudgetViewController.h; path = ../PSDismissTransitionFromBudgetViewController.h; sourceTree = "<group>"; };
-		89179D2C1BB7BAA500F60BA7 /* PSDismissTransitionFromBudgetViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PSDismissTransitionFromBudgetViewController.m; path = ../PSDismissTransitionFromBudgetViewController.m; sourceTree = "<group>"; };
+		89179D261BB7B7BA00F60BA7 /* PSTransitionToBudgetViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PSTransitionToBudgetViewController.h; sourceTree = "<group>"; };
+		89179D271BB7B7BA00F60BA7 /* PSTransitionToBudgetViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PSTransitionToBudgetViewController.m; sourceTree = "<group>"; };
+		89179D2B1BB7BAA500F60BA7 /* PSDismissTransitionFromBudgetViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PSDismissTransitionFromBudgetViewController.h; sourceTree = "<group>"; };
+		89179D2C1BB7BAA500F60BA7 /* PSDismissTransitionFromBudgetViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PSDismissTransitionFromBudgetViewController.m; sourceTree = "<group>"; };
 		89179D2E1BB8F5CC00F60BA7 /* UINavigationController+CompletionHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UINavigationController+CompletionHandler.h"; sourceTree = "<group>"; };
 		89179D2F1BB8F5CC00F60BA7 /* UINavigationController+CompletionHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UINavigationController+CompletionHandler.m"; sourceTree = "<group>"; };
 		89179D311BB8F86500F60BA7 /* ZipcodeSearchDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZipcodeSearchDataSource.h; sourceTree = "<group>"; };
@@ -260,10 +241,10 @@
 		89231DB71D8B912000D6B932 /* UserAccount.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UserAccount.m; path = Budglit/UserAccount.m; sourceTree = SOURCE_ROOT; };
 		89231DBE1DB5C6FC00D6B932 /* user_profile@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "user_profile@2x.png"; sourceTree = "<group>"; };
 		89231DC01DB5C70500D6B932 /* user_profile@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "user_profile@3x.png"; sourceTree = "<group>"; };
-		892401661CD9BF3A00793EE5 /* DrawerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DrawerViewController.h; sourceTree = "<group>"; };
-		892401671CD9BF3A00793EE5 /* DrawerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DrawerViewController.m; sourceTree = "<group>"; };
-		8924016E1CF56AD600793EE5 /* MenuTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MenuTableViewCell.h; sourceTree = "<group>"; };
-		8924016F1CF56AD600793EE5 /* MenuTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MenuTableViewCell.m; sourceTree = "<group>"; };
+		892401661CD9BF3A00793EE5 /* DrawerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DrawerViewController.h; path = ../DrawerViewController.h; sourceTree = "<group>"; };
+		892401671CD9BF3A00793EE5 /* DrawerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DrawerViewController.m; path = ../DrawerViewController.m; sourceTree = "<group>"; };
+		8924016E1CF56AD600793EE5 /* MenuTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MenuTableViewCell.h; path = ../MenuTableViewCell.h; sourceTree = "<group>"; };
+		8924016F1CF56AD600793EE5 /* MenuTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MenuTableViewCell.m; path = ../MenuTableViewCell.m; sourceTree = "<group>"; };
 		892401731CFE37B800793EE5 /* MenuOptions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MenuOptions.h; sourceTree = "<group>"; };
 		893633121E25F88100C64E3D /* InstagramTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InstagramTableViewCell.h; sourceTree = "<group>"; };
 		893633131E25F88100C64E3D /* InstagramTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InstagramTableViewCell.m; sourceTree = "<group>"; };
@@ -282,10 +263,8 @@
 		89385B011BB67B4C00441A63 /* PocketStretch.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = PocketStretch.xcdatamodel; sourceTree = "<group>"; };
 		89385B031BB67B4C00441A63 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		89385B081BB67B4C00441A63 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		89385B0D1BB67B4C00441A63 /* BudglitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BudglitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		89385B111BB67B4C00441A63 /* BudglitTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BudglitTests.m; sourceTree = "<group>"; };
 		89385B131BB67B4C00441A63 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		89385B181BB67B4C00441A63 /* BudglitUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BudglitUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		89385B1C1BB67B4C00441A63 /* BudglitUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BudglitUITests.m; sourceTree = "<group>"; };
 		89385B1E1BB67B4C00441A63 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		89385B2A1BB67BB000441A63 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
@@ -382,8 +361,8 @@
 		897727341BE4642D00028B74 /* TweetTableViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TweetTableViewController.xib; sourceTree = "<group>"; };
 		897EDAC51C82F6FE0042CEAB /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
 		897EDAC71C8C136F0042CEAB /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
-		898894301E5D3C4600A82F7D /* MenuTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MenuTableViewController.h; sourceTree = "<group>"; };
-		898894311E5D3C4600A82F7D /* MenuTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MenuTableViewController.m; sourceTree = "<group>"; };
+		898894301E5D3C4600A82F7D /* MenuTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MenuTableViewController.h; path = ../MenuTableViewController.h; sourceTree = "<group>"; };
+		898894311E5D3C4600A82F7D /* MenuTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MenuTableViewController.m; path = ../MenuTableViewController.m; sourceTree = "<group>"; };
 		898894321E5D3C4600A82F7D /* MenuTableViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MenuTableViewController.xib; sourceTree = "<group>"; };
 		89947FA11C149805009D0B75 /* PSAllDealsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PSAllDealsTableViewController.h; sourceTree = "<group>"; };
 		89947FA21C149805009D0B75 /* PSAllDealsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PSAllDealsTableViewController.m; sourceTree = "<group>"; };
@@ -404,8 +383,8 @@
 		89B92C561C34D8B200336589 /* SocialMediaTabBarViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SocialMediaTabBarViewController.h; path = Budglit/SocialMedia/SocialMediaTabBarViewController.h; sourceTree = SOURCE_ROOT; };
 		89B92C571C34D8B200336589 /* SocialMediaTabBarViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SocialMediaTabBarViewController.m; path = Budglit/SocialMedia/SocialMediaTabBarViewController.m; sourceTree = SOURCE_ROOT; };
 		89B92C581C34D8B200336589 /* SocialMediaTabBarViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SocialMediaTabBarViewController.xib; sourceTree = "<group>"; };
-		89C562371F03761C00737608 /* UserProfileTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserProfileTableViewCell.h; sourceTree = "<group>"; };
-		89C562381F03761C00737608 /* UserProfileTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserProfileTableViewCell.m; sourceTree = "<group>"; };
+		89C562371F03761C00737608 /* UserProfileTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UserProfileTableViewCell.h; path = ../UserProfileTableViewCell.h; sourceTree = "<group>"; };
+		89C562381F03761C00737608 /* UserProfileTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UserProfileTableViewCell.m; path = ../UserProfileTableViewCell.m; sourceTree = "<group>"; };
 		89C562391F03761C00737608 /* UserProfileTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = UserProfileTableViewCell.xib; sourceTree = "<group>"; };
 		89CA7CD61EB80E79006C7F4B /* visible_eye@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "visible_eye@3x.png"; sourceTree = "<group>"; };
 		89CA7CD71EB80E79006C7F4B /* visible_eye@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "visible_eye@2x.png"; sourceTree = "<group>"; };
@@ -413,10 +392,10 @@
 		89CA7CDC1EB810DC006C7F4B /* hidden_eye@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "hidden_eye@3x.png"; sourceTree = "<group>"; };
 		89CA7CDD1EB810DC006C7F4B /* hidden_eye@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "hidden_eye@2x.png"; sourceTree = "<group>"; };
 		89CA7CDE1EB810DC006C7F4B /* hidden_eye.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = hidden_eye.png; sourceTree = "<group>"; };
-		89DEE64E1E4BEC0E00C2A1B2 /* DealDetailedAnimationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DealDetailedAnimationController.h; path = ../DealDetailedAnimationController.h; sourceTree = "<group>"; };
-		89DEE64F1E4BEC0E00C2A1B2 /* DealDetailedAnimationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DealDetailedAnimationController.m; path = ../DealDetailedAnimationController.m; sourceTree = "<group>"; };
-		89DEE6511E4EA42900C2A1B2 /* DismissDetailedAnimationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DismissDetailedAnimationController.h; path = ../DismissDetailedAnimationController.h; sourceTree = "<group>"; };
-		89DEE6521E4EA42900C2A1B2 /* DismissDetailedAnimationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DismissDetailedAnimationController.m; path = ../DismissDetailedAnimationController.m; sourceTree = "<group>"; };
+		89DEE64E1E4BEC0E00C2A1B2 /* DealDetailedAnimationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DealDetailedAnimationController.h; sourceTree = "<group>"; };
+		89DEE64F1E4BEC0E00C2A1B2 /* DealDetailedAnimationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DealDetailedAnimationController.m; sourceTree = "<group>"; };
+		89DEE6511E4EA42900C2A1B2 /* DismissDetailedAnimationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DismissDetailedAnimationController.h; sourceTree = "<group>"; };
+		89DEE6521E4EA42900C2A1B2 /* DismissDetailedAnimationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DismissDetailedAnimationController.m; sourceTree = "<group>"; };
 		89E26DA91E5C0B3F002CCD0C /* TwitterKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = TwitterKit.framework; path = Budglit/TwitterKit.framework; sourceTree = "<group>"; };
 		89EB8DEA1BE469A50044833A /* OAuthObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OAuthObject.m; sourceTree = "<group>"; };
 		89EB8DEB1BE469A50044833A /* NSString+Encode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Encode.m"; sourceTree = "<group>"; };
@@ -471,20 +450,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		89385B0A1BB67B4C00441A63 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		89385B151BB67B4C00441A63 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -526,6 +491,14 @@
 		89231DA81D8B7F3000D6B932 /* MMDrawerController */ = {
 			isa = PBXGroup;
 			children = (
+				898894301E5D3C4600A82F7D /* MenuTableViewController.h */,
+				898894311E5D3C4600A82F7D /* MenuTableViewController.m */,
+				89C562371F03761C00737608 /* UserProfileTableViewCell.h */,
+				89C562381F03761C00737608 /* UserProfileTableViewCell.m */,
+				8924016E1CF56AD600793EE5 /* MenuTableViewCell.h */,
+				8924016F1CF56AD600793EE5 /* MenuTableViewCell.m */,
+				892401661CD9BF3A00793EE5 /* DrawerViewController.h */,
+				892401671CD9BF3A00793EE5 /* DrawerViewController.m */,
 				89231DA91D8B7F3000D6B932 /* MMDrawerBarButtonItem.h */,
 				89231DAA1D8B7F3000D6B932 /* MMDrawerBarButtonItem.m */,
 				89231DAB1D8B7F3000D6B932 /* MMDrawerController+Subclass.h */,
@@ -587,8 +560,6 @@
 			isa = PBXGroup;
 			children = (
 				89385AF11BB67B4B00441A63 /* Budglit.app */,
-				89385B0D1BB67B4C00441A63 /* BudglitTests.xctest */,
-				89385B181BB67B4C00441A63 /* BudglitUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -599,26 +570,18 @@
 				89385AFD1BB67B4C00441A63 /* Main.storyboard */,
 				89385AF71BB67B4C00441A63 /* AppDelegate.h */,
 				89385AF81BB67B4C00441A63 /* AppDelegate.m */,
+				89385B3E1BB6F86500441A63 /* PSHomeViewController.h */,
+				89385B3F1BB6F86500441A63 /* PSHomeViewController.m */,
 				89947FA11C149805009D0B75 /* PSAllDealsTableViewController.h */,
 				89947FA21C149805009D0B75 /* PSAllDealsTableViewController.m */,
 				89947FA91C14A6DB009D0B75 /* DealTableViewCell.h */,
 				89947FAA1C14A6DB009D0B75 /* DealTableViewCell.m */,
-				898894301E5D3C4600A82F7D /* MenuTableViewController.h */,
-				898894311E5D3C4600A82F7D /* MenuTableViewController.m */,
-				89C562371F03761C00737608 /* UserProfileTableViewCell.h */,
-				89C562381F03761C00737608 /* UserProfileTableViewCell.m */,
-				8924016E1CF56AD600793EE5 /* MenuTableViewCell.h */,
-				8924016F1CF56AD600793EE5 /* MenuTableViewCell.m */,
-				892401661CD9BF3A00793EE5 /* DrawerViewController.h */,
-				892401671CD9BF3A00793EE5 /* DrawerViewController.m */,
 				89179D0C1BB76E6D00F60BA7 /* BudgetPickerViewController.h */,
 				89179D0D1BB76E6D00F60BA7 /* BudgetPickerViewController.m */,
 				89179D111BB76F0C00F60BA7 /* LoadingLocalDealsViewController.h */,
 				89179D121BB76F0C00F60BA7 /* LoadingLocalDealsViewController.m */,
 				89179D161BB76F4300F60BA7 /* LoginPageViewController.h */,
 				89179D171BB76F4300F60BA7 /* LoginPageViewController.m */,
-				89385B3E1BB6F86500441A63 /* PSHomeViewController.h */,
-				89385B3F1BB6F86500441A63 /* PSHomeViewController.m */,
 				89385B471BB7217C00441A63 /* PSDealDetailViewController.h */,
 				89385B481BB7217C00441A63 /* PSDealDetailViewController.m */,
 				89385B4A1BB7221F00441A63 /* PSEditZipcodeOfflineTableViewController.h */,
@@ -909,12 +872,12 @@
 			children = (
 				89385B591BB7272C00441A63 /* Engine.h */,
 				89385B5A1BB7272C00441A63 /* Engine.m */,
+				89179D591BBDEAB600F60BA7 /* AccountEngine.h */,
+				89179D5A1BBDEAB600F60BA7 /* AccountEngine.m */,
 				89385B5C1BB7282B00441A63 /* GNEngine.h */,
 				89385B5D1BB7282B00441A63 /* GNEngine.m */,
 				89385B5F1BB7532400441A63 /* DatabaseEngine.h */,
 				89385B601BB7532400441A63 /* DatabaseEngine.m */,
-				89179D591BBDEAB600F60BA7 /* AccountEngine.h */,
-				89179D5A1BBDEAB600F60BA7 /* AccountEngine.m */,
 			);
 			path = Engines;
 			sourceTree = "<group>";
@@ -940,49 +903,13 @@
 			productReference = 89385AF11BB67B4B00441A63 /* Budglit.app */;
 			productType = "com.apple.product-type.application";
 		};
-		89385B0C1BB67B4C00441A63 /* BudglitTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 89385B241BB67B4C00441A63 /* Build configuration list for PBXNativeTarget "BudglitTests" */;
-			buildPhases = (
-				89385B091BB67B4C00441A63 /* Sources */,
-				89385B0A1BB67B4C00441A63 /* Frameworks */,
-				89385B0B1BB67B4C00441A63 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				89385B0F1BB67B4C00441A63 /* PBXTargetDependency */,
-			);
-			name = BudglitTests;
-			productName = PocketStretchTests;
-			productReference = 89385B0D1BB67B4C00441A63 /* BudglitTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
-		89385B171BB67B4C00441A63 /* BudglitUITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 89385B271BB67B4C00441A63 /* Build configuration list for PBXNativeTarget "BudglitUITests" */;
-			buildPhases = (
-				89385B141BB67B4C00441A63 /* Sources */,
-				89385B151BB67B4C00441A63 /* Frameworks */,
-				89385B161BB67B4C00441A63 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				89385B1A1BB67B4C00441A63 /* PBXTargetDependency */,
-			);
-			name = BudglitUITests;
-			productName = PocketStretchUITests;
-			productReference = 89385B181BB67B4C00441A63 /* BudglitUITests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
 		89385AE91BB67B4B00441A63 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0800;
+				LastUpgradeCheck = 0900;
 				ORGANIZATIONNAME = "Emmanuel Franco";
 				TargetAttributes = {
 					89385AF01BB67B4B00441A63 = {
@@ -994,17 +921,6 @@
 								enabled = 0;
 							};
 						};
-					};
-					89385B0C1BB67B4C00441A63 = {
-						CreatedOnToolsVersion = 7.0;
-						DevelopmentTeam = BZRNX86Q45;
-						TestTargetID = 89385AF01BB67B4B00441A63;
-					};
-					89385B171BB67B4C00441A63 = {
-						CreatedOnToolsVersion = 7.0;
-						DevelopmentTeam = BZRNX86Q45;
-						ProvisioningStyle = Automatic;
-						TestTargetID = 89385AF01BB67B4B00441A63;
 					};
 				};
 			};
@@ -1022,8 +938,6 @@
 			projectRoot = "";
 			targets = (
 				89385AF01BB67B4B00441A63 /* Budglit */,
-				89385B0C1BB67B4C00441A63 /* BudglitTests */,
-				89385B171BB67B4C00441A63 /* BudglitUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -1081,20 +995,6 @@
 				8938ADD61E58D9EC00CAF965 /* icon_username@3x.png in Resources */,
 				89179D151BB76F0C00F60BA7 /* LoadingLocalDealsViewController.xib in Resources */,
 				89CA7CDF1EB810DC006C7F4B /* hidden_eye@3x.png in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		89385B0B1BB67B4C00441A63 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		89385B161BB67B4C00441A63 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1216,36 +1116,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		89385B091BB67B4C00441A63 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				89385B121BB67B4C00441A63 /* BudglitTests.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		89385B141BB67B4C00441A63 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				89385B1D1BB67B4C00441A63 /* BudglitUITests.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		89385B0F1BB67B4C00441A63 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 89385AF01BB67B4B00441A63 /* Budglit */;
-			targetProxy = 89385B0E1BB67B4C00441A63 /* PBXContainerItemProxy */;
-		};
-		89385B1A1BB67B4C00441A63 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 89385AF01BB67B4B00441A63 /* Budglit */;
-			targetProxy = 89385B191BB67B4C00441A63 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		89385AFD1BB67B4C00441A63 /* Main.storyboard */ = {
@@ -1267,14 +1138,20 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -1312,14 +1189,20 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -1393,58 +1276,6 @@
 			};
 			name = Release;
 		};
-		89385B251BB67B4C00441A63 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				DEVELOPMENT_TEAM = BZRNX86Q45;
-				INFOPLIST_FILE = PocketStretchTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = pocketstretch.net.PocketStretchTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Budglit.app/Budglit";
-			};
-			name = Debug;
-		};
-		89385B261BB67B4C00441A63 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				DEVELOPMENT_TEAM = BZRNX86Q45;
-				INFOPLIST_FILE = PocketStretchTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = pocketstretch.net.PocketStretchTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Budglit.app/Budglit";
-			};
-			name = Release;
-		};
-		89385B281BB67B4C00441A63 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = BZRNX86Q45;
-				INFOPLIST_FILE = PocketStretchUITests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = pocketstretch.net.PocketStretchUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_TARGET_NAME = PocketStretch;
-				USES_XCTRUNNER = YES;
-			};
-			name = Debug;
-		};
-		89385B291BB67B4C00441A63 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = BZRNX86Q45;
-				INFOPLIST_FILE = PocketStretchUITests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = pocketstretch.net.PocketStretchUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_TARGET_NAME = PocketStretch;
-				USES_XCTRUNNER = YES;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1462,24 +1293,6 @@
 			buildConfigurations = (
 				89385B221BB67B4C00441A63 /* Debug */,
 				89385B231BB67B4C00441A63 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		89385B241BB67B4C00441A63 /* Build configuration list for PBXNativeTarget "BudglitTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				89385B251BB67B4C00441A63 /* Debug */,
-				89385B261BB67B4C00441A63 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		89385B271BB67B4C00441A63 /* Build configuration list for PBXNativeTarget "BudglitUITests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				89385B281BB67B4C00441A63 /* Debug */,
-				89385B291BB67B4C00441A63 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

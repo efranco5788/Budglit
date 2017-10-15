@@ -16,7 +16,7 @@
 
 @implementation TwitterFeed
 
--(id)init
+-(instancetype)init
 {
     self = [super init];
     
@@ -31,7 +31,7 @@
 {
     NSDictionary* extractedTweets = (NSDictionary*) object;
     
-    NSArray* tweetsExtracted = [extractedTweets objectForKey:@"statuses"];
+    NSArray* tweetsExtracted = extractedTweets[@"statuses"];
     
     NSArray* tweetArray = [Tweet tweetsWithJSONArray:tweetsExtracted];
 
@@ -57,7 +57,7 @@
     
     for (int count = 0; count < self.list.count; count++) {
         
-        Tweet* tweet = [tweetArray objectAtIndex:count];
+        Tweet* tweet = tweetArray[count];
         
         NSMutableArray* mutableTags = tweet.hashtags.mutableCopy;
         

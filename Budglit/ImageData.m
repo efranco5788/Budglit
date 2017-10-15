@@ -12,7 +12,7 @@
 
 @implementation ImageData
 
--(id)initWithImage:(UIImage*)image
+-(instancetype)initWithImage:(UIImage*)image
 {
     self = [super init];
     

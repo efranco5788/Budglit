@@ -12,18 +12,21 @@
 
 -(instancetype)init
 {
-    return [self initWithPostalCode:nil andCoordinates:nil];
+    self = [self initWithPostalCode:nil andCoordinates:nil];
+    
+    if(!self) return nil;
+    
+    return self;
+    
 }
 
 -(instancetype)initWithPostalCode:(NSString*)postalCode
 {
-    self = [super init];
+    self = [self initWithPostalCode:postalCode andCoordinates:nil];
     
-    if (!self) {
-        return nil;
-    }
+    if (!self) return nil;
     
-    return [self initWithPostalCode:postalCode andCoordinates:nil];
+    return self;
     
 }
 
@@ -35,9 +38,9 @@
         return nil;
     }
     
-    [self setPostalCode:postalCode];
+    self.postalCode = postalCode;
     
-    [self setCoordinates:coordinates];
+    self.coordinates = coordinates;
     
     return self;
 }

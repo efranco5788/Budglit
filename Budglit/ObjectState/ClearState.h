@@ -12,6 +12,6 @@
 
 @interface ClearState : State
 
--(id)initState;
+-(instancetype)initState NS_DESIGNATED_INITIALIZER;
 
 @end

@@ -32,10 +32,10 @@
 /**********************************************
  MZTimerLabel TimerType Enum
  **********************************************/
-typedef enum{
+typedef NS_ENUM(unsigned int, MZTimerLabelType) {
     MZTimerLabelTypeStopWatch,
     MZTimerLabelTypeTimer
-}MZTimerLabelType;
+};
 
 /**********************************************
  Delegate Methods
@@ -97,11 +97,11 @@ typedef enum{
 
 
 /*--------Init methods to choose*/
--(id)initWithTimerType:(MZTimerLabelType)theType;
--(id)initWithLabel:(UILabel*)theLabel andTimerType:(MZTimerLabelType)theType;
--(id)initWithLabel:(UILabel*)theLabel;
+-(instancetype)initWithTimerType:(MZTimerLabelType)theType;
+-(instancetype)initWithLabel:(UILabel*)theLabel andTimerType:(MZTimerLabelType)theType;
+-(instancetype)initWithLabel:(UILabel*)theLabel;
 /*--------designated Initializer*/
--(id)initWithFrame:(CGRect)frame label:(UILabel*)theLabel andTimerType:(MZTimerLabelType)theType;
+-(instancetype)initWithFrame:(CGRect)frame label:(UILabel*)theLabel andTimerType:(MZTimerLabelType)theType NS_DESIGNATED_INITIALIZER;
 
 /*--------Timer control methods to use*/
 -(void)start;
@@ -112,16 +112,15 @@ typedef enum{
 -(void)reset;
 
 /*--------Setter methods*/
--(void)setCountDownTime:(NSTimeInterval)time;
 -(void)setStopWatchTime:(NSTimeInterval)time;
 -(void)setCountDownToDate:(NSDate*)date;
 
 -(void)addTimeCountedByTime:(NSTimeInterval)timeToAdd;
 
 /*--------Getter methods*/
-- (NSTimeInterval)getTimeCounted;
-- (NSTimeInterval)getTimeRemaining;
-- (NSTimeInterval)getCountDownTime;
+@property (NS_NONATOMIC_IOSONLY, getter=getTimeCounted, readonly) NSTimeInterval timeCounted;
+@property (NS_NONATOMIC_IOSONLY, getter=getTimeRemaining, readonly) NSTimeInterval timeRemaining;
+@property (NS_NONATOMIC_IOSONLY, getter=getCountDownTime) NSTimeInterval countDownTime;
 
 
 

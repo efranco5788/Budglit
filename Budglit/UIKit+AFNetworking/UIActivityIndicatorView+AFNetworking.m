@@ -32,7 +32,7 @@
 
 @interface AFActivityIndicatorViewNotificationObserver : NSObject
 @property (readonly, nonatomic, weak) UIActivityIndicatorView *activityIndicatorView;
-- (instancetype)initWithActivityIndicatorView:(UIActivityIndicatorView *)activityIndicatorView;
+- (instancetype)initWithActivityIndicatorView:(UIActivityIndicatorView *)activityIndicatorView NS_DESIGNATED_INITIALIZER;
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED >= 70000
 - (void)setAnimatingWithStateOfTask:(NSURLSessionTask *)task;
@@ -65,7 +65,6 @@
 @end
 
 @implementation AFActivityIndicatorViewNotificationObserver
-
 - (instancetype)initWithActivityIndicatorView:(UIActivityIndicatorView *)activityIndicatorView
 {
     self = [super init];
@@ -113,12 +112,12 @@
     [notificationCenter removeObserver:self name:AFNetworkingOperationDidFinishNotification object:nil];
 
     if (operation) {
-        if (![operation isFinished]) {
+        if (!operation.finished) {
             
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wreceiver-is-weak"
 #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
-            if ([operation isExecuting]) {
+            if (operation.executing) {
                 [self.activityIndicatorView startAnimating];
             } else {
                 [self.activityIndicatorView stopAnimating];

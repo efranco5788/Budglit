@@ -12,11 +12,11 @@
 
 @property (strong, nonatomic) NSArray* list;
 
--(id)init;
+-(instancetype)init;
 
--(NSUInteger)totalCount;
+@property (NS_NONATOMIC_IOSONLY, readonly) NSUInteger totalCount;
 
--(NSArray*)getCurrentList;
+@property (NS_NONATOMIC_IOSONLY, getter=getCurrentList, readonly, copy) NSArray *currentList;
 
 -(void)addListObject:(NSData*)object;
 

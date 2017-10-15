@@ -248,7 +248,7 @@ NS_ASSUME_NONNULL_BEGIN
 
  @return `YES` if the operation is currently paused, otherwise `NO`.
  */
-- (BOOL)isPaused;
+@property (NS_NONATOMIC_IOSONLY, getter=isPaused, readonly) BOOL paused;
 
 /**
  Resumes the execution of the paused request operation.

@@ -14,19 +14,17 @@
 @property (nonatomic, strong) NSString* lastName;
 @property (nonatomic, strong) NSString* email;
 @property (nonatomic, strong) NSString* imageURL;
-@property (nonatomic, strong) UIImage* profileImage;
+@property (NS_NONATOMIC_IOSONLY, getter=getProfileImage, strong) UIImage *profileImage;
 
 +(UserAccount*) currentSignedUser;
 
--(id)initWithFirstName:(NSString*)fName andLastName:(NSString*)lName;
+-(instancetype)initWithFirstName:(NSString*)fName andLastName:(NSString*)lName;
 
--(id)initWithFirstName:(NSString*)fName andLastName:(NSString*)lName andProfileImage:(NSString*)URL;
+-(instancetype)initWithFirstName:(NSString*)fName andLastName:(NSString*)lName andProfileImage:(NSString*)URL;
 
--(id)initWithFirstName:(NSString*)fName andLastName:(NSString*)lName andProfileImage:(NSString*)URL andEmail:(NSString*)anEmail;
+-(instancetype)initWithFirstName:(NSString*)fName andLastName:(NSString*)lName andProfileImage:(NSString*)URL andEmail:(NSString*)anEmail;
 
--(id)initWithFirstName:(NSString*)fName andLastName:(NSString*)lName andProfileImage:(NSString*)URL andEmail:(NSString*)anEmail andSessionID:(NSString*)sID;
-
--(UIImage*)getProfileImage;
+-(instancetype)initWithFirstName:(NSString*)fName andLastName:(NSString*)lName andProfileImage:(NSString*)URL andEmail:(NSString*)anEmail andSessionID:(NSString*)sID NS_DESIGNATED_INITIALIZER;
 
 -(void)clear;
 

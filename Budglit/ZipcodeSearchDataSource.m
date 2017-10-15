@@ -31,15 +31,15 @@ static NSString* const cellIdentifier = @"Cell";
         return nil;
     }
     
-    AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
     NSSortDescriptor* cityDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
     
     NSSortDescriptor* postalDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"postal" ascending:YES selector:nil];
     
-    self.dataCityFiltered = [[appDelegate.locationManager cities] sortedArrayUsingDescriptors:@[cityDescriptor]];
+    self.dataCityFiltered = [(appDelegate.locationManager).cities sortedArrayUsingDescriptors:@[cityDescriptor]];
     
-    self.dataPostalCodeFiltered = [[appDelegate.locationManager cities] sortedArrayUsingDescriptors:@[postalDescriptor]];
+    self.dataPostalCodeFiltered = [(appDelegate.locationManager).cities sortedArrayUsingDescriptors:@[postalDescriptor]];
     
     return self;
 }
@@ -49,7 +49,7 @@ static NSString* const cellIdentifier = @"Cell";
     
     self.uniqueStates = [[NSOrderedSet alloc] initWithArray:[self.filteredStatesData valueForKey:@"state"]];
     
-    NSString* uniqueState = [self.uniqueStates objectAtIndex:section];
+    NSString* uniqueState = (self.uniqueStates)[section];
     
     NSPredicate* statePredicate = [NSPredicate predicateWithFormat:@"state = %@", uniqueState];
     
@@ -71,7 +71,7 @@ static NSString* const cellIdentifier = @"Cell";
 {
     self.uniqueStates = [[NSOrderedSet alloc] initWithArray:[self.filteredStatesData valueForKey:@"state"]];
     
-    NSString* stateSection = [self.uniqueStates objectAtIndex:section];
+    NSString* stateSection = (self.uniqueStates)[section];
     
     return stateSection;
 }
@@ -79,13 +79,13 @@ static NSString* const cellIdentifier = @"Cell";
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
-    NSString* uniqueState = [self.uniqueStates objectAtIndex:indexPath.section];
+    NSString* uniqueState = (self.uniqueStates)[indexPath.section];
     
     NSPredicate* statePredicate = [NSPredicate predicateWithFormat:@"state = %@", uniqueState];
     
     NSArray* totalCitiesForState = [self.filteredStatesData filteredArrayUsingPredicate:statePredicate];
     
-    CityDataObject* specifiedCity = [totalCitiesForState objectAtIndex:indexPath.row];
+    CityDataObject* specifiedCity = totalCitiesForState[indexPath.row];
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
     
@@ -120,7 +120,7 @@ static NSString* const cellIdentifier = @"Cell";
     }
     else
     {
-        if ([userInput integerValue])
+        if (userInput.integerValue)
         {
             self.filteredStatesData = [self filterContentForSearchText:copy scope:self.dataPostalCodeFiltered byPostal:YES];
             

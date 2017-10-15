@@ -25,6 +25,6 @@
 
 -(void) includeCallback:(BOOL) include;
 
--(BOOL) shouldIncludeCallback;
+@property (NS_NONATOMIC_IOSONLY, readonly) BOOL shouldIncludeCallback;
 
 @end

@@ -88,7 +88,7 @@ __attribute__((deprecated("`BFTask` exception handling is deprecated and will be
  Sets the cancellation state of the task if it wasn't already completed.
  @returns whether the new value was set.
  */
-- (BOOL)trySetCancelled;
+@property (NS_NONATOMIC_IOSONLY, readonly) BOOL trySetCancelled;
 
 @end
 

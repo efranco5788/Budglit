@@ -45,9 +45,9 @@ typedef void (^fetchPostalCompletionHandler)(id object);
 
 //@property (nonatomic) int updateState;
 
--(id) init;
+-(instancetype) init;
 
--(id) initWithEngineHostName:(NSString*)hostName;
+-(instancetype) initWithEngineHostName:(NSString*)hostName NS_DESIGNATED_INITIALIZER;
 
 -(void) startUpdates;
 
@@ -59,7 +59,7 @@ typedef void (^fetchPostalCompletionHandler)(id object);
 
 -(void) populateStatesList;
 
--(BOOL) isCurrentZipcodeExists;
+@property (NS_NONATOMIC_IOSONLY, getter=isCurrentZipcodeExists, readonly) BOOL currentZipcodeExists;
 
 -(BOOL) searchZipcode: (NSString *) aZipcode;
 
@@ -67,7 +67,7 @@ typedef void (^fetchPostalCompletionHandler)(id object);
 
 -(void) attemptToAddCurrentLocation:(CityDataObject*) aCity addCompletionHandler:(addLocationResponse)completionHandler;
 
--(NSString*) retrieveCurrentLocation;
+@property (NS_NONATOMIC_IOSONLY, readonly, copy) NSString *retrieveCurrentLocation;
 
 -(void) fetchLocationInformation:(NSArray*) locations;
 
@@ -77,13 +77,13 @@ typedef void (^fetchPostalCompletionHandler)(id object);
 
 -(void) applicaitonHasLaunchedOnced;
 
--(BOOL) hasLocationsRecorded;
+@property (NS_NONATOMIC_IOSONLY, readonly) BOOL hasLocationsRecorded;
 
--(BOOL) hasMetLocationTimeThreshold;
+@property (NS_NONATOMIC_IOSONLY, readonly) BOOL hasMetLocationTimeThreshold;
 
--(CLLocation*) getCurrentLocation;
+@property (NS_NONATOMIC_IOSONLY, getter=getCurrentLocation, readonly, copy) CLLocation *currentLocation;
 
--(NSString*) getCurrentZipcode;
+@property (NS_NONATOMIC_IOSONLY, getter=getCurrentZipcode, readonly, copy) NSString *currentZipcode;
 
 -(void) fetchSurroundingZipcodesWithPostalCode:(NSString*)postalCode andObjects:(NSDictionary*) usersObjects;
 

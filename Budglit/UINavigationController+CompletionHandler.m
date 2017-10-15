@@ -27,9 +27,9 @@
 
 -(void)completionhandler_pushViewController:(UIViewController *)viewController withController:(UINavigationController *)navController withTransition:(UIModalTransitionStyle*)transitionStyle animated:(BOOL)animated completion:(void (^)(void))completion
 {
-    [navController setTransitioningDelegate:self];
+    navController.transitioningDelegate = self;
     
-    [navController setModalTransitionStyle:*transitionStyle];
+    navController.modalTransitionStyle = *transitionStyle;
     
     [self completionhandler_pushViewController:viewController withController:navController animated:animated completion:completion];
 }

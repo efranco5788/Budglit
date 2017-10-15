@@ -30,6 +30,6 @@
  @abstract Implemented by NSObject as a convenience to mutableCopyWithZone:.
  @return A mutable copy of the receiver.
  */
-- (id)mutableCopy;
+@property (NS_NONATOMIC_IOSONLY, readonly, strong) id mutableCopy;
 
 @end

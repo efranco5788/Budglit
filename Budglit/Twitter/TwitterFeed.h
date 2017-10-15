@@ -15,7 +15,7 @@
 
 @interface TwitterFeed : SocialMediaFeed
 
--(id)init;
+-(instancetype)init;
 
 -(void)addTweetToFeed:(Tweet*)tweet;
 

@@ -87,7 +87,7 @@ typedef NS_ENUM(NSInteger, BFAppLinkNavigationType) {
  Return navigation type for current instance.
  No-side-effect version of navigate:
  */
-- (BFAppLinkNavigationType)navigationType;
+@property (NS_NONATOMIC_IOSONLY, readonly) BFAppLinkNavigationType navigationType;
 
 /*! Navigates to a URL (an asynchronous action) and returns a BFNavigationType */
 + (BFTask *)navigateToURLInBackground:(NSURL *)destination;

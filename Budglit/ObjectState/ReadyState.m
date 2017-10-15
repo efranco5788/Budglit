@@ -10,7 +10,7 @@
 
 @implementation ReadyState
 
--(id)initState
+-(instancetype)initState
 {
     self = [super initState];
     

@@ -10,7 +10,16 @@
 
 @implementation State
 
--(id)initState
+-(instancetype)init
+{
+    self = [self initState];
+    
+    if(!self) return nil;
+    
+    return self;
+}
+
+-(instancetype)initState
 {
     self = [super init];
     

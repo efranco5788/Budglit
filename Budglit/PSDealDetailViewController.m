@@ -37,11 +37,11 @@
 {
     [super viewDidLoad];
     
-    [self.venueImage setImage:self.image];
+    (self.venueImage).image = self.image;
     
-    [self.descriptionTextView setText:self.descriptionText];
+    (self.descriptionTextView).text = self.descriptionText;
     
-    self.descriptionTextView.layer.borderColor = [[UIColor grayColor] CGColor];
+    self.descriptionTextView.layer.borderColor = [UIColor grayColor].CGColor;
     
     self.addressTextView = [[UITextView alloc] initWithFrame:CGRectMake(self.addressImage.frame.origin.x, self.addressImage.frame.origin.y, 0, 0)];
     
@@ -49,19 +49,19 @@
     
     [self.addressTextView setOpaque:NO];
     
-    [self.addressTextView setAlpha:0];
+    (self.addressTextView).alpha = 0;
     
-    [self.addressTextView.layer setBorderWidth:0.5];
+    (self.addressTextView.layer).borderWidth = 0.5;
     
-    [self.addressTextView.layer setCornerRadius:5.0];
+    (self.addressTextView.layer).cornerRadius = 5.0;
     
-    [self.addressTextView setText:self.addressText];
+    (self.addressTextView).text = self.addressText;
     
     self.addressTextView.linkTextAttributes = @{NSForegroundColorAttributeName:[UIColor blackColor]};
     
-    self.addressTextView.layer.borderColor = [[UIColor grayColor] CGColor];
+    self.addressTextView.layer.borderColor = [UIColor grayColor].CGColor;
     
-    [self.phoneNumberTextView setText:self.phoneText];
+    (self.phoneNumberTextView).text = self.phoneText;
     
     self.phoneNumberTextView = [[UITextView alloc] initWithFrame:CGRectMake(self.phoneImage.frame.origin.x, self.phoneImage.frame.origin.y, 0, 0)];
     
@@ -69,30 +69,30 @@
     
     [self.phoneNumberTextView setOpaque:NO];
     
-    [self.phoneNumberTextView setAlpha:0];
+    (self.phoneNumberTextView).alpha = 0;
     
-    [self.phoneNumberTextView.layer setBorderWidth:0.5];
+    (self.phoneNumberTextView.layer).borderWidth = 0.5;
     
-    [self.phoneNumberTextView.layer setCornerRadius:5.0];
+    (self.phoneNumberTextView.layer).cornerRadius = 5.0;
     
     self.phoneNumberTextView.linkTextAttributes = @{NSForegroundColorAttributeName:[UIColor blackColor]};
     
-    self.phoneNumberTextView.layer.borderColor = [[UIColor grayColor] CGColor];
+    self.phoneNumberTextView.layer.borderColor = [UIColor grayColor].CGColor;
     
     self.SMPageViewController = [[UIPageViewController alloc] initWithTransitionStyle:UIPageViewControllerTransitionStyleScroll navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal options:nil];
     
     // Create the Social Media Container Frame
     CGRect barFrame = self.socialMediaNavBar.frame;
-    CGRect containerBounds = [self.socialMediaContainer bounds];
+    CGRect containerBounds = (self.socialMediaContainer).bounds;
     CGRect newInsetFrame = CGRectInset(containerBounds, barFrame.origin.x, barFrame.origin.y);
     CGRect newFrame = CGRectOffset(newInsetFrame, barFrame.origin.x, barFrame.size.height);
 
-    [self.SMPageViewController.view setFrame:newFrame];
+    (self.SMPageViewController.view).frame = newFrame;
     
     [self.SMPageViewController.view setClipsToBounds:YES];
 
-    [self.SMPageViewController setDataSource:self];
-    [self.SMPageViewController setDelegate:self];
+    (self.SMPageViewController).dataSource = self;
+    (self.SMPageViewController).delegate = self;
     
     self.edgesForExtendedLayout = UIRectEdgeNone;
 }
@@ -101,7 +101,7 @@
 {
     [super viewWillAppear:YES];
     
-    AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
     if ([self.dealSelected.imgStateObject imageExists]) {
         
@@ -109,18 +109,18 @@
             
             self.image = image;
             
-            [self.venueImage setImage:self.image];
+            (self.venueImage).image = self.image;
             
         }];
     }
     
     UIBarButtonItem* backButton = [[UIBarButtonItem alloc] init];
     
-    [backButton setTitle:@"Back"];
+    backButton.title = @"Back";
     
-    [backButton setTarget:self];
+    backButton.target = self;
     
-    [backButton setAction:@selector(cancelButton_pressed:)];
+    backButton.action = @selector(cancelButton_pressed:);
     
     self.navigationItem.leftBarButtonItem = backButton;
     
@@ -134,11 +134,11 @@
         [self constructTwitterView];
     }
     
-    NSArray* viewCntrlors = [NSArray arrayWithObject:self.twitterViewController];
+    NSArray* viewCntrlors = @[self.twitterViewController];
     
     [self.SMPageViewController setViewControllers:viewCntrlors direction:UIPageViewControllerNavigationDirectionForward animated:YES completion:nil];
     
-    [self.SMPageViewController.view setBackgroundColor:[UIColor clearColor]];
+    (self.SMPageViewController.view).backgroundColor = [UIColor clearColor];
     
     [self addChildViewController:self.SMPageViewController];
     [self.socialMediaContainer addSubview:self.SMPageViewController.view];
@@ -164,7 +164,7 @@
 {
     [super viewWillDisappear:YES];
     
-    AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
     [appDelegate.databaseManager setDelegate:nil];
 
@@ -226,9 +226,9 @@
                 MKMapItem* mapItem = [[MKMapItem alloc] initWithPlacemark:placemark];
                 
                 if (self.venueName) {
-                    [mapItem setName:self.venueName];
+                    mapItem.name = self.venueName;
                 }
-                else [mapItem setName:@"Destination"];
+                else mapItem.name = @"Destination";
                 
                 // Set the directions mode to "Walking"
                 // Can use MKLaunchOptionsDirectionsModeDriving instead
@@ -250,7 +250,7 @@
             
             [pasteBoard setPersistent:YES];
             
-            [pasteBoard setString:self.addressText];
+            pasteBoard.string = self.addressText;
             
         }];
         
@@ -284,7 +284,7 @@
             
             [pasteBoard setPersistent:YES];
             
-            [pasteBoard setString:self.phoneText];
+            pasteBoard.string = self.phoneText;
             
         }];
         
@@ -378,7 +378,7 @@
                 
                 [backgroundDimmerMainView setOpaque:YES];
                 
-                [backgroundDimmerMainView setAlpha:0.8];
+                backgroundDimmerMainView.alpha = 0.8;
                 
                 [UIView commitAnimations];
                 
@@ -416,7 +416,7 @@
                 
                 [backgroundDimmerMainView setOpaque:NO];
                 
-                [backgroundDimmerMainView setAlpha:0.0];
+                backgroundDimmerMainView.alpha = 0.0;
                 
                 [UIView commitAnimations];
                 
@@ -438,11 +438,11 @@
 {
     self.twitterViewController = [[PSTwitterViewController alloc] init];
     
-    [self.twitterViewController setCurrentDeal:self.dealSelected];
+    (self.twitterViewController).currentDeal = self.dealSelected;
     
-    [self.twitterViewController setDelegate:self];
+    (self.twitterViewController).delegate = self;
     
-    [self.twitterViewController setTwitterDelegate:self];
+    (self.twitterViewController).twitterDelegate = self;
     
     [self.twitterViewController setPageIndex:0];
     
@@ -453,7 +453,7 @@
 {
     self.fbViewController = [[PSFacebookViewController alloc] init];
     
-    [self.fbViewController setDelegate:self];
+    (self.fbViewController).delegate = self;
 
     [self.fbViewController setPageIndex:1];
     
@@ -464,7 +464,7 @@
 {
     self.instaViewController = [[PSInstagramViewController alloc] init];
     
-    [self.instaViewController setDelegate:self];
+    (self.instaViewController).delegate = self;
     
     [self.instaViewController setPageIndex:2];
 }
@@ -479,11 +479,11 @@
         
         UIColor* dimmerColor = [UIColor blackColor];
         
-        [bgDimmer setBackgroundColor:dimmerColor];
+        bgDimmer.backgroundColor = dimmerColor;
         
         [bgDimmer setOpaque:NO];
         
-        [bgDimmer setAlpha:0.0];
+        bgDimmer.alpha = 0.0;
         
         [bgDimmer setHidden:YES];
         
@@ -496,7 +496,7 @@
 
 -(void) toggleBackgroundDimmerForMainView
 {
-    if ([backgroundDimmerMainView isHidden]) {
+    if (backgroundDimmerMainView.hidden) {
         [backgroundDimmerMainView setHidden:NO];
         isSocialMediaViewInView = YES;
     }
@@ -590,7 +590,7 @@
         
         //[self.SMPageViewController.view setBackgroundColor:[UIColor colorWithRed:0.00 green:0.67 blue:0.93 alpha:1.0]];
         
-        [self.socialMediaNavBar setBarTintColor:[UIColor colorWithRed:0.00 green:0.67 blue:0.93 alpha:1.0]];
+        (self.socialMediaNavBar).barTintColor = [UIColor colorWithRed:0.00 green:0.67 blue:0.93 alpha:1.0];
 
     }
     else if ([presentViewController isKindOfClass:[PSFacebookViewController class]])
@@ -598,20 +598,20 @@
         
         //[self.SMPageViewController.view setBackgroundColor:[UIColor colorWithRed:0.23 green:0.35 blue:0.60 alpha:1.0]];
         
-        [self.socialMediaNavBar setBarTintColor:[UIColor colorWithRed:0.23 green:0.35 blue:0.60 alpha:1.0]];
+        (self.socialMediaNavBar).barTintColor = [UIColor colorWithRed:0.23 green:0.35 blue:0.60 alpha:1.0];
     }
     else if ([presentViewController isKindOfClass:[PSInstagramViewController class]])
     {
         
         //[self.SMPageViewController.view setBackgroundColor:[UIColor colorWithRed:0.74 green:0.16 blue:0.55 alpha:1.0]];
         
-        [self.socialMediaNavBar setBarTintColor:[UIColor colorWithRed:0.74 green:0.16 blue:0.55 alpha:1.0]];
+        (self.socialMediaNavBar).barTintColor = [UIColor colorWithRed:0.74 green:0.16 blue:0.55 alpha:1.0];
     }
     else
     {
         //[self.SMPageViewController.view setBackgroundColor:[UIColor whiteColor]];
         
-        [self.socialMediaNavBar setBarTintColor:[UIColor whiteColor]];
+        (self.socialMediaNavBar).barTintColor = [UIColor whiteColor];
     }
 }
 

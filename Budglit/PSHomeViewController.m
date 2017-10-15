@@ -35,12 +35,13 @@
 }
 
 -(void)viewDidAppear:(BOOL)animated
-{    
+{
+    
     NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
     
-    NSData* userData = [defaults valueForKey:NSLocalizedString(@"ACCOUNT", nil)];
+    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
-    UserAccount* user = [NSKeyedUnarchiver unarchiveObjectWithData:userData];
+    UserAccount* user = appDelegate.accountManager.getSignedAccount;
     
     NSString* budgetValue = [defaults valueForKey:NSLocalizedString(@"BUDGET", nil)];
 
@@ -53,7 +54,8 @@
     }
     else
     {
-        [self launchLoadingPage];
+        [appDelegate.accountManager sessionValidator];
+        //[self launchLoadingPage];
     }
     
     user = nil;
@@ -67,9 +69,9 @@
         
         self.loginPage = [[LoginPageViewController alloc] initWithNibName:@"LoginPageViewController" bundle:nil];
         
-        [self.loginPage setDelegate:self];
+        (self.loginPage).delegate = self;
         
-        [self.loginPage setModalTransitionStyle:UIModalTransitionStyleCoverVertical];
+        (self.loginPage).modalTransitionStyle = UIModalTransitionStyleCoverVertical;
     }
     
     [self presentViewController:self.loginPage animated:NO completion:nil];
@@ -157,7 +159,7 @@
         [self destroyLoadingPage];
     }];
     
-    AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
     if(![self.navigationController.topViewController isKindOfClass:[DrawerViewController class]]) {
         

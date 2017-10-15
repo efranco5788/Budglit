@@ -20,10 +20,10 @@
 
 +(void)goNextState:(id)sender;
 
--(id) initWithCustomObject:(id)customObject;
+-(instancetype) initWithCustomObject:(id)customObject NS_DESIGNATED_INITIALIZER;
 
 -(void) stateClear;
 
--(BOOL) isClear;
+@property (NS_NONATOMIC_IOSONLY, getter=isClear, readonly) BOOL clear;
 
 @end

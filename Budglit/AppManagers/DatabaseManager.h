@@ -36,6 +36,7 @@ typedef void (^newDataFetchedResponse)(UIBackgroundFetchResult result);
 -(void)imageFetchedForDeal:(Deal*)deal forIndexPath:(NSIndexPath*)indexPath andImage:(UIImage*)image andImageView:(UIImageView*)imageView;
 -(void)imagesFetched;
 @end
+
 @interface DatabaseManager : NSObject
 {
     sqlite3* database;
@@ -50,7 +51,13 @@ typedef void (^newDataFetchedResponse)(UIBackgroundFetchResult result);
 @property (nonatomic, strong) id<DatabaseManagerDelegate> delegate;
 @property (nonatomic, strong) DatabaseEngine* engine;
 
--(id) initWithEngineHostName:(NSString*)hostName;
+@property (NS_NONATOMIC_IOSONLY, readonly) NSInteger totalCountDealsLoaded;
+@property (NS_NONATOMIC_IOSONLY, getter=getUsersCurrentCriteria, readonly, copy) NSDictionary *usersCurrentCriteria;
+@property (NS_NONATOMIC_IOSONLY, getter=getCurrentDate, readonly, copy) NSString *currentDate;
+@property (NS_NONATOMIC_IOSONLY, getter=getZipcode, readonly, copy) NSString *zipcode;
+@property (NS_NONATOMIC_IOSONLY, readonly) int closeDB;
+
+-(instancetype) initWithEngineHostName:(NSString*)hostName NS_DESIGNATED_INITIALIZER;
 
 -(void) fetchDeals: (NSDictionary*) searchCriteria;
 
@@ -70,20 +77,10 @@ typedef void (^newDataFetchedResponse)(UIBackgroundFetchResult result);
 
 -(void)cancelDownloads:(generalBlockResponse)completionHandler;
 
--(NSInteger)totalCountDealsLoaded;
-
 -(void)resetDeals;
 
 -(void) saveUsersCriteria:(NSDictionary*)usersCriteria;
 
--(NSDictionary*) getUsersCurrentCriteria;
-
--(NSString*) getCurrentDate;
-
--(NSString*) getZipcode;
-
 -(void) setZipcodeCriteria:(NSString*)zipcode;
-
--(int)closeDB;
 
 @end

@@ -10,8 +10,7 @@
 
 @interface MenuTableViewCell : UITableViewCell
 
--(void)setMenuOption:(NSInteger)option;
 
--(NSInteger)getMenuOption;
+@property (NS_NONATOMIC_IOSONLY, getter=getMenuOption) NSInteger menuOption;
 
 @end

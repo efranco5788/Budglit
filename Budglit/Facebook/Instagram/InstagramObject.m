@@ -20,42 +20,28 @@
 @implementation InstagramObject
 
 
--(id)init
+-(instancetype)init
 {
-    self = [super init];
+    self = [self initWithInstagrameID:nil andAttribution:nil andCaption:nil andTimestamp:0 andType:nil andInstagramLink:nil andCommnents:nil andImages:nil andVideos:nil andLocation:nil andTags:nil];
     
     if (!self) return nil;
     
-    self.instagramID = [[NSString alloc] init];
-    self.attribution = [[NSString alloc] init];
-    self.caption = [[NSString alloc] init];
-    self.timeCreatedString = [[NSString alloc] init];
-    self.type = [[NSString alloc] init];
-    self.link = [[NSURL alloc] init];
-    self.likesString = [[NSString alloc] init];
-    self.comments = [[NSDictionary alloc] init];
-    self.images = [[NSDictionary alloc] init];
-    self.videos = [[NSDictionary alloc] init];
-    self.location = [[NSDictionary alloc] init];
-    self.tags = [[NSDictionary alloc] init];
-    self.imgView = [[UIImageView alloc] init];
-    self.mediaStateHandler = [[ImageStateObject alloc] init];
+
     return self;
 }
 
--(id)initWithInstagrameID:(NSString*)idInt andAttribution:(NSString *)attri andCaption:(NSString *)cap andTimestamp:(NSInteger)timestamp andType:(NSString *)aType andInstagramLink:(NSString *)linkString andCommnents:(NSDictionary *)instaComments andImages:(NSDictionary *)imgs andVideos:(NSDictionary *)vids andLocation:(NSDictionary *)instaLocation andTags:(NSDictionary *)instaTags
+-(instancetype)initWithInstagrameID:(NSString*)idInt andAttribution:(NSString *)attri andCaption:(NSString *)cap andTimestamp:(NSInteger)timestamp andType:(NSString *)aType andInstagramLink:(NSString *)linkString andCommnents:(NSDictionary *)instaComments andImages:(NSDictionary *)imgs andVideos:(NSDictionary *)vids andLocation:(NSDictionary *)instaLocation andTags:(NSDictionary *)instaTags
 {
     self = [super init];
     
     if (!self) return nil;
     
-    if (idInt) {
-        self.instagramID = [NSString stringWithString:idInt];
-    }
+    if (idInt) self.instagramID = [NSString stringWithString:idInt];
+    else self.instagramID = [[NSString alloc] init];
     
-    if (timestamp) {
-        self.timeCreatedString = [NSString stringWithFormat:@"%li", (long)timestamp];
-    }
+    
+    if (timestamp) self.timeCreatedString = [NSString stringWithFormat:@"%li", (long)timestamp];
+    else self.timeCreatedString = [[NSString alloc] init];
     
     self.attribution = [NSString stringWithString:attri];
     
@@ -76,6 +62,9 @@
     self.tags = instaTags.copy;
     
     self.objHeight = [[NSNumber alloc] init];
+    self.likesString = [[NSString alloc] init];
+    self.imgView = [[UIImageView alloc] init];
+    self.mediaStateHandler = [[ImageStateObject alloc] init];
     
     return self;
     
@@ -96,7 +85,7 @@
 
 -(CGFloat)getHeight
 {
-    CGFloat height = [self.objHeight floatValue];
+    CGFloat height = (self.objHeight).floatValue;
     
     //NSLog(@"Height is %f", height);
     return height;
@@ -126,7 +115,7 @@
 
 -(void)toggleMuteButton
 {
-    if ([self.avPlayer isMuted]) self.avPlayer.muted = NO;
+    if ((self.avPlayer).muted) self.avPlayer.muted = NO;
     else self.avPlayer.muted = YES;
 }
 

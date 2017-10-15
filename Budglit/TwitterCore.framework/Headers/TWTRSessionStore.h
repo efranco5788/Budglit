@@ -118,14 +118,14 @@ typedef void (^TWTRSessionStoreDeleteCompletion)(id<TWTRAuthSession> _Nullable s
  *
  *  @note This is a blocking call.
  */
-- (NSArray *)existingUserSessions;
+@property (NS_NONATOMIC_IOSONLY, readonly, copy) NSArray * _Nonnull existingUserSessions;
 
 /**
  *  Retrieves the last logged in user session.
  *
  *  @return The last logged in user session.
  */
-- (nullable id<TWTRAuthSession>)session;
+@property (NS_NONATOMIC_IOSONLY, readonly, strong) id<TWTRAuthSession> _Nullable session;
 
 /**
  *  Deletes the local Twitter user session from this app. This will not remove the system Twitter account nor make a network request to invalidate the session.

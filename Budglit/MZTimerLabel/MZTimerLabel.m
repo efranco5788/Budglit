@@ -64,23 +64,23 @@
     }
 }
 
-- (id)initWithTimerType:(MZTimerLabelType)theType {
+- (instancetype)initWithTimerType:(MZTimerLabelType)theType {
     return [self initWithFrame:CGRectZero label:nil andTimerType:theType];
 }
 
-- (id)initWithLabel:(UILabel *)theLabel andTimerType:(MZTimerLabelType)theType {
+- (instancetype)initWithLabel:(UILabel *)theLabel andTimerType:(MZTimerLabelType)theType {
     return [self initWithFrame:CGRectZero label:theLabel andTimerType:theType];
 }
 
-- (id)initWithLabel:(UILabel*)theLabel {
+- (instancetype)initWithLabel:(UILabel*)theLabel {
     return [self initWithFrame:CGRectZero label:theLabel andTimerType:kDefaultTimerType];
 }
 
-- (id)initWithFrame:(CGRect)frame {
+- (instancetype)initWithFrame:(CGRect)frame {
     return [self initWithFrame:frame label:nil andTimerType:kDefaultTimerType];
 }
 
--(id)initWithFrame:(CGRect)frame label:(UILabel*)theLabel andTimerType:(MZTimerLabelType)theType {
+-(instancetype)initWithFrame:(CGRect)frame label:(UILabel*)theLabel andTimerType:(MZTimerLabelType)theType {
     self = [super initWithFrame:frame];
     if (self) {
         self.timeLabel = theLabel;
@@ -90,17 +90,21 @@
     return self;
 }
 
-- (id)initWithCoder:(NSCoder *)aDecoder
+
+- (instancetype)initWithCoder:(NSCoder *)aDecoder
 {
 	self = [super initWithCoder:aDecoder];
-	if (self) {
-        [self setup];
-	}
+    
+    if (!self) return nil;
+    
+    [self setup];
+    
 	return self;
 }
 
-#pragma mark - Cleanup
 
+#pragma mark - 
+#pragma mark - Cleanup
 - (void) removeFromSuperview {
     if (_timer) {
         [_timer invalidate];
@@ -145,7 +149,7 @@
 
 - (void)setTimeFormat:(NSString *)timeFormat{
     
-    if ([timeFormat length] != 0) {
+    if (timeFormat.length != 0) {
         _timeFormat = timeFormat;
         self.dateFormatter.dateFormat = timeFormat;
     }
@@ -154,7 +158,7 @@
 
 - (NSString*)timeFormat
 {
-    if ([_timeFormat length] == 0 || _timeFormat == nil) {
+    if (_timeFormat.length == 0 || _timeFormat == nil) {
         _timeFormat = kDefaultTimeFormat;
     }
     
@@ -166,7 +170,7 @@
     if (_dateFormatter == nil) {
         _dateFormatter = [[NSDateFormatter alloc] init];
         _dateFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_GB"];
-        [_dateFormatter setTimeZone:[NSTimeZone timeZoneWithName:@"GMT"]];
+        _dateFormatter.timeZone = [NSTimeZone timeZoneWithName:@"GMT"];
         _dateFormatter.dateFormat = self.timeFormat;
     }
     return _dateFormatter;
@@ -348,7 +352,7 @@
     if ([_delegate respondsToSelector:@selector(timerLabel:customTextToDisplayAtTime:)]) {
         NSTimeInterval atTime = (_timerType == MZTimerLabelTypeStopWatch) ? timeDiff : ((timeUserValue - timeDiff) < 0 ? 0 : (timeUserValue - timeDiff));
         NSString *customtext = [_delegate timerLabel:self customTextToDisplayAtTime:atTime];
-        if ([customtext length]) {
+        if (customtext.length) {
             self.timeLabel.text = customtext;
         }else{
             self.timeLabel.text = [self.dateFormatter stringFromDate:timeToShow];

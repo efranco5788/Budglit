@@ -25,6 +25,6 @@
 
 -(void)recordImageHTTPResponse:(NSHTTPURLResponse*)response andRequest:(NSURLRequest*)request hasImage:(BOOL)exist;
 
--(BOOL)imageExists;
+@property (NS_NONATOMIC_IOSONLY, readonly) BOOL imageExists;
 
 @end

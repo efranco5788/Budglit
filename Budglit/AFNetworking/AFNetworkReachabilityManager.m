@@ -113,7 +113,7 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
 
 @implementation AFNetworkReachabilityManager
 
-+ (instancetype)sharedManager {
++ (AFNetworkReachabilityManager*)sharedManager {
     static AFNetworkReachabilityManager *_sharedManager = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -124,7 +124,7 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
 }
 
 + (instancetype)managerForDomain:(NSString *)domain {
-    SCNetworkReachabilityRef reachability = SCNetworkReachabilityCreateWithName(kCFAllocatorDefault, [domain UTF8String]);
+    SCNetworkReachabilityRef reachability = SCNetworkReachabilityCreateWithName(kCFAllocatorDefault, domain.UTF8String);
     
     AFNetworkReachabilityManager *manager = [[self alloc] initWithReachability:reachability];
     
@@ -186,7 +186,7 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
 #pragma mark -
 
 - (BOOL)isReachable {
-    return [self isReachableViaWWAN] || [self isReachableViaWiFi];
+    return self.reachableViaWWAN || self.reachableViaWiFi;
 }
 
 - (BOOL)isReachableViaWWAN {

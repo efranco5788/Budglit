@@ -62,7 +62,7 @@ static BOOL AFErrorOrUnderlyingErrorHasCodeInDomain(NSError *error, NSInteger co
 
 static id AFJSONObjectByRemovingKeysWithNullValues(id JSONObject, NSJSONReadingOptions readingOptions) {
     if ([JSONObject isKindOfClass:[NSArray class]]) {
-        NSMutableArray *mutableArray = [NSMutableArray arrayWithCapacity:[(NSArray *)JSONObject count]];
+        NSMutableArray *mutableArray = [NSMutableArray arrayWithCapacity:((NSArray *)JSONObject).count];
         for (id value in (NSArray *)JSONObject) {
             [mutableArray addObject:AFJSONObjectByRemovingKeysWithNullValues(value, readingOptions)];
         }
@@ -70,7 +70,7 @@ static id AFJSONObjectByRemovingKeysWithNullValues(id JSONObject, NSJSONReadingO
         return (readingOptions & NSJSONReadingMutableContainers) ? mutableArray : [NSArray arrayWithArray:mutableArray];
     } else if ([JSONObject isKindOfClass:[NSDictionary class]]) {
         NSMutableDictionary *mutableDictionary = [NSMutableDictionary dictionaryWithDictionary:JSONObject];
-        for (id <NSCopying> key in [(NSDictionary *)JSONObject allKeys]) {
+        for (id <NSCopying> key in ((NSDictionary *)JSONObject).allKeys) {
             id value = (NSDictionary *)JSONObject[key];
             if (!value || [value isEqual:[NSNull null]]) {
                 [mutableDictionary removeObjectForKey:key];
@@ -116,13 +116,13 @@ static id AFJSONObjectByRemovingKeysWithNullValues(id JSONObject, NSJSONReadingO
     NSLog(@"response headers - %@", response.allHeaderFields);
     
     if (response && [response isKindOfClass:[NSHTTPURLResponse class]]) {
-        if (self.acceptableContentTypes && ![self.acceptableContentTypes containsObject:[response MIMEType]] &&
-            !([response MIMEType] == nil && [data length] == 0)) {
+        if (self.acceptableContentTypes && ![self.acceptableContentTypes containsObject:response.MIMEType] &&
+            !(response.MIMEType == nil && data.length == 0)) {
             
-            if ([data length] > 0 && [response URL]) {
+            if (data.length > 0 && response.URL) {
                 NSMutableDictionary *mutableUserInfo = [@{
-                                                          NSLocalizedDescriptionKey: [NSString stringWithFormat:NSLocalizedStringFromTable(@"Request failed: unacceptable content-type: %@", @"AFNetworking", nil), [response MIMEType]],
-                                                          NSURLErrorFailingURLErrorKey:[response URL],
+                                                          NSLocalizedDescriptionKey: [NSString stringWithFormat:NSLocalizedStringFromTable(@"Request failed: unacceptable content-type: %@", @"AFNetworking", nil), response.MIMEType],
+                                                          NSURLErrorFailingURLErrorKey:response.URL,
                                                           AFNetworkingOperationFailingURLResponseErrorKey: response,
                                                           } mutableCopy];
                 if (data) {
@@ -135,10 +135,10 @@ static id AFJSONObjectByRemovingKeysWithNullValues(id JSONObject, NSJSONReadingO
             responseIsValid = NO;
         }
         
-        if (self.acceptableStatusCodes && ![self.acceptableStatusCodes containsIndex:(NSUInteger)response.statusCode] && [response URL]) {
+        if (self.acceptableStatusCodes && ![self.acceptableStatusCodes containsIndex:(NSUInteger)response.statusCode] && response.URL) {
             NSMutableDictionary *mutableUserInfo = [@{
                                                       NSLocalizedDescriptionKey: [NSString stringWithFormat:NSLocalizedStringFromTable(@"Request failed: %@ (%ld)", @"AFNetworking", nil), [NSHTTPURLResponse localizedStringForStatusCode:response.statusCode], (long)response.statusCode],
-                                                      NSURLErrorFailingURLErrorKey:[response URL],
+                                                      NSURLErrorFailingURLErrorKey:response.URL,
                                                       AFNetworkingOperationFailingURLResponseErrorKey: response,
                                                       } mutableCopy];
             
@@ -541,11 +541,11 @@ static UIImage * AFImageWithDataAtScale(NSData *data, CGFloat scale) {
         return image;
     }
     
-    return [[UIImage alloc] initWithCGImage:[image CGImage] scale:scale orientation:image.imageOrientation];
+    return [[UIImage alloc] initWithCGImage:image.CGImage scale:scale orientation:image.imageOrientation];
 }
 
 static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *response, NSData *data, CGFloat scale) {
-    if (!data || [data length] == 0) {
+    if (!data || data.length == 0) {
         return nil;
     }
     
@@ -577,7 +577,7 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
             return image;
         }
         
-        imageRef = CGImageCreateCopy([image CGImage]);
+        imageRef = CGImageCreateCopy(image.CGImage);
         if (!imageRef) {
             return nil;
         }
@@ -649,7 +649,7 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
     self.acceptableContentTypes = [[NSSet alloc] initWithObjects:@"image/tiff", @"image/jpeg", @"image/gif", @"image/png", @"image/ico", @"image/x-icon", @"image/bmp", @"image/x-bmp", @"image/x-xbitmap", @"image/x-win-bitmap", nil];
     
 #if TARGET_OS_IOS || TARGET_OS_TV
-    self.imageScale = [[UIScreen mainScreen] scale];
+    self.imageScale = [UIScreen mainScreen].scale;
     self.automaticallyInflatesResponseImage = YES;
 #elif TARGET_OS_WATCH
     self.imageScale = [[WKInterfaceDevice currentDevice] screenScale];
@@ -700,7 +700,7 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
 #if TARGET_OS_IOS  || TARGET_OS_TV || TARGET_OS_WATCH
     NSNumber *imageScale = [decoder decodeObjectOfClass:[NSNumber class] forKey:NSStringFromSelector(@selector(imageScale))];
 #if CGFLOAT_IS_DOUBLE
-    self.imageScale = [imageScale doubleValue];
+    self.imageScale = imageScale.doubleValue;
 #else
     self.imageScale = [imageScale floatValue];
 #endif

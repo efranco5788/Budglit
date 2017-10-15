@@ -43,8 +43,8 @@
             translateTransform = CATransform3DMakeTranslation(-(maxDistance-distance), 0.0, 0.0);
         }
         
-        [sideDrawerViewController.view.layer setTransform:CATransform3DConcat(scaleTransform, translateTransform)];
-        [sideDrawerViewController.view setAlpha:percentVisible];
+        (sideDrawerViewController.view.layer).transform = CATransform3DConcat(scaleTransform, translateTransform);
+        (sideDrawerViewController.view).alpha = percentVisible;
     };
     return visualStateBlock;
 }
@@ -79,9 +79,9 @@
             angle = M_PI_2-(percentVisible*M_PI_2);
         }
         
-        [sideDrawerViewController.view.layer setAnchorPoint:anchorPoint];
+        (sideDrawerViewController.view.layer).anchorPoint = anchorPoint;
         [sideDrawerViewController.view.layer setShouldRasterize:YES];
-        [sideDrawerViewController.view.layer setRasterizationScale:[[UIScreen mainScreen] scale]];
+        (sideDrawerViewController.view.layer).rasterizationScale = [UIScreen mainScreen].scale;
         
         CATransform3D swingingDoorTransform = CATransform3DIdentity;
         if (percentVisible <= 1.f) {
@@ -108,7 +108,7 @@
             swingingDoorTransform = overshootTransform;
         }
         
-        [sideDrawerViewController.view.layer setTransform:swingingDoorTransform];
+        (sideDrawerViewController.view.layer).transform = swingingDoorTransform;
     };
     return visualStateBlock;
 }
@@ -142,7 +142,7 @@
             }
         }
         
-        [sideDrawerViewController.view.layer setTransform:transform];
+        (sideDrawerViewController.view.layer).transform = transform;
     };
     return visualStateBlock;
 }

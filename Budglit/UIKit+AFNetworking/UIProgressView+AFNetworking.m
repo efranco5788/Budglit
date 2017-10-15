@@ -55,7 +55,7 @@ static void * AFTaskCountOfBytesReceivedContext = &AFTaskCountOfBytesReceivedCon
 @implementation UIProgressView (AFNetworking)
 
 - (BOOL)af_uploadProgressAnimated {
-    return [(NSNumber *)objc_getAssociatedObject(self, @selector(af_uploadProgressAnimated)) boolValue];
+    return ((NSNumber *)objc_getAssociatedObject(self, @selector(af_uploadProgressAnimated))).boolValue;
 }
 
 - (void)af_setUploadProgressAnimated:(BOOL)animated {
@@ -63,7 +63,7 @@ static void * AFTaskCountOfBytesReceivedContext = &AFTaskCountOfBytesReceivedCon
 }
 
 - (BOOL)af_downloadProgressAnimated {
-    return [(NSNumber *)objc_getAssociatedObject(self, @selector(af_downloadProgressAnimated)) boolValue];
+    return ((NSNumber *)objc_getAssociatedObject(self, @selector(af_downloadProgressAnimated))).boolValue;
 }
 
 - (void)af_setDownloadProgressAnimated:(BOOL)animated {
@@ -158,7 +158,7 @@ static void * AFTaskCountOfBytesReceivedContext = &AFTaskCountOfBytesReceivedCon
         }
 
         if ([keyPath isEqualToString:NSStringFromSelector(@selector(state))]) {
-            if ([(NSURLSessionTask *)object state] == NSURLSessionTaskStateCompleted) {
+            if (((NSURLSessionTask *)object).state == NSURLSessionTaskStateCompleted) {
                 @try {
                     [object removeObserver:self forKeyPath:NSStringFromSelector(@selector(state))];
 

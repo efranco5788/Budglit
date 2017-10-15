@@ -13,19 +13,19 @@ typedef void (^InstagramResponseResult)(NSData* response);
 
 @interface InstagramEngine : Engine
 
--(id)initWithHostName:(NSString*)hostName andClientID:(NSString*)cID andClientSecret:(NSString*)secret;
+-(instancetype)initWithHostName:(NSString*)hostName andClientID:(NSString*)cID andClientSecret:(NSString*)secret NS_DESIGNATED_INITIALIZER;
 
--(BOOL)accessTokenExists;
+@property (NS_NONATOMIC_IOSONLY, readonly) BOOL accessTokenExists;
 
 //-(BOOL)accessTokenIsValid;
 
--(NSString*)constructAuthorizationURLString;
+@property (NS_NONATOMIC_IOSONLY, readonly, copy) NSString *constructAuthorizationURLString;
 
--(NSString*)constructRecentMediaURLString;
+@property (NS_NONATOMIC_IOSONLY, readonly, copy) NSString *constructRecentMediaURLString;
 
--(NSString*)constructUserURLString;
+@property (NS_NONATOMIC_IOSONLY, readonly, copy) NSString *constructUserURLString;
 
--(NSString*)getAPI_Redirect_URI;
+@property (NS_NONATOMIC_IOSONLY, getter=getAPI_Redirect_URI, readonly, copy) NSString *API_Redirect_URI;
 
 -(void)sendInstagramRequest:(NSString*)strURL withCompletionHandler:(InstagramResponseResult) completionBlock;
 

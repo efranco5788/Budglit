@@ -7,6 +7,9 @@
 //
 
 #import "Engine.h"
+#import "UserAccount.h"
+
+typedef void (^fetchedResponse)(id dataResponse);
 
 @protocol AccountEngineDelegate <NSObject>
 @optional
@@ -25,14 +28,18 @@
 
 @property (nonatomic, strong) id <AccountEngineDelegate> delegate;
 
--(id)init;
+-(instancetype)init;
 
--(id)initWithHostName:(NSString*)hostName;
+-(instancetype)initWithHostName:(NSString*)hostName NS_DESIGNATED_INITIALIZER;
 
--(void) loginWithCredentials:(NSDictionary*) userCredentials;
+-(void)validateSessionAddCompletion:(generalBlockResponse)completionHandler;
 
--(void) signupWithNewAccount:(NSDictionary*) userCredentials;
+-(void)fetchSessionUserAccountAddCompletionHandler:(fetchedResponse)completionHandler;
 
--(void) sendPasswordResetEmail:(NSDictionary*) email;
+-(void)loginWithCredentials:(NSDictionary*) userCredentials;
+
+-(void)signupWithNewAccount:(NSDictionary*) userCredentials;
+
+-(void)sendPasswordResetEmail:(NSDictionary*) email;
 
 @end

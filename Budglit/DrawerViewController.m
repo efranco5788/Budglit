@@ -35,7 +35,7 @@
     
     self.loadingPage = LLLDVC;
     
-    [self.view setBackgroundColor:[UIColor whiteColor]];
+    (self.view).backgroundColor = [UIColor whiteColor];
 
     [self setShowsShadow:YES];
     
@@ -43,9 +43,9 @@
     
     CGFloat drawerWidth = viewWidth * MAX_DRAWER_WIDTH;
     
-    [self setMaximumRightDrawerWidth:drawerWidth];
-    [self setOpenDrawerGestureModeMask:MMOpenDrawerGestureModeAll];
-    [self setCloseDrawerGestureModeMask:MMCloseDrawerGestureModeAll];
+    self.maximumRightDrawerWidth = drawerWidth;
+    self.openDrawerGestureModeMask = MMOpenDrawerGestureModeAll;
+    self.closeDrawerGestureModeMask = MMCloseDrawerGestureModeAll;
     
     [self
      setDrawerVisualStateBlock:^(MMDrawerController *drawerController, MMDrawerSide drawerSide, CGFloat percentVisible) {
@@ -56,7 +56,7 @@
          else if(drawerSide == MMDrawerSideRight){
              sideDrawerViewController = drawerController.rightDrawerViewController;
          }
-         [sideDrawerViewController.view setAlpha:percentVisible];
+         (sideDrawerViewController.view).alpha = percentVisible;
      }];
 
 }
@@ -67,7 +67,7 @@
     
     [self.navigationItem setHidesBackButton:YES];
     
-    AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
     NSString* currentLocation = [NSString stringWithString:[appDelegate.locationManager retrieveCurrentLocation]];
     
@@ -81,7 +81,7 @@
     
     MenuTableViewController* menu = (MenuTableViewController*) self.rightDrawerViewController;
     
-    [menu setDelegate:self];
+    menu.delegate = self;
     
 }
 
@@ -166,7 +166,7 @@
 {
     [self.navigationController completionhandler_pushViewController:self.loadingPage withController:self.navigationController animated:NO completion:^{
         
-        [self.loadingPage setDelegate:self];
+        (self.loadingPage).delegate = self;
         
         [self.loadingPage fetchUserLocationOnline];
         
@@ -180,7 +180,7 @@
     
     [self.navigationController completionhandler_pushViewController:self.loadingPage withController:self.navigationController withTransition:&style animated:NO completion:^{
         
-        [self.loadingPage setDelegate:self];
+        (self.loadingPage).delegate = self;
         
         [self.loadingPage fetchUserLocationOfflineHideBackButton:NO];
     }];
@@ -190,7 +190,7 @@
 {
     [self.navigationController completionhandler_pushViewController:self.loadingPage withController:self.navigationController animated:NO completion:^{
         
-        [self.loadingPage setDelegate:self];
+        (self.loadingPage).delegate = self;
        
         [self.loadingPage inputBudget];
         
@@ -199,9 +199,9 @@
 
 -(void)logout
 {
-    AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
-    [appDelegate.accountManager setDelegate:self];
+    (appDelegate.accountManager).delegate = self;
     
     [appDelegate.accountManager logout];
 }
@@ -247,7 +247,7 @@
 #pragma mark - Account Manager Delegate
 -(void)logoutSucessfully
 {
-    AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
     [appDelegate.accountManager setDelegate:nil];
     

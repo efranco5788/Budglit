@@ -12,7 +12,7 @@
 
 @interface InstagramFeed : SocialMediaFeed
 
--(id)init;
+-(instancetype)init;
 
 -(void)addObjectToFeed:(InstagramObject*)object;
 

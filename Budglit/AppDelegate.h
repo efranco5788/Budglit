@@ -31,13 +31,13 @@
 @property (nonatomic, strong) LocationSeviceManager* locationManager;
 @property (nonatomic, strong) TwitterManager* twitterManager;
 @property (nonatomic, strong) ImageDataDoc* imageDataDocManager;
-
+@property (NS_NONATOMIC_IOSONLY, readonly, copy) NSURL *applicationDocumentsDirectory;
 @property (readonly, strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 @property (readonly, strong, nonatomic) NSManagedObjectModel *managedObjectModel;
 @property (readonly, strong, nonatomic) NSPersistentStoreCoordinator *persistentStoreCoordinator;
 
-- (void)saveContext;
-- (NSURL *)applicationDocumentsDirectory;
+- (void) saveContext;
+- (NSDictionary*) constructDefaultObjects: (UserAccount*) account;
 
 
 @end

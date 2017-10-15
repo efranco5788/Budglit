@@ -43,7 +43,7 @@ FOUNDATION_EXPORT NSString * const TWTROAuthEchoAuthorizationHeaderKey;
  *  @see More information about OAuth Echo: https://dev.twitter.com/oauth/echo
  *  @see More information about Verify Credentials: https://dev.twitter.com/rest/reference/get/account/verify_credentials
  */
-- (NSDictionary *)OAuthEchoHeadersToVerifyCredentials;
+@property (NS_NONATOMIC_IOSONLY, readonly, copy) NSDictionary * _Nonnull OAuthEchoHeadersToVerifyCredentials;
 
 @end
 

@@ -40,7 +40,7 @@
     NSMutableString* nonceTokenMutable = [NSMutableString stringWithCapacity:40];
     
     for (NSUInteger i = 0U; i < 40; i++) {
-        uint32_t r = arc4random() % [alphabet length];
+        uint32_t r = arc4random() % alphabet.length;
         unichar charcter = [alphabet characterAtIndex:r];
         [nonceTokenMutable appendFormat:@"%C", charcter];
     }
@@ -52,7 +52,7 @@
 
 -(NSString *)generate_Timestamp
 {
-    NSTimeInterval nowEpochSeconds = [[NSDate date] timeIntervalSince1970];
+    NSTimeInterval nowEpochSeconds = [NSDate date].timeIntervalSince1970;
     
     NSString* epochSecs_String = [NSString stringWithFormat:@"%f", nowEpochSeconds];
     
@@ -71,10 +71,10 @@
 
 -(NSString *)getOAUTHVersion
 {
-    if ([self.OAuthVersion integerValue] == 1) {
+    if ((self.OAuthVersion).integerValue == 1) {
         return OAUTH_VERSION_1;
     }
-    else if ([self.OAuthVersion integerValue] == 2)
+    else if ((self.OAuthVersion).integerValue == 2)
     {
         return OAUTH_VERSION_2;
     }
@@ -113,12 +113,12 @@
 
 -(NSString *)encodeParameters:(NSDictionary *)parameters
 {
-    NSArray* sortedKeys = [[parameters allKeys] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
+    NSArray* sortedKeys = [parameters.allKeys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
     
     NSMutableArray* sortedValues = [NSMutableArray array];
     
     for (NSString* key in sortedKeys) {
-        [sortedValues addObject:[parameters objectForKey:key]];
+        [sortedValues addObject:parameters[key]];
     }
 
     NSMutableArray* encodedKeys = [[NSMutableArray alloc] init];
@@ -142,8 +142,8 @@
     
     for (NSUInteger index = 0; index < encodedKeys.count; index++) {
         
-        NSString* key = [encodedKeys objectAtIndex:index];
-        NSString* value = [encodedValues objectAtIndex:index];
+        NSString* key = encodedKeys[index];
+        NSString* value = encodedValues[index];
         
         if (index == 0) {
             [encodedParameterString appendFormat:@"%@=%@", key, value];
@@ -162,11 +162,11 @@
 {
     NSMutableString* authorizationHeaderString = [[NSMutableString alloc] init];
     
-    NSArray* sortedKeys = [[authorizationHeader allKeys] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
+    NSArray* sortedKeys = [authorizationHeader.allKeys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
     
     for (NSUInteger index = 0; index < sortedKeys.count; index++) {
         
-        NSString* key = [sortedKeys objectAtIndex:index];
+        NSString* key = sortedKeys[index];
         
         NSString* encodedKey = [key encodeString:NSUTF8StringEncoding];
         
@@ -191,7 +191,7 @@
         method = DEFAULT_HTTP_METHOD;
     }
     else{
-        method = [httpMethod uppercaseString];
+        method = httpMethod.uppercaseString;
     }
     
     NSString* encodedBaseURL = [baseURL encodeString:NSUTF8StringEncoding];
@@ -247,15 +247,15 @@
     
     NSArray* qryFragment = [str componentsSeparatedByString:@"#"];
     
-    NSString* urlFragmnt = [qryFragment objectAtIndex:1];
+    NSString* urlFragmnt = qryFragment[1];
     
     NSArray* fragmntBreakdown = [urlFragmnt componentsSeparatedByString:@"="];
     
-    NSString* key = [fragmntBreakdown objectAtIndex:0];
-    NSString* value = [fragmntBreakdown objectAtIndex:1];
+    NSString* key = fragmntBreakdown[0];
+    NSString* value = fragmntBreakdown[1];
     
     if (key && value) {
-        accessTokn = [NSDictionary dictionaryWithObject:[value copy] forKey:[key copy]];
+        accessTokn = @{[key copy]: [value copy]};
     }
     else accessTokn = nil;
     

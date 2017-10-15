@@ -62,11 +62,11 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
 }
 @synthesize delegate;
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+- (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        [self.navigationItem setTitle:@""];
+        (self.navigationItem).title = @"";
     }
     return self;
 }
@@ -166,13 +166,13 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
         
         BudgetPickerViewController* budgetView = [[BudgetPickerViewController alloc] initWithNibName:BUDGET_VIEW_CONTROLLER bundle:nil];
         
-        [budgetView setDelegate:self];
+        budgetView.delegate = self;
         
         budgetView.view.autoresizesSubviews = YES;
         
         self.budgetPickerView = budgetView;
         
-        [self.navigationController setDelegate:self];
+        (self.navigationController).delegate = self;
         
         [self.navigationController pushViewController:self.budgetPickerView animated:NO];
         
@@ -182,7 +182,7 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
 
 -(void)verifyBudget
 {
-    AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
     currentState = CLEAR;
     
@@ -196,7 +196,7 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
     }
     else
     {
-        [appDelegate.locationManager setDelegate:self];
+        (appDelegate.locationManager).delegate = self;
         
         NSString* currentPostal = [appDelegate.locationManager getCurrentZipcode];
         
@@ -217,13 +217,13 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
     
     NSArray* budgetAmounts = [searchCriteria valueForKey:BUDGET_AMOUNTS];
     
-    NSInteger budget = [budgetValue integerValue];
+    NSInteger budget = budgetValue.integerValue;
     
     if (budget == 0) {
         budgetCriteria = @"Anything that's Free!!";
     }
     else{
-        budgetCriteria = [NSString stringWithFormat:@"Under $%@", [budgetAmounts objectAtIndex:budget]];
+        budgetCriteria = [NSString stringWithFormat:@"Under $%@", budgetAmounts[budget]];
     }
     
     self.budgetPickerView.budgetText.text = budgetCriteria;
@@ -231,7 +231,7 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
 
 -(void)updateResultLabels
 {
-    AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
     NSInteger count = [appDelegate.databaseManager totalCountDealsLoaded];
     
@@ -242,15 +242,15 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
 
 -(void)budgetSelected:(NSDictionary *)selectedCriteria
 {
-    AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
-    [appDelegate.databaseManager setDelegate:self];
+    (appDelegate.databaseManager).delegate = self;
     
     [appDelegate.databaseManager saveUsersCriteria:selectedCriteria];
     
     currentState = CLEAR;
     
-    [appDelegate.budgetManager addBudget:[selectedCriteria objectForKey:BUDGET_FILTER]];
+    [appDelegate.budgetManager addBudget:selectedCriteria[BUDGET_FILTER]];
     
     if (self.budgetPickerView) {
         
@@ -271,9 +271,9 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
 #pragma mark - Database Methods
 -(void) reloadDeals
 {
-    AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
-    [appDelegate.databaseManager setDelegate:self];
+    (appDelegate.databaseManager).delegate = self;
     
     NSDictionary* criteria = [appDelegate.databaseManager getUsersCurrentCriteria];
     
@@ -331,9 +331,9 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
     
     UIColor* dimmerColor = [UIColor blackColor];
     
-    [self.backgroundDimmer setBackgroundColor:dimmerColor];
+    (self.backgroundDimmer).backgroundColor = dimmerColor;
     
-    [self.backgroundDimmer setAlpha:0.5];
+    (self.backgroundDimmer).alpha = 0.5;
     
     [self.backgroundDimmer setHidden:YES];
     
@@ -342,7 +342,7 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
 
 -(void) toggleBackgroundDimmer
 {
-    if ([self.backgroundDimmer isHidden]) {
+    if ((self.backgroundDimmer).hidden) {
         [self.backgroundDimmer setHidden:NO];
     }
     else
@@ -357,7 +357,7 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
 {
     if (textField.tag == 100) {
         
-        AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+        AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
         
         if (![appDelegate.locationManager validateZipcodeInput:string withOldString:textField.text]) {
             return NO;
@@ -382,9 +382,9 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
     
     [zipcode_Alert addAction:done];
     [zipcode_Alert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
-        [textField setKeyboardType:UIKeyboardTypeNumberPad];
-        [textField setTag:100];
-        [textField setDelegate:self];
+        textField.keyboardType = UIKeyboardTypeNumberPad;
+        textField.tag = 100;
+        textField.delegate = self;
         [textField becomeFirstResponder];
     }];
     
@@ -397,7 +397,7 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
     
     PSEditZipcodeOfflineTableViewController* editZipcodeViewController = [storyboard instantiateViewControllerWithIdentifier:EDIT_ZIPCODE_OFFLINE_VIEW_CONTROLLER];
     
-    [editZipcodeViewController setDelegate:self];
+    editZipcodeViewController.delegate = self;
     
     self.editOfflinePage = editZipcodeViewController;
     
@@ -417,9 +417,9 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
     
     NSLog(@"Gathering user's location");
     
-    AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
-    [appDelegate.locationManager setDelegate:self];
+    (appDelegate.locationManager).delegate = self;
     
     [appDelegate.locationManager startUpdates:self];
 }
@@ -514,7 +514,7 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
 
 -(void) dismissBudgetPickerView
 {
-    [self.navigationController setDelegate:self];
+    (self.navigationController).delegate = self;
     
     /*
     [self.navigationController completionhandler_popViewController:self.budgetPickerView withController:self.navigationController animated:NO completion:^{

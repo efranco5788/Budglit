@@ -10,6 +10,6 @@
 
 @interface ReadyState : State
 
--(id)initState;
+-(instancetype)initState NS_DESIGNATED_INITIALIZER;
 
 @end

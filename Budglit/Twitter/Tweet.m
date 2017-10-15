@@ -19,7 +19,7 @@
     return tweetArray;
 }
 
--(id)init
+-(instancetype)init
 {
     self = [super init];
     

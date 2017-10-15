@@ -12,7 +12,6 @@
 @class AppDelegate;
 
 typedef void (^fetchedDataResponse)(UIImage* imageResponse, NSHTTPURLResponse* response, NSURLRequest* request);
-typedef void (^operationCancelResponse)(BOOL success);
 
 @protocol DatabaseEngineDelegate <NSObject>
 -(void)totalDealCountReturned:(NSInteger)responseCount;
@@ -28,9 +27,9 @@ typedef void (^operationCancelResponse)(BOOL success);
 
 @property (nonatomic, strong) id <DatabaseEngineDelegate> delegate;
 
--(id)init;
+-(instancetype)init;
 
--(id)initWithHostName:(NSString*)hostName;
+-(instancetype)initWithHostName:(NSString*)hostName NS_DESIGNATED_INITIALIZER;
 
 -(void) sendSearchCriteriaForTotalCountOnly:(NSDictionary*)searchCriteria;
 
@@ -40,6 +39,6 @@ typedef void (^operationCancelResponse)(BOOL success);
 
 -(void) downloadImageFromRequest:(NSURLRequest*)request addCompletionHandler:(fetchedDataResponse)completionHandler;
 
--(void) cancelOperations:(operationCancelResponse)completionHandler;
+-(void) cancelOperations:(generalBlockResponse)completionHandler;
 
 @end

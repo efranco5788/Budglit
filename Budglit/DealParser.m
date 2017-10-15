@@ -27,7 +27,16 @@
 
 @implementation DealParser
 
--(id)initParser
+-(instancetype)init
+{
+    self = [self initParser];
+    
+    if(!self) return nil;
+    
+    return self;
+}
+
+-(instancetype)initParser
 {
     self = [super init];
     
@@ -46,41 +55,43 @@
         
         for (id dic in list) {
             
-            NSDictionary* deal = [dic objectForKey:@"deal"];
+            NSDictionary* deal = dic[@"deal"];
             
             NSLog(@"%@", deal);
             
-            NSInteger dealID = [[deal objectForKey:@"dealID"] integerValue];
+            NSInteger dealID = [deal[@"dealID"] integerValue];
             
-            NSString* dealDate = [deal objectForKey:KEY_DEAL_DATE];
+            NSString* dealDate = deal[KEY_DEAL_DATE];
             
-            NSString* startDate = [deal objectForKey:KEY_DEAL_START];
+            NSString* startDate = deal[KEY_DEAL_START];
             
-            NSString* endDate = [deal objectForKey:KEY_DEAL_END];
+            NSString* endDate = deal[KEY_DEAL_END];
             
-            BOOL endOfDay = [deal objectForKey:KEY_DEAL_END_OF_DAY];
+            id dayObj = deal[KEY_DEAL_END_OF_DAY];
             
-            double dealBudget = [[deal objectForKey:KEY_DEAL_BUDGET] doubleValue];
+            BOOL endOfDay = [dayObj boolValue];
             
-            NSString* dealDescription = [deal objectForKey:KEY_DEAL_DESCRIPTION];
+            double dealBudget = [deal[KEY_DEAL_BUDGET] doubleValue];
             
-            NSString* dealTags = [deal objectForKey:KEY_DEAL_TAGS];
+            NSString* dealDescription = deal[KEY_DEAL_DESCRIPTION];
             
-            NSString* venue = [deal objectForKey:KEY_VENUE_NAME];
+            NSString* dealTags = deal[KEY_DEAL_TAGS];
             
-            NSString* venueAddress = [deal objectForKey:KEY_VENUE_ADDRESS];
+            NSString* venue = deal[KEY_VENUE_NAME];
             
-            NSString* venueCity = [deal objectForKey:KEY_VENUE_CITY];
+            NSString* venueAddress = deal[KEY_VENUE_ADDRESS];
             
-            NSString* venueState = [deal objectForKey:KEY_VENUE_STATE];
+            NSString* venueCity = deal[KEY_VENUE_CITY];
             
-            NSString* twtrUsername = [deal objectForKey:KEY_VENUE_TWTR_USERNAME];
+            NSString* venueState = deal[KEY_VENUE_STATE];
             
-            NSString* zipcode = [[deal objectForKey:KEY_VENUE_ZIPCODE] stringValue];
+            NSString* twtrUsername = deal[KEY_VENUE_TWTR_USERNAME];
             
-            NSString* venuePhone = [deal objectForKey:KEY_VENUE_PHONE_NUMBER];
+            NSString* zipcode = [deal[KEY_VENUE_ZIPCODE] stringValue];
             
-            NSString* imgURL = [deal objectForKey:KEY_VENUE_IMAGE_URL];
+            NSString* venuePhone = deal[KEY_VENUE_PHONE_NUMBER];
+            
+            NSString* imgURL = deal[KEY_VENUE_IMAGE_URL];
             
             NSArray* arryOfTags;
             

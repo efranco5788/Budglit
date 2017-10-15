@@ -61,7 +61,7 @@ NS_EXTENSION_UNAVAILABLE_IOS("Use view controller based solutions where appropri
 
  @return The systemwide network activity indicator manager.
  */
-+ (instancetype)sharedManager;
++ (AFNetworkActivityIndicatorManager*)sharedManager;
 
 /**
  Increments the number of active network requests. If this number was zero before incrementing, this will start animating the status bar network activity indicator.

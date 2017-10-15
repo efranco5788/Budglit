@@ -26,12 +26,12 @@
 
 @implementation DatabaseEngine
 
--(id) init
+-(instancetype) init
 {
     return [self initWithHostName:nil];
 }
 
--(id) initWithHostName:(NSString*)hostName
+-(instancetype) initWithHostName:(NSString*)hostName
 {
     
     self = [super initWithHostName:hostName];
@@ -77,7 +77,7 @@
                 
                 NSArray* list = [responseObject valueForKey:KEY_LIST];
                 
-                NSDictionary* obj = [list objectAtIndex:0];
+                NSDictionary* obj = list[0];
                 
                 NSInteger total = [[obj valueForKey:DEAL_COUNT] integerValue];
                 
@@ -114,7 +114,7 @@
             
             NSArray* dict = [responseObject valueForKey:KEY_LIST];
             
-            NSDictionary* obj = [dict objectAtIndex:0];
+            NSDictionary* obj = dict[0];
             
             NSInteger total = [[obj valueForKey:DEAL_COUNT] integerValue];
             
@@ -191,7 +191,7 @@
     }];
 }
 
--(void)cancelOperations:(operationCancelResponse)completionHandler
+-(void)cancelOperations:(generalBlockResponse)completionHandler
 {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         

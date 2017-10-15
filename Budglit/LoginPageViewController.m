@@ -76,17 +76,17 @@
     initialSignupButtonFrame = self.signupButton.frame;
 
     UIImageView* imgUsrView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 20, 20)];
-    [imgUsrView setImage:[UIImage imageNamed:USERNAME_IMAGE]];
+    imgUsrView.image = [UIImage imageNamed:USERNAME_IMAGE];
     
     UIImageView* imgPasswrdView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 20, 20)];
-    [imgPasswrdView setImage:[UIImage imageNamed:PASSWORD_IMAGE]];
+    imgPasswrdView.image = [UIImage imageNamed:PASSWORD_IMAGE];
 
-    [self.emailField setLeftViewMode:UITextFieldViewModeAlways];
-    [self.emailField setLeftView:imgUsrView];
+    (self.emailField).leftViewMode = UITextFieldViewModeAlways;
+    (self.emailField).leftView = imgUsrView;
     
     
-    [self.passwordField setLeftViewMode:UITextFieldViewModeAlways];
-    [self.passwordField setLeftView:imgPasswrdView];
+    (self.passwordField).leftViewMode = UITextFieldViewModeAlways;
+    (self.passwordField).leftView = imgPasswrdView;
     
     kbConstraint.active = NO;
     newConstraint.active = NO;
@@ -117,24 +117,24 @@
     
     if ([self.emailField respondsToSelector:@selector(setAttributedPlaceholder:)]) {
         self.emailField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"Email" attributes:@{NSForegroundColorAttributeName: color}];
-        [self.emailField setFont:font];
+        (self.emailField).font = font;
     }
     
     if ([self.passwordField respondsToSelector:@selector(setAttributedPlaceholder:)]) {
         self.passwordField.attributedPlaceholder = [[NSAttributedString alloc]initWithString:@"Password" attributes:@{NSForegroundColorAttributeName:color}];
-        [self.passwordField setFont:font];
+        (self.passwordField).font = font;
     }
     
     [self.passwordField setSecureTextEntry:YES];
     
     if ([self.FNameField respondsToSelector:@selector(setAttributedPlaceholder:)]) {
         self.FNameField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"First Name" attributes:@{NSForegroundColorAttributeName: color}];
-        [self.FNameField setFont:font];
+        (self.FNameField).font = font;
     }
     
     if ([self.LNameField respondsToSelector:@selector(setAttributedPlaceholder:)]) {
         self.LNameField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"Last Name" attributes:@{NSForegroundColorAttributeName: color}];
-        [self.LNameField setFont:font];
+        (self.LNameField).font = font;
     }
     
     [self.passwordVisibility setSelected:YES];
@@ -209,7 +209,7 @@
     
     UIAlertAction* doneAction = [UIAlertAction actionWithTitle:doneActionTitle style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         
-        UITextField* email = [[resetPassword textFields] objectAtIndex:0];
+        UITextField* email = resetPassword.textFields[0];
         
         if (email.text.length == 0) {
             [self setupPasswordResetController];
@@ -227,7 +227,7 @@
 
 -(void)toggleNameFields
 {
-    if ([self.FNameField isHidden]) {
+    if ((self.FNameField).hidden) {
         [self.FNameField setHidden:NO];
         [self.LNameField setHidden:NO];
     }
@@ -236,9 +236,9 @@
 #pragma mark - Account Manager delegate
 -(void)loginSucessful
 {
-    AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
-    [appDelegate.accountManager setDelegate:self];
+    (appDelegate.accountManager).delegate = self;
 
     [appDelegate.accountManager saveCredentials];
 }
@@ -268,9 +268,9 @@
 
 -(void)signupSucessfully
 {
-    AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
-    [appDelegate.accountManager setDelegate:self];
+    (appDelegate.accountManager).delegate = self;
     
     [appDelegate.accountManager saveCredentials];
 }
@@ -282,15 +282,16 @@
 
 -(void)credentialsSaved
 {
+    NSLog(@"Credentials Saved...");
     [self.delegate loginSucessful];
 }
 
 #pragma mark - Keyboard Notifications
 -(void)keyboardWasShown:(NSNotification*)notification
 {
-    NSDictionary* keyboardInfo = [notification userInfo];
+    NSDictionary* keyboardInfo = notification.userInfo;
     
-    CGSize keyboardSize = [[keyboardInfo objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
+    CGSize keyboardSize = [keyboardInfo[UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
     
     double kbAnimationDuration = [[keyboardInfo valueForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue];
     
@@ -344,13 +345,13 @@
     }
     else{
         
-        [[[UIApplication sharedApplication] keyWindow] endEditing:YES];
+        [[UIApplication sharedApplication].keyWindow endEditing:YES];
         
-        NSDictionary* credentials = [[NSDictionary alloc] initWithObjectsAndKeys:user_email, EMAIL_FIELD, user_password, PASSWORD_FIELD, nil];
+        NSDictionary* credentials = @{EMAIL_FIELD: user_email, PASSWORD_FIELD: user_password};
         
-        AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+        AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
         
-        [appDelegate.accountManager setDelegate:self];
+        (appDelegate.accountManager).delegate = self;
         
         [appDelegate.accountManager login:credentials];
         
@@ -371,13 +372,13 @@
     }
     else{
         
-        [[[UIApplication sharedApplication] keyWindow] endEditing:YES];
+        [[UIApplication sharedApplication].keyWindow endEditing:YES];
         
-        NSDictionary* credentials = [[NSDictionary alloc] initWithObjectsAndKeys:user_email, EMAIL_FIELD, user_password, PASSWORD_FIELD, nil];
+        NSDictionary* credentials = @{EMAIL_FIELD: user_email, PASSWORD_FIELD: user_password};
         
-        AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+        AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
         
-        [appDelegate.accountManager setDelegate:self];
+        (appDelegate.accountManager).delegate = self;
         
         [appDelegate.accountManager signup:credentials];
     }

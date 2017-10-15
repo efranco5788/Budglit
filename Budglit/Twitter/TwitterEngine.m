@@ -52,18 +52,21 @@
 
 @implementation TwitterEngine
 
--(id)init
+-(instancetype)init
 {
-    return [self initWithHostName:nil andConsumerKey:nil andConsumerSecret:nil];
+    return [self initWithHostName:nil];
 }
 
--(id)initWithHostName:(NSString*)hostName andConsumerKey:(NSString*)key andConsumerSecret:(NSString*)secret
+-(instancetype)initWithHostName:(NSString *)hostName
+{
+    return [self initWithHostName:hostName andConsumerKey:nil andConsumerSecret:nil];
+}
+
+-(instancetype)initWithHostName:(NSString*)hostName andConsumerKey:(NSString*)key andConsumerSecret:(NSString*)secret
 {
     self = [super initWithHostName:hostName];
     
-    if (!self) {
-        return nil;
-    }
+    if (!self) return nil;
 
     self.tokenRequest = [[NSDictionary alloc] init];
     self.tokenAccess = [[NSDictionary alloc] init];
@@ -73,22 +76,20 @@
     
     NSString* trimmedKey = [key stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     
-    if (![key isEqual:nil] || !([trimmedKey length] == 0)) {
+    if (![key isEqual:nil] || !(trimmedKey.length == 0)) {
         
         NSMutableDictionary* consumerKeyInfo = [[NSMutableDictionary alloc] init];
         
         NSString* consumerKey = [self.OAuth getConsumerKey];
         NSString* consumerSecretKey = [self.OAuth getConsumerSecretKey];
         
-        [consumerKeyInfo setObject:key forKey:consumerKey];
-        [consumerKeyInfo setObject:secret forKey:consumerSecretKey];
+        consumerKeyInfo[consumerKey] = key;
+        consumerKeyInfo[consumerSecretKey] = secret;
         
         self.consumerKey = consumerKeyInfo;
     }
     
-        
     return self;
-    
 }
 
 -(void) recordRequestToken:(NSString*)token andRequestTokenSecret:(NSString*)tokenSecret
@@ -147,7 +148,7 @@
     
     NSArray* queryInfo = [URL componentsSeparatedByString:@"?"];
     
-    NSString* URLQuery = [queryInfo objectAtIndex:1];
+    NSString* URLQuery = queryInfo[1];
     
     NSArray* parameters = [URLQuery componentsSeparatedByString:@"&"];
     
@@ -157,10 +158,10 @@
     for (NSString* string in parameters) {
         NSArray* keyValueSplit = [string componentsSeparatedByString:@"="];
         
-        key = [keyValueSplit objectAtIndex:0];
+        key = keyValueSplit[0];
         
         if ([key isEqualToString:tokenVerifierKey]) {
-            value = [keyValueSplit objectAtIndex:1];
+            value = keyValueSplit[1];
             
             [self recordTokenVerifier:value];
         }
@@ -173,7 +174,7 @@
     NSString* key = [self.OAuth getTokenVerifierKey];
     NSString* value = [self.tokenRequest valueForKey:key];
     
-    NSDictionary* verifierInfo = [NSDictionary dictionaryWithObject:value forKey:key];
+    NSDictionary* verifierInfo = @{key: value};
     
     return verifierInfo;
 }
@@ -197,13 +198,13 @@
     
     NSMutableArray* tweets = feed.list.mutableCopy;
     
-    username = [username lowercaseString];
+    username = username.lowercaseString;
     
     NSString* searchMention = [NSString stringWithFormat:@"@%@", username];
     
     for (NSInteger i = 0; i < tweets.count; i++) {
         
-        Tweet* currentTwt = [tweets objectAtIndex:i];
+        Tweet* currentTwt = tweets[i];
         
         NSString* twtTxt = currentTwt.text.copy;
 
@@ -219,7 +220,7 @@
     
     for (int i = 0; i < tweets.count; i++){
         
-        Tweet* currentTwt = [tweets objectAtIndex:i];
+        Tweet* currentTwt = tweets[i];
         
         NSString* twtTxt = currentTwt.text.copy;
         
@@ -253,13 +254,13 @@
     
     NSMutableArray* tweets = [feed.list mutableCopy];
     
-    hashtag = [hashtag lowercaseString];
+    hashtag = hashtag.lowercaseString;
     
     NSString* searchTag = [NSString stringWithFormat:@"#%@", hashtag];
     
     for (NSInteger count = 0; count < tweets.count; count++) {
         
-        Tweet* currentTwt = [tweets objectAtIndex:count];
+        Tweet* currentTwt = tweets[count];
         
         NSString* twtTxt = currentTwt.text.copy;
 
@@ -274,7 +275,7 @@
     
     for (int count = 0; count < tweets.count; count++) {
         
-        Tweet* currentTwt = [tweets objectAtIndex:count];
+        Tweet* currentTwt = tweets[count];
         
         NSString* twtTxt = currentTwt.text.copy;
         
@@ -317,7 +318,7 @@
     
     NSMutableArray* tweets = [feed.list mutableCopy];
     
-    mention = [mention lowercaseString];
+    mention = mention.lowercaseString;
     
     NSCharacterSet* whitespaces = [NSCharacterSet whitespaceCharacterSet];
     
@@ -331,7 +332,7 @@
         
         for (int count = 0; count < tweets.count; count++) {
             
-            Tweet* currentTwt = [tweets objectAtIndex:count];
+            Tweet* currentTwt = tweets[count];
             
             NSString* twtTxt = currentTwt.text.copy;
             
@@ -398,12 +399,12 @@
         
         if (self.tokenAccess.count <= 0) {
             
-            token = [self.tokenRequest objectForKey:tokenKey];
+            token = (self.tokenRequest)[tokenKey];
             
         }
         else{
             
-            token = [self.tokenAccess objectForKey:tokenKey];
+            token = (self.tokenAccess)[tokenKey];
             
         }
         
@@ -444,7 +445,7 @@
     
     NSMutableDictionary* initialParams = [NSMutableDictionary dictionaryWithDictionary:request.initialRequestAuthorizationHeader];
     
-    [initialParams setObject:encryptedRequestSignature forKey:@"oauth_signature"];
+    initialParams[@"oauth_signature"] = encryptedRequestSignature;
     
     request.finalRequestAuthorizationHeader = initialParams;
     
@@ -457,7 +458,7 @@
     
     tokenRequest.urlPath = OAUTH_REQUEST_TOKEN_URL_PATH;
     
-    [tokenRequest setHttpMethod:@"POST"];
+    tokenRequest.httpMethod = @"POST";
     
     [self constructAuthorizationParam:tokenRequest];
     
@@ -472,7 +473,7 @@
     
     request.urlPath = OAUTH_AUTHENTICATE_URL_PATH;
     
-    [request setHttpMethod:@"GET"];
+    request.httpMethod = @"GET";
     
     if (self.tokenRequest.count >= 1) {
         
@@ -482,7 +483,7 @@
         
         NSString* token = [self.tokenRequest valueForKey:tokenKey];
         
-        [queryInfo setObject:token forKey:tokenKey];
+        queryInfo[tokenKey] = token;
         
         request.query = queryInfo;
         
@@ -497,7 +498,7 @@
 {
     TwitterRequestObject* tokenAccessRequest = [[TwitterRequestObject alloc] init];
     
-    [tokenAccessRequest setHttpMethod:@"POST"];
+    tokenAccessRequest.httpMethod = @"POST";
     
     tokenAccessRequest.urlPath = OAUTH_ACCESS_TOKEN_URL_PATH;
     
@@ -507,7 +508,7 @@
     
     NSString* token_verifier = [self.tokenRequest valueForKey:tokenVerifierKey];
     
-    NSDictionary* param = [NSDictionary dictionaryWithObject:token_verifier forKey:tokenVerifierKey];
+    NSDictionary* param = @{tokenVerifierKey: token_verifier};
     
     tokenAccessRequest.query = param;
     
@@ -520,7 +521,7 @@
 {
     TwitterRequestObject* searchRequest = [[TwitterRequestObject alloc] init];
     
-    [searchRequest setHttpMethod:@"GET"];
+    searchRequest.httpMethod = @"GET";
     
     searchRequest.urlPath = TWITTER_SEARCH_URL_PATH;
     
@@ -539,11 +540,11 @@
             
             if ([key isEqualToString:TWITTER_SEARCH_QUERY_KEY]) {
                 
-                NSDictionary* searchQuery = [NSDictionary dictionaryWithObject:value forKey:key];
+                NSDictionary* searchQuery = @{key: value};
                 
                 searchRequest.query = searchQuery;
             }
-            else [mutableAdditionalParam setObject:value forKey:key];
+            else mutableAdditionalParam[key] = value;
             
         }
         
@@ -562,7 +563,7 @@
 {
     TwitterRequestObject* rateLimitRequest = [[TwitterRequestObject alloc] init];
     
-    [rateLimitRequest setHttpMethod:@"GET"];
+    rateLimitRequest.httpMethod = @"GET";
     
     [rateLimitRequest setUrlPath:TWITTER_RATE_LIMIT_URL_PATH];
     
@@ -692,18 +693,18 @@
         for (NSString* string in splitResponse) {
             NSArray* keyValueSplit = [string componentsSeparatedByString:@"="];
             
-            NSString* key = [keyValueSplit objectAtIndex:0];
+            NSString* key = keyValueSplit[0];
             
             NSString* tokenKey = [self.OAuth getTokenKey];
             NSString* tokenSecretKey = [self.OAuth getTokenSecretKey];
             
             if ([key isEqualToString:tokenKey])
             {
-                tokenRequestValue = [keyValueSplit objectAtIndex:1];
+                tokenRequestValue = keyValueSplit[1];
             }
             else if ([key isEqualToString:tokenSecretKey])
             {
-                tokenRequestSecretValue = [keyValueSplit objectAtIndex:1];
+                tokenRequestSecretValue = keyValueSplit[1];
             }
             
             [self recordRequestToken:tokenRequestValue andRequestTokenSecret:tokenRequestSecretValue];
@@ -798,19 +799,19 @@
                 NSString* tokenSecretKey = [self.OAuth getTokenSecretKey];
                 
                 NSArray* keyValuePair = [HTTPResponse componentsSeparatedByString:@"="];
-                NSString* key = [keyValuePair firstObject];
+                NSString* key = keyValuePair.firstObject;
                 
                 if ([key isEqualToString:tokenKey])
                 {
-                    accessTokenValue = [keyValuePair lastObject];
+                    accessTokenValue = keyValuePair.lastObject;
                 }
                 else if ([key isEqualToString:tokenSecretKey])
                 {
-                    accessTokenSecretValue = [keyValuePair lastObject];
+                    accessTokenSecretValue = keyValuePair.lastObject;
                 }
                 else if ([key isEqualToString:SIGNED_IN_SCREEN_NAME])
                 {
-                    screenName = [keyValuePair lastObject];
+                    screenName = keyValuePair.lastObject;
                 }
                 
             }

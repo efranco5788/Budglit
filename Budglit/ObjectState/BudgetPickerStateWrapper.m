@@ -18,7 +18,16 @@
     
 }
 
--(id)initWithCustomObject:(id)customObject
+-(instancetype)init
+{
+    self = [self initWithCustomObject:nil];
+    
+    if (!self) return nil;
+    
+    return self;
+}
+
+-(instancetype)initWithCustomObject:(id)customObject
 {    
     self = [super init];
     

@@ -189,7 +189,7 @@ static const char * af_backgroundImageRequestOperationKeyForState(UIControlState
         imageRequestOperation.responseSerializer = self.imageResponseSerializer;
         [imageRequestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
             __strong __typeof(weakSelf)strongSelf = weakSelf;
-            if ([[urlRequest URL] isEqual:[operation.request URL]]) {
+            if ([urlRequest.URL isEqual:(operation.request).URL]) {
                 if (success) {
                     success(operation.request, operation.response, responseObject);
                 } else if (responseObject) {
@@ -198,7 +198,7 @@ static const char * af_backgroundImageRequestOperationKeyForState(UIControlState
             }
             [[[strongSelf class] sharedImageCache] cacheImage:responseObject forRequest:urlRequest];
         } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-            if ([[urlRequest URL] isEqual:[operation.request URL]]) {
+            if ([urlRequest.URL isEqual:(operation.request).URL]) {
                 if (failure) {
                     failure(error);
                 }
@@ -255,7 +255,7 @@ static const char * af_backgroundImageRequestOperationKeyForState(UIControlState
         backgroundImageRequestOperation.responseSerializer = self.imageResponseSerializer;
         [backgroundImageRequestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
             __strong __typeof(weakSelf)strongSelf = weakSelf;
-            if ([[urlRequest URL] isEqual:[operation.request URL]]) {
+            if ([urlRequest.URL isEqual:(operation.request).URL]) {
                 if (success) {
                     success(operation.request, operation.response, responseObject);
                 } else if (responseObject) {
@@ -264,7 +264,7 @@ static const char * af_backgroundImageRequestOperationKeyForState(UIControlState
             }
             [[[strongSelf class] sharedImageCache] cacheImage:responseObject forRequest:urlRequest];
         } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-            if ([[urlRequest URL] isEqual:[operation.request URL]]) {
+            if ([urlRequest.URL isEqual:(operation.request).URL]) {
                 if (failure) {
                     failure(error);
                 }

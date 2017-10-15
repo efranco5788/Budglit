@@ -51,25 +51,20 @@
 
 @implementation InstagramManager
 
-
--(id)initWithEngine
+-(instancetype)initWithEngine
 {
     self = [self initWithEngineHostName:nil andClientID:nil andClientSecret:nil];
     
-    if (!self) {
-        return nil;
-    }
+    if (!self) return nil;
     
     return self;
 }
 
--(id)initWithEngineHostName:(NSString *)hostName andClientID:(NSString *)cID andClientSecret:(NSString *)cSecret
+-(instancetype)initWithEngineHostName:(NSString *)hostName andClientID:(NSString *)cID andClientSecret:(NSString *)cSecret
 {
     self = [super init];
     
-    if (!self) {
-        return nil;
-    }
+    if (!self) return nil;
     
     self.engine = [[InstagramEngine alloc] initWithHostName:hostName andClientID:cID andClientSecret:cSecret];
     
@@ -104,7 +99,7 @@
     
     if (currentList != nil) {
         
-        InstagramObject* obj = [currentList objectAtIndex:index];
+        InstagramObject* obj = currentList[index];
         return obj;
     }
     else{
@@ -125,7 +120,7 @@
         {
             NSDictionary *responseDict = (NSDictionary*) response;
             
-            NSArray* instaObjs = [responseDict objectForKey:KEY_INSTAGRAM_DICTIONARY];
+            NSArray* instaObjs = responseDict[KEY_INSTAGRAM_DICTIONARY];
             
             for (NSDictionary* obj in instaObjs) {
                 
@@ -136,7 +131,7 @@
                 //NSURL* instaURL = [[NSURL alloc] initWithString:instagramLink];
                 
                 CGFloat preferredHeight = 0;
-                NSString* type = [obj objectForKey:KEY_INSTAGRAM_TYPE];
+                NSString* type = obj[KEY_INSTAGRAM_TYPE];
                 NSDictionary* standardResolution;
                 NSString* urlString;
                 NSURL* instaURL;
@@ -163,8 +158,8 @@
                         preferredHeight = [height floatValue];
                     }
                     
-                    [insta setType:type];
-                    [insta setImages:images];
+                    insta.type = type;
+                    insta.images = images;
                     [insta setHeight:preferredHeight];
                     
                 }// End of Image if statement
@@ -187,15 +182,15 @@
                         preferredHeight = [height floatValue];
                     }
                     
-                    [insta setType:type];
-                    [insta setVideos:videos];
+                    insta.type = type;
+                    insta.videos = videos;
                     [insta setHeight:preferredHeight];
                     
                 } // End of Video if statement
                 
-                [insta setUsername:usr];
-                [insta setUserImgURLString:imgString];
-                [insta setLink:instaURL];
+                insta.username = usr;
+                insta.userImgURLString = imgString;
+                insta.link = instaURL;
                 
                 [self.instagramFeed addObjectToFeed:insta];
                 

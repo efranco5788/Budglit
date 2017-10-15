@@ -25,7 +25,18 @@ NSString* const kDefaultEventEndNotification = @"EventEndNotification";
 
 @synthesize venueName, venueDescription, dealDescription, address, phoneNumber, city, state;
 
--(id)initWithVenueName:(NSString *)venue andVenueAddress:(NSString *)anAddress andVenueDescription:(NSString *)aVenueDes andVenueTwtrUsername:(NSString *)useranme andDate:(NSString *)dateString andStartDate:(NSString *)start andEndDate:(NSString *)end andDealDescription:(NSString *)aDealDescription andPhoneNumber:(NSString *)aNumber andCity:(NSString *)aCity andState:(NSString *)aState andZipcode:(NSString *)aZip andBudget:(double)aBudget andDealID:(NSInteger)aDealID andURLImage:(NSString *)url andAddTags:(NSArray *)dealTags
+-(instancetype)init
+{
+    self = [self initWithVenueName:nil andVenueAddress:nil andVenueDescription:nil andVenueTwtrUsername:nil andDate:nil andStartDate:nil andEndDate:nil andDealDescription:nil andPhoneNumber:nil andCity:nil andState:nil andZipcode:nil andBudget:0 andDealID:0 andURLImage:nil andAddTags:nil];
+    
+    if (!self) return nil;
+    
+    return nil;
+        
+        
+}
+
+-(instancetype)initWithVenueName:(NSString *)venue andVenueAddress:(NSString *)anAddress andVenueDescription:(NSString *)aVenueDes andVenueTwtrUsername:(NSString *)useranme andDate:(NSString *)dateString andStartDate:(NSString *)start andEndDate:(NSString *)end andDealDescription:(NSString *)aDealDescription andPhoneNumber:(NSString *)aNumber andCity:(NSString *)aCity andState:(NSString *)aState andZipcode:(NSString *)aZip andBudget:(double)aBudget andDealID:(NSInteger)aDealID andURLImage:(NSString *)url andAddTags:(NSArray *)dealTags
 {
     self = [super init];
     
@@ -126,7 +137,7 @@ NSString* const kDefaultEventEndNotification = @"EventEndNotification";
 
         self.eventCountDwn = [[MZTimerLabel alloc] initWithLabel:aLabel andTimerType:MZTimerLabelTypeTimer];
         
-        [self.eventCountDwn setDelegate:self];
+        (self.eventCountDwn).delegate = self;
         
         self.eventCountDwn.timeFormat = @"dd:HH:mm:ss ";
         
@@ -134,7 +145,7 @@ NSString* const kDefaultEventEndNotification = @"EventEndNotification";
         
         [formatter setDateFormat:kDefaultDateFormat];
         
-        [formatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US"]];
+        formatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
         
         NSDate* evntEndDate = [formatter dateFromString:self.endDate];
         

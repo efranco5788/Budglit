@@ -21,12 +21,12 @@
 
 @property (nonatomic, strong) NSURL* docPathURL;
 
--(id) init;
+-(instancetype) init NS_DESIGNATED_INITIALIZER;
 
--(id) initDirectory;
+-(instancetype) initDirectory NS_DESIGNATED_INITIALIZER;
 
 -(NSString*) saveData:(NSData*)imageData;
 
--(BOOL) deleteAllData;
+@property (NS_NONATOMIC_IOSONLY, readonly) BOOL deleteAllData;
 
 @end

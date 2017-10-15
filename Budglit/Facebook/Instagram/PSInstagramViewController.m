@@ -23,16 +23,16 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.restorationIdentifier = RESTORATION_STRING;
-    [self.webView setDelegate:self];
+    (self.webView).delegate = self;
 }
 
 -(void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
     
-    AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
-    [appDelegate.instagramManager setDelegate:self];
+    (appDelegate.instagramManager).delegate = self;
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
         
@@ -71,7 +71,7 @@
 #pragma mark - Web View Delegate
 -(BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
 {
-    NSURL* requestURL = [request URL];
+    NSURL* requestURL = request.URL;
     
     NSString* host = requestURL.host;
     
@@ -87,9 +87,9 @@
     }
     else if ([host isEqualToString:@"www.budglit.com"])
     {
-        AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+        AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
         
-        NSString* url = [requestURL absoluteString];
+        NSString* url = requestURL.absoluteString;
         
         [appDelegate.instagramManager.engine retrieveAccessTokenFromString:url WithCompletionHandler:^(BOOL tokenGranted) {
             
@@ -129,11 +129,11 @@
 
 -(void)frameWebView
 {
-    CGRect screenSize = [[UIScreen mainScreen] bounds];
+    CGRect screenSize = [UIScreen mainScreen].bounds;
     
     CGRect frameSize = CGRectMake(self.view.bounds.origin.x, self.view.bounds.origin.y, screenSize.size.width, self.view.bounds.size.height);
     
-    [self.webView setFrame:frameSize];
+    (self.webView).frame = frameSize;
 }
 
 -(void)toggleWebView:(BOOL)isHidden
@@ -155,11 +155,11 @@
         
         NSLog(@"Creating Table");
         
-        CGRect screenSize = [[UIScreen mainScreen] bounds];
+        CGRect screenSize = [UIScreen mainScreen].bounds;
         
         CGRect frameSize = CGRectMake(self.view.bounds.origin.x, self.view.bounds.origin.y, screenSize.size.width, self.instagramTableView.view.frame.size.height);
         
-        [self.instagramTableView.view setFrame:frameSize];
+        (self.instagramTableView.view).frame = frameSize;
         
         [self.view addSubview:self.instagramTableView.view];
     }

@@ -84,9 +84,9 @@ NSString * AFPercentEscapedStringFromString(NSString *string) {
 @property (readwrite, nonatomic, strong) id field;
 @property (readwrite, nonatomic, strong) id value;
 
-- (instancetype)initWithField:(id)field value:(id)value;
+- (instancetype)initWithField:(id)field value:(id)value NS_DESIGNATED_INITIALIZER;
 
-- (NSString *)URLEncodedStringValue;
+@property (NS_NONATOMIC_IOSONLY, readonly, copy) NSString *URLEncodedStringValue;
 @end
 
 @implementation AFQueryStringPair
@@ -166,9 +166,9 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
 
 @interface AFStreamingMultipartFormData : NSObject <AFMultipartFormData>
 - (instancetype)initWithURLRequest:(NSMutableURLRequest *)urlRequest
-                    stringEncoding:(NSStringEncoding)encoding;
+                    stringEncoding:(NSStringEncoding)encoding NS_DESIGNATED_INITIALIZER;
 
-- (NSMutableURLRequest *)requestByFinalizingMultipartFormData;
+@property (NS_NONATOMIC_IOSONLY, readonly, copy) NSMutableURLRequest *requestByFinalizingMultipartFormData;
 @end
 
 #pragma mark -
@@ -222,7 +222,7 @@ static void *AFHTTPRequestSerializerObserverContext = &AFHTTPRequestSerializerOb
 #pragma clang diagnostic ignored "-Wgnu"
 #if TARGET_OS_IOS
     // User-Agent Header; see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.43
-    userAgent = [NSString stringWithFormat:@"%@/%@ (%@; iOS %@; Scale/%0.2f)", [[NSBundle mainBundle] infoDictionary][(__bridge NSString *)kCFBundleExecutableKey] ?: [[NSBundle mainBundle] infoDictionary][(__bridge NSString *)kCFBundleIdentifierKey], [[NSBundle mainBundle] infoDictionary][@"CFBundleShortVersionString"] ?: [[NSBundle mainBundle] infoDictionary][(__bridge NSString *)kCFBundleVersionKey], [[UIDevice currentDevice] model], [[UIDevice currentDevice] systemVersion], [[UIScreen mainScreen] scale]];
+    userAgent = [NSString stringWithFormat:@"%@/%@ (%@; iOS %@; Scale/%0.2f)", [NSBundle mainBundle].infoDictionary[(__bridge NSString *)kCFBundleExecutableKey] ?: [NSBundle mainBundle].infoDictionary[(__bridge NSString *)kCFBundleIdentifierKey], [NSBundle mainBundle].infoDictionary[@"CFBundleShortVersionString"] ?: [NSBundle mainBundle].infoDictionary[(__bridge NSString *)kCFBundleVersionKey], [UIDevice currentDevice].model, [UIDevice currentDevice].systemVersion, [UIScreen mainScreen].scale];
 #elif TARGET_OS_WATCH
     // User-Agent Header; see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.43
     userAgent = [NSString stringWithFormat:@"%@/%@ (%@; watchOS %@; Scale/%0.2f)", [[NSBundle mainBundle] infoDictionary][(__bridge NSString *)kCFBundleExecutableKey] ?: [[NSBundle mainBundle] infoDictionary][(__bridge NSString *)kCFBundleIdentifierKey], [[NSBundle mainBundle] infoDictionary][@"CFBundleShortVersionString"] ?: [[NSBundle mainBundle] infoDictionary][(__bridge NSString *)kCFBundleVersionKey], [[WKInterfaceDevice currentDevice] model], [[WKInterfaceDevice currentDevice] systemVersion], [[WKInterfaceDevice currentDevice] screenScale]];
@@ -424,7 +424,7 @@ forHTTPHeaderField:(NSString *)field
         [inputStream open];
         [outputStream open];
         
-        while ([inputStream hasBytesAvailable] && [outputStream hasSpaceAvailable]) {
+        while (inputStream.hasBytesAvailable && outputStream.hasSpaceAvailable) {
             uint8_t buffer[1024];
             
             NSInteger bytesRead = [inputStream read:buffer maxLength:1024];
@@ -498,9 +498,9 @@ forHTTPHeaderField:(NSString *)field
         }
     }
     
-    if ([self.HTTPMethodsEncodingParametersInURI containsObject:[[request HTTPMethod] uppercaseString]]) {
+    if ([self.HTTPMethodsEncodingParametersInURI containsObject:request.HTTPMethod.uppercaseString]) {
         if (query && query.length > 0) {
-            mutableRequest.URL = [NSURL URLWithString:[[mutableRequest.URL absoluteString] stringByAppendingFormat:mutableRequest.URL.query ? @"&%@" : @"?%@", query]];
+            mutableRequest.URL = [NSURL URLWithString:[(mutableRequest.URL).absoluteString stringByAppendingFormat:mutableRequest.URL.query ? @"&%@" : @"?%@", query]];
         }
     } else {
         // #2864: an empty string is a valid x-www-form-urlencoded payload
@@ -510,7 +510,7 @@ forHTTPHeaderField:(NSString *)field
         if (![mutableRequest valueForHTTPHeaderField:@"Content-Type"]) {
             [mutableRequest setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
         }
-        [mutableRequest setHTTPBody:[query dataUsingEncoding:self.stringEncoding]];
+        mutableRequest.HTTPBody = [query dataUsingEncoding:self.stringEncoding];
     }
     
     return mutableRequest;
@@ -634,7 +634,7 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
 @property (readonly, nonatomic, assign) unsigned long long contentLength;
 @property (readonly, nonatomic, assign, getter = isEmpty) BOOL empty;
 
-- (instancetype)initWithStringEncoding:(NSStringEncoding)encoding;
+- (instancetype)initWithStringEncoding:(NSStringEncoding)encoding NS_DESIGNATED_INITIALIZER;
 - (void)setInitialAndFinalBoundaries;
 - (void)appendHTTPBodyPart:(AFHTTPBodyPart *)bodyPart;
 @end
@@ -673,8 +673,8 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
     NSParameterAssert(fileURL);
     NSParameterAssert(name);
     
-    NSString *fileName = [fileURL lastPathComponent];
-    NSString *mimeType = AFContentTypeForPathExtension([fileURL pathExtension]);
+    NSString *fileName = fileURL.lastPathComponent;
+    NSString *mimeType = AFContentTypeForPathExtension(fileURL.pathExtension);
     
     return [self appendPartWithFileURL:fileURL name:name fileName:fileName mimeType:mimeType error:error];
 }
@@ -690,7 +690,7 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
     NSParameterAssert(fileName);
     NSParameterAssert(mimeType);
     
-    if (![fileURL isFileURL]) {
+    if (!fileURL.fileURL) {
         NSDictionary *userInfo = @{NSLocalizedFailureReasonErrorKey: NSLocalizedStringFromTable(@"Expected URL to be a file URL", @"AFNetworking", nil)};
         if (error) {
             *error = [[NSError alloc] initWithDomain:AFURLRequestSerializationErrorDomain code:NSURLErrorBadURL userInfo:userInfo];
@@ -706,7 +706,7 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
         return NO;
     }
     
-    NSDictionary *fileAttributes = [[NSFileManager defaultManager] attributesOfItemAtPath:[fileURL path] error:error];
+    NSDictionary *fileAttributes = [[NSFileManager defaultManager] attributesOfItemAtPath:fileURL.path error:error];
     if (!fileAttributes) {
         return NO;
     }
@@ -787,7 +787,7 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
     bodyPart.stringEncoding = self.stringEncoding;
     bodyPart.headers = headers;
     bodyPart.boundary = self.boundary;
-    bodyPart.bodyContentLength = [body length];
+    bodyPart.bodyContentLength = body.length;
     bodyPart.body = body;
     
     [self.bodyStream appendHTTPBodyPart:bodyPart];
@@ -801,16 +801,16 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
 }
 
 - (NSMutableURLRequest *)requestByFinalizingMultipartFormData {
-    if ([self.bodyStream isEmpty]) {
+    if ((self.bodyStream).empty) {
         return self.request;
     }
     
     // Reset the initial and final boundaries to ensure correct Content-Length
     [self.bodyStream setInitialAndFinalBoundaries];
-    [self.request setHTTPBodyStream:self.bodyStream];
+    (self.request).HTTPBodyStream = self.bodyStream;
     
     [self.request setValue:[NSString stringWithFormat:@"multipart/form-data; boundary=%@", self.boundary] forHTTPHeaderField:@"Content-Type"];
-    [self.request setValue:[NSString stringWithFormat:@"%llu", [self.bodyStream contentLength]] forHTTPHeaderField:@"Content-Length"];
+    [self.request setValue:[NSString stringWithFormat:@"%llu", (self.bodyStream).contentLength] forHTTPHeaderField:@"Content-Length"];
     
     return self.request;
 }
@@ -857,14 +857,14 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
 }
 
 - (void)setInitialAndFinalBoundaries {
-    if ([self.HTTPBodyParts count] > 0) {
+    if ((self.HTTPBodyParts).count > 0) {
         for (AFHTTPBodyPart *bodyPart in self.HTTPBodyParts) {
             bodyPart.hasInitialBoundary = NO;
             bodyPart.hasFinalBoundary = NO;
         }
         
-        [[self.HTTPBodyParts firstObject] setHasInitialBoundary:YES];
-        [[self.HTTPBodyParts lastObject] setHasFinalBoundary:YES];
+        [(self.HTTPBodyParts).firstObject setHasInitialBoundary:YES];
+        [(self.HTTPBodyParts).lastObject setHasFinalBoundary:YES];
     }
 }
 
@@ -873,7 +873,7 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
 }
 
 - (BOOL)isEmpty {
-    return [self.HTTPBodyParts count] == 0;
+    return (self.HTTPBodyParts).count == 0;
 }
 
 #pragma mark - NSInputStream
@@ -881,7 +881,7 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
 - (NSInteger)read:(uint8_t *)buffer
         maxLength:(NSUInteger)length
 {
-    if ([self streamStatus] == NSStreamStatusClosed) {
+    if (self.streamStatus == NSStreamStatusClosed) {
         return 0;
     }
     
@@ -890,7 +890,7 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wgnu"
     while ((NSUInteger)totalNumberOfBytesRead < MIN(length, self.numberOfBytesInPacket)) {
-        if (!self.currentHTTPBodyPart || ![self.currentHTTPBodyPart hasBytesAvailable]) {
+        if (!self.currentHTTPBodyPart || !(self.currentHTTPBodyPart).bytesAvailable) {
             if (!(self.currentHTTPBodyPart = [self.HTTPBodyPartEnumerator nextObject])) {
                 break;
             }
@@ -921,7 +921,7 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
 }
 
 - (BOOL)hasBytesAvailable {
-    return [self streamStatus] == NSStreamStatusOpen;
+    return self.streamStatus == NSStreamStatusOpen;
 }
 
 #pragma mark - NSStream
@@ -962,7 +962,7 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
 - (unsigned long long)contentLength {
     unsigned long long length = 0;
     for (AFHTTPBodyPart *bodyPart in self.HTTPBodyParts) {
-        length += [bodyPart contentLength];
+        length += bodyPart.contentLength;
     }
     
     return length;
@@ -1002,12 +1002,12 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
 
 #pragma mark -
 
-typedef enum {
+typedef NS_ENUM(unsigned int, AFHTTPBodyPartReadPhase) {
     AFEncapsulationBoundaryPhase = 1,
     AFHeaderPhase                = 2,
     AFBodyPhase                  = 3,
     AFFinalBoundaryPhase         = 4,
-} AFHTTPBodyPartReadPhase;
+};
 
 @interface AFHTTPBodyPart () <NSCopying> {
     AFHTTPBodyPartReadPhase _phase;
@@ -1015,7 +1015,7 @@ typedef enum {
     unsigned long long _phaseReadOffset;
 }
 
-- (BOOL)transitionToNextPhase;
+@property (NS_NONATOMIC_IOSONLY, readonly) BOOL transitionToNextPhase;
 - (NSInteger)readData:(NSData *)data
            intoBuffer:(uint8_t *)buffer
             maxLength:(NSUInteger)length;
@@ -1059,7 +1059,7 @@ typedef enum {
 
 - (NSString *)stringForHeaders {
     NSMutableString *headerString = [NSMutableString string];
-    for (NSString *field in [self.headers allKeys]) {
+    for (NSString *field in (self.headers).allKeys) {
         [headerString appendString:[NSString stringWithFormat:@"%@: %@%@", field, [self.headers valueForKey:field], kAFMultipartFormCRLF]];
     }
     [headerString appendString:kAFMultipartFormCRLF];
@@ -1070,16 +1070,16 @@ typedef enum {
 - (unsigned long long)contentLength {
     unsigned long long length = 0;
     
-    NSData *encapsulationBoundaryData = [([self hasInitialBoundary] ? AFMultipartFormInitialBoundary(self.boundary) : AFMultipartFormEncapsulationBoundary(self.boundary)) dataUsingEncoding:self.stringEncoding];
-    length += [encapsulationBoundaryData length];
+    NSData *encapsulationBoundaryData = [(self.hasInitialBoundary ? AFMultipartFormInitialBoundary(self.boundary) : AFMultipartFormEncapsulationBoundary(self.boundary)) dataUsingEncoding:self.stringEncoding];
+    length += encapsulationBoundaryData.length;
     
     NSData *headersData = [[self stringForHeaders] dataUsingEncoding:self.stringEncoding];
-    length += [headersData length];
+    length += headersData.length;
     
     length += _bodyContentLength;
     
-    NSData *closingBoundaryData = ([self hasFinalBoundary] ? [AFMultipartFormFinalBoundary(self.boundary) dataUsingEncoding:self.stringEncoding] : [NSData data]);
-    length += [closingBoundaryData length];
+    NSData *closingBoundaryData = (self.hasFinalBoundary ? [AFMultipartFormFinalBoundary(self.boundary) dataUsingEncoding:self.stringEncoding] : [NSData data]);
+    length += closingBoundaryData.length;
     
     return length;
 }
@@ -1114,7 +1114,7 @@ typedef enum {
     NSInteger totalNumberOfBytesRead = 0;
     
     if (_phase == AFEncapsulationBoundaryPhase) {
-        NSData *encapsulationBoundaryData = [([self hasInitialBoundary] ? AFMultipartFormInitialBoundary(self.boundary) : AFMultipartFormEncapsulationBoundary(self.boundary)) dataUsingEncoding:self.stringEncoding];
+        NSData *encapsulationBoundaryData = [(self.hasInitialBoundary ? AFMultipartFormInitialBoundary(self.boundary) : AFMultipartFormEncapsulationBoundary(self.boundary)) dataUsingEncoding:self.stringEncoding];
         totalNumberOfBytesRead += [self readData:encapsulationBoundaryData intoBuffer:&buffer[totalNumberOfBytesRead] maxLength:(length - (NSUInteger)totalNumberOfBytesRead)];
     }
     
@@ -1132,14 +1132,14 @@ typedef enum {
         } else {
             totalNumberOfBytesRead += numberOfBytesRead;
             
-            if ([self.inputStream streamStatus] >= NSStreamStatusAtEnd) {
+            if ((self.inputStream).streamStatus >= NSStreamStatusAtEnd) {
                 [self transitionToNextPhase];
             }
         }
     }
     
     if (_phase == AFFinalBoundaryPhase) {
-        NSData *closingBoundaryData = ([self hasFinalBoundary] ? [AFMultipartFormFinalBoundary(self.boundary) dataUsingEncoding:self.stringEncoding] : [NSData data]);
+        NSData *closingBoundaryData = (self.hasFinalBoundary ? [AFMultipartFormFinalBoundary(self.boundary) dataUsingEncoding:self.stringEncoding] : [NSData data]);
         totalNumberOfBytesRead += [self readData:closingBoundaryData intoBuffer:&buffer[totalNumberOfBytesRead] maxLength:(length - (NSUInteger)totalNumberOfBytesRead)];
     }
     
@@ -1158,7 +1158,7 @@ typedef enum {
     
     _phaseReadOffset += range.length;
     
-    if (((NSUInteger)_phaseReadOffset) >= [data length]) {
+    if (((NSUInteger)_phaseReadOffset) >= data.length) {
         [self transitionToNextPhase];
     }
     
@@ -1166,7 +1166,7 @@ typedef enum {
 }
 
 - (BOOL)transitionToNextPhase {
-    if (![[NSThread currentThread] isMainThread]) {
+    if (![NSThread currentThread].isMainThread) {
         dispatch_sync(dispatch_get_main_queue(), ^{
             [self transitionToNextPhase];
         });
@@ -1239,7 +1239,7 @@ typedef enum {
 {
     NSParameterAssert(request);
     
-    if ([self.HTTPMethodsEncodingParametersInURI containsObject:[[request HTTPMethod] uppercaseString]]) {
+    if ([self.HTTPMethodsEncodingParametersInURI containsObject:request.HTTPMethod.uppercaseString]) {
         return [super requestBySerializingRequest:request withParameters:parameters error:error];
     }
     
@@ -1256,7 +1256,7 @@ typedef enum {
             [mutableRequest setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
         }
         
-        [mutableRequest setHTTPBody:[NSJSONSerialization dataWithJSONObject:parameters options:self.writingOptions error:error]];
+        mutableRequest.HTTPBody = [NSJSONSerialization dataWithJSONObject:parameters options:self.writingOptions error:error];
     }
     
     return mutableRequest;
@@ -1318,7 +1318,7 @@ typedef enum {
 {
     NSParameterAssert(request);
     
-    if ([self.HTTPMethodsEncodingParametersInURI containsObject:[[request HTTPMethod] uppercaseString]]) {
+    if ([self.HTTPMethodsEncodingParametersInURI containsObject:request.HTTPMethod.uppercaseString]) {
         return [super requestBySerializingRequest:request withParameters:parameters error:error];
     }
     
@@ -1335,7 +1335,7 @@ typedef enum {
             [mutableRequest setValue:@"application/x-plist" forHTTPHeaderField:@"Content-Type"];
         }
         
-        [mutableRequest setHTTPBody:[NSPropertyListSerialization dataWithPropertyList:parameters format:self.format options:self.writeOptions error:error]];
+        mutableRequest.HTTPBody = [NSPropertyListSerialization dataWithPropertyList:parameters format:self.format options:self.writeOptions error:error];
     }
     
     return mutableRequest;

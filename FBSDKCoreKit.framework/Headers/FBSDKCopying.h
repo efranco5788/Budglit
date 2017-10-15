@@ -28,6 +28,6 @@
  @abstract Implemented by NSObject as a convenience to copyWithZone:.
  @return A copy of the receiver.
  */
-- (id)copy;
+@property (NS_NONATOMIC_IOSONLY, readonly, strong) id copy;
 
 @end

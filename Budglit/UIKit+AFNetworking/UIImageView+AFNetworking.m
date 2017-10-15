@@ -154,7 +154,7 @@
             
             __strong __typeof(weakSelf)strongSelf = weakSelf;
             
-            if ([[urlRequest URL] isEqual:[strongSelf.af_imageRequestOperation.request URL]]) {
+            if ([urlRequest.URL isEqual:(strongSelf.af_imageRequestOperation.request).URL]) {
                 
                 if (success) {
                     success(urlRequest, operation.response, responseObject);
@@ -171,7 +171,7 @@
             
         } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
             __strong __typeof(weakSelf)strongSelf = weakSelf;
-            if ([[urlRequest URL] isEqual:[strongSelf.af_imageRequestOperation.request URL]]) {
+            if ([urlRequest.URL isEqual:(strongSelf.af_imageRequestOperation.request).URL]) {
                 if (failure) {
                     failure(urlRequest, operation.response, error);
                 }
@@ -196,13 +196,13 @@
 #pragma mark -
 
 static inline NSString * AFImageCacheKeyFromURLRequest(NSURLRequest *request) {
-    return [[request URL] absoluteString];
+    return request.URL.absoluteString;
 }
 
 @implementation AFImageCache
 
 - (UIImage *)cachedImageForRequest:(NSURLRequest *)request {
-    switch ([request cachePolicy]) {
+    switch (request.cachePolicy) {
         case NSURLRequestReloadIgnoringCacheData:
         case NSURLRequestReloadIgnoringLocalAndRemoteCacheData:
             return nil;

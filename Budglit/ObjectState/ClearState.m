@@ -11,7 +11,7 @@
 
 @implementation ClearState
 
--(id)initState
+-(instancetype)initState
 {
     self = [super initState];
     

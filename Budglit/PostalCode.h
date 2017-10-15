@@ -18,6 +18,6 @@
 
 -(instancetype) initWithPostalCode:(NSString*)postalCode;
 
--(instancetype) initWithPostalCode:(NSString *)postalCode andCoordinates:(NSDictionary*)coordinates;
+-(instancetype) initWithPostalCode:(NSString *)postalCode andCoordinates:(NSDictionary*)coordinates NS_DESIGNATED_INITIALIZER;
 
 @end

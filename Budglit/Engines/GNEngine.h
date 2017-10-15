@@ -20,9 +20,9 @@
 
 @property (nonatomic, strong) id <GNEngineDelegate> delegate;
 
--(id) init;
+-(instancetype) init;
 
--(id) initWithHostName:(NSString *)hostName;
+-(instancetype) initWithHostName:(NSString *)hostName NS_DESIGNATED_INITIALIZER;
 
 -(void)GNFetchNeabyPostalCodesWithCoordinates:(NSDictionary *)parameters;
 

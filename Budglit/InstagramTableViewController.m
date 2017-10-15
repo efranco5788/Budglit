@@ -37,11 +37,11 @@ static NSString* const reuseIdentifier = @"InstagramTableViewCell";
     
     self.mediaDownloadInProgress = [NSMutableDictionary dictionary];
     
-    CGRect screenSize = [[UIScreen mainScreen] bounds];
+    CGRect screenSize = [UIScreen mainScreen].bounds;
     
     CGRect frameSize = CGRectMake(self.view.frame.origin.x, self.view.frame.origin.y, screenSize.size.width, self.tableView.frame.size.height);
     
-    [self.tableView setFrame:frameSize];
+    (self.tableView).frame = frameSize;
     
     self.tableView.rowHeight = UITableViewAutomaticDimension;
     
@@ -50,14 +50,14 @@ static NSString* const reuseIdentifier = @"InstagramTableViewCell";
 
 -(void)viewDidAppear:(BOOL)animated
 {
-    AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
-    [appDelegate.databaseManager setDelegate:self];
+    (appDelegate.databaseManager).delegate = self;
 }
 
 -(void)viewWillDisappear:(BOOL)animated
 {
-    AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
     [appDelegate.databaseManager setDelegate:nil];
 }
@@ -70,7 +70,7 @@ static NSString* const reuseIdentifier = @"InstagramTableViewCell";
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
-    AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
     return [appDelegate.instagramManager totalObjectCount];
     
@@ -84,11 +84,11 @@ static NSString* const reuseIdentifier = @"InstagramTableViewCell";
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
     NSArray* objs = [appDelegate.instagramManager getInstaObjs];
     
-    InstagramObject* instaObj = [objs objectAtIndex:indexPath.row];
+    InstagramObject* instaObj = objs[indexPath.row];
     
     return [instaObj getHeight];
 }
@@ -96,10 +96,10 @@ static NSString* const reuseIdentifier = @"InstagramTableViewCell";
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     NSInteger nodeCount = appDelegate.instagramManager.totalObjectCount;
     NSArray* list = appDelegate.instagramManager.getInstaObjs;
-    InstagramObject* obj = [list objectAtIndex:indexPath.row];
+    InstagramObject* obj = list[indexPath.row];
     
     if (nodeCount < 1 && indexPath.row < 1) {
         return nil;
@@ -108,7 +108,7 @@ static NSString* const reuseIdentifier = @"InstagramTableViewCell";
     {
         InstagramTableViewCell* cell = (InstagramTableViewCell*) [self.tableView dequeueReusableCellWithIdentifier:reuseIdentifier forIndexPath:indexPath];
         
-        [cell.instaUsername setText:obj.username];
+        (cell.instaUsername).text = obj.username;
         
         return cell;
     }
@@ -117,7 +117,7 @@ static NSString* const reuseIdentifier = @"InstagramTableViewCell";
 
 -(void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
     NSInteger nodeCount = appDelegate.instagramManager.totalObjectCount;
     
@@ -127,7 +127,7 @@ static NSString* const reuseIdentifier = @"InstagramTableViewCell";
         
         InstagramTableViewCell* instaCell = (InstagramTableViewCell*) cell;
         
-        InstagramObject* instaObj = [objs objectAtIndex:indexPath.row];
+        InstagramObject* instaObj = objs[indexPath.row];
         
         if (![instaObj.mediaStateHandler imageExists]) {
             
@@ -149,11 +149,11 @@ static NSString* const reuseIdentifier = @"InstagramTableViewCell";
 
 - (void)tableView:(UITableView *)tableView didEndDisplayingCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
     NSArray* objs = [appDelegate.instagramManager getInstaObjs];
     
-    InstagramObject* instaObj = [objs objectAtIndex:indexPath.row];
+    InstagramObject* instaObj = objs[indexPath.row];
     
     if (instaObj.avPlayer) {
         [instaObj.avPlayer pause];
@@ -168,7 +168,7 @@ static NSString* const reuseIdentifier = @"InstagramTableViewCell";
     
     if (fetchingMediaForIG == nil) {
         
-        AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+        AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
         
         fetchingMediaForIG = obj;
         
@@ -239,7 +239,7 @@ static NSString* const reuseIdentifier = @"InstagramTableViewCell";
 
 -(void)loadOnScreenCells
 {
-    AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
     NSArray* instaObjs = [NSArray arrayWithArray:[appDelegate.instagramManager getInstaObjs]];
     
@@ -247,13 +247,13 @@ static NSString* const reuseIdentifier = @"InstagramTableViewCell";
         
         InstagramTableViewController* __weak weakSelf = self;
         
-        NSArray* visibleOnScreenDeals = [weakSelf.tableView visibleCells];
+        NSArray* visibleOnScreenDeals = (weakSelf.tableView).visibleCells;
         
         for (InstagramTableViewCell* visibleCell in visibleOnScreenDeals) {
             
             NSIndexPath* index = [self.tableView indexPathForCell:visibleCell];
             
-            __block InstagramObject* visibleObj = [instaObjs objectAtIndex:index.row];
+            __block InstagramObject* visibleObj = instaObjs[index.row];
             
             if (![visibleObj.mediaStateHandler imageExists]) {
                 [weakSelf startImageDownloadForInstaObj:visibleObj forIndexPath:index andTableCell:visibleCell];
@@ -320,11 +320,11 @@ static NSString* const reuseIdentifier = @"InstagramTableViewCell";
             
             [cell.instaImageView.layer addAnimation:transition forKey:nil];
             
-            [cell.instaImageView setImage:image];
+            (cell.instaImageView).image = image;
             
             [self.mediaDownloadInProgress removeObjectForKey:indexPath];
         }
-        else [imageView setImage:image];
+        else imageView.image = image;
         
     });
 }

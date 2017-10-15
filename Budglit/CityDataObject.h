@@ -18,6 +18,6 @@
 
 @property (nonatomic, strong) NSString* postal;
 
--initWithCity:(NSString*)city State:(NSString*)state stateAbbr:(NSString*)abbr andPostal:(NSString*)postalCode;
+- (instancetype)initWithCity:(NSString*)city State:(NSString*)state stateAbbr:(NSString*)abbr andPostal:(NSString*)postalCode NS_DESIGNATED_INITIALIZER;
 
 @end

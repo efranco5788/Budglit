@@ -44,13 +44,13 @@
     
     UIBarButtonItem* cancel = [[UIBarButtonItem alloc] init];
     
-    [cancel setTintColor:[UIColor whiteColor]];
+    cancel.tintColor = [UIColor whiteColor];
     
-    [cancel setTitle:@"Cancel"];
+    cancel.title = @"Cancel";
     
-    [cancel setTarget:self];
+    cancel.target = self;
     
-    [cancel setAction:@selector(cancelButton_pressed:)];
+    cancel.action = @selector(cancelButton_pressed:);
     
     self.cancelButton = cancel;
     
@@ -64,7 +64,7 @@
     
     controller.searchBar.frame = CGRectMake(0, 0, CGRectGetWidth(self.tableView.frame), 44.0);
     
-    [controller.searchBar setKeyboardType:UIKeyboardTypeDefault];
+    (controller.searchBar).keyboardType = UIKeyboardTypeDefault;
     
     controller.hidesNavigationBarDuringPresentation = YES;
     
@@ -88,7 +88,7 @@
     if (hide) {
         
         [self.navigationItem.leftBarButtonItem setEnabled:NO];
-        [self.navigationItem.leftBarButtonItem setTintColor:[UIColor clearColor]];
+        (self.navigationItem.leftBarButtonItem).tintColor = [UIColor clearColor];
     }
 }
 
@@ -96,7 +96,7 @@
 {
     [super viewDidAppear:YES];
     
-    [self.tableView setDelegate:self];
+    (self.tableView).delegate = self;
     
     self.tableView.scrollEnabled = NO;
     
@@ -114,9 +114,9 @@
         
         ZipcodeSearchDataSource* zipcodeDataSource = [[ZipcodeSearchDataSource alloc] init];
         
-        [self setDataSource:zipcodeDataSource];
+        self.dataSource = zipcodeDataSource;
         
-        [self.tableView setDataSource:self.dataSource];
+        (self.tableView).dataSource = self.dataSource;
         
         self.tableView.scrollEnabled = YES;
         
@@ -149,7 +149,7 @@
     
     dispatch_async(backgroundQueue, ^{
         
-        [self.dataSource setUserSearchInput:searchController.searchBar.text];
+        (self.dataSource).userSearchInput = searchController.searchBar.text;
         
         [self.tableView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:YES
          ];
@@ -161,7 +161,7 @@
 #pragma mark - Table Delegate
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSString* selectedPostal = [[tableView cellForRowAtIndexPath:indexPath] detailTextLabel].text;
+    NSString* selectedPostal = [tableView cellForRowAtIndexPath:indexPath].detailTextLabel.text;
     
     for (CityDataObject* city in self.dataSource.filteredStatesData) {
         
@@ -172,7 +172,7 @@
         
     }
     
-    AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
     NSString* currentZip = [appDelegate.databaseManager getZipcode];
     
@@ -209,13 +209,13 @@
     
     if ([segue.identifier isEqualToString:UNWIND_TO_ALL_CURRENT_DEALS]) {
         
-        AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+        AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
         
         PSAllDealsTableViewController* ACLDDVC = segue.destinationViewController;
         
-        [ACLDDVC.menuButton setTitle:[appDelegate.locationManager retrieveCurrentLocation]];
+        (ACLDDVC.menuButton).title = [appDelegate.locationManager retrieveCurrentLocation];
         
-        [ACLDDVC.budgetButton setTitle:[appDelegate.budgetManager retreieveBudget]];
+        (ACLDDVC.budgetButton).title = [appDelegate.budgetManager retreieveBudget];
         
     }
 }
@@ -224,9 +224,9 @@
 #pragma mark - Location Manager Delegate
 -(void)locationDidFinish
 {
-    AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
-    [appDelegate.locationManager setDelegate:self];
+    (appDelegate.locationManager).delegate = self;
     
     [appDelegate.databaseManager setZipcodeCriteria:selectedCity.postal];
     
@@ -236,7 +236,7 @@
     
     NSDictionary* criteria = [userDefault objectForKey:NSLocalizedString(@"KEY_CURRENT_SEARCH_FILTERS", nil)];
     
-    NSString* distance = [criteria objectForKey:NSLocalizedString(@"DISTANCE_FILTER", nil)];
+    NSString* distance = criteria[NSLocalizedString(@"DISTANCE_FILTER", nil)];
     
     if (!distance) {
         
@@ -244,7 +244,7 @@
         
     }
     
-    NSDictionary* userObject = [NSDictionary dictionaryWithObject:distance forKey:NSLocalizedString(@"DISTANCE_FILTER", nil)];
+    NSDictionary* userObject = @{NSLocalizedString(@"DISTANCE_FILTER", nil): distance};
     
     /*
     [appDelegate.locationManager fetchSurroundingZipcodesWithPostalCode:selectedCity.postal andObjects:userObject addCompletionHandler:^(id object) {

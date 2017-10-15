@@ -36,12 +36,25 @@
 
 @implementation InstagramEngine
 
--(id)init
+-(instancetype)init
 {
-    return [self initWithHostName:nil andClientID:nil andClientSecret:nil];
+    self = [self initWithHostName:nil andClientID:nil andClientSecret:nil];
+    
+    if(!self) return nil;
+    
+    return self;
 }
 
--(id)initWithHostName:(NSString *)hostName andClientID:(NSString *)cID andClientSecret:(NSString *)secret
+-(instancetype)initWithHostName:(NSString *)hostName
+{
+    self = [self initWithHostName:hostName andClientID:nil andClientSecret:nil];
+    
+    if(!self) return nil;
+    
+    return self;
+}
+
+-(instancetype)initWithHostName:(NSString *)hostName andClientID:(NSString *)cID andClientSecret:(NSString *)secret
 {
     self = [super initWithHostName:hostName];
     
@@ -150,7 +163,7 @@
     
     NSString* tokn = [self.accessToken valueForKey:API_REDIRECT_URL_RESPONSE_TYPE];
     
-    if ([tokn length] == 0) {
+    if (tokn.length == 0) {
         return NO;
     }
     
@@ -179,11 +192,11 @@
         
         NSDictionary* responseDic = (NSDictionary*) responseObject;
         
-        NSDictionary* objDict = [responseDic objectForKey:API_RESPONSE_CODE_META];
+        NSDictionary* objDict = responseDic[API_RESPONSE_CODE_META];
         
         NSString* codeString = [objDict valueForKey:API_RESPONSE_CODE_CODE];
         
-        NSInteger code = [codeString integerValue];
+        NSInteger code = codeString.integerValue;
         
         NSLog(@"Resposne %ld", (long)code);
         

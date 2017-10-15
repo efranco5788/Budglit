@@ -41,14 +41,14 @@
 -(instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
     if(self){
-        [self setMenuButtonNormalColor:[[UIColor whiteColor] colorWithAlphaComponent:0.9f]];
-        [self setMenuButtonHighlightedColor:[UIColor colorWithRed:139.0/255.0
+        self.menuButtonNormalColor = [[UIColor whiteColor] colorWithAlphaComponent:0.9f];
+        self.menuButtonHighlightedColor = [UIColor colorWithRed:139.0/255.0
                                                             green:135.0/255.0
                                                              blue:136.0/255.0
-                                                            alpha:0.9f]];
+                                                            alpha:0.9f];
         
-        [self setShadowNormalColor:[[UIColor blackColor] colorWithAlphaComponent:0.5f]];
-        [self setShadowHighlightedColor:[[UIColor blackColor] colorWithAlphaComponent:0.2f]];
+        self.shadowNormalColor = [[UIColor blackColor] colorWithAlphaComponent:0.5f];
+        self.shadowHighlightedColor = [[UIColor blackColor] colorWithAlphaComponent:0.2f];
     }
     return self;
 }
@@ -71,10 +71,10 @@
 -(void)setMenuButtonColor:(UIColor *)color forState:(UIControlState)state{
     switch (state) {
         case UIControlStateNormal:
-            [self setMenuButtonNormalColor:color];
+            self.menuButtonNormalColor = color;
             break;
         case UIControlStateHighlighted:
-            [self setMenuButtonHighlightedColor:color];
+            self.menuButtonHighlightedColor = color;
             break;
         default:
             break;
@@ -100,10 +100,10 @@
 -(void)setShadowColor:(UIColor *)color forState:(UIControlState)state{
     switch (state) {
         case UIControlStateNormal:
-            [self setShadowNormalColor:color];
+            self.shadowNormalColor = color;
             break;
         case UIControlStateHighlighted:
-            [self setShadowHighlightedColor:color];
+            self.shadowHighlightedColor = color;
             break;
         default:
             break;
@@ -173,18 +173,18 @@
 }
 
 -(void)setSelected:(BOOL)selected{
-    [super setSelected:selected];
+    super.selected = selected;
     [self setNeedsDisplay];
 }
 
 -(void)setHighlighted:(BOOL)highlighted{
-    [super setHighlighted:highlighted];
+    super.highlighted = highlighted;
     [self setNeedsDisplay];
 }
 
 -(void)setTintColor:(UIColor *)tintColor{
     if([super respondsToSelector:@selector(setTintColor:)]){
-        [super setTintColor:tintColor];
+        super.tintColor = tintColor;
     }
 }
 
@@ -251,7 +251,7 @@
         [buttonView addTarget:self action:@selector(touchUpInside:) forControlEvents:UIControlEventTouchUpInside];
         self = [self initWithCustomView:buttonView];
         if(self){
-            [self setButtonView:buttonView];
+            self.buttonView = buttonView;
         }
         self.action = action;
         self.target = target;
@@ -292,10 +292,10 @@
 
 -(void)setTintColor:(UIColor *)tintColor{
     if([super respondsToSelector:@selector(setTintColor:)]){
-        [super setTintColor:tintColor];
+        super.tintColor = tintColor;
     }
     if([self.buttonView respondsToSelector:@selector(setTintColor:)]){
-        [self.buttonView setTintColor:tintColor];
+        (self.buttonView).tintColor = tintColor;
     }
 }
 

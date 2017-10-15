@@ -20,7 +20,7 @@ static BudgetManager* sharedManager;
     return sharedManager;
 }
 
--(id)init
+-(instancetype)init
 {
     self = [super init];
     
@@ -82,7 +82,7 @@ static BudgetManager* sharedManager;
 {
     NSNumberFormatter* formatter = [[NSNumberFormatter alloc] init];
     
-    [formatter setLocale:[NSLocale localeWithLocaleIdentifier:NSLocalizedString(@"USA", nil)]];
+    formatter.locale = [NSLocale localeWithLocaleIdentifier:NSLocalizedString(@"USA", nil)];
     
     NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
     

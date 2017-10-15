@@ -43,12 +43,12 @@ static DatabaseManager* sharedManager;
     return sharedManager;
 }
 
--(id)init {
+-(instancetype)init {
     
     return [self initWithEngineHostName:nil];
 }
 
--(id)initWithEngineHostName:(NSString *)hostName
+-(instancetype)initWithEngineHostName:(NSString *)hostName
 {
     self = [super init];
     
@@ -60,13 +60,13 @@ static DatabaseManager* sharedManager;
     
     self.dealParser = [[DealParser alloc] initParser];
     
-    [self.engine setDelegate:self];
+    (self.engine).delegate = self;
     
     self.currentDeals = [[NSMutableArray alloc] init];
     
     NSString* sqliteDB = [[NSBundle mainBundle] pathForResource:SQLITE_DB_NAME ofType:@"sqlite3"];
     
-    if(sqlite3_open([sqliteDB UTF8String], &database) != SQLITE_OK){
+    if(sqlite3_open(sqliteDB.UTF8String, &database) != SQLITE_OK){
         NSLog(@"Failed to open database");
     }
     else{
@@ -84,14 +84,14 @@ static DatabaseManager* sharedManager;
     
     NSMutableDictionary* newCriteria = [[NSMutableDictionary alloc] init];
     
-    NSArray* keys = [searchFilters allKeys];
-    NSArray* values = [searchFilters allValues];
+    NSArray* keys = searchFilters.allKeys;
+    NSArray* values = searchFilters.allValues;
     
     NSDictionary* critera = [NSDictionary dictionaryWithObjects:values forKeys:keys];
     
     [newCriteria addEntriesFromDictionary:critera];
 
-    [newCriteria setObject:zipcode forKey:NSLocalizedString(@"ZIPCODE", nil)];
+    newCriteria[NSLocalizedString(@"ZIPCODE", nil)] = zipcode;
     
     [self saveUsersCriteria:newCriteria];
     
@@ -122,8 +122,8 @@ static DatabaseManager* sharedManager;
     
     NSDictionary* searchFilters = [defaults valueForKey:NSLocalizedString(@"KEY_CURRENT_SEARCH_FILTERS", nil)];
     
-    NSArray* keys = [searchFilters allKeys];
-    NSArray* values = [searchFilters allValues];
+    NSArray* keys = searchFilters.allKeys;
+    NSArray* values = searchFilters.allValues;
     
     NSDictionary* critera = [NSDictionary dictionaryWithObjects:values forKeys:keys];
     
@@ -151,7 +151,7 @@ static DatabaseManager* sharedManager;
     
     NSDictionary* searchFilters = [defaults valueForKey:NSLocalizedString(@"KEY_CURRENT_SEARCH_FILTERS", nil)];
     
-    NSString* zipcode = [searchFilters objectForKey:NSLocalizedString(@"ZIPCODE", nil)];
+    NSString* zipcode = searchFilters[NSLocalizedString(@"ZIPCODE", nil)];
     
     return zipcode;
 }
@@ -312,11 +312,11 @@ static DatabaseManager* sharedManager;
         }
         else if ([object isMemberOfClass:[DealTableViewCell class]]){
             
-            AppDelegate* appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+            AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
             
             NSArray* list = appDelegate.databaseManager.currentDeals;
             
-            Deal* objDeal = [list objectAtIndex:indexPath.row];
+            Deal* objDeal = list[indexPath.row];
             
             [objDeal.imgStateObject recordImageHTTPResponse:response andRequest:request hasImage:imgExist];
             
