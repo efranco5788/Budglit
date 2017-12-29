@@ -213,7 +213,7 @@
         
         PSAllDealsTableViewController* ACLDDVC = segue.destinationViewController;
         
-        (ACLDDVC.menuButton).title = [appDelegate.locationManager retrieveCurrentLocation];
+        (ACLDDVC.menuButton).title = [appDelegate.locationManager retrieveCurrentLocationString];
         
         (ACLDDVC.budgetButton).title = [appDelegate.budgetManager retreieveBudget];
         

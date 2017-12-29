@@ -13,6 +13,7 @@
 //#define POSTAL_CODE_NEARBY_SEARCH_URL @"http://api.geonames.org/findNearbyPostalCodesJSON"
 //#define POSTAL_CODE_NEARBY_SEARCH_URL @"findNearbyPostalCodesJSON"
 #define POSTAL_CODE_NEARBY_SEARCH_URL @"zipcode"
+#define MakeLocation(lat,lon) [[CLLocation alloc]initWithLatitude: lat longitude: lon]
 
 @implementation GNEngine
 
@@ -65,7 +66,7 @@
     
 }
 
--(void)GNFetchNeabyPostalCodesWithPostalCode:(NSDictionary *)parameters
+-(void)GNFetchNeabyPostalCodesWithPostalCode:(NSDictionary *)parameters addCompletionHandler:(dataResponseBlockResponse)completionHandler
 {
     
     self.sessionManager.requestSerializer = [AFHTTPRequestSerializer serializer];
@@ -79,10 +80,12 @@
         NSLog(@"%@", responseObject);
         
         if (responseObject) {
-            [self.delegate nearbyPostalCodesFound:responseObject];
+            //[self.delegate nearbyPostalCodesFound:responseObject];
+            completionHandler(responseObject);
         }
         else{
-            [self.delegate nearbyPostalCodesFailedWithError:nil];
+            //[self.delegate nearbyPostalCodesFailedWithError:nil];
+            completionHandler(nil);
         }
         
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
@@ -93,6 +96,24 @@
         
     }];
     
+}
+
+-(CLLocation *)createLocationFromStringLongtitude:(NSString *)lng andLatitude:(NSString *)lat
+{
+    CLLocationDegrees longtitude = lng.floatValue;
+    
+    CLLocationDegrees latitude = lat.floatValue;
+    
+    CLLocation* locationCreated = [self createLocationWithLongtitude:longtitude andLatitude:latitude];
+    
+    return locationCreated;
+}
+
+-(CLLocation *)createLocationWithLongtitude:(CLLocationDegrees)longtitude andLatitude:(CLLocationDegrees)latitude
+{
+    CLLocation* locationCreated = MakeLocation(latitude, longtitude);
+    
+    return locationCreated;
 }
 
 @end

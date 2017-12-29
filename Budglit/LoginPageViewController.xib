@@ -1,15 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="12118" systemVersion="16E195" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13196" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12086"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13173"/>
         <capability name="Alignment constraints to the first baseline" minToolsVersion="6.0"/>
-        <capability name="Alignment constraints with different attributes" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
+    <customFonts key="customFonts">
+        <array key="HelveticaNeue.ttc">
+            <string>HelveticaNeue</string>
+        </array>
+    </customFonts>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="LoginPageViewController">
             <connections>
@@ -21,6 +26,8 @@
                 <outlet property="passwordField" destination="Fxg-CN-Vzm" id="c2d-8w-0kz"/>
                 <outlet property="passwordVisibility" destination="1dE-9G-bDf" id="I5X-fd-oVy"/>
                 <outlet property="signupButton" destination="yvz-YL-XIM" id="s3V-9J-u9E"/>
+                <outlet property="signupButtonBottom_Constraint" destination="iuR-Bz-Y09" id="PMw-tu-tP5"/>
+                <outlet property="signupButtonBottom_VerticalConstraint" destination="18d-9A-lDs" id="Mxl-Ev-tdA"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -33,7 +40,7 @@
                     <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                 </imageView>
                 <textField opaque="NO" clipsSubviews="YES" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="16" translatesAutoresizingMaskIntoConstraints="NO" id="hWQ-MR-MX5">
-                    <rect key="frame" x="8" y="194" width="359" height="30"/>
+                    <rect key="frame" x="16" y="194" width="343" height="30"/>
                     <color key="backgroundColor" white="0.0" alpha="0.37458189984709478" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
@@ -43,7 +50,7 @@
                     </connections>
                 </textField>
                 <textField opaque="NO" clipsSubviews="YES" tag="2" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="16" translatesAutoresizingMaskIntoConstraints="NO" id="Fxg-CN-Vzm">
-                    <rect key="frame" x="8" y="241" width="332" height="30"/>
+                    <rect key="frame" x="16" y="241" width="316" height="30"/>
                     <color key="backgroundColor" white="0.0" alpha="0.37363818807339449" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="18"/>
@@ -53,7 +60,7 @@
                     </connections>
                 </textField>
                 <textField hidden="YES" opaque="NO" clipsSubviews="YES" tag="3" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="18" translatesAutoresizingMaskIntoConstraints="NO" id="tCt-ld-rxb">
-                    <rect key="frame" x="8" y="285" width="359" height="30"/>
+                    <rect key="frame" x="16" y="285" width="343" height="30"/>
                     <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.37" colorSpace="custom" customColorSpace="sRGB"/>
                     <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="18"/>
@@ -63,7 +70,7 @@
                     </connections>
                 </textField>
                 <textField hidden="YES" opaque="NO" clipsSubviews="YES" tag="4" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="18" translatesAutoresizingMaskIntoConstraints="NO" id="oCR-SJ-iZO">
-                    <rect key="frame" x="8" y="333" width="359" height="30"/>
+                    <rect key="frame" x="16" y="333" width="343" height="30"/>
                     <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.37" colorSpace="custom" customColorSpace="sRGB"/>
                     <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="18"/>
@@ -101,7 +108,7 @@
                     </connections>
                 </button>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1dE-9G-bDf">
-                    <rect key="frame" x="342" y="242" width="25" height="29"/>
+                    <rect key="frame" x="334" y="242" width="25" height="29"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="25" id="EKm-1D-w3c"/>
                     </constraints>
@@ -115,7 +122,7 @@
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
                 <constraint firstItem="a94-vk-Q5n" firstAttribute="leading" secondItem="yvz-YL-XIM" secondAttribute="leading" id="16E-X2-lws"/>
-                <constraint firstAttribute="bottom" secondItem="yvz-YL-XIM" secondAttribute="bottom" id="18d-9A-lDs"/>
+                <constraint firstItem="yvz-YL-XIM" firstAttribute="bottom" secondItem="i5M-Pr-FkT" secondAttribute="bottom" id="18d-9A-lDs"/>
                 <constraint firstItem="oCR-SJ-iZO" firstAttribute="top" secondItem="tCt-ld-rxb" secondAttribute="bottom" constant="18" id="2dh-bl-nGJ"/>
                 <constraint firstItem="hWQ-MR-MX5" firstAttribute="leading" secondItem="Fxg-CN-Vzm" secondAttribute="leading" id="35U-bv-pJx"/>
                 <constraint firstItem="hWQ-MR-MX5" firstAttribute="trailing" secondItem="1dE-9G-bDf" secondAttribute="trailing" id="5wW-iH-1cW"/>
@@ -149,9 +156,4 @@
         <image name="hidden_eye.png" width="29" height="29"/>
         <image name="visible_eye.png" width="29" height="29"/>
     </resources>
-    <simulatedMetricsContainer key="defaultSimulatedMetrics">
-        <simulatedStatusBarMetrics key="statusBar"/>
-        <simulatedOrientationMetrics key="orientation"/>
-        <simulatedScreenMetrics key="destination" type="retina4_7.fullscreen"/>
-    </simulatedMetricsContainer>
 </document>

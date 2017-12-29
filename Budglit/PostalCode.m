@@ -12,7 +12,7 @@
 
 -(instancetype)init
 {
-    self = [self initWithPostalCode:nil andCoordinates:nil];
+    self = [self initWithPostalCode:nil andDistance:nil];
     
     if(!self) return nil;
     
@@ -22,7 +22,7 @@
 
 -(instancetype)initWithPostalCode:(NSString*)postalCode
 {
-    self = [self initWithPostalCode:postalCode andCoordinates:nil];
+    self = [self initWithPostalCode:postalCode andDistance:nil];
     
     if (!self) return nil;
     
@@ -30,7 +30,7 @@
     
 }
 
--(instancetype)initWithPostalCode:(NSString*)postalCode andCoordinates:(NSDictionary*)coordinates
+-(instancetype)initWithPostalCode:(NSString *)postalCode andDistance:(NSString *)distance
 {
     self = [super init];
     
@@ -40,7 +40,7 @@
     
     self.postalCode = postalCode;
     
-    self.coordinates = coordinates;
+    self.distanceFromLocation = distance;
     
     return self;
 }

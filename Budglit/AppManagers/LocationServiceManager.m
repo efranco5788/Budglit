@@ -348,7 +348,7 @@ static LocationSeviceManager* sharedManager;
     
 }
 
--(void) locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error
+-(void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error
 {
     attempts = attempts + 1;
     
@@ -399,7 +399,7 @@ static LocationSeviceManager* sharedManager;
 
 #pragma mark -
 #pragma mark - Current Location
--(NSString*) retrieveCurrentLocation
+-(NSString*)retrieveCurrentLocationString
 {
     NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
     
@@ -408,7 +408,7 @@ static LocationSeviceManager* sharedManager;
     return formattedCurrentLocationString;
 }
 
--(void) fetchLocationInformation:(NSArray*)locations
+-(void)fetchLocationInformation:(NSArray*)locations
 {
     CLGeocoder* coder = [[CLGeocoder alloc] init];
     
@@ -435,7 +435,6 @@ static LocationSeviceManager* sharedManager;
                 NSString* state = [address valueForKey:@"State"];
                 
                 NSString* postal = currentLocation.postalCode;
-                
                 
                 CityDataObject* city = [[CityDataObject alloc] initWithCity:cityName State:state stateAbbr:state andPostal:postal];
                 
@@ -493,6 +492,8 @@ static LocationSeviceManager* sharedManager;
 
 -(void)fetchCoordinates:(Deal *)deal addCompletionHandler:(generalCompletionHandler)completionHandler
 {
+    if(!deal) completionHandler(NO);
+    
     CLGeocoder* coder = [[CLGeocoder alloc] init];
     
     NSString* stringAddress = deal.getAddressString;
@@ -657,11 +658,71 @@ static LocationSeviceManager* sharedManager;
         miRadius = DEFAULT_RADIUS;
     }
     
-    double milesToKM = (miRadius.doubleValue * KM_PER_MILE);
+    //NSString* rows = MAX_ROWS;
     
-    NSNumber* totalKM = @(milesToKM);
+    //NSString* country = @"US";
     
-    NSString* kmRadius = totalKM.stringValue;
+    NSString* postal = (KEY_FOR_POSTAL_CODE).lowercaseString;
+    
+    NSArray* keys = @[postal, KEY_FOR_RADIUS];
+    
+    NSArray* objects = @[postalCode, miRadius];
+    
+    //NSArray* keys = [NSArray arrayWithObjects:postal, KEY_FOR_COUNTRY, KEY_FOR_RADIUS, KEY_FOR_ROWS, KEY_FOR_USERNAME, nil];
+    
+    //NSArray* objects = [NSArray arrayWithObjects: postalCode, country, kmRadius, rows, GN_API_PARAM_USERNAME, nil];
+    
+    NSDictionary* parameters = [NSDictionary dictionaryWithObjects:objects forKeys:keys];
+    
+    [self.engine GNFetchNeabyPostalCodesWithPostalCode:parameters addCompletionHandler:^(id response) {
+        
+        if (response) {
+            
+            NSDictionary* postalCodes = (NSDictionary*) response;
+            
+            NSArray* fetchedPostalCodes = postalCodes[@"parsedList"];
+            
+            __block NSMutableArray* allPostalCodes = [[NSMutableArray alloc] init];
+            
+            for (NSDictionary* postalCode in fetchedPostalCodes) {
+                
+                NSLog(@"%@", postalCode);
+                
+                NSString* code = [postalCode valueForKey:KEY_FOR_POSTAL_CODE];
+                
+                NSString* distance = [postalCode valueForKey:@"distance"];
+                
+                PostalCode* newPostalCode = [[PostalCode alloc] initWithPostalCode:code andDistance:distance];
+                
+                [allPostalCodes addObject:newPostalCode];
+                
+            }
+            
+            NSArray* zipcodes = allPostalCodes.copy;
+            
+            NSLog(@"%@", zipcodes);
+            
+            [self.delegate surroundingZipcodesReturned:zipcodes andCriteria:nil];
+            
+        }
+        else [self.delegate surroundingZipcodesReturned:nil andCriteria:nil];
+        
+    }];
+}
+
+-(void)fetchSurroundingZipcodesWithPostalCode:(NSString *)postalCode andObjects:(NSDictionary *)usersObjects addCompletionHandler:(fetchPostalCompletionHandler)completionHandler
+{
+    if ([postalCode isEqual:nil]) {
+        NSLog(@"Postal code not found!");
+        return;
+    }
+    
+    
+    NSString* miRadius = [usersObjects valueForKey:DISTANCE_FILTER];
+    
+    if (miRadius == nil) {
+        miRadius = DEFAULT_RADIUS;
+    }
     
     //NSString* rows = MAX_ROWS;
     
@@ -671,7 +732,7 @@ static LocationSeviceManager* sharedManager;
     
     NSArray* keys = @[postal, KEY_FOR_RADIUS];
     
-    NSArray* objects = @[postalCode, kmRadius];
+    NSArray* objects = @[postalCode, miRadius];
     
     //NSArray* keys = [NSArray arrayWithObjects:postal, KEY_FOR_COUNTRY, KEY_FOR_RADIUS, KEY_FOR_ROWS, KEY_FOR_USERNAME, nil];
     
@@ -679,7 +740,40 @@ static LocationSeviceManager* sharedManager;
     
     NSDictionary* parameters = [NSDictionary dictionaryWithObjects:objects forKeys:keys];
     
-    [self.engine GNFetchNeabyPostalCodesWithPostalCode:parameters];
+    [self.engine GNFetchNeabyPostalCodesWithPostalCode:parameters addCompletionHandler:^(id response) {
+        
+        if (response) {
+            
+            NSDictionary* postalCodes = (NSDictionary*) response;
+            
+            NSArray* fetchedPostalCodes = postalCodes[@"parsedList"];
+            
+            __block NSMutableArray* allPostalCodes = [[NSMutableArray alloc] init];
+            
+            for (NSDictionary* postalCode in fetchedPostalCodes) {
+                
+                NSLog(@"%@", postalCode);
+                
+                NSString* code = [postalCode valueForKey:KEY_FOR_POSTAL_CODE];
+                
+                NSString* distance = [postalCode valueForKey:@"distance"];
+                
+                PostalCode* newPostalCode = [[PostalCode alloc] initWithPostalCode:code andDistance:distance];
+                
+                [allPostalCodes addObject:newPostalCode];
+                
+            }
+            
+            NSArray* zipcodes = allPostalCodes.copy;
+            
+            NSLog(@"%@", zipcodes);
+            
+            completionHandler(zipcodes);
+            
+        }
+        else completionHandler(nil);
+        
+    }];
 }
 
 /*
@@ -720,38 +814,23 @@ static LocationSeviceManager* sharedManager;
 */
 
 #pragma mark -
-#pragma mark - Location Engine Delegates
--(void)nearbyPostalCodesFound:(NSDictionary *)postalCodes
+#pragma mark - Location Engine Methods
+-(CLLocation *)managerCreateLocationWithLongtitude:(CLLocationDegrees)longtitude andLatitude:(CLLocationDegrees)latitude
 {
-    __block NSMutableArray* allPostalCodes = [[NSMutableArray alloc] init];
+    CLLocation* location = [self.engine createLocationWithLongtitude:longtitude andLatitude:latitude];
     
-    NSArray* fetchedPostalCodes = postalCodes[KEY_FOR_ALL_POSTAL_CODES];
-    
-    for (NSDictionary* postalCode in fetchedPostalCodes) {
-        
-        NSString* Pcode = [postalCode valueForKey:KEY_FOR_POSTAL_CODE];
-        
-        NSString* latitude = [[postalCode valueForKey:KEY_FOR_LATITUDE] stringValue];
-        
-        NSString* longtitude = [[postalCode valueForKey:KEY_FOR_LONGTITUDE] stringValue];
-        
-        NSDictionary* coordinates = @{KEY_FOR_LONGTITUDE: longtitude, KEY_FOR_LATITUDE: latitude};
-        
-        PostalCode* newPostalCode = [[PostalCode alloc] initWithPostalCode:Pcode andCoordinates:coordinates];
-        
-        [allPostalCodes addObject:newPostalCode];
-        
-    }
-    
-    NSArray* zipcodes = allPostalCodes.copy;
-    
-    NSLog(@"%@", zipcodes);
-    
-    [self.delegate surroundingZipcodesReturned:zipcodes andCriteria:nil];
-
+    return location;
 }
 
+-(CLLocation *)managerCreateLocationFromStringLongtitude:(NSString *)lng andLatitude:(NSString *)lat
+{
+    CLLocation* location = [self.engine createLocationFromStringLongtitude:lng andLatitude:lat];
+    
+    return location;
+}
 
+#pragma mark -
+#pragma mark - Location Engine Delegates
 -(void)nearbyPostalCodesFailedWithError:(NSError *)error
 {
     

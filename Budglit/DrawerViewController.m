@@ -37,7 +37,7 @@
     
     (self.view).backgroundColor = [UIColor whiteColor];
 
-    [self setShowsShadow:YES];
+    //[self setShowsShadow:YES];
     
     CGFloat viewWidth = self.view.frame.size.width;
     
@@ -47,15 +47,19 @@
     self.openDrawerGestureModeMask = MMOpenDrawerGestureModeAll;
     self.closeDrawerGestureModeMask = MMCloseDrawerGestureModeAll;
     
+    
     [self
      setDrawerVisualStateBlock:^(MMDrawerController *drawerController, MMDrawerSide drawerSide, CGFloat percentVisible) {
+         
          UIViewController * sideDrawerViewController;
+         
          if(drawerSide == MMDrawerSideLeft){
              sideDrawerViewController = drawerController.leftDrawerViewController;
          }
          else if(drawerSide == MMDrawerSideRight){
              sideDrawerViewController = drawerController.rightDrawerViewController;
          }
+         
          (sideDrawerViewController.view).alpha = percentVisible;
      }];
 
@@ -69,7 +73,7 @@
     
     AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
-    NSString* currentLocation = [NSString stringWithString:[appDelegate.locationManager retrieveCurrentLocation]];
+    NSString* currentLocation = [NSString stringWithString:[appDelegate.locationManager retrieveCurrentLocationString]];
     
     MMDrawerBarButtonItem * rightDrawerButton = [[MMDrawerBarButtonItem alloc] initWithTarget:self action:@selector(rightDrawerButtonPress:)];
     
@@ -92,9 +96,22 @@
     [menu setDelegate:nil];
 }
 
+-(void)slideDrawerSide:(MMDrawerSide *)drawerSide Animated:(BOOL)isAnimated
+{
+    [self toggleDrawerSide:drawerSide animated:isAnimated completion:^(BOOL finished) {
+
+    }];
+    
+}
+
+-(void)leftDrawerButtonPress:(id)sender
+{
+    [self slideDrawerSide:MMDrawerSideLeft Animated:YES];
+}
+
 -(void)rightDrawerButtonPress:(id)sender
 {
-    [self toggleDrawerSide:MMDrawerSideRight animated:YES completion:nil];
+    [self slideDrawerSide:MMDrawerSideRight Animated:YES];
 }
 
 -(void)configureCenterViewController:(UIViewController *)centerViewController leftDrawerViewController:(UIViewController *)leftDrawerViewController rightDrawerViewController:(UIViewController *)rightDrawerViewController
@@ -124,7 +141,12 @@
         if (finished)
         {
             switch (menuOption) {
-                case menuCurrentLocation:
+                case MENUSWITCHMODE:
+                {
+                    [self.delegate switchViewPressed];
+                }
+                    break;
+                case MENUCURRENTLOCATION:
                 {
                     if (![CLLocationManager locationServicesEnabled]) {
                         NSString* alertMessage = @"Please turn on your Location Services. Settings > Privacy > Location Services";
@@ -136,17 +158,17 @@
                     else [self changeCurrentLocation];
                 }
                     break;
-                case menuChangeLocation:
+                case MENUCHANGELOCATION:
                 {
                     [self changeLocation];
                 }
                     break;
-                case menuChangeBudget:
+                case MENUCHANGEBUDGET:
                 {
                     [self changeBudget];
                 }
                     break;
-                case menuLogout:
+                case MENULOGOUT:
                 {
                     [self logout];
                 }
@@ -160,8 +182,66 @@
     }];
 }
 
-#pragma mark -
-#pragma mark - Controller Methods
+/*
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    
+    if ([segue.identifier isEqualToString:SEGUE_ALL_CUURENT_DEAL_TO_DEAL_DETAIL_CONTROLLER]) {
+        
+        PSDealDetailViewController* ACDDVC = (PSDealDetailViewController*) segue.destinationViewController;
+        
+        ACDDVC.transitioningDelegate = self;
+        
+        [ACDDVC setOriginalPosition:[selectedDeal getOriginalPosition]];
+        
+        ACDDVC.venueName = selectedDeal.venueName;
+        
+        ACDDVC.descriptionText = selectedDeal.dealDescription;
+        
+        ACDDVC.addressText = [NSString stringWithFormat:@"\n%@ \n"
+                              "%@, %@ %@", selectedDeal.address, selectedDeal.city, selectedDeal.state, selectedDeal.zipcode];
+        
+        ACDDVC.phoneText = [NSString stringWithFormat:@"\n%@", selectedDeal.phoneNumber];
+        
+        ACDDVC.dealSelected = selectedDeal;
+        
+        ACDDVC.image = self.placeholderImage;
+        
+    }
+    else if ([segue.identifier isEqualToString:SEGUE_ALL_CURRENT_DEAL_TO_EDIT_ZIPCODE_OFFLINE_CONTROLLER]) {
+        AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
+        
+        NSString* zipcode = [appDelegate.locationManager getCurrentZipcode];
+        
+        PSEditZipcodeOfflineTableViewController* EZCOD = (PSEditZipcodeOfflineTableViewController*) segue.destinationViewController;
+        
+        EZCOD.currentZipcode = zipcode;
+    }
+}
+
+
+// Method needed to indicate view controller can accept unwind actions
+-(BOOL)canPerformUnwindSegueAction:(SEL)action fromViewController:(UIViewController *)fromViewController withSender:(id)sender
+{
+    
+    if ([self respondsToSelector:action]) {
+        
+        NSString* viewID = fromViewController.restorationIdentifier;
+        
+        if ([viewID isEqualToString:@"PSDealsDetailViewController"]) {
+            return YES;
+        }
+    }
+    
+    
+    return NO;
+}
+
+-(void)returned:(UIStoryboardSegue *)segue
+{
+    
+}
+*/
+
 -(void)changeCurrentLocation
 {
     [self.navigationController completionhandler_pushViewController:self.loadingPage withController:self.navigationController animated:NO completion:^{

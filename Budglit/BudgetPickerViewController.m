@@ -50,6 +50,7 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
     NSInteger currentState;
 }
 @synthesize currentLocationText, budgetText, mileText, distanceFilterSegment, budgetSlider, budgetAmounts;
+
 - (void)viewDidLoad {
     
     [super viewDidLoad];
@@ -60,7 +61,7 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
     
     AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
-    NSString* location = [appDelegate.locationManager retrieveCurrentLocation];
+    NSString* location = [appDelegate.locationManager retrieveCurrentLocationString];
     
     UIBarButtonItem* resultButton = [[UIBarButtonItem alloc] initWithTitle:DEFAULT_RESULT_BUTTON_TITLE style:UIBarButtonItemStylePlain target:self action:@selector(startPressed:)];
     

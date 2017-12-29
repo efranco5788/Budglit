@@ -27,11 +27,8 @@
 
 @interface LoginPageViewController () <AccountManagerDelegate>
 {
-    NSLayoutConstraint* kbConstraint;
-    NSLayoutConstraint* newConstraint;
     CGRect initialLoginButtonFrame;
     CGRect initialSignupButtonFrame;
-    BOOL keyboardIsVisible;
 }
 
 @end
@@ -48,6 +45,9 @@
     [super viewWillAppear:YES];
     
     [self refreshInterface];
+    
+    self.signupButton.translatesAutoresizingMaskIntoConstraints = NO;
+    self.loginButton.translatesAutoresizingMaskIntoConstraints = NO;
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWasShown:) name:UIKeyboardDidShowNotification object:nil];
     
@@ -88,8 +88,8 @@
     (self.passwordField).leftViewMode = UITextFieldViewModeAlways;
     (self.passwordField).leftView = imgPasswrdView;
     
-    kbConstraint.active = NO;
-    newConstraint.active = NO;
+    //self.kbConstraint.active = NO;
+    //self.viewConstraint.active = NO;
 }
 
 -(void)viewWillDisappear:(BOOL)animated
@@ -233,6 +233,30 @@
     }
 }
 
+-(void)toggleButtonConstraintsActivate:(BOOL)enable
+{
+    NSLayoutConstraint* constraints[2];
+    constraints[0] = self.signupButtonBottom_Constraint;
+    constraints[1] = self.signupButtonBottom_VerticalConstraint;
+    
+    if(enable == YES)[self.view addConstraints:[NSArray arrayWithObjects:constraints count:2]];
+    else [self.view removeConstraints:[NSArray arrayWithObjects:constraints count:2]];
+
+}
+
+-(void)constructButtonNewContraintsKeyboardInfo:(NSDictionary *)info
+{
+    if(!info) return;
+    
+    CGSize keyboardSize = [info[UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
+    
+    self.kbConstraint = [self.loginPageBackground.bottomAnchor constraintEqualToAnchor:self.view.bottomAnchor constant:0];
+    
+    self.viewConstraint = [self.signupButton.bottomAnchor constraintEqualToAnchor:self.view.bottomAnchor constant:-(keyboardSize.height)];
+
+}
+
+#pragma mark -
 #pragma mark - Account Manager delegate
 -(void)loginSucessful
 {
@@ -286,53 +310,56 @@
     [self.delegate loginSucessful];
 }
 
+#pragma mark -
 #pragma mark - Keyboard Notifications
 -(void)keyboardWasShown:(NSNotification*)notification
 {
     NSDictionary* keyboardInfo = notification.userInfo;
     
-    CGSize keyboardSize = [keyboardInfo[UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
-    
-    double kbAnimationDuration = [[keyboardInfo valueForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue];
+    //CGSize keyboardSize = [keyboardInfo[UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
+    //double kbAnimationDuration = [[keyboardInfo valueForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue];
     
     CGRect keyboardEndFrame = [[keyboardInfo valueForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
     
     CGRect viewableFrame = CGRectInset(self.view.frame, 0, CGRectGetHeight(keyboardEndFrame));
     
-    
     if (!CGRectContainsRect(viewableFrame, self.signupButton.frame)) {
         
-        kbConstraint = [self.loginPageBackground.bottomAnchor constraintEqualToAnchor:self.view.bottomAnchor constant:0];
-        
-        newConstraint = [self.signupButton.bottomAnchor constraintEqualToAnchor:self.view.bottomAnchor constant:-(keyboardSize.height)];
+        if (!self.viewConstraint) {
+            [self constructButtonNewContraintsKeyboardInfo:keyboardInfo];
+        }
         
         [self.view layoutIfNeeded];
         
-        [UIView animateWithDuration:(kbAnimationDuration / 2) delay:0.0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
-            
-            [self.view layoutIfNeeded];
-            
-            self.signupButtonBottom_Constraint.active = NO;
-            
-            kbConstraint.active = YES;
-            
-            newConstraint.active = YES;
-            
-        } completion:^(BOOL finished) {
-            [self.view layoutIfNeeded];
-        }];
+        [self toggleButtonConstraintsActivate:NO];
         
+        [self.view layoutIfNeeded];
+        
+        NSLayoutConstraint* constraints[2];
+        constraints[0] = self.kbConstraint;
+        constraints[1] = self.viewConstraint;
+        [self.view addConstraints:[NSArray arrayWithObjects:constraints count:2]];
+        
+        [self.view layoutIfNeeded];
     }
 
 }
 
 -(void)keyboardWillHide:(NSNotification *)notification
 {
-    //NSDictionary* keyboardInfo = [notification userInfo];
+    [self.view layoutIfNeeded];
+    //[self.kbConstraint setActive:NO];
+    //[self.viewConstraint setActive:NO];
     
-    newConstraint.active = NO;
+    NSLayoutConstraint* constraints[2];
+    constraints[0] = self.kbConstraint;
+    constraints[1] = self.viewConstraint;
     
-    //self.signupButtonBottom_Constraint.active = YES;
+    [self.view removeConstraints:[NSArray arrayWithObjects:constraints count:2]];
+    
+    [self toggleButtonConstraintsActivate:YES];
+    
+    [self.view layoutIfNeeded];
 }
 
 - (IBAction)loginButtonPressed:(UIButton *)sender {

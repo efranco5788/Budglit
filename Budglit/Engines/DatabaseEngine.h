@@ -8,10 +8,14 @@
 
 #import "Engine.h"
 
-@class ImageData;
 @class AppDelegate;
+@class Deal;
+@class DealMapAnnotation;
+@class ImageData;
 
 typedef void (^fetchedDataResponse)(UIImage* imageResponse, NSHTTPURLResponse* response, NSURLRequest* request);
+typedef void (^dataResponseBlockResponse)(id response);
+
 
 @protocol DatabaseEngineDelegate <NSObject>
 -(void)totalDealCountReturned:(NSInteger)responseCount;
@@ -24,21 +28,24 @@ typedef void (^fetchedDataResponse)(UIImage* imageResponse, NSHTTPURLResponse* r
 @end
 
 @interface DatabaseEngine : Engine
-
 @property (nonatomic, strong) id <DatabaseEngineDelegate> delegate;
-
+-(NSValue*)calculateCoordinateFrom:(NSValue*)coordinateValue onBearing:(double)bearingInRadians atDistance:(double)distanceInMetres;
 -(instancetype)init;
-
 -(instancetype)initWithHostName:(NSString*)hostName NS_DESIGNATED_INITIALIZER;
-
--(void) sendSearchCriteriaForTotalCountOnly:(NSDictionary*)searchCriteria;
-
--(void) sendSearchCriteria:(NSDictionary*)searchCriteria;
-
--(void) downloadImageFromURL:(NSString*)urlString forImageView:(UIImageView*)imageView addCompletionHandler:(fetchedDataResponse)completionHandler;
-
--(void) downloadImageFromRequest:(NSURLRequest*)request addCompletionHandler:(fetchedDataResponse)completionHandler;
-
+-(NSDictionary*)primaryDefaultForSearchFilterWithZipcodes:(NSArray*)zipcodes;
+-(void)sendSearchCriteriaForTotalCountOnly:(NSDictionary*)searchCriteria;
+-(void)sendSearchCriteria:(NSDictionary*)searchCriteria;
+-(void)sendAddressForGeocode:(NSDictionary*)params parseAfterCompletion:(BOOL)willParse addCompletionHandler:(dataResponseBlockResponse)completionHandler;
+-(void)sendAddressesForGeocode:(NSDictionary*)params parseAfterCompletion:(BOOL)willParse addCompletionHandler:(dataResponseBlockResponse)completionHandler;
+-(void)downloadImageFromURL:(NSString*)urlString forImageView:(UIImageView*)imageView addCompletionHandler:(fetchedDataResponse)completionHandler;
+-(void)downloadImageFromRequest:(NSURLRequest*)request addCompletionHandler:(fetchedDataResponse)completionHandler;
+-(void)addAnnotationToDeal:(Deal*)deal;
+-(void)groupAnnotationByCoordinates:(NSMutableArray*)annotations addCompletionHandler:(dataResponseBlockResponse)completionHandler;
+-(void)attemptToRepositionAnnotations:(id)annotations addCompletionHandler:(generalBlockResponse)completionHandler;
+-(NSArray*)extractUnannotatedDeals:(NSArray*)deals;
+-(NSArray*)extractAddressFromDeals:(NSArray*)deals;
+-(NSDictionary*)parseGeocodeLocation:(NSDictionary*)locationInfo;
+-(NSString*)getCurrentDate;
 -(void) cancelOperations:(generalBlockResponse)completionHandler;
 
 @end

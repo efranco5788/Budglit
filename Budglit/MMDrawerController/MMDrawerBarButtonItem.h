@@ -26,6 +26,10 @@
 
 @interface MMDrawerBarButtonItem : UIBarButtonItem
 
++(UIImage*)drawerButtonItemImage;
+
++(UIImage*)drawerButtonItemImageWithFillColor:(UIColor*)color;
+
 ///---------------------------------------
 /// @name Initializing a `MMDrawerBarButtonItem`
 ///---------------------------------------

@@ -67,7 +67,7 @@ typedef void (^fetchPostalCompletionHandler)(id object);
 
 -(void) attemptToAddCurrentLocation:(CityDataObject*) aCity addCompletionHandler:(addLocationResponse)completionHandler;
 
-@property (NS_NONATOMIC_IOSONLY, readonly, copy) NSString *retrieveCurrentLocation;
+@property (NS_NONATOMIC_IOSONLY, readonly, copy) NSString *retrieveCurrentLocationString;
 
 -(void) fetchLocationInformation:(NSArray*) locations;
 
@@ -87,11 +87,16 @@ typedef void (^fetchPostalCompletionHandler)(id object);
 
 -(void) fetchSurroundingZipcodesWithPostalCode:(NSString*)postalCode andObjects:(NSDictionary*) usersObjects;
 
+-(void) fetchSurroundingZipcodesWithPostalCode:(NSString*)postalCode andObjects:(NSDictionary*) usersObjects addCompletionHandler:(fetchPostalCompletionHandler)completionHandler;;
 //-(void) fetchSurroundingZipcodesWithPostalCode:(NSString*)postalCode andObjects:(NSDictionary*)usersObject addCompletionHandler:(fetchPostalCompletionHandler)completionHandler;
 
 -(void) fetchSurroundingZipcodesWithCurrentLocation:(CLLocation*)currentLocation andObjects:(NSDictionary*) usersObjects;
 
 -(void) fetchSurroundingZipcodesWithCurrentLocation;
+
+-(CLLocation*)managerCreateLocationFromStringLongtitude:(NSString *)lng andLatitude:(NSString *)lat;
+
+-(CLLocation*)managerCreateLocationWithLongtitude:(CLLocationDegrees)longtitude andLatitude:(CLLocationDegrees)latitude;
 
 -(void) reset;
 

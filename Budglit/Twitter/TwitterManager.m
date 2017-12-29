@@ -170,7 +170,9 @@ typedef NS_ENUM(NSInteger, NSTwitterFilterType) {
     
     params[TWITTER_SEARCH_QUERY_KEY] = query;
     
-    CLLocationCoordinate2D coord = [deal getCoordinates];
+    //CLLocation* dealLocation = [deal getLocation];
+    
+    CLLocationCoordinate2D coord = deal.getCoordinates;
     
     NSString* geocode = [NSString stringWithFormat:@"%f,%f,%@km", coord.latitude, coord.longitude, TWITTER_SEARCH_GEOCODE_RADIUS_KM_DEFAULT];
     

@@ -14,7 +14,7 @@
 
 -(NSTimeInterval)transitionDuration:(id<UIViewControllerContextTransitioning>)transitionContext
 {
-    return 2.0;
+    return 0.5f;
 }
 
 -(void)animateTransition:(id<UIViewControllerContextTransitioning>)transitionContext
@@ -58,7 +58,9 @@
     
     [toViewController.view setFrame:startFrame];
     
-    [UIView animateWithDuration:0.4 animations:^{
+    //toViewController.view.layer.transform = [self animationHelper:(M_PI / 2)];
+    
+    [UIView animateWithDuration:0.5f animations:^{
         
         fromViewController.view.layer.opacity = 0;
         
@@ -74,5 +76,6 @@
     
     
 }
+
 
 @end

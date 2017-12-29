@@ -17,7 +17,6 @@
 @class UserAccount;
 
 #define HAS_LAUNCHED_ONCE @"HasLaunchedOnce"
-
 #define BUDGET_TITLE @"Budget"
 
 @interface PSHomeViewController : UIViewController< UIViewControllerTransitioningDelegate, UIAlertViewDelegate, UITextFieldDelegate>

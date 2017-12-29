@@ -15,6 +15,7 @@
 @interface Deal() <MZTimerLabelDelegate>
 {
     CGRect tableCellPosition;
+    CLLocationCoordinate2D coordinates;
 }
 
 @end
@@ -59,7 +60,7 @@ NSString* const kDefaultEventEndNotification = @"EventEndNotification";
         budget = aBudget;
         self.tags = dealTags;
         self.imgStateObject = [[ImageStateObject alloc] init];
-        
+        self.mapAnnotation = nil;
         if (![url isEqual:nil]) {
             self.imgStateObject.imagePath = url;
         }
@@ -79,6 +80,18 @@ NSString* const kDefaultEventEndNotification = @"EventEndNotification";
     return self;
 }
 
+-(NSInteger)getID
+{
+    return dealID;
+}
+
+-(NSString *)getDealIDString
+{
+    NSString* stringValue = [[NSString alloc] initWithFormat:@"%ld", (long)dealID];
+    
+    return stringValue;
+}
+
 -(void)setOriginalPosition:(CGRect)frame
 {
     tableCellPosition = frame;
@@ -96,14 +109,36 @@ NSString* const kDefaultEventEndNotification = @"EventEndNotification";
     return stringAddress;
 }
 
--(void) setCoordinates:(CLLocationCoordinate2D) locationCoordinates
+-(void)setAnnotationWithTitle:(NSString *)title locationName:(NSString *)name andDiscipline:(NSString *)discipline
 {
-    coordinates = locationCoordinates;
+    
+    if(self.mapAnnotation == nil) self.mapAnnotation = [[DealMapAnnotation alloc] initWithTitle:title Location:name Discipline:discipline];
+    else{
+        [self.mapAnnotation setTitle:title];
+        [self.mapAnnotation setDiscipline:discipline];
+        [self.mapAnnotation setLocationName:name];
+    }
+    
 }
 
--(CLLocationCoordinate2D) getCoordinates
+-(DealMapAnnotation *)getMapAnnotation
 {
-    return coordinates;
+    return self.mapAnnotation;
+}
+
+-(void)setCoordinates:(CLLocationCoordinate2D)coords
+{
+    coordinates = coords;
+    
+    if (self.mapAnnotation == nil) self.mapAnnotation = [[DealMapAnnotation alloc] init];
+    
+    [self.mapAnnotation setCoordinate:coords];
+}
+
+-(CLLocationCoordinate2D)getCoordinates
+{
+    //return coordinates;
+    return self.mapAnnotation.coordinate;
 }
 
 -(NSString *)detailDescription

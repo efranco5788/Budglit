@@ -134,17 +134,6 @@ static DatabaseManager* sharedManager;
     return critera;
 }
 
--(NSString*)getCurrentDate
-{
-    NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
-    
-    [formatter setDateFormat:NSLocalizedString(@"DATE_FORMAT", nil)];
-    
-    NSString* currentDate = [formatter stringFromDate:[NSDate date]];
-    
-    return currentDate;
-}
-
 -(NSString*)getZipcode
 {
     NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
@@ -165,6 +154,11 @@ static DatabaseManager* sharedManager;
     return closeDB_Status;
 }
 
+-(NSDictionary *)fetchPrimaryDefaultSearchFiltersWithZipcodes:(NSArray *)zipcodes
+{
+    return [self.engine primaryDefaultForSearchFilterWithZipcodes:zipcodes];
+}
+
 -(void)fetchDeals:(NSDictionary *)searchCriteria
 {
     NSDictionary* criteria;
@@ -178,98 +172,6 @@ static DatabaseManager* sharedManager;
     [self.engine sendSearchCriteria:criteria];
     
 }
-
--(void)fetchDealsForMapView:(NSDictionary *)searchCriteria
-{
-    NSDictionary* criteria;
-    //NSMutableArray* fetchedDeals = [[NSMutableArray alloc] init];
-    
-    if (searchCriteria == nil) {
-        
-        criteria = [self getUsersCurrentCriteria];
-    }
-    else criteria = searchCriteria;
-    
-    //AppDelegate* appDelegate = [[UIApplication sharedApplication] delegate];
-    
-    backgroundQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-    
-    [self.engine sendSearchCriteria:criteria];
-    
-    dispatch_async(backgroundQueue, ^{
-        
-        //        [appDelegate.DBEngine sendSearchCriteria:criteria completionHandler:^(NSDictionary *deals){
-        //
-        //            if (deals == nil){
-        //                [self.delegate DealsDidNotLoad];
-        //            }
-        //            else{
-        //                NSDictionary* returnedDeals = deals;
-        //
-        //                NSDictionary* subDeals = [returnedDeals valueForKey:KEY_FOR_RETURNED_DEALS];
-        //
-        //                NSInteger count = (NSInteger) [[subDeals objectForKey:KEY_FOR_TOTAL_COUNT] integerValue];
-        //
-        //                // Check if any deals were returned
-        //                if(count <= 0){
-        //
-        //                }
-        //                else
-        //                {
-        //
-        //                    for (id key in subDeals) {
-        //                        if ([key isEqualToString:KEY_FOR_TOTAL_COUNT]) {
-        //
-        //                        }
-        //                        else
-        //                        {
-        //
-        //                            NSDictionary* deal = [subDeals valueForKey:key];
-        //
-        //                            NSString* dealDate = [deal objectForKey:KEY_DEAL_DATE];
-        //
-        //                            double dealBudget = [[deal objectForKey:KEY_DEAL_BUDGET] doubleValue];
-        //
-        //                            NSString* dealDescription = [deal objectForKey:KEY_DEAL_DESCRIPTION];
-        //
-        //                            NSString* venue = [deal objectForKey:KEY_VENUE_NAME];
-        //
-        //                            NSString* venueAddress = [deal objectForKey:KEY_VENUE_ADDRESS];
-        //
-        //                            NSString* venueCity = [deal objectForKey:KEY_VENUE_CITY];
-        //
-        //                            NSString* venueState = [deal objectForKey:KEY_VENUE_STATE];
-        //
-        //                            NSString* zipcode = [[deal objectForKey:KEY_VENUE_ZIPCODE] stringValue];
-        //
-        //                            NSString* venuePhone = [deal objectForKey:KEY_VENUE_PHONE_NUMBER];
-        //
-        //                            NSString* imgURL = [deal objectForKey:KEY_VENUE_IMAGE_URL];
-        //
-        //                            Deal* newDeal = [[Deal alloc] initWithVenueName:venue andVenueAddress:venueAddress andVenueDescription:nil andDate:dealDate andDealDescription:dealDescription andPhoneNumber:venuePhone andCity:venueCity andState:venueState andZipcode:zipcode andBudget:dealBudget andDealID:1 andURLImage:imgURL];
-        //
-        //                            [fetchedDeals addObject:newDeal];
-        //
-        //                        }// End of most inner else statment
-        //
-        //                    }// End of second to most inner else statement
-        //
-        //                    [self.delegate DisplayDealsOnMap:fetchedDeals];
-        //
-        //                }// End of third to most inner statement
-        //
-        //            }
-        //
-        //        } errorhandler:^(NSError *error) {
-        //            DLog(@"%@\t%@\t%@\t%@", [error localizedDescription], [error localizedFailureReason],
-        //                 [error localizedRecoveryOptions], [error localizedRecoverySuggestion]);
-        //
-        //            [self.delegate DealsDidLoad:NO];
-        //        }]; // End of DBEngine Method
-        
-    });// End of async Method
-}
-
 
 -(void)fetchTotalDealCountOnly:(NSDictionary *)searchCriteria andSender:(id)sender
 {
@@ -285,6 +187,60 @@ static DatabaseManager* sharedManager;
     }];
 }
 
+-(void)fetchGeocodeForAddress:(NSString *)address additionalParams:(NSDictionary *)params shouldParse:(BOOL)parse addCompletetion:(dataBlockResponse)completionHandler
+{
+    if(!address && !params) return;
+    
+    NSMutableDictionary* tmpMutableParameters = [[NSMutableDictionary alloc] init];
+    
+    if (address) {
+        NSDictionary* parameters = [self.engine constructParameterWithKey:@"address" AndValue:address addToDictionary:params];
+        tmpMutableParameters = parameters.mutableCopy;
+    }
+    
+    if (params) {
+        [tmpMutableParameters addEntriesFromDictionary:params];
+    }
+    
+    NSDictionary* parameters = tmpMutableParameters.copy;
+    
+    [self.engine sendAddressForGeocode:parameters parseAfterCompletion:parse addCompletionHandler:^(id response) {
+        completionHandler(response);
+    }];
+}
+
+-(void)fetchGeocodeForAddresses:(NSArray *)addressList additionalParams:(NSDictionary *)params shouldParse:(BOOL)parse addCompletetion:(dataBlockResponse)completionHandler
+{
+    NSMutableDictionary* tmpMutableParameters = [[NSMutableDictionary alloc] init];
+    
+    if(addressList){
+        NSDictionary* parameters = [self.engine constructParameterWithKey:@"address" AndValue:addressList addToDictionary:params];
+        tmpMutableParameters = parameters.mutableCopy;
+    }
+    
+    if(params){
+        [tmpMutableParameters addEntriesFromDictionary:params];
+    }
+    
+    __block NSDictionary* preFinalParameters = tmpMutableParameters;
+    
+    NSArray* address = [preFinalParameters valueForKey:@"address"];
+    
+    NSArray* unorderedAddressList = [self.engine removeDuplicateFromArray:address Unordered:YES];
+    
+    [tmpMutableParameters setObject:unorderedAddressList forKey:@"address"];
+    
+    NSDictionary* finalParameters = tmpMutableParameters.copy;  
+    
+    [self.engine sendAddressesForGeocode:finalParameters parseAfterCompletion:YES addCompletionHandler:^(id response) {
+
+        if(response){
+            completionHandler(response);
+        }
+        
+    }];
+}
+
 -(void)fetchNewDataWithCompletion:(newDataFetchedResponse)completionHandler
 {
     
@@ -292,6 +248,8 @@ static DatabaseManager* sharedManager;
 
 -(void)startDownloadImageFromURL:(NSString *)url forObject:(id)object forIndexPath:(NSIndexPath *)indexPath imageView:(UIImageView *)imgView
 {
+    
+    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
     [self.engine downloadImageFromURL:url forImageView:imgView addCompletionHandler:^(UIImage *imageResponse, NSHTTPURLResponse *response, NSURLRequest *request) {
         
@@ -311,8 +269,6 @@ static DatabaseManager* sharedManager;
             
         }
         else if ([object isMemberOfClass:[DealTableViewCell class]]){
-            
-            AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
             
             NSArray* list = appDelegate.databaseManager.currentDeals;
             
@@ -416,10 +372,11 @@ static DatabaseManager* sharedManager;
                 [self.currentDeals addObject:node];
             }
             
-            [self.delegate DealsDidLoad:YES];
-            
         }
+        
     }];
+    
+    [self.delegate DealsDidLoad:YES];
     
 }
 

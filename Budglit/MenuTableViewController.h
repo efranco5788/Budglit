@@ -16,14 +16,6 @@
 -(void)menuSelected:(NSInteger)menuOption;
 @end
 
-/*
- typedef NS_ENUM(NSInteger, menuSection){
- menuCurrentLocation = 0,
- menuChangeLocation = 1,
- menuChangeBudget = 2,
- menuLogout = 3
- };
- */
 typedef NS_ENUM(NSInteger, MMDrawerSection){
     MMDrawerSectionViewSelection,
     MMDrawerSectionDrawerWidth,

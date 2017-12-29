@@ -32,8 +32,6 @@
 #define DISTANCE_AMOUNTS @"distance_amounts"
 
 
-#define DEFAULT_BUDGET @"-1"
-#define BUDGET @"budget"
 #define KEY_TMP_LOCATION @"tmpLocation"
 
 #define BUDGET_VIEW_CONTROLLER @"BudgetPickerViewController"
@@ -180,6 +178,69 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
     
 }
 
+-(void)fetchSurroundingZipcodes:(NSString *)zipcode
+{
+    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
+    
+    currentState = CLEAR;
+    
+    NSLog(@"Location complete, app state now clear");
+    
+    NSString* postalCode;
+    
+    if(!zipcode) postalCode = [appDelegate.locationManager getCurrentZipcode];
+    else postalCode = zipcode;
+    
+    (appDelegate.locationManager).delegate = self;
+    
+    [appDelegate.databaseManager setZipcodeCriteria:postalCode];
+    
+    NSDictionary* defaultSearchFilter = [appDelegate.databaseManager fetchPrimaryDefaultSearchFiltersWithZipcodes:nil];
+    
+    //NSLog(@"Here I am %@", defaultSearchFilter);
+    
+    [appDelegate.locationManager fetchSurroundingZipcodesWithPostalCode:postalCode andObjects:defaultSearchFilter addCompletionHandler:^(id object) {
+        
+        NSArray* zipcodes = (NSArray*) object;
+        
+        NSMutableArray* postalCodes = [[NSMutableArray alloc] init];
+        
+        // Extract the postal codes
+        for (id zipcode in zipcodes) {
+            
+            PostalCode* postalCode = (PostalCode*) zipcode;
+            
+            NSLog(@"postal code %@", postalCode.postalCode);
+            
+            [postalCodes addObject:postalCode.postalCode];
+        }
+        
+        //NSDictionary* criteria = [appDelegate.databaseManager.engine getCurrentSearchFilter];
+        
+        //NSMutableDictionary* mutableCriteria = [criteria mutableCopy];
+        
+        //NSDictionary *surroundingZips = @{NSLocalizedString(@"SURROUNDING_ZIPCODES", nil) : postalCodes };
+        
+        NSDictionary* criteria = [appDelegate.databaseManager fetchPrimaryDefaultSearchFiltersWithZipcodes:postalCodes];
+        
+        [appDelegate.databaseManager.engine appendToCurrentSearchFilter:criteria];
+        
+       // NSDictionary* criteria = [appDelegate.databaseManager.engine getCurrentSearchFilter];
+        
+        NSLog(@"%@", criteria);
+        
+        //[mutableCriteria setValue:postalCodes forKey:NSLocalizedString(@"SURROUNDING_ZIPCODES", nil)];
+        
+        //[userDefault setObject:newCriteria forKey:NSLocalizedString(@"KEY_CURRENT_SEARCH_FILTERS", nil)];
+        
+        //[userDefault synchronize];
+        
+        [self reloadDeals:criteria];
+        
+    }];
+
+}
+
 -(void)verifyBudget
 {
     AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
@@ -192,7 +253,19 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
     
     if ([usersBudget isEqualToString:NSLocalizedString(@"DEFAULT_BUDGET", nil)])
     {        
-        [self.delegate locationHasFinished];
+        //[self.delegate loadingPageLocationHasFinished];
+        
+        (appDelegate.locationManager).delegate = self;
+        
+        NSString* currentPostal = [appDelegate.locationManager getCurrentZipcode];
+        
+        [appDelegate.databaseManager setZipcodeCriteria:currentPostal];
+        
+        NSDictionary* userSearchCriteria = [appDelegate.databaseManager getUsersCurrentCriteria];
+        
+        NSLog(@"User Search %@", userSearchCriteria);
+        
+        [appDelegate.locationManager fetchSurroundingZipcodesWithPostalCode:currentPostal andObjects:userSearchCriteria];
     }
     else
     {
@@ -208,6 +281,7 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
     }
 }
 
+#pragma mark -
 #pragma mark - Budget Picker Delegate
 -(void)updateViewLabels:(NSDictionary *)searchCriteria
 {
@@ -256,7 +330,7 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
         
         [self dismissBudgetPickerView];
     }
-    else [self.delegate budgetHasFinished];
+    else [self.delegate loadingPageBudgetHasFinished];
     
     NSLog(@"Budget complete, app state is now clear");
 }
@@ -269,15 +343,22 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
 
 #pragma mark -
 #pragma mark - Database Methods
--(void) reloadDeals
+-(void) reloadDeals:(NSDictionary *)filter
 {
     AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
     (appDelegate.databaseManager).delegate = self;
     
-    NSDictionary* criteria = [appDelegate.databaseManager getUsersCurrentCriteria];
+    if(!filter){
+        
+        NSDictionary* criteria = [appDelegate.databaseManager getUsersCurrentCriteria];
+        
+        filter = [NSDictionary dictionaryWithDictionary:criteria];
+    }
     
-    [appDelegate.databaseManager fetchDeals:criteria];
+    NSLog(@"filter is %@", filter);
+    
+    [appDelegate.databaseManager fetchDeals:filter];
 }
 
 
@@ -285,7 +366,7 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
 #pragma mark - Database Delegates
 -(void)DealsDidLoad:(BOOL)result
 {
-    [self.delegate newDealsFetched];
+    [self.delegate loadingPageNewDealsFetched];
 }
 
 -(void)DealsDidNotLoad
@@ -295,7 +376,7 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
     
     UIAlertAction* retryAction = [UIAlertAction actionWithTitle:@"Retry" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         
-        [self reloadDeals];
+        [self reloadDeals:nil];
         
     }];
     
@@ -431,39 +512,10 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
 {
     NSLog(@"Location retrieved ");
     
-    [self verifyBudget];
+    //[self verifyBudget];
     
-}
-
--(void)surroundingZipcodesReturned:(NSArray *)zipcodes andCriteria:(NSDictionary *)searchCriteria
-{
-    NSMutableArray* postalCodes = [[NSMutableArray alloc] init];
+    [self fetchSurroundingZipcodes:nil];
     
-    // Extract the postal codes
-    for (id zipcode in zipcodes) {
-        
-        PostalCode* postalCode = (PostalCode*) zipcode;
-        
-        NSLog(@"postal code %@", postalCode.postalCode);
-        
-        [postalCodes addObject:postalCode.postalCode];
-    }
-    
-    NSUserDefaults* userDefault = [NSUserDefaults standardUserDefaults];
-    
-    NSDictionary* criteria = [userDefault objectForKey:NSLocalizedString(@"KEY_CURRENT_SEARCH_FILTERS", nil)];
-    
-    NSMutableDictionary* mutableCriteria = [criteria mutableCopy];
-    
-    [mutableCriteria setValue:postalCodes forKey:NSLocalizedString(@"SURROUNDING_ZIPCODES", nil)];
-    
-    NSDictionary* newCriteria = mutableCriteria.copy;
-    
-    [userDefault setObject:newCriteria forKey:NSLocalizedString(@"KEY_CURRENT_SEARCH_FILTERS", nil)];
-    
-    [userDefault synchronize];
-    
-    [self reloadDeals];
 }
 
 -(void)onlineAttemptFailed
@@ -537,7 +589,7 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
         
         [self.navigationController setDelegate:nil];
         
-        [self.delegate budgetHasFinished];
+        [self.delegate loadingPageBudgetHasFinished];
         
     }];
     

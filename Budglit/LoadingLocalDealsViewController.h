@@ -19,9 +19,9 @@
 @protocol LoadingPageDelegate <NSObject>
 @optional
 -(void)loadingPageDismissed;
--(void)locationHasFinished;
--(void)budgetHasFinished;
--(void)newDealsFetched;
+-(void)loadingPageLocationHasFinished;
+-(void)loadingPageBudgetHasFinished;
+-(void)loadingPageNewDealsFetched;
 @end
 
 @interface LoadingLocalDealsViewController : UIViewController<UINavigationControllerDelegate, UITextFieldDelegate>
@@ -40,13 +40,15 @@
 
 -(void) fetchUserLocationOnline;
 
+-(void) fetchSurroundingZipcodes:(NSString*)zipcode;
+
 -(void) applicationReactivated;
 
 -(void) verifyBudget;
 
 -(void) inputBudget;
 
--(void) reloadDeals;
+-(void) reloadDeals:(NSDictionary*)filter;
 
 -(void) toggleBackgroundDimmer;
 

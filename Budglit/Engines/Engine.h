@@ -9,6 +9,8 @@
 #import <Foundation/Foundation.h>
 #import "OAuthObject.h"
 
+#define KEY_SESSION_ID @"sessionID"
+
 typedef void (^generalBlockResponse)(BOOL success);
 
 @interface Engine : NSObject
@@ -26,13 +28,29 @@ typedef void (^generalBlockResponse)(BOOL success);
 
 -(void) logFailedRequest:(id)failedRequest;
 
+-(NSDictionary*)constructParameterWithKey:(NSString*)key AndValue:(id)value addToDictionary:(NSDictionary*)dict;
+
 -(void)setSessionID:(NSString *)sessionID addCompletetion:(generalBlockResponse)completionHandler;
 
 -(NSString*)extractSessionIDFromHeaders:(NSDictionary*)headers;
 
+-(void)appendToCurrentSearchFilter:(NSDictionary*)dictionary;
+
+-(NSDictionary*)getCurrentSearchFilter;
+
+-(void)clearCurrentSearchFilter;
+
 -(NSString*)getSessionID;
 
--(void) clearSession;
+-(void)clearSession;
+
+-(void)saveCookiesFromResponse:(NSHTTPURLResponse*) response;
+
+-(id)getSavedCookie;
+
+-(void)loadCookies;
+
+-(NSArray*)removeDuplicateFromArray:(NSArray*)list Unordered:(BOOL)ordered;
 
 -(void)logout;
 

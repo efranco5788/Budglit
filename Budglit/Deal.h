@@ -8,7 +8,10 @@
 
 #import <Foundation/Foundation.h>
 #import <MapKit/MapKit.h>
+#import "DealMapAnnotation.h"
 #import "ImageStateObject.h"
+
+#define DEAL_ID_KEY @"dealID"
 
 @class MZTimerLabel;
 
@@ -21,7 +24,7 @@
 {
     NSInteger dealID;
     double budget;
-    CLLocationCoordinate2D coordinates;
+    
 }
 
 extern NSString* const kDefaultEventEndNotification;
@@ -40,6 +43,7 @@ extern NSString* const kDefaultEventEndNotification;
 @property (nonatomic, strong) NSString* city;
 @property (nonatomic, strong) NSString* state;
 @property (nonatomic, strong) NSString* zipcode;
+@property (nonatomic, strong) DealMapAnnotation* mapAnnotation;
 @property (nonatomic, strong) ImageStateObject* imgStateObject;
 @property (nonatomic, strong) MZTimerLabel* eventCountDwn;
 
@@ -48,9 +52,19 @@ extern NSString* const kDefaultEventEndNotification;
 
 @property (NS_NONATOMIC_IOSONLY, getter=getAddressString, readonly, copy) NSString *addressString;
 
-@property (NS_NONATOMIC_IOSONLY, getter=getCoordinates) CLLocationCoordinate2D coordinates;
-
 @property (NS_NONATOMIC_IOSONLY, readonly, copy) NSString *detailDescription;
+
+-(NSInteger)getID;
+
+-(void)setAnnotationWithTitle:(NSString*)title locationName:(NSString*)name andDiscipline:(NSString*)discipline;
+
+-(DealMapAnnotation*)getMapAnnotation;
+
+-(void)setCoordinates:(CLLocationCoordinate2D)coords;
+
+-(CLLocationCoordinate2D)getCoordinates;
+
+-(NSString*)getDealIDString;
 
 -(void)addTags:(NSArray*)tags;
 

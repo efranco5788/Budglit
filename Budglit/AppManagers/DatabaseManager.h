@@ -21,6 +21,7 @@
 
 typedef void (^fetchedImageResponse)(UIImage* image);
 typedef void (^generalBlockResponse)(BOOL success);
+typedef void (^dataBlockResponse)(id response);
 typedef void (^newDataFetchedResponse)(UIBackgroundFetchResult result);
 
 @protocol DatabaseManagerDelegate <NSObject>
@@ -59,28 +60,21 @@ typedef void (^newDataFetchedResponse)(UIBackgroundFetchResult result);
 
 -(instancetype) initWithEngineHostName:(NSString*)hostName NS_DESIGNATED_INITIALIZER;
 
--(void) fetchDeals: (NSDictionary*) searchCriteria;
-
--(void) fetchDealsForMapView: (NSDictionary*) searchCriteria;
-
--(void) fetchTotalDealCountOnly: (NSDictionary*) searchCriteria andSender:(id) sender;
-
--(void) fetchImageForRequest:(NSURLRequest*)request addCompletion:(fetchedImageResponse)completionHandler;
-
--(void) fetchNewDataWithCompletion:(newDataFetchedResponse)completionHandler;
-
+-(void)fetchDeals: (NSDictionary*) searchCriteria;
+-(void)fetchDealsForMapView: (NSDictionary*) searchCriteria;
+-(void)fetchTotalDealCountOnly: (NSDictionary*) searchCriteria andSender:(id) sender;
+-(NSDictionary*)fetchPrimaryDefaultSearchFiltersWithZipcodes:(NSArray*)zipcodes;
+-(void)fetchImageForRequest:(NSURLRequest*)request addCompletion:(fetchedImageResponse)completionHandler;
+-(void)fetchNewDataWithCompletion:(newDataFetchedResponse)completionHandler;
+-(void)fetchGeocodeForAddress:(NSString*)address additionalParams:(NSDictionary*)params shouldParse:(BOOL)parse addCompletetion:(dataBlockResponse)completionHandler;
+-(void)fetchGeocodeForAddresses:(NSArray*)addressList additionalParams:(NSDictionary*)params shouldParse:(BOOL)parse addCompletetion:(dataBlockResponse)completionHandler;
 -(void)startDownloadImageFromURL:(NSString *)url forObject:(id)object forIndexPath:(NSIndexPath*)indexPath imageView:(UIImageView*)imgView;
-
 -(void)startDownloadImageFromURL:(NSString *)url forDeal:(Deal*)deal forIndexPath:(NSIndexPath*)indexPath imageView:(UIImageView*)imgView;
-
 -(void)startDownloadImageFromURL:(NSString *)url forIndexPath:(NSIndexPath*)indexPath andImageView:(UIImageView*)imgView;
-
 -(void)cancelDownloads:(generalBlockResponse)completionHandler;
-
+-(NSMutableDictionary*)getDefaultSearchFilters;
+-(void)saveUsersCriteria:(NSDictionary*)usersCriteria;
+-(void)setZipcodeCriteria:(NSString*)zipcode;
 -(void)resetDeals;
-
--(void) saveUsersCriteria:(NSDictionary*)usersCriteria;
-
--(void) setZipcodeCriteria:(NSString*)zipcode;
 
 @end

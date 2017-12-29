@@ -7,6 +7,9 @@
 //
 
 #import "Engine.h"
+#import <MapKit/MapKit.h>
+
+typedef void (^dataResponseBlockResponse)(id response);
 
 @protocol GNEngineDelegate <NSObject>
 @optional
@@ -24,7 +27,11 @@
 
 -(instancetype) initWithHostName:(NSString *)hostName NS_DESIGNATED_INITIALIZER;
 
+-(CLLocation*)createLocationFromStringLongtitude:(NSString*)lng andLatitude:(NSString*)lat;
+
+-(CLLocation*)createLocationWithLongtitude:(CLLocationDegrees)longtitude andLatitude:(CLLocationDegrees)latitude;
+
 -(void)GNFetchNeabyPostalCodesWithCoordinates:(NSDictionary *)parameters;
 
--(void)GNFetchNeabyPostalCodesWithPostalCode:(NSDictionary *)parameters;
+-(void)GNFetchNeabyPostalCodesWithPostalCode:(NSDictionary *)parameters addCompletionHandler:(dataResponseBlockResponse)completionHandler;;
 @end

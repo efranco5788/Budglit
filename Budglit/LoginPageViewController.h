@@ -24,7 +24,10 @@
 @property (weak, nonatomic) IBOutlet UIButton *loginButton;
 @property (weak, nonatomic) IBOutlet UIButton *signupButton;
 @property (strong, nonatomic) IBOutlet UIButton *passwordVisibility;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *signupButtonBottom_Constraint;
+@property (strong, nonatomic) IBOutlet NSLayoutConstraint *signupButtonBottom_Constraint;
+@property (strong, nonatomic) IBOutlet NSLayoutConstraint *signupButtonBottom_VerticalConstraint;
+@property (strong, nonatomic) NSLayoutConstraint* kbConstraint; // Keyboard Constraint
+@property (strong, nonatomic) NSLayoutConstraint* viewConstraint; // 
 
 - (IBAction)passwordVisibilityPressed:(id)sender;
 
@@ -36,6 +39,8 @@
 
 - (void)toggleNameFields;
 
+- (void)toggleButtonConstraintsActivate:(BOOL)enable;
 
+- (void)constructButtonNewContraintsKeyboardInfo:(NSDictionary*)info;
 
 @end

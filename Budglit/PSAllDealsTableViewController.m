@@ -81,6 +81,12 @@ static NSString* const emptyCellIdentifier = @"holderCell";
     
     [self setNeedsStatusBarAppearanceUpdate];
     
+    if (@available(iOS 11.0, *)) {
+        [self.tableView setContentInsetAdjustmentBehavior:UIScrollViewContentInsetAdjustmentNever];
+    } else {
+        // Fallback on earlier versions
+    }
+    
     self.transitionController = [[DealDetailedAnimationController alloc] init];
     
     self.dismissTransitionController = [[DismissDetailedAnimationController alloc] init];
@@ -106,13 +112,17 @@ static NSString* const emptyCellIdentifier = @"holderCell";
 
 -(void)viewWillAppear:(BOOL)animated
 {
+    [self.navigationController setNavigationBarHidden:NO];
+
     NSNotificationCenter* center = [NSNotificationCenter defaultCenter];
     
     [center addObserver:self selector:@selector(dealEnded:) name:kDefaultEventEndNotification object:nil];
+    
 }
 
 -(void)viewDidDisappear:(BOOL)animated
 {
+    
     NSNotificationCenter* center = [NSNotificationCenter defaultCenter];
     
     [center removeObserver:self name:kDefaultEventEndNotification object:nil];
@@ -404,7 +414,7 @@ static NSString* const emptyCellIdentifier = @"holderCell";
     return self.dismissTransitionController;
 }
 
-// In a storyboard-based application, you will often want to do a little preparation before navigation
+
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     
     if ([segue.identifier isEqualToString:SEGUE_ALL_CUURENT_DEAL_TO_DEAL_DETAIL_CONTROLLER]) {
@@ -580,7 +590,7 @@ static NSString* const emptyCellIdentifier = @"holderCell";
         
         [appDelegate.databaseManager saveUsersCriteria:updatedCriteria];
         
-        [self.loadingPage reloadDeals];
+        [self.loadingPage reloadDeals:nil];
     }
 }
 
@@ -592,7 +602,7 @@ static NSString* const emptyCellIdentifier = @"holderCell";
     
     (self.budgetButton).title = currentBudget;
     
-    [self.loadingPage reloadDeals];
+    [self.loadingPage reloadDeals:nil];
 }
 
 -(void)newDealsFetched
@@ -609,9 +619,10 @@ static NSString* const emptyCellIdentifier = @"holderCell";
     
     dispatch_queue_t backgroundToken = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0);
     
+    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
+    
     // Background Thread Queue
     dispatch_async(backgroundToken, ^{
-        AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
         
         NSArray* deals = [NSArray arrayWithArray:(appDelegate.databaseManager).currentDeals];
         
@@ -627,19 +638,21 @@ static NSString* const emptyCellIdentifier = @"holderCell";
         
         NSIndexPath* indexPath = [NSIndexPath indexPathForRow:indexRow inSection:0];
         
-        DealTableViewCell* cell = [self.dealsTableView cellForRowAtIndexPath:indexPath];
-        
-        if (cell) {
-            dispatch_async(dispatch_get_main_queue(), ^{
+        dispatch_async(dispatch_get_main_queue(), ^{
+            
+            DealTableViewCell* cell = [self.dealsTableView cellForRowAtIndexPath:indexPath];
+            
+            if(cell){
+                
                 [self.dealsTableView beginUpdates];
                 cell.dealTimer = [endedDeal animateCountdownEndDate:cell.dealTimer];
                 [cell animateLabel];
                 [self.dealsTableView endUpdates];
-            });
-        }
+                
+            }
+        });
         
-        
-    });
+    }); // end background thread
 }
 
 #pragma mark -

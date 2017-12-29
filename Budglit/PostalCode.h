@@ -12,12 +12,12 @@
 
 @property (nonatomic, strong) NSString* postalCode;
 
-@property (nonatomic, strong) NSDictionary* coordinates;
+@property (nonatomic, strong) NSString* distanceFromLocation;
 
 -(instancetype) init;
 
 -(instancetype) initWithPostalCode:(NSString*)postalCode;
 
--(instancetype) initWithPostalCode:(NSString *)postalCode andCoordinates:(NSDictionary*)coordinates NS_DESIGNATED_INITIALIZER;
+-(instancetype) initWithPostalCode:(NSString *)postalCode andDistance:(NSString*)distance NS_DESIGNATED_INITIALIZER;
 
 @end

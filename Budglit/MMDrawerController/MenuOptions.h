@@ -10,10 +10,14 @@
 #define MenuOptions_h
 
 typedef NS_ENUM(NSInteger, menuSection){
-    menuCurrentLocation = 0,
-    menuChangeLocation = 1,
-    menuChangeBudget = 2,
-    menuLogout = 3
+    MENUSWITCHMODE = 0,
+    MENUSWITCHTOMAP = 1,
+    MENUCURRENTLOCATION = 2,
+    MENUCHANGELOCATION = 3,
+    MENUCHANGEBUDGET = 4,
+    MENULOGOUT = 5
+    
+    
 };
 
 

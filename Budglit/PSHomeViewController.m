@@ -17,7 +17,7 @@
 #import "DatabaseManager.h"
 #import "UserAccount.h"
 #import "UINavigationController+CompletionHandler.h"
-
+#import "MapViewController.h"
 
 #define PUSH_TO_MAIN_CONTAINER_VIEW @"pushToMainContainer"
 #define PUSH_TO_DRAWER_CONTROLLER @"pushToDrawerController"
@@ -35,14 +35,10 @@
 }
 
 -(void)viewDidAppear:(BOOL)animated
-{
-    
+{    
     NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
-    
     AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
-    
     UserAccount* user = appDelegate.accountManager.getSignedAccount;
-    
     NSString* budgetValue = [defaults valueForKey:NSLocalizedString(@"BUDGET", nil)];
 
     if (!user) {
@@ -50,12 +46,13 @@
     }
     else if ([user.firstName isEqualToString:NSLocalizedString(@"DEFAULT_NO_ACCOUNT_NAME", nil)])
     {
-        [self launchLoginPage];
+        //[self launchLoginPage];
+        [self launchLoadingPage];
     }
     else
     {
-        [appDelegate.accountManager sessionValidator];
-        //[self launchLoadingPage];
+        //[appDelegate.accountManager sessionValidator];
+        [self launchLoadingPage];
     }
     
     user = nil;
@@ -137,9 +134,8 @@
         
         NSString* viewID = fromViewController.restorationIdentifier;
         
-        if ([viewID isEqualToString:@"PSAllDealsTableViewController"]) {
-            return YES;
-        }
+        if ([viewID isEqualToString:@"PSAllDealsTableViewController"]) return YES;
+        
     }
     
     return NO;
@@ -168,17 +164,17 @@
 
 }
 
--(void)locationHasFinished
+-(void)loadingPageLocationHasFinished
 {
     [self.loadingPage inputBudget];
 }
 
--(void)budgetHasFinished
+-(void)loadingPageBudgetHasFinished
 {
-    [self.loadingPage reloadDeals];
+    [self.loadingPage reloadDeals:nil];
 }
 
--(void)newDealsFetched
+-(void)loadingPageNewDealsFetched
 {
     [self loadingPageDismissed];
 }

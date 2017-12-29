@@ -18,6 +18,7 @@
 		89067BE41C795BD80058B4DF /* empty_filter_app_icon_unselected@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 89067BE21C795BD80058B4DF /* empty_filter_app_icon_unselected@3x.png */; };
 		89067BE71C7A013A0058B4DF /* empty_filter_app_icon_selected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 89067BE51C7A013A0058B4DF /* empty_filter_app_icon_selected@2x.png */; };
 		89067BE81C7A013A0058B4DF /* empty_filter_app_icon_selected@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 89067BE61C7A013A0058B4DF /* empty_filter_app_icon_selected@3x.png */; };
+		89119F091FAD103100A84F3C /* DealMapAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 89119F081FAD102F00A84F3C /* DealMapAnnotation.m */; };
 		89179D011BB7646500F60BA7 /* TwitterEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = 89179D001BB7646500F60BA7 /* TwitterEngine.m */; };
 		89179D031BB76BA100F60BA7 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 89179D021BB76BA100F60BA7 /* Localizable.strings */; };
 		89179D051BB76BFB00F60BA7 /* Cell_ImagePlaceholder.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 89179D041BB76BFB00F60BA7 /* Cell_ImagePlaceholder.jpg */; };
@@ -31,7 +32,6 @@
 		89179D191BB76F4300F60BA7 /* LoginPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 89179D171BB76F4300F60BA7 /* LoginPageViewController.m */; };
 		89179D1A1BB76F4300F60BA7 /* LoginPageViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 89179D181BB76F4300F60BA7 /* LoginPageViewController.xib */; };
 		89179D1E1BB7AB2D00F60BA7 /* MapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 89179D1C1BB7AB2D00F60BA7 /* MapViewController.m */; };
-		89179D1F1BB7AB2D00F60BA7 /* MapViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 89179D1D1BB7AB2D00F60BA7 /* MapViewController.xib */; };
 		89179D221BB7AC7200F60BA7 /* Deal.m in Sources */ = {isa = PBXBuildFile; fileRef = 89179D211BB7AC7200F60BA7 /* Deal.m */; };
 		89179D251BB7B46D00F60BA7 /* ImageStateObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 89179D241BB7B46D00F60BA7 /* ImageStateObject.m */; };
 		89179D281BB7B7BA00F60BA7 /* PSTransitionToBudgetViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 89179D271BB7B7BA00F60BA7 /* PSTransitionToBudgetViewController.m */; };
@@ -96,6 +96,9 @@
 		894F93AB1DEFEF2300FEF2DC /* PSInstagramViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 894F93A91DEFEF2300FEF2DC /* PSInstagramViewController.xib */; };
 		895C22BB1CB4BC43008BAECE /* TweetDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 895C22B91CB4BC43008BAECE /* TweetDetailViewController.m */; };
 		895C22BC1CB4BC43008BAECE /* TweetDetailViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 895C22BA1CB4BC43008BAECE /* TweetDetailViewController.xib */; };
+		896249781FE48A6600219C8B /* MapToListAnimationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 896249771FE48A6600219C8B /* MapToListAnimationController.m */; };
+		8962497B1FEB079B00219C8B /* DismissMapToListAnimationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8962497A1FEB079B00219C8B /* DismissMapToListAnimationController.m */; };
+		8962497E1FEC3BD300219C8B /* AnimationHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 8962497D1FEC3BD300219C8B /* AnimationHelper.m */; };
 		8966280A1F31748E00339957 /* DealParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 896628091F31748E00339957 /* DealParser.m */; };
 		896A89751BCE093800A21F30 /* PostalCode.m in Sources */ = {isa = PBXBuildFile; fileRef = 896A89741BCE093700A21F30 /* PostalCode.m */; };
 		897711A51BDD99D000028B74 /* ImageDataDoc.m in Sources */ = {isa = PBXBuildFile; fileRef = 897711A41BDD99D000028B74 /* ImageDataDoc.m */; };
@@ -112,6 +115,8 @@
 		897727361BE4642D00028B74 /* TweetTableViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 897727341BE4642D00028B74 /* TweetTableViewController.xib */; };
 		897EDAC61C82F6FE0042CEAB /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 897EDAC51C82F6FE0042CEAB /* Media.xcassets */; };
 		897EDAC81C8C136F0042CEAB /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 897EDAC71C8C136F0042CEAB /* Crashlytics.framework */; };
+		898300131FCBD6ED00F0E6E5 /* hamburger_menu@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 898300111FCBD6EC00F0E6E5 /* hamburger_menu@3x.png */; };
+		898300141FCBD6ED00F0E6E5 /* hamburger_menu@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 898300121FCBD6EC00F0E6E5 /* hamburger_menu@2x.png */; };
 		898894331E5D3C4600A82F7D /* MenuTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 898894311E5D3C4600A82F7D /* MenuTableViewController.m */; };
 		898894341E5D3C4600A82F7D /* MenuTableViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 898894321E5D3C4600A82F7D /* MenuTableViewController.xib */; };
 		89947FAB1C14A6DB009D0B75 /* DealTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 89947FAA1C14A6DB009D0B75 /* DealTableViewCell.m */; };
@@ -184,6 +189,8 @@
 		89067BE21C795BD80058B4DF /* empty_filter_app_icon_unselected@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "empty_filter_app_icon_unselected@3x.png"; sourceTree = "<group>"; };
 		89067BE51C7A013A0058B4DF /* empty_filter_app_icon_selected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "empty_filter_app_icon_selected@2x.png"; sourceTree = "<group>"; };
 		89067BE61C7A013A0058B4DF /* empty_filter_app_icon_selected@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "empty_filter_app_icon_selected@3x.png"; sourceTree = "<group>"; };
+		89119F071FAD102F00A84F3C /* DealMapAnnotation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DealMapAnnotation.h; sourceTree = "<group>"; };
+		89119F081FAD102F00A84F3C /* DealMapAnnotation.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DealMapAnnotation.m; sourceTree = "<group>"; };
 		89179CFF1BB7646500F60BA7 /* TwitterEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TwitterEngine.h; sourceTree = "<group>"; };
 		89179D001BB7646500F60BA7 /* TwitterEngine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TwitterEngine.m; sourceTree = "<group>"; };
 		89179D021BB76BA100F60BA7 /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
@@ -202,7 +209,6 @@
 		89179D181BB76F4300F60BA7 /* LoginPageViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LoginPageViewController.xib; sourceTree = "<group>"; };
 		89179D1B1BB7AB2D00F60BA7 /* MapViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapViewController.h; sourceTree = "<group>"; };
 		89179D1C1BB7AB2D00F60BA7 /* MapViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapViewController.m; sourceTree = "<group>"; };
-		89179D1D1BB7AB2D00F60BA7 /* MapViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MapViewController.xib; sourceTree = "<group>"; };
 		89179D201BB7AC7200F60BA7 /* Deal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Deal.h; sourceTree = "<group>"; };
 		89179D211BB7AC7200F60BA7 /* Deal.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Deal.m; sourceTree = "<group>"; };
 		89179D231BB7B46D00F60BA7 /* ImageStateObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageStateObject.h; sourceTree = "<group>"; };
@@ -313,6 +319,12 @@
 		895C22B81CB4BC43008BAECE /* TweetDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TweetDetailViewController.h; sourceTree = "<group>"; };
 		895C22B91CB4BC43008BAECE /* TweetDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TweetDetailViewController.m; sourceTree = "<group>"; };
 		895C22BA1CB4BC43008BAECE /* TweetDetailViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TweetDetailViewController.xib; sourceTree = "<group>"; };
+		896249761FE48A6600219C8B /* MapToListAnimationController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MapToListAnimationController.h; sourceTree = "<group>"; };
+		896249771FE48A6600219C8B /* MapToListAnimationController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MapToListAnimationController.m; sourceTree = "<group>"; };
+		896249791FEB079B00219C8B /* DismissMapToListAnimationController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DismissMapToListAnimationController.h; sourceTree = "<group>"; };
+		8962497A1FEB079B00219C8B /* DismissMapToListAnimationController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DismissMapToListAnimationController.m; sourceTree = "<group>"; };
+		8962497C1FEC3BD300219C8B /* AnimationHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AnimationHelper.h; sourceTree = "<group>"; };
+		8962497D1FEC3BD300219C8B /* AnimationHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AnimationHelper.m; sourceTree = "<group>"; };
 		896628081F31748E00339957 /* DealParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DealParser.h; path = Budglit/DealParser.h; sourceTree = SOURCE_ROOT; };
 		896628091F31748E00339957 /* DealParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DealParser.m; path = Budglit/DealParser.m; sourceTree = SOURCE_ROOT; };
 		896A89731BCE093700A21F30 /* PostalCode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PostalCode.h; sourceTree = "<group>"; };
@@ -338,6 +350,8 @@
 		897727341BE4642D00028B74 /* TweetTableViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TweetTableViewController.xib; sourceTree = "<group>"; };
 		897EDAC51C82F6FE0042CEAB /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
 		897EDAC71C8C136F0042CEAB /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
+		898300111FCBD6EC00F0E6E5 /* hamburger_menu@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "hamburger_menu@3x.png"; sourceTree = "<group>"; };
+		898300121FCBD6EC00F0E6E5 /* hamburger_menu@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "hamburger_menu@2x.png"; sourceTree = "<group>"; };
 		898894301E5D3C4600A82F7D /* MenuTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MenuTableViewController.h; path = ../MenuTableViewController.h; sourceTree = "<group>"; };
 		898894311E5D3C4600A82F7D /* MenuTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MenuTableViewController.m; path = ../MenuTableViewController.m; sourceTree = "<group>"; };
 		898894321E5D3C4600A82F7D /* MenuTableViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MenuTableViewController.xib; sourceTree = "<group>"; };
@@ -485,14 +499,15 @@
 		89231DA81D8B7F3000D6B932 /* MMDrawerController */ = {
 			isa = PBXGroup;
 			children = (
+				892401731CFE37B800793EE5 /* MenuOptions.h */,
+				892401661CD9BF3A00793EE5 /* DrawerViewController.h */,
+				892401671CD9BF3A00793EE5 /* DrawerViewController.m */,
 				898894301E5D3C4600A82F7D /* MenuTableViewController.h */,
 				898894311E5D3C4600A82F7D /* MenuTableViewController.m */,
 				89C562371F03761C00737608 /* UserProfileTableViewCell.h */,
 				89C562381F03761C00737608 /* UserProfileTableViewCell.m */,
 				8924016E1CF56AD600793EE5 /* MenuTableViewCell.h */,
 				8924016F1CF56AD600793EE5 /* MenuTableViewCell.m */,
-				892401661CD9BF3A00793EE5 /* DrawerViewController.h */,
-				892401671CD9BF3A00793EE5 /* DrawerViewController.m */,
 				89231DA91D8B7F3000D6B932 /* MMDrawerBarButtonItem.h */,
 				89231DAA1D8B7F3000D6B932 /* MMDrawerBarButtonItem.m */,
 				89231DAB1D8B7F3000D6B932 /* MMDrawerController+Subclass.h */,
@@ -566,6 +581,8 @@
 				89385AF81BB67B4C00441A63 /* AppDelegate.m */,
 				89385B3E1BB6F86500441A63 /* PSHomeViewController.h */,
 				89385B3F1BB6F86500441A63 /* PSHomeViewController.m */,
+				89179D1B1BB7AB2D00F60BA7 /* MapViewController.h */,
+				89179D1C1BB7AB2D00F60BA7 /* MapViewController.m */,
 				89947FA11C149805009D0B75 /* PSAllDealsTableViewController.h */,
 				89947FA21C149805009D0B75 /* PSAllDealsTableViewController.m */,
 				89947FA91C14A6DB009D0B75 /* DealTableViewCell.h */,
@@ -580,14 +597,14 @@
 				89385B481BB7217C00441A63 /* PSDealDetailViewController.m */,
 				89385B4A1BB7221F00441A63 /* PSEditZipcodeOfflineTableViewController.h */,
 				89385B4B1BB7221F00441A63 /* PSEditZipcodeOfflineTableViewController.m */,
-				89179D1B1BB7AB2D00F60BA7 /* MapViewController.h */,
-				89179D1C1BB7AB2D00F60BA7 /* MapViewController.m */,
 				89231DB61D8B911F00D6B932 /* UserAccount.h */,
 				89231DB71D8B912000D6B932 /* UserAccount.m */,
 				89947FAC1C2119BF009D0B75 /* CityDataObject.h */,
 				89947FAD1C2119BF009D0B75 /* CityDataObject.m */,
 				89179D201BB7AC7200F60BA7 /* Deal.h */,
 				89179D211BB7AC7200F60BA7 /* Deal.m */,
+				89119F071FAD102F00A84F3C /* DealMapAnnotation.h */,
+				89119F081FAD102F00A84F3C /* DealMapAnnotation.m */,
 				89179D231BB7B46D00F60BA7 /* ImageStateObject.h */,
 				89179D241BB7B46D00F60BA7 /* ImageStateObject.m */,
 				894AF16C1BDC6969006E3346 /* ImageData.h */,
@@ -600,6 +617,8 @@
 				89179D2F1BB8F5CC00F60BA7 /* UINavigationController+CompletionHandler.m */,
 				897711A61BE014AD00028B74 /* UIImage+Resizing.h */,
 				897711A71BE014AD00028B74 /* UIImage+Resizing.m */,
+				8962497C1FEC3BD300219C8B /* AnimationHelper.h */,
+				8962497D1FEC3BD300219C8B /* AnimationHelper.m */,
 				89179D311BB8F86500F60BA7 /* ZipcodeSearchDataSource.h */,
 				89179D321BB8F86500F60BA7 /* ZipcodeSearchDataSource.m */,
 				89385B031BB67B4C00441A63 /* Assets.xcassets */,
@@ -631,7 +650,6 @@
 				89179D391BBDB64100F60BA7 /* Budglit-Prefix.pch */,
 				89385AF51BB67B4C00441A63 /* main.m */,
 				89179D021BB76BA100F60BA7 /* Localizable.strings */,
-				892401731CFE37B800793EE5 /* MenuOptions.h */,
 				89179D061BB76C1E00F60BA7 /* States.plist */,
 				89179D0A1BB76CCF00F60BA7 /* LoginPageImage.JPG */,
 				89179D041BB76BFB00F60BA7 /* Cell_ImagePlaceholder.jpg */,
@@ -646,6 +664,8 @@
 				89231DC01DB5C70500D6B932 /* user_profile@3x.png */,
 				89EEF96A1D2A600100CCE163 /* phone_icon@2x.png */,
 				89EEF96C1D2A602000CCE163 /* phone_icon@3x.png */,
+				898300121FCBD6EC00F0E6E5 /* hamburger_menu@2x.png */,
+				898300111FCBD6EC00F0E6E5 /* hamburger_menu@3x.png */,
 				8938ADD71E58DD9100CAF965 /* icon_lock.png */,
 				8938ADD81E58DD9100CAF965 /* icon_lock@2x.png */,
 				8938ADD91E58DD9100CAF965 /* icon_lock@3x.png */,
@@ -666,7 +686,6 @@
 				893633141E25F88100C64E3D /* InstagramTableViewCell.xib */,
 				89179D131BB76F0C00F60BA7 /* LoadingLocalDealsViewController.xib */,
 				89179D181BB76F4300F60BA7 /* LoginPageViewController.xib */,
-				89179D1D1BB7AB2D00F60BA7 /* MapViewController.xib */,
 				898894321E5D3C4600A82F7D /* MenuTableViewController.xib */,
 				89C562391F03761C00737608 /* UserProfileTableViewCell.xib */,
 				89B3DBD21DE9F95F00DCEDB6 /* PSFacebookViewController.xib */,
@@ -800,6 +819,10 @@
 		89E795391E55460700362F73 /* Animation Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				896249761FE48A6600219C8B /* MapToListAnimationController.h */,
+				896249771FE48A6600219C8B /* MapToListAnimationController.m */,
+				896249791FEB079B00219C8B /* DismissMapToListAnimationController.h */,
+				8962497A1FEB079B00219C8B /* DismissMapToListAnimationController.m */,
 				89179D261BB7B7BA00F60BA7 /* PSTransitionToBudgetViewController.h */,
 				89179D271BB7B7BA00F60BA7 /* PSTransitionToBudgetViewController.m */,
 				89179D2B1BB7BAA500F60BA7 /* PSDismissTransitionFromBudgetViewController.h */,
@@ -950,6 +973,7 @@
 				89179D091BB76C6F00F60BA7 /* sign_in_with_twitter.png in Resources */,
 				895C22BC1CB4BC43008BAECE /* TweetDetailViewController.xib in Resources */,
 				89179D1A1BB76F4300F60BA7 /* LoginPageViewController.xib in Resources */,
+				898300131FCBD6ED00F0E6E5 /* hamburger_menu@3x.png in Resources */,
 				8938ADDA1E58DD9100CAF965 /* icon_lock.png in Resources */,
 				89231DBF1DB5C6FC00D6B932 /* user_profile@2x.png in Resources */,
 				8938ADD51E58D9EC00CAF965 /* icon_username@2x.png in Resources */,
@@ -975,9 +999,9 @@
 				8938ADDC1E58DD9100CAF965 /* icon_lock@3x.png in Resources */,
 				897EDAC61C82F6FE0042CEAB /* Media.xcassets in Resources */,
 				89CA7CDB1EB80EBF006C7F4B /* visible_eye.png in Resources */,
+				898300141FCBD6ED00F0E6E5 /* hamburger_menu@2x.png in Resources */,
 				89EEF96D1D2A602000CCE163 /* phone_icon@3x.png in Resources */,
 				8921B3301EC19022005BD8EB /* dollar_disabled@2x.png in Resources */,
-				89179D1F1BB7AB2D00F60BA7 /* MapViewController.xib in Resources */,
 				897711BB1BE30EC600028B74 /* TwitterKitResources.bundle in Resources */,
 				89B92C5A1C34D8B200336589 /* SocialMediaTabBarViewController.xib in Resources */,
 				89EEF96F1D2C49EF00CCE163 /* address_icon@2x.png in Resources */,
@@ -1039,6 +1063,7 @@
 				89EEF9751D482D9F00CCE163 /* State.m in Sources */,
 				896A89751BCE093800A21F30 /* PostalCode.m in Sources */,
 				89067BD61C784BE80058B4DF /* UIDevice-Hardware.m in Sources */,
+				896249781FE48A6600219C8B /* MapToListAnimationController.m in Sources */,
 				899AEFB91F933E47001065C3 /* UIProgressView+AFNetworking.m in Sources */,
 				8966280A1F31748E00339957 /* DealParser.m in Sources */,
 				89179D281BB7B7BA00F60BA7 /* PSTransitionToBudgetViewController.m in Sources */,
@@ -1056,6 +1081,7 @@
 				899AEFC11F933E47001065C3 /* UIRefreshControl+AFNetworking.m in Sources */,
 				89385B5E1BB7282B00441A63 /* GNEngine.m in Sources */,
 				89EB8DEF1BE469A50044833A /* NSString+Encode.m in Sources */,
+				89119F091FAD103100A84F3C /* DealMapAnnotation.m in Sources */,
 				892401681CD9BF3A00793EE5 /* DrawerViewController.m in Sources */,
 				89067BC91C76B6780058B4DF /* AFHTTPSessionManager.m in Sources */,
 				89231DB31D8B7F3000D6B932 /* MMDrawerController.m in Sources */,
@@ -1083,6 +1109,7 @@
 				89DEE6501E4BEC0E00C2A1B2 /* DealDetailedAnimationController.m in Sources */,
 				89385B4C1BB7221F00441A63 /* PSEditZipcodeOfflineTableViewController.m in Sources */,
 				892401711CF56AD700793EE5 /* MenuTableViewCell.m in Sources */,
+				8962497E1FEC3BD300219C8B /* AnimationHelper.m in Sources */,
 				89385AF61BB67B4C00441A63 /* main.m in Sources */,
 				894F93A61DEFEEE300FEF2DC /* InstagramEngine.m in Sources */,
 				89231DB41D8B7F3000D6B932 /* MMDrawerVisualState.m in Sources */,
@@ -1090,6 +1117,7 @@
 				899AEFC01F933E47001065C3 /* UIButton+AFNetworking.m in Sources */,
 				894F939C1DED466D00FEF2DC /* FacebookManager.m in Sources */,
 				89067BCB1C76B6780058B4DF /* AFSecurityPolicy.m in Sources */,
+				8962497B1FEB079B00219C8B /* DismissMapToListAnimationController.m in Sources */,
 				89385B521BB722CE00441A63 /* AccountManager.m in Sources */,
 				899AEFBB1F933E47001065C3 /* AFNetworkActivityIndicatorManager.m in Sources */,
 				89231DB21D8B7F3000D6B932 /* MMDrawerBarButtonItem.m in Sources */,

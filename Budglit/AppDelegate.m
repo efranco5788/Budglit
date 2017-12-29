@@ -14,12 +14,14 @@
 #import <Fabric/Fabric.h>
 #import "TwitterKit/TwitterKit.h"
 #import "PSAllDealsTableViewController.h"
+#import "BudgetPickerViewController.h"
+#import "MapViewController.h"
 #import "MenuTableViewController.h"
 #import "UserAccount.h"
 
-#define HOST_NAME @"https://www.budglit.com"
 //#define GN_API_URL @"http://api.geonames.org"
 //#define GN_API_URL @"https://budglit.com"
+#define HOST_NAME @"https://www.budglit.com"
 #define TWITTER_HOST_NAME @"https://api.twitter.com"
 #define INSTAGRAM_HOST_NAME @"https://api.instagram.com"
 #define X_USER_AGENT_HEADER @"X-User-Agent"
@@ -73,7 +75,20 @@
         NSLog(@"Session ID %@", sessionID);
         
         // If Session ID does not exists
-        if (!sessionID) appDefaults = [self constructDefaultObjects:nil];
+        if (!sessionID){
+            
+            appDefaults = [self constructDefaultObjects];
+            
+            NSDictionary* userAcnt = [self constructDefaultUserAccount];
+            
+            NSMutableDictionary* appendDicts = [[NSMutableDictionary alloc] initWithDictionary:appDefaults];
+            
+            [appendDicts addEntriesFromDictionary:userAcnt];
+            
+            NSDictionary* finalDefaults = appendDicts.copy;
+            
+            [[NSUserDefaults standardUserDefaults] registerDefaults:finalDefaults];
+        }
         else{
             
             UserAccount* loggedAcount = [self.accountManager getSignedAccount];
@@ -82,13 +97,27 @@
                 // Session ID exists but no User Account
                 [self.accountManager clearSessionInfo];
                 
-                appDefaults = [self constructDefaultObjects:nil];
+                appDefaults = [self constructDefaultObjects];
+                
+                NSDictionary* userAcnt = [self constructDefaultUserAccount];
+                
+                NSMutableDictionary* appendDicts = [[NSMutableDictionary alloc] initWithDictionary:appDefaults];
+                
+                [appendDicts addEntriesFromDictionary:userAcnt];
+                
+                NSDictionary* finalDefaults = appDefaults.copy;
+                
+                [[NSUserDefaults standardUserDefaults] registerDefaults:finalDefaults];
             }
-            else appDefaults = [self constructDefaultObjects:loggedAcount];
+            else{
+                
+                appDefaults = [self constructDefaultObjects];
+                
+                [[NSUserDefaults standardUserDefaults] registerDefaults:appDefaults];
+                
+            }
             
         }
-        
-        [[NSUserDefaults standardUserDefaults] registerDefaults:appDefaults];
         
         return YES;
     }
@@ -159,6 +188,7 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Saves changes in the application's managed object context before the application terminates.
     [self.imageDataDocManager deleteAllData];
     [self saveContext];
+    [self.databaseManager.engine clearCurrentSearchFilter];
 }
 
 -(BOOL)application:(UIApplication *)application shouldRestoreApplicationState:(NSCoder *)coder
@@ -185,6 +215,37 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     }
 }
 
+-(NSDictionary *)constructDefaultUserAccount
+{
+    UserAccount* loggedAccount = [[UserAccount alloc] initWithFirstName:NSLocalizedString(@"DEFAULT_NO_ACCOUNT_NAME", nil) andLastName:nil];
+    
+    NSData* accountData = [NSKeyedArchiver archivedDataWithRootObject:loggedAccount];
+    
+    NSArray* defaultObjects = @[accountData];
+    
+    NSArray* defaultKeys = @[ NSLocalizedString(@"ACCOUNT", nil)];
+    
+    NSDictionary* userAccountDefault = [NSDictionary dictionaryWithObjects:defaultObjects forKeys:defaultKeys];
+    
+    return userAccountDefault;
+}
+
+-(NSDictionary*)constructDefaultObjects
+{
+    NSNumber* launched = @NO;
+    
+    NSMutableDictionary* currentSearchFilters = [[NSMutableDictionary alloc] init];
+    
+    NSArray* defaultObjects = @[launched, NSLocalizedString(@"DEFAULT_ZIPCODE", nil), NSLocalizedString(@"DEFAULT", nil), NSLocalizedString(@"DEFAULT", nil), NSLocalizedString(@"DEFAULT", nil), NSLocalizedString (@"DEFAULT_BUDGET", nil), currentSearchFilters];
+    
+    NSArray* defaultKeys = @[NSLocalizedString(@"HAS_LAUNCHED_ONCE", nil), NSLocalizedString(@"ZIPCODE", nil), NSLocalizedString(@"CITY", nil), NSLocalizedString(@"STATE", nil), NSLocalizedString(@"ABBRVIATION", nil), NSLocalizedString(@"BUDGET", nil), NSLocalizedString(@"CURRENT_SEARCH_FILTERS", nil)];
+    
+    NSDictionary* appDefaults = [NSDictionary dictionaryWithObjects:defaultObjects forKeys:defaultKeys];
+    
+    return appDefaults;
+}
+
+/*
 -(NSDictionary *)constructDefaultObjects:(UserAccount *)account
 {
     NSNumber* launched = @NO;
@@ -196,7 +257,6 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     if (!account) loggedAccount = [[UserAccount alloc] initWithFirstName:NSLocalizedString(@"DEFAULT_NO_ACCOUNT_NAME", nil) andLastName:nil];
     else [loggedAccount isEqual:account];
     
-    
     NSData* accountData = [NSKeyedArchiver archivedDataWithRootObject:loggedAccount];
     
     NSArray* defaultObjects = @[launched, NSLocalizedString(@"DEFAULT_ZIPCODE", nil), NSLocalizedString(@"DEFAULT", nil), NSLocalizedString(@"DEFAULT", nil), NSLocalizedString(@"DEFAULT", nil), NSLocalizedString (@"DEFAULT_BUDGET", nil), accountData, currentSearchFilters];
@@ -207,7 +267,7 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
     return appDefaults;
 }
-
+*/
 #pragma mark -
 #pragma mark - Manager Initializers
 -(void)construct_TwitterEngine
@@ -254,11 +314,13 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
     DrawerViewController* drawer = [storyboard instantiateViewControllerWithIdentifier:NSLocalizedString(@"MENU_DRAWER_CONTROLLER", nil)];
     
-    PSAllDealsTableViewController* centerView = [storyboard instantiateViewControllerWithIdentifier:@"PSAllDealsTableViewController"];
+    MapViewController* centerView = [storyboard instantiateViewControllerWithIdentifier:@"MapViewController"];
     
     MenuTableViewController* rigthPanel = [[MenuTableViewController alloc] init];
     
-    [drawer configureCenterViewController:centerView leftDrawerViewController:nil rightDrawerViewController:rigthPanel];
+    BudgetPickerViewController* filterPanel = [[BudgetPickerViewController alloc] init];
+    
+    [drawer configureCenterViewController:centerView leftDrawerViewController:filterPanel rightDrawerViewController:rigthPanel];
     
     [drawer setShowsShadow:YES];
     

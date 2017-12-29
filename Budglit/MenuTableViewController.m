@@ -23,7 +23,7 @@
 #define MAX_USER_ROW_HEIGHT 60
 #define RESTORATION_STRING @"menuTableViewController"
 
-@interface MenuTableViewController ()
+@interface MenuTableViewController () <DrawerControllerDelegate>
 
 @end
 
@@ -44,6 +44,22 @@ static NSString *userProfileIdentifier = @"profileCell";
     [self.tableView registerClass:[UserProfileTableViewCell self] forCellReuseIdentifier:userProfileIdentifier];
     
     self.restorationIdentifier = RESTORATION_STRING;
+}
+
+-(void)viewDidAppear:(BOOL)animated
+{
+    UIStoryboard* storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    
+    DrawerViewController* drawer = [storyboard instantiateViewControllerWithIdentifier:NSLocalizedString(@"MENU_DRAWER_CONTROLLER", nil)];
+    
+    [drawer setDelegate:self];
+}
+
+-(BOOL)prefersStatusBarHidden
+{
+    [super prefersStatusBarHidden];
+    
+    return NO;
 }
 
 -(void)updateUser:(NSNotification*)notification
@@ -74,7 +90,7 @@ static NSString *userProfileIdentifier = @"profileCell";
     }
     
     if (section == 1) {
-        return 3;
+        return 4;
     }
     
     if (section == 2) {
@@ -89,7 +105,10 @@ static NSString *userProfileIdentifier = @"profileCell";
     switch (section) {
         case 0:
         {
-            return 0.1f;
+            CGRect statusBarFrame = [[UIApplication sharedApplication] statusBarFrame];
+            
+            //return 0.1f;
+            return statusBarFrame.size.height;
             break;
         }
         case 1:
@@ -103,9 +122,10 @@ static NSString *userProfileIdentifier = @"profileCell";
         {
             CGFloat startingHeight = (self.view.frame.size.height - ((MAX_SECTION_DEFAULT_HEIGHT * MAX_SECTION_SECOND_HEIGHT) + MAX_SECTION_DEFAULT_HEIGHT));
             
-            CGFloat rowsIncludedHeight = startingHeight - (MAX_USER_ROW_HEIGHT + (MAX_SECTION_DEFAULT_HEIGHT * 3));
+            CGFloat rowsIncludedHeight = startingHeight - (MAX_USER_ROW_HEIGHT + (MAX_SECTION_DEFAULT_HEIGHT * 4));
             
-            CGFloat finalHeight = rowsIncludedHeight - MAX_SECTION_DEFAULT_HEIGHT;
+            CGRect statusBarFrame = [[UIApplication sharedApplication] statusBarFrame];
+            CGFloat finalHeight = (rowsIncludedHeight - MAX_SECTION_DEFAULT_HEIGHT) - (statusBarFrame.size.height * 2);
             
             return finalHeight;
             break;
@@ -134,7 +154,7 @@ static NSString *userProfileIdentifier = @"profileCell";
     if (indexPath.section == 0) {
         
         UserProfileTableViewCell* cell = (UserProfileTableViewCell*) [self.tableView dequeueReusableCellWithIdentifier:userProfileIdentifier];
-        
+
         CGRect frame = CGRectMake(10, 0, MAX_USER_ROW_HEIGHT, MAX_USER_ROW_HEIGHT);
         (cell.imageView).bounds = frame;
         (cell.imageView).frame = frame;
@@ -157,38 +177,44 @@ static NSString *userProfileIdentifier = @"profileCell";
         
         [cell.textLabel setAdjustsFontSizeToFitWidth:YES];
         
-        if (indexPath.row == menuCurrentLocation) {
-            [cell setMenuOption:menuCurrentLocation];
+        if (indexPath.row == 0) {
+            [cell setMenuOption:MENUSWITCHMODE];
+            cell.textLabel.text = [NSString stringWithFormat:@"%@", NSLocalizedString(@"LIST_MODE", nil)];
+        }
+        
+        if (indexPath.row == MENUCURRENTLOCATION) {
+            [cell setMenuOption:MENUCURRENTLOCATION];
             cell.textLabel.text = [NSString stringWithFormat:@"%@", NSLocalizedString(@"USE_CURRENT_LOCATION", nil)];
         }
         
-        if (indexPath.row == menuChangeLocation) {
-            [cell setMenuOption:menuChangeLocation];
+        if (indexPath.row == MENUCHANGELOCATION) {
+            [cell setMenuOption:MENUCHANGELOCATION];
             cell.textLabel.text = [NSString stringWithFormat:@"%@", NSLocalizedString(@"CHANGE_LOCATION", nil)];
         }
         
-        if (indexPath.row == menuChangeBudget) {
-            [cell setMenuOption:menuChangeBudget];
+        if (indexPath.row == MENUCHANGEBUDGET) {
+            [cell setMenuOption:MENUCHANGEBUDGET];
             cell.textLabel.text = [NSString stringWithFormat:@"%@", NSLocalizedString(@"EDIT_MY_BUDGET", nil)];
         }
         
         return cell;
     }
     else if (indexPath.section == 2){
+        
         MenuTableViewCell* cell = (MenuTableViewCell*) [self.tableView dequeueReusableCellWithIdentifier:cellIdentifier];
         
         [cell.textLabel setAdjustsFontSizeToFitWidth:YES];
         
-        [cell setMenuOption:menuLogout];
+        [cell setMenuOption:MENULOGOUT];
         cell.textLabel.text = [NSString stringWithFormat:@"%@", NSLocalizedString(@"LOGOUT", nil)];
         
         return cell;
     }
     
     return nil;
-    //else cell.textLabel.text = [NSString stringWithFormat:@"%li", (long)indexPath.section];
 }
 
+// Method called when user selects a row from menu
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     MenuTableViewCell* cell = (MenuTableViewCell*) [self.tableView cellForRowAtIndexPath:indexPath];
@@ -197,7 +223,6 @@ static NSString *userProfileIdentifier = @"profileCell";
     
     [self.delegate menuSelected:option];
 }
-
 
 #pragma mark -
 #pragma mark - Memory Managment Methods
