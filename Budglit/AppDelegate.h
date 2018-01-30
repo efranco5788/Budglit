@@ -16,7 +16,7 @@
 #import "TwitterManager.h"
 #import "InstagramManager.h"
 #import "LocationServiceManager.h"
-#import "ImageDataDoc.h"
+#import "ImageDataCache.h"
 #import "DrawerViewController.h"
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
@@ -30,7 +30,7 @@
 @property (nonatomic, strong) InstagramManager* instagramManager;
 @property (nonatomic, strong) LocationSeviceManager* locationManager;
 @property (nonatomic, strong) TwitterManager* twitterManager;
-@property (nonatomic, strong) ImageDataDoc* imageDataDocManager;
+@property (nonatomic, strong) ImageDataCache* imageDataCache;
 @property (NS_NONATOMIC_IOSONLY, readonly, copy) NSURL *applicationDocumentsDirectory;
 @property (readonly, strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 @property (readonly, strong, nonatomic) NSManagedObjectModel *managedObjectModel;

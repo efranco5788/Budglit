@@ -104,7 +104,7 @@
     AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
     if ([self.dealSelected.imgStateObject imageExists]) {
-        
+        /*
         [appDelegate.databaseManager fetchImageForRequest:self.dealSelected.imgStateObject.request addCompletion:^(UIImage *image) {
             
             self.image = image;
@@ -112,6 +112,11 @@
             (self.venueImage).image = self.image;
             
         }];
+         */
+        
+        self.image = [appDelegate.databaseManager fetchCachedImageForKey:_dealSelected.imgStateObject.imagePath];
+        
+        (self.venueImage).image = self.image;
     }
     
     UIBarButtonItem* backButton = [[UIBarButtonItem alloc] init];

@@ -16,12 +16,15 @@
 @class PSEditZipcodeOfflineTableViewController;
 @class PSTransitionToBudgetViewController;
 
+typedef void (^completionBlock)(id results);
+
 @protocol LoadingPageDelegate <NSObject>
 @optional
--(void)loadingPageDismissed;
--(void)loadingPageLocationHasFinished;
+-(void)loadingPageDismissed:(id)object;
+#warning deprecating method
 -(void)loadingPageBudgetHasFinished;
--(void)loadingPageNewDealsFetched;
+-(void)loadingPageErrorFound:(NSError*)error;
+-(void)newDealsAvailable;
 @end
 
 @interface LoadingLocalDealsViewController : UIViewController<UINavigationControllerDelegate, UITextFieldDelegate>
@@ -47,8 +50,6 @@
 -(void) verifyBudget;
 
 -(void) inputBudget;
-
--(void) reloadDeals:(NSDictionary*)filter;
 
 -(void) toggleBackgroundDimmer;
 

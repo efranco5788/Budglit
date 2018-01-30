@@ -21,11 +21,10 @@
     UIView* containerView = [transitionContext containerView];
     
     [to.view setClipsToBounds:YES];
-    
-    [to.view setHidden:YES];
-    [from.navigationController.navigationBar setHidden:YES];
 
     [containerView addSubview:to.view];
+    
+    [to.view setHidden:YES];
     
     AnimationHelper* animationHelper = [[AnimationHelper alloc] init];
     
@@ -38,35 +37,43 @@
     [UIView animateKeyframesWithDuration:duration delay:0.0 options:UIViewKeyframeAnimationOptionCalculationModeLinear animations:^{
         
         [UIView addKeyframeWithRelativeStartTime:0.0 relativeDuration:1/3.0 animations:^{
+            [from.navigationController.navigationBar setHidden:YES];
             from.view.layer.transform = [animationHelper rotateAngle:(-M_PI) / 2];
+            
             [from.view layoutIfNeeded];
-
         }];
 
         [UIView addKeyframeWithRelativeStartTime:1/2.0 relativeDuration:1/3.0 animations:^{
             [to.view.layer setHidden:NO];
             to.view.layer.transform = [animationHelper rotateAngle:0.0];
             to.navigationController.navigationBar.layer.transform = [animationHelper rotateAngle:0.0];
-            //to.navigationController.view.layer.transform = [animationHelper rotateAngle:0.0];
+            
             [to.view layoutIfNeeded];
             [to.navigationController.view layoutIfNeeded];
         }];
         
-        [UIView addKeyframeWithRelativeStartTime:2/3.0 relativeDuration:1/3.0 animations:^{
-            CGRect navBar = to.navigationController.navigationBar.frame;
-            //to.view.frame = CGRectMake(0, navBar.size.height, containerView.frame.size.width, containerView.frame.size.height);
-            //to.view.frame = containerView.frame;
+        [UIView addKeyframeWithRelativeStartTime:3/3.0 relativeDuration:1/3.0 animations:^{
+            CGRect barFrame = from.navigationController.navigationBar.frame;
+            CGRect statusBar = [[UIApplication sharedApplication] statusBarFrame];
+            CGRect containerBounds = [containerView bounds];
+            CGFloat newOriginY = barFrame.size.height + statusBar.size.height;
+            CGRect finalFrame = CGRectOffset(containerBounds, 0, newOriginY);
+            [to.view setFrame:finalFrame];
+            [to.navigationController.navigationBar setHidden:NO];
+            
             [to.view layoutIfNeeded];
             [to.navigationController.view layoutIfNeeded];
         }];
         
     } completion:^(BOOL finished) {
         if (finished) {
-            [to.navigationController.navigationBar setHidden:NO];
+            
             from.view.layer.transform = CATransform3DIdentity;
             [transitionContext completeTransition:YES];
+            
             [containerView layoutIfNeeded];
             [to.view layoutIfNeeded];
+            [to.navigationController.view layoutIfNeeded];
         }
         
     }];

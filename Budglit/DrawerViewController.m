@@ -17,7 +17,8 @@
 #import "PSAllDealsTableViewController.h"
 #import "UINavigationController+CompletionHandler.h"
 
-#define MAX_DRAWER_WIDTH 0.65
+#define MAX_RIGHT_DRAWER_WIDTH 0.65
+#define MAX_LEFT_DRAWER_WIDTH 0.80
 #define LOADING_PAGE_VIEW_CONTROLLER @"LoadingLocalDealsViewController"
 
 
@@ -36,14 +37,15 @@
     self.loadingPage = LLLDVC;
     
     (self.view).backgroundColor = [UIColor whiteColor];
-
-    //[self setShowsShadow:YES];
     
     CGFloat viewWidth = self.view.frame.size.width;
     
-    CGFloat drawerWidth = viewWidth * MAX_DRAWER_WIDTH;
+    CGFloat rightDrawerWidth = viewWidth * MAX_RIGHT_DRAWER_WIDTH;
+    CGFloat leftDrawerWidth = viewWidth * MAX_LEFT_DRAWER_WIDTH;
     
-    self.maximumRightDrawerWidth = drawerWidth;
+    self.maximumRightDrawerWidth = rightDrawerWidth;
+    self.maximumLeftDrawerWidth = leftDrawerWidth;
+    
     self.openDrawerGestureModeMask = MMOpenDrawerGestureModeAll;
     self.closeDrawerGestureModeMask = MMCloseDrawerGestureModeAll;
     
@@ -301,7 +303,7 @@
     }];
 }
 
--(void)loadingPageDismissed
+-(void)loadingPageDismissed:(id)object
 {
     [self.navigationController completionhandler_popToViewController:self withController:self.navigationController animated:NO completion:^{
         

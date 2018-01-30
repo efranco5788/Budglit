@@ -18,13 +18,14 @@
 #import <dispatch/dispatch.h>
 
 #define DEFAULT_RESULT_BUTTON_TITLE @"View 0 Results"
-#define DEFAULT_VIEW_MAP_BUTTON_TITLE @"View Map"
 
 #define BUDGET_FILTER @"budget_filter"
 #define DISTANCE_FILTER @"distance_filter"
 #define DATE_FILTER @"date_filter"
 #define BUDGET_AMOUNTS @"budget_amounts"
 #define DISTANCE_AMOUNTS @"distance_amounts"
+#define ANIMATION_BACKGROUND_COLOR_CHANGE @"backgroundColorChange"
+
 
 @interface BudgetPickerViewController ()<BudgetManagerDelegate, DatabaseManagerDelegate, LoadingPageDelegate, LocationManagerDelegate, UIViewControllerTransitioningDelegate>
 {
@@ -65,11 +66,8 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
     
     UIBarButtonItem* resultButton = [[UIBarButtonItem alloc] initWithTitle:DEFAULT_RESULT_BUTTON_TITLE style:UIBarButtonItemStylePlain target:self action:@selector(startPressed:)];
     
-    UIBarButtonItem* mapViewButton = [[UIBarButtonItem alloc] initWithTitle:DEFAULT_VIEW_MAP_BUTTON_TITLE style:UIBarButtonItemStylePlain target:self action:@selector(presentMapView)];
-    
     self.doneButton = resultButton;
     
-    self.navigationItem.leftBarButtonItem = mapViewButton;
     self.navigationItem.rightBarButtonItem = self.doneButton;
     
     self.currentLocationText.text = location;
@@ -87,7 +85,6 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
     
     location = nil;
     resultButton = nil;
-    mapViewButton = nil;
 }
 
 -(void)viewWillAppear:(BOOL)animated
@@ -119,12 +116,15 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
     [self toggleButtons];
     
     [self updateSearchLables:^(BOOL success) {
-        [self.delegate updateViewLabels:self.currentFilterCriteria_Labels];
-        
-        [self fetchSurroundingZipcodes:criteria];
+
+        [self updateViewLabels:self.currentFilterCriteria_Labels addCompletion:^(BOOL success) {
+            
+            [self fetchSurroundingZipcodes:criteria];
+            
+        }];
         
     }];
-     
+    
      
 }
 
@@ -157,7 +157,19 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
     
     NSDictionary* criteria = [self getCurrentSearchCriteria];
     
-    [self.delegate budgetSelected:criteria];
+    //[self.delegate budgetSelected:criteria];
+    
+    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
+    
+    (appDelegate.databaseManager).delegate = self;
+    
+    [appDelegate.databaseManager saveUsersCriteria:criteria];
+    
+    currentState = CLEAR;
+    
+    [self.delegate dismissView];
+    
+    NSLog(@"Budget complete, app state is now clear");
 }
 
 - (IBAction)dragStarted:(id)sender {
@@ -168,7 +180,10 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
     
     [self updateSearchLables:^(BOOL success) {
         
-        [self.delegate updateViewLabels:self.currentFilterCriteria_Labels];
+        [self updateViewLabels:self.currentFilterCriteria_Labels addCompletion:^(BOOL success) {
+            
+        }];
+        //[self.delegate updateViewLabels:self.currentFilterCriteria_Labels];
     }];
 }
 
@@ -306,6 +321,31 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
     values = nil;
 }
 
+-(void)updateViewLabels:(NSDictionary *)searchCriteria addCompletion:(UILablesUpdated)completionHandler
+{
+    NSString* budgetCriteria;
+    
+    NSString* budgetValue = [searchCriteria valueForKey:BUDGET_FILTER];
+    
+    NSArray* budgetAmounts = [searchCriteria valueForKey:BUDGET_AMOUNTS];
+    
+    NSInteger budget = budgetValue.integerValue;
+    
+    if (budget == 0) {
+        budgetCriteria = @"Anything that's Free!!";
+    }
+    else{
+        budgetCriteria = [NSString stringWithFormat:@"Under $%@", budgetAmounts[budget]];
+    }
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+       self.budgetText.text = budgetCriteria;
+        
+    });
+    
+    completionHandler(YES);
+}
+
 -(NSDictionary*)getCurrentSearchCriteria
 {
     NSDictionary* filterCriteria;
@@ -367,48 +407,16 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
     
     (appDelegate.databaseManager).delegate = self;
     
-    [appDelegate.databaseManager fetchTotalDealCountOnly:searchCriteria andSender:self];
-    
-}
+    [appDelegate.databaseManager fetchTotalDealCountOnly:searchCriteria addCompletionBlock:^(BOOL success) {
+        
+        if(success){
+            //[self.delegate updateResultLabels];
+            [self toggleButtons];
+            
+        }
 
--(void)presentMapView
-{
-    if (self.mapView == nil) {
         
-        self.mapView = [[MapViewController alloc] initWithNibName:@"MapViewController" bundle:nil];
-    }
-    
-    //self.mapView.delegate = self;
-    
-    UINavigationController* navMap = [[UINavigationController alloc] initWithRootViewController:self.mapView];
-    
-    //NSInteger distanceValue = floorf(self.distanceSlider.value);
-    
-    //NSString* distance = [self.mileRadius objectAtIndex:distanceValue];
-    
-    NSNumberFormatter *f = [[NSNumberFormatter alloc] init];
-    
-    f.numberStyle = NSNumberFormatterNoStyle;
-    
-    //NSNumber* miRadius = [f numberFromString:distance];
-    
-    //self.mapView.mileRadius = miRadius;
-    
-    [self presentViewController:navMap animated:YES completion:^{
-        
-        DatabaseManager* dbManager = [DatabaseManager sharedDatabaseManager];
-        
-        dbManager.delegate = self;
-        
-        NSDictionary* criteria = [self getCurrentSearchCriteria];
-        
-        [dbManager fetchDealsForMapView:criteria];
     }];
-    
-    //distanceValue = 0;
-    //distance = nil;
-    f = nil;
-    //miRadius = nil;
     
 }
 
@@ -418,7 +426,7 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
         
         currentState = BUSY;
         
-        [self.viewResultsButton.layer removeAnimationForKey:@"backgroundColorChange"];
+        [self.viewResultsButton.layer removeAnimationForKey:ANIMATION_BACKGROUND_COLOR_CHANGE];
         
         [self.doneButton setEnabled:NO];
         [self.viewResultsButton setEnabled:NO];
@@ -442,7 +450,7 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
         
         CAAnimationGroup* animationGroup = [CAAnimationGroup animation];
         animationGroup.animations = @[colorFillTransitionAnimation, colorButtonAnimation];
-        animationGroup.duration = 0.3;
+        animationGroup.duration = 0.1;
         animationGroup.removedOnCompletion = NO;
         animationGroup.fillMode = kCAFillModeForwards;
         
@@ -450,6 +458,8 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
         
         [self.doneButton setEnabled:YES];
         [self.viewResultsButton setEnabled:YES];
+        
+        [self.view setNeedsDisplay];
         
         NSLog(@"Button are now enabled");
     }
@@ -465,11 +475,51 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
     
     if ([usersZipcode isEqualToString:NSLocalizedString(@"DEFAULT_ZIPCODE", nil)] || [usersZipcode isEqual:nil])
     {
-        [appDelegate.locationManager fetchSurroundingZipcodesWithCurrentLocation:nil andObjects:criteria];
+        [appDelegate.locationManager fetchSurroundingZipcodesWithCurrentLocation:nil andObjects:criteria addCompletionHandler:^(id object) {
+            
+            if(object){
+                
+                NSArray* zipcodes = (NSArray*)object;
+                
+                NSMutableArray* postalCodes = [[NSMutableArray alloc] init];
+                
+                for (PostalCode* zipcode in zipcodes) {
+                    [postalCodes addObject:zipcode.postalCode];
+                }
+                
+                currentSurroundingZipcodes = postalCodes.copy;
+                
+                NSDictionary* criteria = [self getCurrentSearchCriteriaWithSurrondingZipcodes:currentSurroundingZipcodes];
+                
+                [self reloadDealResultsReturnCount:criteria];
+                
+            }
+            
+        }];
     }
     else
     {
-        [appDelegate.locationManager fetchSurroundingZipcodesWithPostalCode:usersZipcode andObjects:criteria];
+        [appDelegate.locationManager fetchSurroundingZipcodesWithPostalCode:usersZipcode andObjects:criteria addCompletionHandler:^(id object) {
+            
+            if(object){
+                
+                NSArray* zipcodes = (NSArray*)object;
+                
+                NSMutableArray* postalCodes = [[NSMutableArray alloc] init];
+                
+                for (PostalCode* zipcode in zipcodes) {
+                    [postalCodes addObject:zipcode.postalCode];
+                }
+                
+                currentSurroundingZipcodes = postalCodes.copy;
+                
+                NSDictionary* criteria = [self getCurrentSearchCriteriaWithSurrondingZipcodes:currentSurroundingZipcodes];
+                
+                [self reloadDealResultsReturnCount:criteria];
+                
+            }
+            
+        }];
     }
 }
 
@@ -487,13 +537,6 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
 
 #pragma mark -
 #pragma mark - Database Manager Delegate
--(void)totalCountSucess
-{
-    [self.delegate updateResultLabels];
-    
-    [self toggleButtons];
-}
-
 -(void)totalCountReattempt:(NSDictionary *)criteria
 {
     [self reloadDealResultsReturnCount:criteria];
@@ -520,7 +563,7 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
     }];
 }
 
--(void)DealsDidNotLoad
+-(void)dealsDidNotLoad
 {
     UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"" message:@"There was a connectivity issue." preferredStyle:UIAlertControllerStyleAlert];
     
@@ -533,16 +576,7 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
     [self presentViewController:alert animated:NO completion:nil];
 }
 
--(void)DisplayDealsOnMap:(NSMutableArray *)fetchedDeals
-{
-    if (self.mapView != nil) {
-        
-        //NSArray* dealsArray = [fetchedDeals copy];
-        
-        //[self.mapView fetchLocationCoordinates:dealsArray];
-    }
-}
-
+/*
 #pragma mark -
 #pragma mark - Location Manager Delegate
 -(void)surroundingZipcodesReturned:(NSArray *)zipcodes andCriteria:(NSDictionary *)searchCriteria
@@ -559,15 +593,7 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
     
     [self reloadDealResultsReturnCount:criteria];
 }
-
-
-#pragma mark -
-#pragma mark - Map View Delegate
--(void)dismissMapView
-{
-    [self.mapView dismissViewControllerAnimated:YES completion:nil];
-}
-
+*/
 
 #pragma mark -
 #pragma mark - Memory Managment Methods

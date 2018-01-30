@@ -22,6 +22,7 @@
 
 #define KEY_FOR_RETURNED_DEALS @"allDeals"
 #define KEY_FOR_TOTAL_COUNT @"totalDeals"
+#define KEY_ADDRESS @"address"
 
 static DatabaseManager* sharedManager;
 
@@ -159,7 +160,8 @@ static DatabaseManager* sharedManager;
     return [self.engine primaryDefaultForSearchFilterWithZipcodes:zipcodes];
 }
 
--(void)fetchDeals:(NSDictionary *)searchCriteria
+#warning needs better error handling
+-(void)fetchDeals:(NSDictionary *)searchCriteria addCompletionBlock:(generalBlockResponse)completionHandler
 {
     NSDictionary* criteria;
     
@@ -169,13 +171,62 @@ static DatabaseManager* sharedManager;
     }
     else criteria = searchCriteria;
     
-    [self.engine sendSearchCriteria:criteria];
+    [self.engine sendSearchCriteria:criteria addCompletion:^(id response) {
+        
+        if(response){
+            
+            [self resetDeals];
+            
+            [self.dealParser parseDeals:response addCompletionHandler:^(NSArray *parsedList) {
+                if (parsedList) {
+                    
+                    NSLog(@"%@", parsedList);
+                    
+                    for (Deal* node in parsedList) {
+                        [self.currentDeals addObject:node];
+                    }
+                    
+                }
+                completionHandler(YES);
+                
+            }]; // End of Parser method
+            
+        }
+        
+        completionHandler(NO);
+        
+    }];  //End of search criteria method
+            
     
 }
 
--(void)fetchTotalDealCountOnly:(NSDictionary *)searchCriteria andSender:(id)sender
+-(void)fetchTotalDealCountOnly:(NSDictionary *)searchCriteria addCompletionBlock:(generalBlockResponse)completionHandler
 {
-    [self.engine sendSearchCriteriaForTotalCountOnly:searchCriteria];
+    [self.engine sendSearchCriteriaForTotalCountOnly:searchCriteria addCompletion:^(id response) {
+        
+        if(response){
+            
+            NSInteger responseNum;
+            
+            if([response isMemberOfClass:[NSNumber class]])
+            {
+                NSNumber* instanceResponse = (NSNumber*)response;
+                responseNum = [instanceResponse integerValue];
+                
+                totalLoadedDeals_Count = responseNum;
+            }
+            else if([response isMemberOfClass:[NSString class]])
+            {
+                NSLog(@"%@", response);
+                totalLoadedDeals_Count = 0;
+            }
+            else totalLoadedDeals_Count = 0;
+            
+            completionHandler(YES);
+        }
+        else completionHandler(NO);
+        
+    }];
 }
 
 -(void)fetchImageForRequest:(NSURLRequest *)request addCompletion:(fetchedImageResponse)completionHandler
@@ -194,7 +245,7 @@ static DatabaseManager* sharedManager;
     NSMutableDictionary* tmpMutableParameters = [[NSMutableDictionary alloc] init];
     
     if (address) {
-        NSDictionary* parameters = [self.engine constructParameterWithKey:@"address" AndValue:address addToDictionary:params];
+        NSDictionary* parameters = [self.engine constructParameterWithKey:KEY_ADDRESS AndValue:address addToDictionary:params];
         tmpMutableParameters = parameters.mutableCopy;
     }
     
@@ -214,7 +265,7 @@ static DatabaseManager* sharedManager;
     NSMutableDictionary* tmpMutableParameters = [[NSMutableDictionary alloc] init];
     
     if(addressList){
-        NSDictionary* parameters = [self.engine constructParameterWithKey:@"address" AndValue:addressList addToDictionary:params];
+        NSDictionary* parameters = [self.engine constructParameterWithKey:KEY_ADDRESS AndValue:addressList addToDictionary:params];
         tmpMutableParameters = parameters.mutableCopy;
     }
     
@@ -224,11 +275,11 @@ static DatabaseManager* sharedManager;
     
     __block NSDictionary* preFinalParameters = tmpMutableParameters;
     
-    NSArray* address = [preFinalParameters valueForKey:@"address"];
+    NSArray* address = [preFinalParameters valueForKey:KEY_ADDRESS];
     
     NSArray* unorderedAddressList = [self.engine removeDuplicateFromArray:address Unordered:YES];
     
-    [tmpMutableParameters setObject:unorderedAddressList forKey:@"address"];
+    [tmpMutableParameters setObject:unorderedAddressList forKey:KEY_ADDRESS];
     
     NSDictionary* finalParameters = tmpMutableParameters.copy;  
     
@@ -248,40 +299,53 @@ static DatabaseManager* sharedManager;
 
 -(void)startDownloadImageFromURL:(NSString *)url forObject:(id)object forIndexPath:(NSIndexPath *)indexPath imageView:(UIImageView *)imgView
 {
-    
-    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
-    
     [self.engine downloadImageFromURL:url forImageView:imgView addCompletionHandler:^(UIImage *imageResponse, NSHTTPURLResponse *response, NSURLRequest *request) {
         
-        BOOL imgExist = NO;
-        
-        if (imageResponse) {
-            imgExist = YES;
-        }
-        
-        if ([object isMemberOfClass:[InstagramObject class]]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
             
-            InstagramObject* obj = (InstagramObject*) object;
+            BOOL imgExist = NO;
             
-            [obj.mediaStateHandler recordImageHTTPResponse:response andRequest:request hasImage:imgExist];
+            AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
             
-            [self.delegate imageFetchedForObject:obj forIndexPath:indexPath andImage:imageResponse andImageView:imgView];
-            
-        }
-        else if ([object isMemberOfClass:[DealTableViewCell class]]){
-            
-            NSArray* list = appDelegate.databaseManager.currentDeals;
-            
-            Deal* objDeal = list[indexPath.row];
-            
-            [objDeal.imgStateObject recordImageHTTPResponse:response andRequest:request hasImage:imgExist];
-            
-            //[self.delegate imageFetchedForObject:objDeal forIndexPath:indexPath andImage:imageResponse andImageView:imgView];
-            
-            [self.delegate imageFetchedForObject:object forIndexPath:indexPath andImage:imageResponse andImageView:imgView];
-        }
+            if ([object isMemberOfClass:[InstagramObject class]]) {
+                
+                InstagramObject* obj = (InstagramObject*) object;
+                
+                [obj.mediaStateHandler recordImageHTTPResponse:response andRequest:request hasImage:imgExist];
+                
+                [self.delegate imageFetchedForObject:obj forIndexPath:indexPath andImage:imageResponse andImageView:imgView];
+                
+            }
+            else if ([object isMemberOfClass:[DealTableViewCell class]]){
+                
+                if (imageResponse) {
+                    
+                    imgExist = YES;
+                    
+                    NSArray* list = appDelegate.databaseManager.currentDeals;
+                    
+                    Deal* objDeal = list[indexPath.row];
+                    
+                    //Cache the image
+                    [self.engine cacheImage:imageResponse forKey:objDeal.imgStateObject.imagePath];
+                    
+                    [objDeal.imgStateObject recordImageHTTPResponse:response andRequest:request hasImage:imgExist];
+                    
+                    [self.delegate imageFetchedForObject:object forIndexPath:indexPath andImage:imageResponse andImageView:imgView];
+                    
+                }
+                
+            }
+        });
         
     }];
+}
+
+-(UIImage *)fetchCachedImageForKey:(NSString *)key
+{
+    UIImage* cachedImage = [self.engine getImageFromCacheWithKey:key];
+    
+    return cachedImage;
 }
 
 -(void)startDownloadImageFromURL:(NSString *)url forDeal:(Deal *)deal forIndexPath:(NSIndexPath *)indexPath imageView:(UIImageView *)imgView
@@ -319,6 +383,13 @@ static DatabaseManager* sharedManager;
     }];
 }
 
+-(NSString *)getCurrentDate
+{
+    NSString* today = [self.engine getCurrentDate];
+    
+    return today;
+}
+
 -(NSInteger)totalCountDealsLoaded
 {
     return totalLoadedDeals_Count;
@@ -345,46 +416,18 @@ static DatabaseManager* sharedManager;
 
 #pragma mark -
 #pragma mark - Database Engine delegates
--(void)totalDealCountReturned:(NSInteger)responseCount
-{
-    totalLoadedDeals_Count = responseCount;
-    
-    [self.delegate totalCountSucess];
-    
-}
-
 -(void)totalDealCountFailedWithError:(NSError *)error
 {
+    NSLog(@"%@", error);
     
-}
-
--(void)dealsReturned:(NSArray *)deals
-{
-    // Reset Deals first
-    [self resetDeals];
-    
-    [self.dealParser parseDeals:deals addCompletionHandler:^(NSArray *parsedList) {
-        if (parsedList) {
-            
-            NSLog(@"%@", parsedList);
-            
-            for (Deal* node in parsedList) {
-                [self.currentDeals addObject:node];
-            }
-            
-        }
-        
-    }];
-    
-    [self.delegate DealsDidLoad:YES];
-    
+    [self.delegate dealsDidNotLoad];
 }
 
 -(void)dealsFailedWithError:(NSError *)error
 {
     NSLog(@"%@", error);
     
-    [self.delegate DealsDidNotLoad];
+    [self.delegate dealsDidNotLoad];
 }
 
 -(void)operationsCancelled

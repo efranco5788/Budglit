@@ -37,7 +37,7 @@
     return self;
 }
 
--(void)GNFetchNeabyPostalCodesWithCoordinates:(NSDictionary *)parameters
+-(void)GNFetchNeabyPostalCodesWithCoordinates:(NSDictionary *)parameters addCompletionHandler:(dataResponseBlockResponse)completionHandler
 {    
     self.sessionManager.requestSerializer = [AFHTTPRequestSerializer serializer];
     
@@ -49,19 +49,18 @@
         
         if(responseObject)
         {
-            [self.delegate nearbyPostalCodesFound:responseObject];
+            completionHandler(responseObject);
         }
         else
         {
             NSError* error = [[NSError alloc] init];
             
-            [self.delegate nearbyPostalCodesFailedWithError:error];
+            completionHandler(nil);
         }
         
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        
         [self logFailedRequest:task];
-        
+        [self.delegate nearbyPostalCodesFailedWithError:error];
     }];
     
 }
@@ -79,19 +78,14 @@
         
         NSLog(@"%@", responseObject);
         
-        if (responseObject) {
-            //[self.delegate nearbyPostalCodesFound:responseObject];
-            completionHandler(responseObject);
-        }
+        if (responseObject) completionHandler(responseObject);
         else{
-            //[self.delegate nearbyPostalCodesFailedWithError:nil];
             completionHandler(nil);
         }
         
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         
         [self.delegate nearbyPostalCodesFailedWithError:error];
-        
         [self logFailedRequest:task];
         
     }];

@@ -16,26 +16,27 @@
 
 @interface MapViewController : UIViewController
 
-@property (strong, nonatomic) IBOutlet MKMapView *mapView;
+typedef void (^generalBlockResponse)(BOOL success);
 
+@property (strong, nonatomic) IBOutlet MKMapView *mapView;
 @property (strong, nonatomic) IBOutlet UIButton *menuBtn;
 @property (strong, nonatomic) IBOutlet UIButton *filterBtn;
 
 - (IBAction)menuBtnPressed:(id)sender;
 - (IBAction)filterBtnPressed:(id)sender;
 
--(void)centerMapOnLocation:(CLLocation*)location AndRadius:(CLLocationDistance)radius;
+-(void)centerMapOnLocation:(CLLocation*)location AndRadius:(CLLocationDistance)radius animate:(BOOL)animated addCompletion:(generalBlockResponse) completionHandler;
 
--(void)fitAllAnnotations:(BOOL)shouldZoom;
+-(void)fitAllAnnotations:(BOOL)shouldZoom addCompletion:(generalBlockResponse) completionHandler;;
 
 -(void)clearMap;
 
 -(void)clearMapRemoveUserLocation:(BOOL)remove;
 
--(void)plotDealOnMap:(Deal*)deal;
+-(void)plotDealOnMap:(Deal*)deal addCompletion:(generalBlockResponse) completionHandler;
 
 -(void)plotDealsOnMap:(NSArray*)deals;
 
--(void)plotDealsOnMap:(NSArray*)deals Animated:(BOOL)animate;
+-(void)plotDealsOnMap:(NSArray*)deals Animated:(BOOL)animate addCompletion:(generalBlockResponse) completionHandler;
 
 @end

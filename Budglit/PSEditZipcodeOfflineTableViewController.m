@@ -246,47 +246,43 @@
     
     NSDictionary* userObject = @{NSLocalizedString(@"DISTANCE_FILTER", nil): distance};
     
-    /*
     [appDelegate.locationManager fetchSurroundingZipcodesWithPostalCode:selectedCity.postal andObjects:userObject addCompletionHandler:^(id object) {
         
+        if (object) {
+            
+            NSArray* zipcodes = (NSArray*)object;
+            
+            NSMutableArray* postalCodes = [[NSMutableArray alloc] init];
+            
+            // Extract the postal codes
+            for (id zipcode in zipcodes) {
+                
+                PostalCode* postalCode = (PostalCode*) zipcode;
+                
+                [postalCodes addObject:postalCode.postalCode];
+                
+            }
+            
+            NSUserDefaults* userDefault = [NSUserDefaults standardUserDefaults];
+            
+            NSDictionary* criteria = [userDefault objectForKey:NSLocalizedString(@"KEY_CURRENT_SEARCH_FILTERS", nil)];
+            
+            NSMutableDictionary* mutableCriteria = [criteria mutableCopy];
+            
+            [mutableCriteria setValue:postalCodes forKey:NSLocalizedString(@"SURROUNDING_ZIPCODES", nil)];
+            
+            NSDictionary* newCriteria = mutableCriteria.copy;
+            
+            [userDefault setObject:newCriteria forKey:NSLocalizedString(@"KEY_CURRENT_SEARCH_FILTERS", nil)];
+            
+            [userDefault synchronize];
+            
+            [self.searchControl setActive:NO];
+            
+            [self.delegate locationUpdated];
+        }
+        
     }];
-    */
-    
-    [appDelegate.locationManager fetchSurroundingZipcodesWithPostalCode:selectedCity.postal andObjects:userObject];
-    
-}
-
--(void)surroundingZipcodesReturned:(NSArray *)zipcodes andCriteria:(NSDictionary *)searchCriteria
-{
-    NSMutableArray* postalCodes = [[NSMutableArray alloc] init];
-    
-    // Extract the postal codes
-    for (id zipcode in zipcodes) {
-        
-        PostalCode* postalCode = (PostalCode*) zipcode;
-        
-        [postalCodes addObject:postalCode.postalCode];
-        
-    }
-    
-    NSUserDefaults* userDefault = [NSUserDefaults standardUserDefaults];
-    
-    NSDictionary* criteria = [userDefault objectForKey:NSLocalizedString(@"KEY_CURRENT_SEARCH_FILTERS", nil)];
-    
-    NSMutableDictionary* mutableCriteria = [criteria mutableCopy];
-    
-    [mutableCriteria setValue:postalCodes forKey:NSLocalizedString(@"SURROUNDING_ZIPCODES", nil)];
-    
-    NSDictionary* newCriteria = mutableCriteria.copy;
-    
-    [userDefault setObject:newCriteria forKey:NSLocalizedString(@"KEY_CURRENT_SEARCH_FILTERS", nil)];
-    
-    [userDefault synchronize];
-    
-    [self.searchControl setActive:NO];
-    
-    [self.delegate locationUpdated];
-    
 }
 
 #pragma mark -

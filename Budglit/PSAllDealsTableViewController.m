@@ -81,11 +81,7 @@ static NSString* const emptyCellIdentifier = @"holderCell";
     
     [self setNeedsStatusBarAppearanceUpdate];
     
-    if (@available(iOS 11.0, *)) {
-        [self.tableView setContentInsetAdjustmentBehavior:UIScrollViewContentInsetAdjustmentNever];
-    } else {
-        // Fallback on earlier versions
-    }
+    self.dealsTableView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
     
     self.transitionController = [[DealDetailedAnimationController alloc] init];
     
@@ -117,12 +113,21 @@ static NSString* const emptyCellIdentifier = @"holderCell";
     NSNotificationCenter* center = [NSNotificationCenter defaultCenter];
     
     [center addObserver:self selector:@selector(dealEnded:) name:kDefaultEventEndNotification object:nil];
+}
+
+-(void)viewDidAppear:(BOOL)animated
+{
+    [self.dealsTableView setScrollEnabled:YES];
     
+    if (@available(iOS 11.0, *)) {
+        [self.tableView setContentInsetAdjustmentBehavior:UIScrollViewContentInsetAdjustmentNever];
+    } else {
+        // Fallback on earlier versions
+    }
 }
 
 -(void)viewDidDisappear:(BOOL)animated
 {
-    
     NSNotificationCenter* center = [NSNotificationCenter defaultCenter];
     
     [center removeObserver:self name:kDefaultEventEndNotification object:nil];
@@ -139,13 +144,40 @@ static NSString* const emptyCellIdentifier = @"holderCell";
     self.backgroundDimmer = newView;
 }
 
+#warning Needs error handling
 -(void)refreshDeals
 {
     AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
     (appDelegate.databaseManager).delegate = self;
     
-    [appDelegate.databaseManager fetchDeals:nil];
+    if (self.refreshControl) {
+        
+        NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
+        formatter.dateFormat = @"MMM d, h:mm a";
+        NSString* title = [NSString stringWithFormat:@"Last update %@", [formatter stringFromDate:[NSDate date]]];
+        NSDictionary* attrsDictionary = @{NSForegroundColorAttributeName: [UIColor blackColor]};
+        
+        NSAttributedString* attrTitle = [[NSAttributedString alloc] initWithString:title attributes:attrsDictionary];
+        
+        self.refreshControl.attributedTitle = attrTitle;
+        
+    }
+    
+    [appDelegate.databaseManager fetchDeals:nil addCompletionBlock:^(BOOL success) {
+        
+        if (self.refreshControl) {
+            [self.refreshControl endRefreshing];
+        }
+        
+        if(success){
+            [self loadDeals];
+        }
+        else{
+
+        }
+        
+    }];
 }
 
 -(void)loadDeals
@@ -183,6 +215,7 @@ static NSString* const emptyCellIdentifier = @"holderCell";
     }
 }
 
+
 -(void)loadOnScreenDealImages
 {
     AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
@@ -207,8 +240,10 @@ static NSString* const emptyCellIdentifier = @"holderCell";
                 
                 [weakSelf startImageDownloadForDeal:visibleDeal forIndexPath:index andTableCell:visibleCell];
             }
-        }
-    }
+            
+        } // End of visible cell for loop
+    
+    } // End of deal count if statement
 }
 
 -(void)terminateDownloadingImages
@@ -296,18 +331,22 @@ static NSString* const emptyCellIdentifier = @"holderCell";
     
     NSUInteger nodeCount = deals.count;
     
-    if (nodeCount < 1 && indexPath.row < 1) {
+    if (nodeCount == 0 && indexPath.row == 0) {
         
         //dealCell = (DealTableViewCell*) [self.dealsTableView dequeueReusableCellWithIdentifier:emptyCellIdentifier forIndexPath:indexPath];
         
     }
     else{
         
-        Deal* deal = deals[indexPath.row];
-        
         dealCell = (DealTableViewCell*) [self.dealsTableView dequeueReusableCellWithIdentifier:reuseIdentifier forIndexPath:indexPath];
         
-        dealCell.dealDescription.text = deal.dealDescription;
+        if (nodeCount > 0) {
+            
+            Deal* deal = deals[indexPath.row];
+            
+            dealCell.dealDescription.text = deal.dealDescription;
+            
+        }
         
     }
     
@@ -317,6 +356,7 @@ static NSString* const emptyCellIdentifier = @"holderCell";
 
 -(void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    
     AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
     NSArray* deals = [NSArray arrayWithArray:(appDelegate.databaseManager).currentDeals];
@@ -329,21 +369,28 @@ static NSString* const emptyCellIdentifier = @"holderCell";
         
         DealTableViewCell* dealCell = (DealTableViewCell*) cell;
         
-        if (![deal.imgStateObject imageExists]) {
-            
-            [cell setUserInteractionEnabled:NO]; // Disable any interaction if image for the deal has not loaded yet
-            
-            [dealCell.imageLoadingActivityIndicator startAnimating];
+        UIImage* img = [appDelegate.databaseManager fetchCachedImageForKey:deal.imgStateObject.imagePath];
+        
+        if (img) [dealCell.dealImage setImage:img];
+        else{
             
             dealCell.dealImage.image = self.placeholderImage;
             
+            [dealCell setUserInteractionEnabled:NO]; // Disable any interaction if image for the deal has not loaded yet
+            
+            [dealCell.imageLoadingActivityIndicator startAnimating];
+            
+            if (self.dealsTableView.dragging == NO && self.dealsTableView.decelerating == NO){
+                if(dealCell){
+                    [self startImageDownloadForDeal:deal forIndexPath:indexPath andTableCell:dealCell];
+                }
+                
+            }
         }
-        
-        [self startImageDownloadForDeal:deal forIndexPath:indexPath andTableCell:dealCell];
-        
+     
         if ([dealCell.dealTimer.text isEqualToString:NSLocalizedString(@"TIMER_LABEL_DEFAULT_TEXT", nil)]) {
             dealCell.dealTimer = [deal generateCountDownEndDate:dealCell.dealTimer];
-        }        
+        }
         
     }
     
@@ -491,55 +538,32 @@ static NSString* const emptyCellIdentifier = @"holderCell";
     [self.dealsTableView setScrollEnabled:YES];
 }
 
-
-#pragma mark -
-#pragma mark - Database Manager Delegate
--(void)DealsDidLoad:(BOOL)result
-{
-    if (self.refreshControl) {
-        
-        NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
-        formatter.dateFormat = @"MMM d, h:mm a";
-        NSString* title = [NSString stringWithFormat:@"Last update %@", [formatter stringFromDate:[NSDate date]]];
-        NSDictionary* attrsDictionary = @{NSForegroundColorAttributeName: [UIColor blackColor]};
-        
-        NSAttributedString* attrTitle = [[NSAttributedString alloc] initWithString:title attributes:attrsDictionary];
-        
-        self.refreshControl.attributedTitle = attrTitle;
-        
-        [self.refreshControl endRefreshing];
-    }
-    
-    [self loadDeals];
-}
-
--(void)DealsDidNotLoad
-{
-    if (self.refreshControl) {
-        [self.refreshControl endRefreshing];
-    }
-}
-
 -(void)imageFetchedForObject:(id)obj forIndexPath:(NSIndexPath *)indexPath andImage:(UIImage *)image andImageView:(UIImageView *)imageView
 {
-    DealTableViewCell* cell = (DealTableViewCell*) obj;
+
+    // Load the images on the main queue
+    dispatch_async(dispatch_get_main_queue(), ^{
+        
+        DealTableViewCell* cell = (DealTableViewCell*) [self.dealsTableView cellForRowAtIndexPath:indexPath];
+        
+        if(cell){
+            [cell setUserInteractionEnabled:YES];
+            
+            [cell.imageLoadingActivityIndicator stopAnimating];
+            
+            __block CATransition* transition = [CATransition animation];
+            
+            transition.duration = 0.1f;
+            transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn];
+            transition.type = kCATransitionFade;
+            
+            [cell.dealImage.layer addAnimation:transition forKey:nil];
+            
+            cell.dealImage.image = image;
+            
+            [self.imageDownloadInProgress removeObjectForKey:indexPath];
+        }
     
-    dispatch_async(dispatch_get_main_queue(), ^{ // Load the images on the main queue
-        
-        [cell.imageLoadingActivityIndicator stopAnimating];
-        
-        [self.imageDownloadInProgress removeObjectForKey:indexPath];
-        
-        [cell setUserInteractionEnabled:YES];
-        
-        CATransition* transition = [CATransition animation];
-        transition.duration = 0.1f;
-        transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn];
-        transition.type = kCATransitionFade;
-        
-        [imageView.layer addAnimation:transition forKey:nil];
-        
-        imageView.image = image;
     });
 }
 
@@ -590,7 +614,7 @@ static NSString* const emptyCellIdentifier = @"holderCell";
         
         [appDelegate.databaseManager saveUsersCriteria:updatedCriteria];
         
-        [self.loadingPage reloadDeals:nil];
+        //[self.loadingPage reloadDeals:nil];
     }
 }
 
@@ -602,7 +626,7 @@ static NSString* const emptyCellIdentifier = @"holderCell";
     
     (self.budgetButton).title = currentBudget;
     
-    [self.loadingPage reloadDeals:nil];
+    //[self.loadingPage reloadDeals:nil];
 }
 
 -(void)newDealsFetched
@@ -659,7 +683,7 @@ static NSString* const emptyCellIdentifier = @"holderCell";
 #pragma mark - Memory Warning Methods
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
-    
+                                                                                                             
     // terminate all pending image downloads
     [self terminateDownloadingImages];
 }

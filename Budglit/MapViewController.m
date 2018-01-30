@@ -8,25 +8,31 @@
 
 #import "MapViewController.h"
 #import "AppDelegate.h"
+#import "BudgetPickerViewController.h"
 #import "PSAllDealsTableViewController.h"
 #import "MapToListAnimationController.h"
 #import "DismissMapToListAnimationController.h"
 
-@interface MapViewController()<DrawerControllerDelegate, UIViewControllerTransitioningDelegate, UINavigationControllerDelegate>
-
+@interface MapViewController()<DrawerControllerDelegate, DatabaseManagerDelegate, BudgetPickerDelegate, UIViewControllerTransitioningDelegate, UINavigationControllerDelegate, MKMapViewDelegate>
+{
+    BOOL hasAppearedOnce;
+}
 
 @property (strong, nonatomic) MapToListAnimationController* transitionController;
 @property (strong, nonatomic) DismissMapToListAnimationController* dismissTransitionController;
-
 
 @end
 
 @implementation MapViewController
 
+
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view from its nib.
+
     self.transitionController = [[MapToListAnimationController alloc] init];
+    self.dismissTransitionController = [[DismissMapToListAnimationController alloc] init];
+    
+    hasAppearedOnce = FALSE;
 }
 
 -(void)viewWillAppear:(BOOL)animated
@@ -39,7 +45,7 @@
     
     [self.menuBtn setImage:menuImg forState:UIControlStateNormal];
     
-    //[self clearMapView];
+    [super.view setNeedsLayout];
 }
 
 -(void)viewDidAppear:(BOOL)animated
@@ -48,37 +54,50 @@
     
     AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
-    CLLocation* currentLocation = [appDelegate.locationManager getCurrentLocation];
+    CLLocation* currentLocation = self.mapView.userLocation.location;
     
-    NSDictionary* filter = [appDelegate.databaseManager getUsersCurrentCriteria];
+    if(!self.mapView.userLocationVisible) if (!currentLocation) currentLocation = [appDelegate.locationManager getCurrentLocation];
     
-    NSInteger miles = [[filter valueForKey:NSLocalizedString(@"DISTANCE_FILTER", nil)] integerValue];
-    
-    if (miles <= 5) miles = 5;
-    else if(miles > 5 && miles <= 10) miles = 9;
-    else miles = 15;
-    
-    double meters = (miles * 1609.34);
-    
-    CLLocationDistance radius = meters;
-    
-    [self centerMapOnLocation:currentLocation AndRadius:radius];
-    
-    NSArray* deals = [appDelegate.databaseManager currentDeals];
-    
-    if(deals && deals.count > 1){
-        if (self.mapView.annotations.count > 1) {
-            [self plotDealsOnMap:deals Animated:NO];
-        }
-        else [self plotDealsOnMap:deals Animated:YES];
+    if (!hasAppearedOnce) {
+        
+        NSDictionary* filter = [appDelegate.databaseManager getUsersCurrentCriteria];
+        
+        NSInteger miles = [[filter valueForKey:NSLocalizedString(@"DISTANCE_FILTER", nil)] integerValue];
+        
+        if (miles <= 5) miles = 5;
+        else if(miles > 5 && miles <= 10) miles = 9;
+        else miles = 15;
+        
+        double meters = (miles * 1609.34);
+        
+        CLLocationDistance radius = meters;
+
+        
+        [self centerMapOnLocation:currentLocation AndRadius:radius animate:NO addCompletion:^(BOOL success) {
+            
+            [self.view layoutIfNeeded];
+            
+            
+            [self reloadDealsAddCompletion:^(BOOL success) {
+                
+                if(success){
+                    
+                    [self fitAllAnnotations:YES addCompletion:^(BOOL success) {
+                        hasAppearedOnce = YES;
+                    }];
+                    
+                }
+            }];
+            
+        }];
         
     }
-    else if (deals.count == 1)
-    {
-        Deal* deal = [deals objectAtIndex:0];
-        [self plotDealOnMap:deal];
-    }
-    
+
+}
+
+-(void)viewDidDisappear:(BOOL)animated
+{
+    [self.mapView setDelegate:nil];
 }
 
 - (IBAction)menuBtnPressed:(id)sender {
@@ -91,10 +110,65 @@
 }
 
 - (IBAction)filterBtnPressed:(id)sender {
+    
     AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
+    
+    BudgetPickerViewController* budgetView = (BudgetPickerViewController*) [appDelegate.drawerController leftDrawerViewController];
+    
+    budgetView.delegate = self;
 
     [appDelegate.drawerController slideDrawerSide:MMDrawerSideLeft Animated:YES];
 }
+
+#pragma mark -
+#pragma mark - Deal Methods
+-(void)reloadDealsAddCompletion:(generalBlockResponse) completionHandler;
+{
+    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
+    
+    (appDelegate.databaseManager).delegate = self;
+    
+    NSDictionary* criteria = [appDelegate.databaseManager getUsersCurrentCriteria];
+    
+    [appDelegate.databaseManager fetchDeals:criteria addCompletionBlock:^(BOOL success) {
+        
+        if(success){
+            AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
+            
+            NSArray* deals = [appDelegate.databaseManager currentDeals];
+            
+            if(deals && deals.count > 1){
+                
+                if (self.mapView.annotations.count > 1) {
+                    
+                    NSArray* extractredAnnotations = [appDelegate.databaseManager.engine extractAnnotationsFromDeals:deals.mutableCopy];
+                    
+                    if(extractredAnnotations && ![extractredAnnotations isEqualToArray:self.mapView.annotations])
+                    {
+                        [self clearMapRemoveUserLocation:NO];
+                    }
+                    
+                }
+                
+                [self plotDealsOnMap:deals Animated:YES addCompletion:^(BOOL success) {
+                    [self.view layoutIfNeeded];
+                    
+                    completionHandler(YES);
+                }];
+                
+            }
+            else if (deals.count == 1)
+            {
+                Deal* deal = [deals objectAtIndex:0];
+                [self plotDealOnMap:deal addCompletion:^(BOOL success) {
+                    completionHandler(YES);
+                }];
+            }
+        }
+        
+    }];
+}
+
 
 #pragma mark -
 #pragma mark - Map Methods
@@ -107,12 +181,12 @@
 {
     NSArray* annotations = self.mapView.annotations;
     
-    if(remove) annotations = [self filterAnnotations:self.mapView.annotations];
+    if(remove) annotations = [self annotationsFilterOutUserLocation:self.mapView.annotations];
     
     [self.mapView removeAnnotations:annotations];
 }
 
--(NSArray*)filterAnnotations:(NSArray*)list
+-(NSArray*)annotationsFilterOutUserLocation:(NSArray*)list
 {
     if(!list) return nil;
     
@@ -130,14 +204,20 @@
     return list.copy;
 }
 
--(void)centerMapOnLocation:(CLLocation *)location AndRadius:(CLLocationDistance)radius
+-(void)centerMapOnLocation:(CLLocation *)location AndRadius:(CLLocationDistance)radius animate:(BOOL)animated addCompletion:(generalBlockResponse)completionHandler
 {
+    if(!location) return;
+    
     MKCoordinateRegion coordinateRegion =  MKCoordinateRegionMakeWithDistance(location.coordinate, radius, radius);
     
-    [self.mapView setRegion:coordinateRegion animated:NO];
+    [self.mapView setRegion:coordinateRegion animated:animated];
+    
+    [self.mapView layoutIfNeeded];
+    
+    completionHandler(YES);
 }
 
--(void)plotDealOnMap:(Deal *)deal
+-(void)plotDealOnMap:(Deal *)deal addCompletion:(generalBlockResponse)completionHandler
 {
     if(!deal) return;
     
@@ -157,20 +237,24 @@
             
             [appDelegate.databaseManager.engine addAnnotationToDeal:deal];
             [self.mapView addAnnotation:[deal getMapAnnotation]];
-            [self fitAllAnnotations:NO];
-            [self.mapView setNeedsDisplay];
+            //[self.mapView setNeedsDisplay];
+            [super.view layoutIfNeeded];
             
-        }];
+            completionHandler(YES);
+        }]; // End of geocoding method
+        
     }
     
 }
 
 -(void)plotDealsOnMap:(NSArray *)deals
 {
-    [self plotDealsOnMap:deals Animated:NO];
+    [self plotDealsOnMap:deals Animated:NO addCompletion:^(BOOL success) {
+        
+    }];
 }
 
--(void)plotDealsOnMap:(NSArray *)deals Animated:(BOOL)animate
+-(void)plotDealsOnMap:(NSArray *)deals Animated:(BOOL)animate addCompletion:(generalBlockResponse)completionHandler
 {
     if(!deals || deals.count < 1) return;
     
@@ -182,22 +266,18 @@
     
     if (unannotatedDeals.count < 1) {
         
-        NSMutableArray* annotations = [[NSMutableArray alloc] init];
+        NSArray* annotations = [appDelegate.databaseManager.engine extractAnnotationsFromDeals:mutableDeals.copy];
         
-        for (Deal* d in mutableDeals) {
-            DealMapAnnotation* annotation = d.getMapAnnotation;
-            [annotations addObject:annotation];
-        }
-        
-        
-        [appDelegate.databaseManager.engine groupAnnotationByCoordinates:annotations addCompletionHandler:^(id response) {
+        [appDelegate.databaseManager.engine groupAnnotationByCoordinates:annotations.mutableCopy addCompletionHandler:^(id response) {
             
             NSMutableDictionary* groupedAnnotations = (NSMutableDictionary*) response;
             
             [appDelegate.databaseManager.engine attemptToRepositionAnnotations:groupedAnnotations addCompletionHandler:^(BOOL success) {
                 [self.mapView addAnnotations:annotations];
-                [self fitAllAnnotations:animate];
-                [self.mapView setNeedsDisplay];
+                //[self.mapView setNeedsDisplay];
+                [super.view layoutIfNeeded];
+                
+                completionHandler(YES);
             }];
             
             
@@ -250,8 +330,10 @@
                 
                 [appDelegate.databaseManager.engine attemptToRepositionAnnotations:groupedAnnotations addCompletionHandler:^(BOOL success) {
                     [self.mapView addAnnotations:annotations];
-                    [self fitAllAnnotations:animate];
+                    //[self fitAllAnnotations:animate];
                     [self.mapView setNeedsDisplay];
+                    
+                    completionHandler(YES);
                 }];
                 
                 
@@ -263,7 +345,7 @@
     
 }
 
--(void)fitAllAnnotations:(BOOL)shouldZoom
+-(void)fitAllAnnotations:(BOOL)shouldZoom addCompletion:(generalBlockResponse)completionHandler
 {
     MKMapRect zoomRect = MKMapRectNull;
     UIEdgeInsets edgeInsets = UIEdgeInsetsMake(20, 20, 20, 20);
@@ -281,7 +363,8 @@
     
     if(shouldZoom) [self.mapView setVisibleMapRect:zoomRect edgePadding:edgeInsets animated:YES];
     else [self.mapView setVisibleMapRect:zoomRect edgePadding:edgeInsets animated:NO];
-
+    
+    completionHandler(YES);
 }
 
 #pragma mark -
@@ -289,7 +372,6 @@
 -(void)switchViewPressed
 {
     [self.navigationController setDelegate:self];
-    NSLog(@"Here I am..... CLosed");
     
     [self performSegueWithIdentifier:@"seguePresentListView" sender:self];
 }
@@ -302,6 +384,62 @@
 }
 
 #pragma mark -
+#pragma mark - Budget Picker View Delegate Methods
+-(void)dismissView
+{
+    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
+    
+    [appDelegate.drawerController closeDrawerAnimated:YES completion:^(BOOL finished) {
+        
+         CLLocation* currentLocation = self.mapView.userLocation.location;
+        
+        NSDictionary* filter = [appDelegate.databaseManager getUsersCurrentCriteria];
+        
+        NSInteger miles = [[filter valueForKey:NSLocalizedString(@"DISTANCE_FILTER", nil)] integerValue];
+        
+        if (miles <= 5) miles = miles;
+        else if(miles > 5 && miles <= 10) miles = 9;
+        else miles = 15;
+        
+        double meters = (miles * 1609.34);
+        
+        CLLocationDistance radius = meters;
+        
+        [self centerMapOnLocation:currentLocation AndRadius:radius animate:YES addCompletion:^(BOOL success) {
+            
+            [self.view layoutIfNeeded];
+            
+            
+            [self reloadDealsAddCompletion:^(BOOL success) {
+                
+                if(success){
+                    
+                    [self fitAllAnnotations:YES addCompletion:^(BOOL success) {
+                        
+                        
+                    }];
+                    
+                }
+            }];
+            
+        }];
+        
+    }];
+}
+
+#pragma mark -
+#pragma mark - Map View Delegate Methods
+-(void)mapView:(MKMapView *)mapView regionDidChangeAnimated:(BOOL)animated
+{
+    NSLog(@"---------------------------------------------------------");
+}
+
+-(void)mapViewDidFinishLoadingMap:(MKMapView *)mapView
+{
+    
+}
+
+#pragma mark -
 #pragma mark - Navigation Methods
 -(id<UIViewControllerAnimatedTransitioning>)animationControllerForPresentedController:(UIViewController *)presented presentingController:(UIViewController *)presenting sourceController:(UIViewController *)source
 {
@@ -310,8 +448,25 @@
 
 -(id<UIViewControllerAnimatedTransitioning>)navigationController:(UINavigationController *)navigationController animationControllerForOperation:(UINavigationControllerOperation)operation fromViewController:(UIViewController *)fromVC toViewController:(UIViewController *)toVC
 {
-    return self.transitionController;
+    if ([fromVC isKindOfClass:[PSAllDealsTableViewController class]]) {
+        return self.dismissTransitionController;
+    }
+    else return self.transitionController;
 }
+
+-(id<UIViewControllerAnimatedTransitioning>)animationControllerForDismissedController:(UIViewController *)dismissed
+{
+    return self.dismissTransitionController;
+}
+
+/*
+ // In a storyboard-based application, you will often want to do a little preparation before navigation
+ - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+ // Get the new view controller using [segue destinationViewController].
+ // Pass the selected object to the new view controller.
+ }
+ */
+
 
 
 #pragma mark
@@ -321,14 +476,5 @@
     // Dispose of any resources that can be recreated.
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

@@ -19,11 +19,10 @@
 #define HTTP_POST_METHOD @"POST"
 #define KEY_EMPTY_VALUES @"emptyValues"
 #define KEY_ERROR @"error"
-#define KEY_DEALS @"allDeals"
+#define KEY_DEALS @"deals"
 #define KEY_LIST @"parsedList"
 #define DEAL_COUNT @"count"
 #define DEFAULT_BUDGET_FILTER @"-1"
-//#define DEFAULT_DISTANCE_FILTER @"50"
 
 #define RESCALE_IMAGE_WIDTH 1024
 #define RESCALE_IMAGE_HEIGHT 1024
@@ -129,7 +128,7 @@
     return currentDate;
 }
 
--(void)sendSearchCriteriaForTotalCountOnly:(NSDictionary *)searchCriteria
+-(void)sendSearchCriteriaForTotalCountOnly:(NSDictionary *)searchCriteria addCompletion:(dataResponseBlockResponse)completionBlock
 {
     self.sessionManager.responseSerializer = [AFJSONResponseSerializer serializer];
     self.sessionManager.requestSerializer = [AFJSONRequestSerializer serializer];
@@ -148,7 +147,7 @@
                 
                 NSString* errorMessage = [responseObject valueForKey:KEY_ERROR];
                 
-                NSLog(@"%@", errorMessage);
+                completionBlock(errorMessage);
             }
             else{
                 
@@ -156,9 +155,13 @@
                 
                 NSDictionary* obj = list[0];
                 
-                NSInteger total = [[obj valueForKey:DEAL_COUNT] integerValue];
+                NSInteger intTotal = [[obj valueForKey:DEAL_COUNT] integerValue];
                 
-                [self.delegate totalDealCountReturned:total];
+                NSNumber* total = [NSNumber numberWithInteger:intTotal];
+                
+                completionBlock(total);
+                
+                //[self.delegate totalDealCountReturned:total];
                 
             }
             
@@ -167,16 +170,13 @@
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         
         NSLog(@"%@", error);
-        
         [self logFailedRequest:task];
-        
         [self.delegate dealsFailedWithError:error];
         
     }];
-
 }
 
--(void)sendSearchCriteria:(NSDictionary *)searchCriteria
+-(void)sendSearchCriteria:(NSDictionary *)searchCriteria addCompletion:(dataResponseBlockResponse)completionBlock
 {
     self.sessionManager.responseSerializer = [AFJSONResponseSerializer serializer];
     self.sessionManager.requestSerializer = [AFJSONRequestSerializer serializer];
@@ -188,13 +188,13 @@
         if (responseObject) {
             
             
-            NSArray* dict = [responseObject valueForKey:KEY_LIST];
+            //NSArray* dict = [responseObject valueForKey:KEY_LIST];
             
             //NSDictionary* obj = dict[0];
             
             //NSInteger total = [[obj valueForKey:DEAL_COUNT] integerValue];
             
-            NSArray* deals = [responseObject valueForKey:@"deals"];
+            NSArray* deals = [responseObject valueForKey:KEY_DEALS];
             
             NSInteger total = deals.count;
             
@@ -206,7 +206,8 @@
                 
                 NSArray* array = [[NSArray alloc] init];
                 
-                [self.delegate dealsReturned:array];
+               // [self.delegate dealsReturned:array];
+                completionBlock(array);
             }
             else{
                 
@@ -214,7 +215,8 @@
                 
                 NSLog(@"%@", deals);
                 
-                [self.delegate dealsReturned:deals];
+                //[self.delegate dealsReturned:deals];
+                completionBlock(deals);
                 
             }
             
@@ -223,8 +225,8 @@
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         
         [self logFailedRequest:task];
-        [self.delegate dealsFailedWithError:error];
-        
+        //[self.delegate dealsFailedWithError:error];
+        completionBlock(error);
     }];
     
 }
@@ -238,7 +240,9 @@
     
     [self.sessionManager POST:API_PLACES parameters:params progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         
-        if(!responseObject) completionHandler(nil);
+        if(!responseObject){
+            completionHandler(nil);
+        }
         
         if (willParse == NO) completionHandler(responseObject);
         
@@ -251,12 +255,14 @@
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         NSLog(@"%@", error);
         [self logFailedRequest:task];
-        [self.delegate dealsFailedWithError:error];
+        completionHandler(error);
+        //[self.delegate dealsFailedWithError:error];
     }];
     
  
 }
 
+#warning needs better error handling
 -(void)sendAddressesForGeocode:(NSDictionary *)params parseAfterCompletion:(BOOL)willParse addCompletionHandler:(dataResponseBlockResponse)completionHandler
 {
     if(!params) return;
@@ -369,6 +375,36 @@
     }];
 }
 
+-(void)cacheImage:(UIImage *)img forKey:(NSString *)key
+{
+    if(img || key) {
+
+        dispatch_async(dispatch_get_main_queue(), ^{
+            AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
+            
+            [appDelegate.imageDataCache setObject:img forKey:key];
+        });
+    }
+    
+}
+
+-(UIImage *)getImageFromCacheWithKey:(NSString *)key
+{
+    if(!key) return nil;
+    
+    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
+    
+    id imgObject = [appDelegate.imageDataCache objectForKey:key];
+    
+    if(!imgObject) return nil;
+    
+    UIImage* cachedImage = (UIImage*) imgObject;
+    
+    return cachedImage;
+}
+
+#pragma mark -
+#pragma mark - Map Annotation Methods
 -(void)addAnnotationToDeal:(Deal *)deal
 {
     if(!deal) return;
@@ -442,8 +478,25 @@
     completionHandler(NO);
 }
 
+-(NSArray *)extractAnnotationsFromDeals:(NSArray *)deals
+{
+    if(!deals) return nil;
+    
+    NSMutableArray* mutableAnnotations = [[NSMutableArray alloc] init];
+    
+    for (Deal* d in deals) {
+        DealMapAnnotation* annotation = d.getMapAnnotation;
+        if(!annotation) return nil;
+        [mutableAnnotations addObject:annotation];
+    }
+    
+    return mutableAnnotations.copy;
+}
+
 -(NSArray *)extractUnannotatedDeals:(NSArray *)deals
 {
+    if(!deals) return nil;
+    
     NSMutableArray* unannotatedDeals = [[NSMutableArray alloc] init];
     
     for (Deal* deal in deals) {

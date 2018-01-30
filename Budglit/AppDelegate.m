@@ -24,6 +24,7 @@
 #define HOST_NAME @"https://www.budglit.com"
 #define TWITTER_HOST_NAME @"https://api.twitter.com"
 #define INSTAGRAM_HOST_NAME @"https://api.instagram.com"
+#define IMAGE_CACHE_NAME @"imageCache"
 #define X_USER_AGENT_HEADER @"X-User-Agent"
 #define GN_API_PARAM_USERNAME @"efranco5788"
 #define TWITTER_CONSUMER_KEY @"vvB776xHclCYeuvqtyQaNeMzc"
@@ -57,6 +58,7 @@
             [self construct_LocationServiceManager];
             [self construct_BudgetManager];
             [self construct_FacebookManager];
+            [self construct_imageDocumentCache];
             [self construct_TwitterEngine];
             [self construct_InstagramManager];
             [self construct_DrawerController];
@@ -186,7 +188,7 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 - (void)applicationWillTerminate:(UIApplication *)application {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     // Saves changes in the application's managed object context before the application terminates.
-    [self.imageDataDocManager deleteAllData];
+    [self.imageDataCache removeAllObjects];
     [self saveContext];
     [self.databaseManager.engine clearCurrentSearchFilter];
 }
@@ -327,9 +329,11 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     self.drawerController = drawer;
 }
 
--(void)create_imageDocumentDirectory
+-(void)construct_imageDocumentCache
 {
-    self.imageDataDocManager = [[ImageDataDoc alloc] initDirectory];
+    self.imageDataCache = [[ImageDataCache alloc] init];
+    
+    [self.imageDataCache setName:IMAGE_CACHE_NAME];
 }
 
 

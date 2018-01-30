@@ -18,17 +18,17 @@ typedef void (^UILablesUpdated)(BOOL success);
 
 @protocol BudgetPickerDelegate <NSObject>
 @optional
+#warning deprecating delegate method
 -(void) budgetSelected:(NSDictionary*) selectedCriteria;
--(void) updateViewLabels:(NSDictionary*) searchCriteria;
+//-(void) updateViewLabels:(NSDictionary*) searchCriteria;
 -(void) updateResultLabels;
+-(void) dismissView;
 @end
 @interface BudgetPickerViewController : UIViewController
 
 @property (nonatomic, copy) NSString* (^budgetFilterBlock)(void);
 
 @property (nonatomic, assign) id<BudgetPickerDelegate> delegate;
-
-@property (strong, nonatomic) MapViewController* mapView;
 
 @property (strong, nonatomic) UIBarButtonItem* doneButton;
 
@@ -66,7 +66,7 @@ typedef void (^UILablesUpdated)(BOOL success);
 
 -(void)updateSearchLables:(UILablesUpdated)completionHandler;
 
--(void)presentMapView;
+-(void)updateViewLabels:(NSDictionary*)searchCriteria addCompletion:(UILablesUpdated)completionHandler;
 
 -(void)toggleButtons;
 

@@ -90,8 +90,10 @@
     self.loadingPage.delegate = self;
     
     [self.navigationController completionhandler_pushViewController:self.loadingPage withController:self.navigationController animated:NO completion:^{
-
-        if (![CLLocationManager locationServicesEnabled]) [self.loadingPage fetchUserLocationOfflineHideBackButton:YES];
+        
+        if (![CLLocationManager locationServicesEnabled]) {
+            [self.loadingPage fetchUserLocationOfflineHideBackButton:YES];
+        }
         else [self.loadingPage fetchUserLocationOnline];
         
     }];
@@ -149,7 +151,7 @@
 
 #pragma mark -
 #pragma mark - Loading Page Delegate
--(void)loadingPageDismissed
+-(void)loadingPageDismissed:(id)object
 {
     [self.presentingViewController dismissViewControllerAnimated:NO completion:^{
         [self destroyLoadingPage];
@@ -160,23 +162,9 @@
     if(![self.navigationController.topViewController isKindOfClass:[DrawerViewController class]]) {
         
         [self.navigationController pushViewController:appDelegate.drawerController animated:NO];
+        
     }
 
-}
-
--(void)loadingPageLocationHasFinished
-{
-    [self.loadingPage inputBudget];
-}
-
--(void)loadingPageBudgetHasFinished
-{
-    [self.loadingPage reloadDeals:nil];
-}
-
--(void)loadingPageNewDealsFetched
-{
-    [self loadingPageDismissed];
 }
 
 #pragma mark -

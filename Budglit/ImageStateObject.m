@@ -14,15 +14,14 @@
 {
     self = [super init];
     
-    if(self)
-    {
-        self.imagePath = nil;
-        self.request = nil;
-        self.response = nil;
-        hasImage = NO;
-        queuedOp = NO;
-        imageCached = NO;
-    }
+    if(!self) return nil;
+    
+    self.imagePath = nil;
+    self.request = nil;
+    self.response = nil;
+    hasImage = NO;
+    queuedOp = NO;
+    imageCached = NO;
     
     return self;
 }
@@ -30,7 +29,6 @@
 -(void)recordImageHTTPResponse:(NSHTTPURLResponse *)response andRequest:(NSURLRequest *)request hasImage:(BOOL)exist
 {
     if (exist) hasImage = YES;
-    else hasImage = NO;
     
     imageCached = YES;
     self.request = request;

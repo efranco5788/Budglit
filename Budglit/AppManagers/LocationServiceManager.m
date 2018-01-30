@@ -30,8 +30,6 @@
 #define LOCATION_TIME_THRESHOLD 600
 #define DISTANCE_FILTER_THRESHOLD 1609.34
 #define KM_PER_MILE 1.60934
-//#define KEY_FOR_ALL_POSTAL_CODES @"postalCodes"
-//#define KEY_FOR_POSTAL_CODE @"postalCode"
 #define KEY_FOR_ALL_POSTAL_CODES @"zipcodes"
 #define KEY_FOR_POSTAL_CODE @"zipcode"
 #define KEY_FOR_LATITUDE @"lat"
@@ -266,6 +264,7 @@ static LocationSeviceManager* sharedManager;
         attempts = 0;
     }
     
+    // CLLocation Manager Delegate
     (self.locationManager).delegate = self;
     
     if ([CLLocationManager authorizationStatus] != kCLAuthorizationStatusAuthorizedWhenInUse) {
@@ -598,10 +597,12 @@ static LocationSeviceManager* sharedManager;
     
     NSDictionary* objectDictionary = @{};
     
-    [self fetchSurroundingZipcodesWithCurrentLocation:currentLocation andObjects:objectDictionary];
+    [self fetchSurroundingZipcodesWithCurrentLocation:currentLocation andObjects:objectDictionary addCompletionHandler:^(id object) {
+        
+    }];
 }
 
--(void)fetchSurroundingZipcodesWithCurrentLocation:(CLLocation*)currentLocation andObjects:(NSDictionary*)usersObjects
+-(void)fetchSurroundingZipcodesWithCurrentLocation:(CLLocation*)currentLocation andObjects:(NSDictionary *)usersObjects addCompletionHandler:(fetchPostalCompletionHandler)completionHandler
 {
     
     if (currentLocation == nil) {
@@ -639,42 +640,8 @@ static LocationSeviceManager* sharedManager;
     NSArray* objects = @[lat, lng, kmRadius, rows, country, @"true", GN_API_PARAM_USERNAME];
     
     NSDictionary* parameters = [NSDictionary dictionaryWithObjects:objects forKeys:keys];
-    
-    [self.engine GNFetchNeabyPostalCodesWithCoordinates:parameters];
-}
 
-
--(void)fetchSurroundingZipcodesWithPostalCode:(NSString*)postalCode andObjects:(NSDictionary*)usersObjects
-{
-    if ([postalCode isEqual:nil]) {
-        NSLog(@"Postal code not found!");
-        return;
-    }
-    
-    
-    NSString* miRadius = [usersObjects valueForKey:DISTANCE_FILTER];
-    
-    if (miRadius == nil) {
-        miRadius = DEFAULT_RADIUS;
-    }
-    
-    //NSString* rows = MAX_ROWS;
-    
-    //NSString* country = @"US";
-    
-    NSString* postal = (KEY_FOR_POSTAL_CODE).lowercaseString;
-    
-    NSArray* keys = @[postal, KEY_FOR_RADIUS];
-    
-    NSArray* objects = @[postalCode, miRadius];
-    
-    //NSArray* keys = [NSArray arrayWithObjects:postal, KEY_FOR_COUNTRY, KEY_FOR_RADIUS, KEY_FOR_ROWS, KEY_FOR_USERNAME, nil];
-    
-    //NSArray* objects = [NSArray arrayWithObjects: postalCode, country, kmRadius, rows, GN_API_PARAM_USERNAME, nil];
-    
-    NSDictionary* parameters = [NSDictionary dictionaryWithObjects:objects forKeys:keys];
-    
-    [self.engine GNFetchNeabyPostalCodesWithPostalCode:parameters addCompletionHandler:^(id response) {
+    [self.engine GNFetchNeabyPostalCodesWithCoordinates:parameters addCompletionHandler:^(id response) {
         
         if (response) {
             
@@ -702,15 +669,17 @@ static LocationSeviceManager* sharedManager;
             
             NSLog(@"%@", zipcodes);
             
-            [self.delegate surroundingZipcodesReturned:zipcodes andCriteria:nil];
+            //[self.delegate surroundingZipcodesReturned:zipcodes andCriteria:nil];
+            completionHandler(zipcodes);
             
         }
-        else [self.delegate surroundingZipcodesReturned:nil andCriteria:nil];
+        else completionHandler(nil);
         
     }];
 }
 
--(void)fetchSurroundingZipcodesWithPostalCode:(NSString *)postalCode andObjects:(NSDictionary *)usersObjects addCompletionHandler:(fetchPostalCompletionHandler)completionHandler
+
+-(void)fetchSurroundingZipcodesWithPostalCode:(NSString*)postalCode andObjects:(NSDictionary *)usersObjects addCompletionHandler:(fetchPostalCompletionHandler)completionHandler
 {
     if ([postalCode isEqual:nil]) {
         NSLog(@"Postal code not found!");
@@ -723,10 +692,6 @@ static LocationSeviceManager* sharedManager;
     if (miRadius == nil) {
         miRadius = DEFAULT_RADIUS;
     }
-    
-    //NSString* rows = MAX_ROWS;
-    
-    //NSString* country = @"US";
     
     NSString* postal = (KEY_FOR_POSTAL_CODE).lowercaseString;
     
@@ -768,6 +733,7 @@ static LocationSeviceManager* sharedManager;
             
             NSLog(@"%@", zipcodes);
             
+            //[self.delegate surroundingZipcodesReturned:zipcodes andCriteria:nil];
             completionHandler(zipcodes);
             
         }

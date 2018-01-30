@@ -101,7 +101,6 @@
 		8962497E1FEC3BD300219C8B /* AnimationHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 8962497D1FEC3BD300219C8B /* AnimationHelper.m */; };
 		8966280A1F31748E00339957 /* DealParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 896628091F31748E00339957 /* DealParser.m */; };
 		896A89751BCE093800A21F30 /* PostalCode.m in Sources */ = {isa = PBXBuildFile; fileRef = 896A89741BCE093700A21F30 /* PostalCode.m */; };
-		897711A51BDD99D000028B74 /* ImageDataDoc.m in Sources */ = {isa = PBXBuildFile; fileRef = 897711A41BDD99D000028B74 /* ImageDataDoc.m */; };
 		897711A81BE014AD00028B74 /* UIImage+Resizing.m in Sources */ = {isa = PBXBuildFile; fileRef = 897711A71BE014AD00028B74 /* UIImage+Resizing.m */; };
 		897711AC1BE2DF5F00028B74 /* PSTwitterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 897711AA1BE2DF5F00028B74 /* PSTwitterViewController.m */; };
 		897711AD1BE2DF5F00028B74 /* PSTwitterViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 897711AB1BE2DF5F00028B74 /* PSTwitterViewController.xib */; };
@@ -132,6 +131,7 @@
 		899AEFBF1F933E47001065C3 /* AFImageDownloader.m in Sources */ = {isa = PBXBuildFile; fileRef = 899AEFB31F933E46001065C3 /* AFImageDownloader.m */; };
 		899AEFC01F933E47001065C3 /* UIButton+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = 899AEFB61F933E46001065C3 /* UIButton+AFNetworking.m */; };
 		899AEFC11F933E47001065C3 /* UIRefreshControl+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = 899AEFB81F933E47001065C3 /* UIRefreshControl+AFNetworking.m */; };
+		89A5D64B2012F18F00517342 /* ImageDataCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 89A5D64A2012F18F00517342 /* ImageDataCache.m */; };
 		89B3DBCE1DE9762500DCEDB6 /* SocialMediaViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 89B3DBCD1DE9762500DCEDB6 /* SocialMediaViewController.m */; };
 		89B3DBD31DE9F95F00DCEDB6 /* PSFacebookViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 89B3DBD11DE9F95F00DCEDB6 /* PSFacebookViewController.m */; };
 		89B3DBD41DE9F95F00DCEDB6 /* PSFacebookViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 89B3DBD21DE9F95F00DCEDB6 /* PSFacebookViewController.xib */; };
@@ -323,14 +323,12 @@
 		896249771FE48A6600219C8B /* MapToListAnimationController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MapToListAnimationController.m; sourceTree = "<group>"; };
 		896249791FEB079B00219C8B /* DismissMapToListAnimationController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DismissMapToListAnimationController.h; sourceTree = "<group>"; };
 		8962497A1FEB079B00219C8B /* DismissMapToListAnimationController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DismissMapToListAnimationController.m; sourceTree = "<group>"; };
-		8962497C1FEC3BD300219C8B /* AnimationHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AnimationHelper.h; sourceTree = "<group>"; };
-		8962497D1FEC3BD300219C8B /* AnimationHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AnimationHelper.m; sourceTree = "<group>"; };
+		8962497C1FEC3BD300219C8B /* AnimationHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AnimationHelper.h; path = ../AnimationHelper.h; sourceTree = "<group>"; };
+		8962497D1FEC3BD300219C8B /* AnimationHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = AnimationHelper.m; path = ../AnimationHelper.m; sourceTree = "<group>"; };
 		896628081F31748E00339957 /* DealParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DealParser.h; path = Budglit/DealParser.h; sourceTree = SOURCE_ROOT; };
 		896628091F31748E00339957 /* DealParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DealParser.m; path = Budglit/DealParser.m; sourceTree = SOURCE_ROOT; };
 		896A89731BCE093700A21F30 /* PostalCode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PostalCode.h; sourceTree = "<group>"; };
 		896A89741BCE093700A21F30 /* PostalCode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PostalCode.m; sourceTree = "<group>"; };
-		897711A31BDD99D000028B74 /* ImageDataDoc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageDataDoc.h; sourceTree = "<group>"; };
-		897711A41BDD99D000028B74 /* ImageDataDoc.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageDataDoc.m; sourceTree = "<group>"; };
 		897711A61BE014AD00028B74 /* UIImage+Resizing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Resizing.h"; sourceTree = "<group>"; };
 		897711A71BE014AD00028B74 /* UIImage+Resizing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Resizing.m"; sourceTree = "<group>"; };
 		897711A91BE2DF5F00028B74 /* PSTwitterViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PSTwitterViewController.h; sourceTree = "<group>"; };
@@ -384,6 +382,8 @@
 		899AEFB61F933E46001065C3 /* UIButton+AFNetworking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIButton+AFNetworking.m"; sourceTree = "<group>"; };
 		899AEFB71F933E47001065C3 /* UIProgressView+AFNetworking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIProgressView+AFNetworking.h"; sourceTree = "<group>"; };
 		899AEFB81F933E47001065C3 /* UIRefreshControl+AFNetworking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIRefreshControl+AFNetworking.m"; sourceTree = "<group>"; };
+		89A5D6492012F18F00517342 /* ImageDataCache.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ImageDataCache.h; sourceTree = "<group>"; };
+		89A5D64A2012F18F00517342 /* ImageDataCache.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ImageDataCache.m; sourceTree = "<group>"; };
 		89B3DBCC1DE9762500DCEDB6 /* SocialMediaViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SocialMediaViewController.h; sourceTree = "<group>"; };
 		89B3DBCD1DE9762500DCEDB6 /* SocialMediaViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SocialMediaViewController.m; sourceTree = "<group>"; };
 		89B3DBD01DE9F95F00DCEDB6 /* PSFacebookViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PSFacebookViewController.h; sourceTree = "<group>"; };
@@ -581,6 +581,8 @@
 				89385AF81BB67B4C00441A63 /* AppDelegate.m */,
 				89385B3E1BB6F86500441A63 /* PSHomeViewController.h */,
 				89385B3F1BB6F86500441A63 /* PSHomeViewController.m */,
+				89179D111BB76F0C00F60BA7 /* LoadingLocalDealsViewController.h */,
+				89179D121BB76F0C00F60BA7 /* LoadingLocalDealsViewController.m */,
 				89179D1B1BB7AB2D00F60BA7 /* MapViewController.h */,
 				89179D1C1BB7AB2D00F60BA7 /* MapViewController.m */,
 				89947FA11C149805009D0B75 /* PSAllDealsTableViewController.h */,
@@ -589,8 +591,6 @@
 				89947FAA1C14A6DB009D0B75 /* DealTableViewCell.m */,
 				89179D0C1BB76E6D00F60BA7 /* BudgetPickerViewController.h */,
 				89179D0D1BB76E6D00F60BA7 /* BudgetPickerViewController.m */,
-				89179D111BB76F0C00F60BA7 /* LoadingLocalDealsViewController.h */,
-				89179D121BB76F0C00F60BA7 /* LoadingLocalDealsViewController.m */,
 				89179D161BB76F4300F60BA7 /* LoginPageViewController.h */,
 				89179D171BB76F4300F60BA7 /* LoginPageViewController.m */,
 				89385B471BB7217C00441A63 /* PSDealDetailViewController.h */,
@@ -609,16 +609,14 @@
 				89179D241BB7B46D00F60BA7 /* ImageStateObject.m */,
 				894AF16C1BDC6969006E3346 /* ImageData.h */,
 				894AF16D1BDC6969006E3346 /* ImageData.m */,
-				897711A31BDD99D000028B74 /* ImageDataDoc.h */,
-				897711A41BDD99D000028B74 /* ImageDataDoc.m */,
+				89A5D6492012F18F00517342 /* ImageDataCache.h */,
+				89A5D64A2012F18F00517342 /* ImageDataCache.m */,
 				896A89731BCE093700A21F30 /* PostalCode.h */,
 				896A89741BCE093700A21F30 /* PostalCode.m */,
 				89179D2E1BB8F5CC00F60BA7 /* UINavigationController+CompletionHandler.h */,
 				89179D2F1BB8F5CC00F60BA7 /* UINavigationController+CompletionHandler.m */,
 				897711A61BE014AD00028B74 /* UIImage+Resizing.h */,
 				897711A71BE014AD00028B74 /* UIImage+Resizing.m */,
-				8962497C1FEC3BD300219C8B /* AnimationHelper.h */,
-				8962497D1FEC3BD300219C8B /* AnimationHelper.m */,
 				89179D311BB8F86500F60BA7 /* ZipcodeSearchDataSource.h */,
 				89179D321BB8F86500F60BA7 /* ZipcodeSearchDataSource.m */,
 				89385B031BB67B4C00441A63 /* Assets.xcassets */,
@@ -819,6 +817,8 @@
 		89E795391E55460700362F73 /* Animation Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				8962497C1FEC3BD300219C8B /* AnimationHelper.h */,
+				8962497D1FEC3BD300219C8B /* AnimationHelper.m */,
 				896249761FE48A6600219C8B /* MapToListAnimationController.h */,
 				896249771FE48A6600219C8B /* MapToListAnimationController.m */,
 				896249791FEB079B00219C8B /* DismissMapToListAnimationController.h */,
@@ -931,7 +931,7 @@
 		89385AE91BB67B4B00441A63 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0900;
+				LastUpgradeCheck = 0920;
 				ORGANIZATIONNAME = "Emmanuel Franco";
 				TargetAttributes = {
 					89385AF01BB67B4B00441A63 = {
@@ -1085,7 +1085,6 @@
 				892401681CD9BF3A00793EE5 /* DrawerViewController.m in Sources */,
 				89067BC91C76B6780058B4DF /* AFHTTPSessionManager.m in Sources */,
 				89231DB31D8B7F3000D6B932 /* MMDrawerController.m in Sources */,
-				897711A51BDD99D000028B74 /* ImageDataDoc.m in Sources */,
 				89EB8DF91BE46A220044833A /* TwitterFeed.m in Sources */,
 				898894331E5D3C4600A82F7D /* MenuTableViewController.m in Sources */,
 				89EEF97E1D5057DF00CCE163 /* ClearState.m in Sources */,
@@ -1094,6 +1093,7 @@
 				89C5623A1F03761C00737608 /* UserProfileTableViewCell.m in Sources */,
 				89067BCD1C76B6780058B4DF /* AFURLRequestSerialization.m in Sources */,
 				89385B4F1BB722AD00441A63 /* DatabaseManager.m in Sources */,
+				89A5D64B2012F18F00517342 /* ImageDataCache.m in Sources */,
 				894F93991DED45DC00FEF2DC /* FacebookEngine.m in Sources */,
 				89231DB81D8B912000D6B932 /* UserAccount.m in Sources */,
 				89B3DBCE1DE9762500DCEDB6 /* SocialMediaViewController.m in Sources */,
@@ -1160,7 +1160,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -1213,7 +1212,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;

@@ -16,9 +16,7 @@
 }
 
 @property (nonatomic, strong) NSString* imagePath;
-
 @property (nonatomic, strong) NSURLRequest* request;
-
 @property (nonatomic, strong) NSHTTPURLResponse* response;
 
 -(instancetype)init;

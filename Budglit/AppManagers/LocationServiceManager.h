@@ -26,7 +26,7 @@ typedef void (^fetchPostalCompletionHandler)(id object);
 -(void) onlineAttemptFailed;
 -(void) offlineAttemptFailed;
 -(void) coordinateFetched:(id)deal;
--(void) surroundingZipcodesReturned:(NSArray*) zipcodes andCriteria:(NSDictionary*) searchCriteria;
+//-(void) surroundingZipcodesReturned:(NSArray*) zipcodes;
 @end
 
 @interface LocationSeviceManager : NSObject<CLLocationManagerDelegate, UINavigationControllerDelegate>
@@ -46,11 +46,9 @@ typedef void (^fetchPostalCompletionHandler)(id object);
 //@property (nonatomic) int updateState;
 
 -(instancetype) init;
-
 -(instancetype) initWithEngineHostName:(NSString*)hostName NS_DESIGNATED_INITIALIZER;
 
 -(void) startUpdates;
-
 -(void) startUpdates:(id) currentVC;
 
 -(BOOL) shouldStartUpdatesBasedOnAuthorization: (CLAuthorizationStatus) authorizationStatus;
@@ -85,12 +83,12 @@ typedef void (^fetchPostalCompletionHandler)(id object);
 
 @property (NS_NONATOMIC_IOSONLY, getter=getCurrentZipcode, readonly, copy) NSString *currentZipcode;
 
--(void) fetchSurroundingZipcodesWithPostalCode:(NSString*)postalCode andObjects:(NSDictionary*) usersObjects;
+//-(void) fetchSurroundingZipcodesWithPostalCode:(NSString*)postalCode andObjects:(NSDictionary*) usersObjects;
 
--(void) fetchSurroundingZipcodesWithPostalCode:(NSString*)postalCode andObjects:(NSDictionary*) usersObjects addCompletionHandler:(fetchPostalCompletionHandler)completionHandler;;
+-(void) fetchSurroundingZipcodesWithPostalCode:(NSString*)postalCode andObjects:(NSDictionary*) usersObjects addCompletionHandler:(fetchPostalCompletionHandler)completionHandler;
 //-(void) fetchSurroundingZipcodesWithPostalCode:(NSString*)postalCode andObjects:(NSDictionary*)usersObject addCompletionHandler:(fetchPostalCompletionHandler)completionHandler;
 
--(void) fetchSurroundingZipcodesWithCurrentLocation:(CLLocation*)currentLocation andObjects:(NSDictionary*) usersObjects;
+-(void) fetchSurroundingZipcodesWithCurrentLocation:(CLLocation*)currentLocation andObjects:(NSDictionary*) usersObjects addCompletionHandler:(fetchPostalCompletionHandler)completionHandler;
 
 -(void) fetchSurroundingZipcodesWithCurrentLocation;
 

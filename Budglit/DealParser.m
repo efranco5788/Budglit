@@ -49,7 +49,7 @@
 
 -(void)parseDeals:(NSArray *)list addCompletionHandler:(parseCompletionBlock)completionBlock
 {
-    if (list) {
+    if (list.count >= 1) {
         
         NSMutableArray* dealList = [[NSMutableArray alloc] init];
         
