@@ -1,17 +1,31 @@
 //
-//  SocialMediaTabBarViewController.m
-//  PocketStretch
+//  CustomCalloutViewController.m
+//  Budglit
 //
-//  Created by Emmanuel Franco on 12/30/15.
-//  Copyright © 2015 Emmanuel Franco. All rights reserved.
+//  Created by Emmanuel Franco on 1/30/18.
+//  Copyright © 2018 Emmanuel Franco. All rights reserved.
 //
-#import "SocialMediaTabBarViewController.h"
 
-@interface SocialMediaTabBarViewController ()
+#import "CustomCalloutViewController.h"
+
+@interface CustomCalloutViewController ()
 
 @end
 
-@implementation SocialMediaTabBarViewController
+@implementation CustomCalloutViewController
+
+-(instancetype)init
+{
+    self = [super init];
+    
+    if(!self) return nil;
+    
+    UIScreen* screen = [UIScreen mainScreen];
+    
+    self.view.frame = CGRectMake(self.view.frame.origin.x, self.view.frame.origin.y, screen.bounds.size.width, 178.0);
+    
+    return self;
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];

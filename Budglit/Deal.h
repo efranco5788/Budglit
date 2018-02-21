@@ -8,7 +8,6 @@
 
 #import <Foundation/Foundation.h>
 #import <MapKit/MapKit.h>
-#import "DealMapAnnotation.h"
 #import "ImageStateObject.h"
 
 #define DEAL_ID_KEY @"dealID"
@@ -34,7 +33,6 @@ extern NSString* const kDefaultEventEndNotification;
 @property (nonatomic, strong) NSString* venueDescription;
 @property (nonatomic, strong) NSString* venueTwtrUsername;
 @property (nonatomic, strong) NSDate* dealDate;
-@property (nonatomic, strong) NSString* startDate;
 @property (nonatomic, strong) NSString* endDate;
 @property (nonatomic, strong) NSString* dealDescription;
 @property (nonatomic, strong) NSArray* tags;
@@ -43,11 +41,10 @@ extern NSString* const kDefaultEventEndNotification;
 @property (nonatomic, strong) NSString* city;
 @property (nonatomic, strong) NSString* state;
 @property (nonatomic, strong) NSString* zipcode;
-@property (nonatomic, strong) DealMapAnnotation* mapAnnotation;
 @property (nonatomic, strong) ImageStateObject* imgStateObject;
 @property (nonatomic, strong) MZTimerLabel* eventCountDwn;
 
-- (instancetype) initWithVenueName:(NSString*) venue andVenueAddress:(NSString*) anAddress andVenueDescription:(NSString*) aVenueDes andVenueTwtrUsername:(NSString*)useranme andDate:(NSString*)dateString andStartDate:(NSString*)start andEndDate:(NSString*)end andDealDescription:(NSString*) aDealDescription andPhoneNumber:(NSString*) aNumber andCity:(NSString*) aCity andState:(NSString*) aState andZipcode:(NSString*)aZip andBudget:(double) aBudget andDealID:(NSInteger) aDealID andURLImage:(NSString*) url andAddTags:(NSArray*) dealTags NS_DESIGNATED_INITIALIZER;
+- (instancetype) initWithVenueName:(NSString*) venue andVenueAddress:(NSString*) anAddress andVenueDescription:(NSString*) aVenueDes andVenueTwtrUsername:(NSString*)useranme andDate:(NSString*)dateString andEndDate:(NSString*)end andDealDescription:(NSString*) aDealDescription andPhoneNumber:(NSString*) aNumber andCity:(NSString*) aCity andState:(NSString*) aState andZipcode:(NSString*)aZip andBudget:(double) aBudget andDealID:(NSInteger) aDealID andURLImage:(NSString*) url andAddTags:(NSArray*) dealTags NS_DESIGNATED_INITIALIZER;
 
 
 @property (NS_NONATOMIC_IOSONLY, getter=getAddressString, readonly, copy) NSString *addressString;
@@ -55,14 +52,6 @@ extern NSString* const kDefaultEventEndNotification;
 @property (NS_NONATOMIC_IOSONLY, readonly, copy) NSString *detailDescription;
 
 -(NSInteger)getID;
-
--(void)setAnnotationWithTitle:(NSString*)title locationName:(NSString*)name andDiscipline:(NSString*)discipline;
-
--(DealMapAnnotation*)getMapAnnotation;
-
--(void)setCoordinates:(CLLocationCoordinate2D)coords;
-
--(CLLocationCoordinate2D)getCoordinates;
 
 -(NSString*)getDealIDString;
 

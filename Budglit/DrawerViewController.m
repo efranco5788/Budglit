@@ -98,9 +98,9 @@
     [menu setDelegate:nil];
 }
 
--(void)slideDrawerSide:(MMDrawerSide *)drawerSide Animated:(BOOL)isAnimated
+-(void)slideDrawerSide:(MMDrawerSide*)drawerSide Animated:(BOOL)isAnimated
 {
-    [self toggleDrawerSide:drawerSide animated:isAnimated completion:^(BOOL finished) {
+    [self toggleDrawerSide:*drawerSide animated:isAnimated completion:^(BOOL finished) {
 
     }];
     

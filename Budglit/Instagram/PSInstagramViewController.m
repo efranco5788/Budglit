@@ -49,7 +49,10 @@
             NSURL* url = [NSURL URLWithString:apiURL];
             NSURLRequest* request = [NSURLRequest requestWithURL:url];
             NSLog(@"String is %@", request.URL);
-            [self.webView loadRequest:request];
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.webView loadRequest:request];
+            });
         }
         
     });

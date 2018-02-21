@@ -12,7 +12,7 @@
 #define KEY_FOR_USERNAME @"username"
 //#define POSTAL_CODE_NEARBY_SEARCH_URL @"http://api.geonames.org/findNearbyPostalCodesJSON"
 //#define POSTAL_CODE_NEARBY_SEARCH_URL @"findNearbyPostalCodesJSON"
-#define POSTAL_CODE_NEARBY_SEARCH_URL @"zipcode"
+#define POSTAL_CODE_NEARBY_SEARCH_URL @"api/zipcode"
 #define MakeLocation(lat,lon) [[CLLocation alloc]initWithLatitude: lat longitude: lon]
 
 @implementation GNEngine
@@ -37,6 +37,32 @@
     return self;
 }
 
+-(void)GNFetchPostalCodesForCity:(NSDictionary *)parameters addCompletionHandler:(dataResponseBlockResponse)completionHandler
+{
+    self.sessionManager.requestSerializer = [AFHTTPRequestSerializer serializer];
+    
+    self.sessionManager.responseSerializer = [AFJSONResponseSerializer serializer];
+    
+    [self.sessionManager GET:POSTAL_CODE_NEARBY_SEARCH_URL parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        
+        [self addToRequestHistory:task];
+        
+        if(responseObject)
+        {
+            completionHandler(responseObject);
+        }
+        else
+        {
+            completionHandler(nil);
+        }
+        
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        
+        [self logFailedRequest:task];
+        [self.delegate nearbyPostalCodesFailedWithError:error];
+    }];
+}
+
 -(void)GNFetchNeabyPostalCodesWithCoordinates:(NSDictionary *)parameters addCompletionHandler:(dataResponseBlockResponse)completionHandler
 {    
     self.sessionManager.requestSerializer = [AFHTTPRequestSerializer serializer];
@@ -53,8 +79,6 @@
         }
         else
         {
-            NSError* error = [[NSError alloc] init];
-            
             completionHandler(nil);
         }
         
@@ -67,7 +91,6 @@
 
 -(void)GNFetchNeabyPostalCodesWithPostalCode:(NSDictionary *)parameters addCompletionHandler:(dataResponseBlockResponse)completionHandler
 {
-    
     self.sessionManager.requestSerializer = [AFHTTPRequestSerializer serializer];
     
     self.sessionManager.responseSerializer = [AFJSONResponseSerializer serializer];

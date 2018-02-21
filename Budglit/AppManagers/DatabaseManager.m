@@ -171,12 +171,14 @@ static DatabaseManager* sharedManager;
     }
     else criteria = searchCriteria;
     
+    NSLog(@"%@", searchCriteria);
+    
     [self.engine sendSearchCriteria:criteria addCompletion:^(id response) {
         
         if(response){
             
             [self resetDeals];
-            
+
             [self.dealParser parseDeals:response addCompletionHandler:^(NSArray *parsedList) {
                 if (parsedList) {
                     

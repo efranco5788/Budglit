@@ -133,7 +133,7 @@
     
     isSocialMediaViewInView = NO;
     
-    [self addBackgroundDimmerViewToMainView];
+    //[self addBackgroundDimmerViewToMainView];
     
     if (!self.twitterViewController) {
         [self constructTwitterView];
@@ -157,12 +157,19 @@
 {
     [super viewDidAppear:YES];
 
-    CGFloat originalTwitterViewX = self.socialMediaContainer.layer.frame.origin.x;
+   // CGFloat originalTwitterViewX = self.socialMediaContainer.layer.frame.origin.x;
     
-    CGFloat originalTwitterViewY = (self.view.frame.size.height - self.socialMediaContainer.layer.frame.size.height);
+    //CGFloat originalTwitterViewY = (self.view.frame.size.height - self.socialMediaContainer.layer.frame.size.height);
     
     // Save the original dimensions of the twitter view
-    originalTwitterView = CGRectMake(originalTwitterViewX, originalTwitterViewY, self.view.frame.size.height, self.view.frame.size.width);
+    //originalTwitterView = CGRectMake(originalTwitterViewX, originalTwitterViewY, self.view.frame.size.height, self.view.frame.size.width);
+    
+    CGFloat originalTwitterViewX = self.socialMediaContainer.layer.bounds.origin.x;
+    
+    CGFloat originalTwitterViewY = (self.view.bounds.size.height - self.socialMediaContainer.layer.bounds.size.height);
+    
+    // Save the original dimensions of the twitter view
+    originalTwitterView = CGRectMake(originalTwitterViewX, originalTwitterViewY, self.view.bounds.size.height, self.view.bounds.size.width);
 }
 
 -(void)viewWillDisappear:(BOOL)animated
@@ -198,7 +205,7 @@
             CGPoint velocity = [self.twitterViewGesture velocityInView:self.view];
             
             if (velocity.y > 0)  [self dragSocialMediaViewDown]; // panning down
-            else [self dragSocialMediaViewUp];                   // panning up
+            else [self dragSocialMediaViewUp:YES];               // panning up
         }
         
         
@@ -222,8 +229,9 @@
             
             Class mapItemClass = [MKMapItem class];
             
+#warning Update method
             if (mapItemClass && [mapItemClass respondsToSelector:@selector(openMapsWithItems:launchOptions:)]) {
-                
+                /*
                 CLLocationCoordinate2D coord = _dealSelected.getCoordinates;
                 
                 MKPlacemark* placemark = [[MKPlacemark alloc] initWithCoordinate:coord addressDictionary:nil];
@@ -244,7 +252,7 @@
                 // Set the direction mode in the launchOptions dictionary
                 [MKMapItem openMapsWithItems:@[currentLocationMapItem, mapItem]
                                launchOptions:launchOptions];
-                
+                */
             }
             
         }];
@@ -349,7 +357,7 @@
 
 #pragma mark -
 #pragma mark - Social Media View Methods
--(void) dragSocialMediaViewUp
+-(void) dragSocialMediaViewUp:(BOOL)darkenBackground
 {
     if (isSocialMediaViewInView == NO) {
         
@@ -376,14 +384,17 @@
             [self.view addConstraint:self.adjustedBottomConstraint];
             
             [UIView animateWithDuration:0.6 delay:0 usingSpringWithDamping:1 initialSpringVelocity:3 options:UIViewAnimationOptionTransitionNone animations:^{
-                
+                /*
+                if (darkenBackground) {
+                    
+                    [self.view insertSubview:backgroundDimmerMainView belowSubview:self.socialMediaContainer];
+                    
+                    [backgroundDimmerMainView setOpaque:YES];
+                    
+                    backgroundDimmerMainView.alpha = 0.8;
+                }
+                */
                 [self.view layoutIfNeeded];
-                
-                [self.view insertSubview:backgroundDimmerMainView belowSubview:self.socialMediaContainer];
-                
-                [backgroundDimmerMainView setOpaque:YES];
-                
-                backgroundDimmerMainView.alpha = 0.8;
                 
                 [UIView commitAnimations];
                 
@@ -416,8 +427,6 @@
             [UIView animateWithDuration:0.8 delay:0 usingSpringWithDamping:1 initialSpringVelocity:1 options:UIViewAnimationOptionTransitionNone animations:^{
                 
                 [self.view layoutIfNeeded];
-                
-                //[self toggleBackgroundDimmerForMainView];
                 
                 [backgroundDimmerMainView setOpaque:NO];
                 
@@ -476,20 +485,16 @@
 
 #pragma mark -
 #pragma mark - Background Dimmer Methods
+/*
 -(void) addBackgroundDimmerViewToMainView
 {
     if (!backgroundDimmerMainView) {
         
-        UIView* bgDimmer = [[UIView alloc] initWithFrame:self.view.frame];
-        
+        UIView* bgDimmer = [[UIView alloc] initWithFrame:self.view.bounds];
         UIColor* dimmerColor = [UIColor blackColor];
-        
         bgDimmer.backgroundColor = dimmerColor;
-        
         [bgDimmer setOpaque:NO];
-        
         bgDimmer.alpha = 0.0;
-        
         [bgDimmer setHidden:YES];
         
         backgroundDimmerMainView = bgDimmer;
@@ -497,7 +502,7 @@
         //[self.view insertSubview:backgroundDimmerMainView belowSubview:self.socialMediaContainer];
     }
 }
-
+*/
 
 -(void) toggleBackgroundDimmerForMainView
 {

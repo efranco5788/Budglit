@@ -19,7 +19,6 @@
 
 #define DEFAULT_RESULT_BUTTON_TITLE @"View 0 Results"
 
-#define BUDGET_FILTER @"budget_filter"
 #define DISTANCE_FILTER @"distance_filter"
 #define DATE_FILTER @"date_filter"
 #define BUDGET_AMOUNTS @"budget_amounts"
@@ -325,7 +324,7 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
 {
     NSString* budgetCriteria;
     
-    NSString* budgetValue = [searchCriteria valueForKey:BUDGET_FILTER];
+    NSString* budgetValue = [searchCriteria valueForKey:NSLocalizedString(@"BUDGET_FILTER", nil)];
     
     NSArray* budgetAmounts = [searchCriteria valueForKey:BUDGET_AMOUNTS];
     

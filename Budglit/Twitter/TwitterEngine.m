@@ -38,7 +38,8 @@
 
 #define SIGNED_IN_SCREEN_NAME @"screen_name"
 
-#define CALLBACK_URL @"https://www.budglit.com/twitter/token_handler.php"
+//#define CALLBACK_URL @"https://www.budglit.com/twitter/token_handler.php"
+#define CALLBACK_URL @"https://www.budglit.com/api/twitter/token_handler"
 
 
 @interface TwitterEngine()
@@ -507,6 +508,10 @@
     NSString* tokenVerifierKey = [self.OAuth getTokenVerifierKey];
     
     NSString* token_verifier = [self.tokenRequest valueForKey:tokenVerifierKey];
+    
+    NSLog(@"%@", tokenVerifierKey);
+    
+    NSLog(@"%@", self.tokenRequest);
     
     NSDictionary* param = @{tokenVerifierKey: token_verifier};
     

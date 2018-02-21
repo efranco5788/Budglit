@@ -10,6 +10,7 @@
 #import "MZTimerLabel/MZTimerLabel.h"
 
 #define kDefaultDateFormat @"yyyy-MM-dd HH:mm:ss"
+#define kDefaultTimeFormat @"dd:HH:mm:ss "
 #define kEventEnded @"Event Ended"
 
 @interface Deal() <MZTimerLabelDelegate>
@@ -28,20 +29,19 @@ NSString* const kDefaultEventEndNotification = @"EventEndNotification";
 
 -(instancetype)init
 {
-    self = [self initWithVenueName:nil andVenueAddress:nil andVenueDescription:nil andVenueTwtrUsername:nil andDate:nil andStartDate:nil andEndDate:nil andDealDescription:nil andPhoneNumber:nil andCity:nil andState:nil andZipcode:nil andBudget:0 andDealID:0 andURLImage:nil andAddTags:nil];
-    
+    self = [self initWithVenueName:nil andVenueAddress:nil andVenueDescription:nil andVenueTwtrUsername:nil andDate:nil andEndDate:nil andDealDescription:nil andPhoneNumber:nil andCity:nil andState:nil andZipcode:nil andBudget:0 andDealID:0 andURLImage:nil andAddTags:nil];
+
     if (!self) return nil;
     
-    return nil;
-        
-        
+    return self;
+    
 }
 
--(instancetype)initWithVenueName:(NSString *)venue andVenueAddress:(NSString *)anAddress andVenueDescription:(NSString *)aVenueDes andVenueTwtrUsername:(NSString *)useranme andDate:(NSString *)dateString andStartDate:(NSString *)start andEndDate:(NSString *)end andDealDescription:(NSString *)aDealDescription andPhoneNumber:(NSString *)aNumber andCity:(NSString *)aCity andState:(NSString *)aState andZipcode:(NSString *)aZip andBudget:(double)aBudget andDealID:(NSInteger)aDealID andURLImage:(NSString *)url andAddTags:(NSArray *)dealTags
+-(instancetype)initWithVenueName:(NSString *)venue andVenueAddress:(NSString *)anAddress andVenueDescription:(NSString *)aVenueDes andVenueTwtrUsername:(NSString *)useranme andDate:(NSString *)dateString andEndDate:(NSString *)end andDealDescription:(NSString *)aDealDescription andPhoneNumber:(NSString *)aNumber andCity:(NSString *)aCity andState:(NSString *)aState andZipcode:(NSString *)aZip andBudget:(double)aBudget andDealID:(NSInteger)aDealID andURLImage:(NSString *)url andAddTags:(NSArray *)dealTags
 {
     self = [super init];
     
-    if (!self) return nil;
+    if(!self) return nil;
     
     if(self)
     {
@@ -51,7 +51,6 @@ NSString* const kDefaultEventEndNotification = @"EventEndNotification";
         self.address = anAddress;
         self.venueDescription = aVenueDes;
         self.dealDescription = aDealDescription;
-        self.startDate = start;
         self.endDate = end;
         self.phoneNumber = aNumber;
         self.city = aCity;
@@ -60,7 +59,6 @@ NSString* const kDefaultEventEndNotification = @"EventEndNotification";
         budget = aBudget;
         self.tags = dealTags;
         self.imgStateObject = [[ImageStateObject alloc] init];
-        self.mapAnnotation = nil;
         if (![url isEqual:nil]) {
             self.imgStateObject.imagePath = url;
         }
@@ -72,12 +70,10 @@ NSString* const kDefaultEventEndNotification = @"EventEndNotification";
         NSDate* date = [dateFormatter dateFromString:dateString];
         
         self.dealDate = date;
-        
-        NSLog(@"%@", date);
-        
     }
     
     return self;
+        
 }
 
 -(NSInteger)getID
@@ -107,38 +103,6 @@ NSString* const kDefaultEventEndNotification = @"EventEndNotification";
     NSString* stringAddress = [[NSString alloc] initWithFormat:@"%@, %@, %@", self.address, self.city, self.state];
     
     return stringAddress;
-}
-
--(void)setAnnotationWithTitle:(NSString *)title locationName:(NSString *)name andDiscipline:(NSString *)discipline
-{
-    
-    if(self.mapAnnotation == nil) self.mapAnnotation = [[DealMapAnnotation alloc] initWithTitle:title Location:name Discipline:discipline];
-    else{
-        [self.mapAnnotation setTitle:title];
-        [self.mapAnnotation setDiscipline:discipline];
-        [self.mapAnnotation setLocationName:name];
-    }
-    
-}
-
--(DealMapAnnotation *)getMapAnnotation
-{
-    return self.mapAnnotation;
-}
-
--(void)setCoordinates:(CLLocationCoordinate2D)coords
-{
-    coordinates = coords;
-    
-    if (self.mapAnnotation == nil) self.mapAnnotation = [[DealMapAnnotation alloc] init];
-    
-    [self.mapAnnotation setCoordinate:coords];
-}
-
--(CLLocationCoordinate2D)getCoordinates
-{
-    //return coordinates;
-    return self.mapAnnotation.coordinate;
 }
 
 -(NSString *)detailDescription
@@ -174,7 +138,7 @@ NSString* const kDefaultEventEndNotification = @"EventEndNotification";
         
         (self.eventCountDwn).delegate = self;
         
-        self.eventCountDwn.timeFormat = @"dd:HH:mm:ss ";
+        self.eventCountDwn.timeFormat = kDefaultTimeFormat;
         
         NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
         

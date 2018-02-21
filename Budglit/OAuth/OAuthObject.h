@@ -38,16 +38,16 @@
 
 -(NSString*) encryptRequestWithSignatureBase:(NSString*)signatureBase andSigningKey:(NSString*)signingKey;
 
-@property (NS_NONATOMIC_IOSONLY, getter=getAccessTokenKey, readonly, copy) NSString *accessTokenKey;
+-(NSString*) getAccessTokenKey;
 
-@property (NS_NONATOMIC_IOSONLY, getter=getConsumerKey, readonly, copy) NSString *consumerKey;
+-(NSString*) getConsumerKey;
 
-@property (NS_NONATOMIC_IOSONLY, getter=getConsumerSecretKey, readonly, copy) NSString *consumerSecretKey;
+-(NSString*) getConsumerSecretKey;
 
-@property (NS_NONATOMIC_IOSONLY, getter=getTokenKey, readonly, copy) NSString *tokenKey;
+-(NSString*) getTokenKey;
 
-@property (NS_NONATOMIC_IOSONLY, getter=getTokenSecretKey, readonly, copy) NSString *tokenSecretKey;
+-(NSString*) getTokenSecretKey;
 
-@property (NS_NONATOMIC_IOSONLY, getter=getTokenVerifierKey, readonly, copy) NSString *tokenVerifierKey;
+-(NSString*) getTokenVerifierKey;
 
 @end

@@ -15,7 +15,6 @@
 #define KEY_DEAL_DATE @"date_of_event"
 #define KEY_DEAL_START @"duration_start"
 #define KEY_DEAL_END @"duration_end"
-#define KEY_DEAL_END_OF_DAY @"duration_endOfDay"
 #define KEY_DEAL_TAGS @"tags"
 #define KEY_VENUE_PHONE_NUMBER @"phone"
 #define KEY_VENUE_NAME @"name"
@@ -63,13 +62,7 @@
             
             NSString* dealDate = deal[KEY_DEAL_DATE];
             
-            NSString* startDate = deal[KEY_DEAL_START];
-            
             NSString* endDate = deal[KEY_DEAL_END];
-            
-            //id dayObj = deal[KEY_DEAL_END_OF_DAY];
-            
-            //BOOL endOfDay = [dayObj boolValue];
             
             double dealBudget = [deal[KEY_DEAL_BUDGET] doubleValue];
             
@@ -102,7 +95,7 @@
             }
             else arryOfTags = [dealTags componentsSeparatedByString:@","];
             
-            Deal* newDeal = [[Deal alloc] initWithVenueName:venue andVenueAddress:venueAddress andVenueDescription:nil andVenueTwtrUsername:twtrUsername andDate:dealDate andStartDate:startDate andEndDate:endDate andDealDescription:dealDescription andPhoneNumber:venuePhone andCity:venueCity andState:venueState andZipcode:zipcode andBudget:dealBudget andDealID:dealID andURLImage:imgURL andAddTags:arryOfTags];
+            Deal* newDeal = [[Deal alloc] initWithVenueName:venue andVenueAddress:venueAddress andVenueDescription:nil andVenueTwtrUsername:twtrUsername andDate:dealDate andEndDate:endDate andDealDescription:dealDescription andPhoneNumber:venuePhone andCity:venueCity andState:venueState andZipcode:zipcode andBudget:dealBudget andDealID:dealID andURLImage:imgURL andAddTags:arryOfTags];
             
             [dealList addObject:newDeal];
         }

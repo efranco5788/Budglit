@@ -10,30 +10,34 @@
 #import <MapKit/MapKit.h>
 #import "Deal.h"
 #import "DealMapAnnotation.h"
+#import "GeneralEventAnnotationView.h"
 #import "DrawerViewController.h"
 #import "LocationServiceManager.h"
 #import "MMDrawerBarButtonItem.h"
 
-@interface MapViewController : UIViewController
+@interface MapViewController : UIViewController<UIGestureRecognizerDelegate>
 
 typedef void (^generalBlockResponse)(BOOL success);
 
-@property (strong, nonatomic) IBOutlet MKMapView *mapView;
-@property (strong, nonatomic) IBOutlet UIButton *menuBtn;
-@property (strong, nonatomic) IBOutlet UIButton *filterBtn;
+@property (strong, nonatomic) IBOutlet MKMapView* mapView;
+@property (strong, nonatomic) IBOutlet UIButton* menuBtn;
+@property (strong, nonatomic) IBOutlet UIButton* filterBtn;
+- (IBAction)currentLocationBtnPressed:(UIButton *)sender;
+
+@property (strong, nonatomic) UIView* backgroundScreen;
 
 - (IBAction)menuBtnPressed:(id)sender;
 - (IBAction)filterBtnPressed:(id)sender;
 
--(void)centerMapOnLocation:(CLLocation*)location AndRadius:(CLLocationDistance)radius animate:(BOOL)animated addCompletion:(generalBlockResponse) completionHandler;
-
--(void)fitAllAnnotations:(BOOL)shouldZoom addCompletion:(generalBlockResponse) completionHandler;;
+-(void)fitAllAnnotations:(BOOL)shouldZoom addCompletion:(generalBlockResponse)completionHandler;
 
 -(void)clearMap;
 
 -(void)clearMapRemoveUserLocation:(BOOL)remove;
 
--(void)plotDealOnMap:(Deal*)deal addCompletion:(generalBlockResponse) completionHandler;
+-(void)scanNewRegion:(MKCoordinateRegion*)region addCompletion:(generalBlockResponse)completionHandler;
+
+-(void)plotDealOnMap:(Deal*)deal addCompletion:(generalBlockResponse)completionHandler;
 
 -(void)plotDealsOnMap:(NSArray*)deals;
 

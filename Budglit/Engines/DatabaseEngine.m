@@ -22,7 +22,6 @@
 #define KEY_DEALS @"deals"
 #define KEY_LIST @"parsedList"
 #define DEAL_COUNT @"count"
-#define DEFAULT_BUDGET_FILTER @"-1"
 
 #define RESCALE_IMAGE_WIDTH 1024
 #define RESCALE_IMAGE_HEIGHT 1024
@@ -50,25 +49,6 @@
     
     return newCoordinateValue;
 }
-
-/*
-+(CLLocationCoordinate2D)calculateCoordinateFrom:(CLLocationCoordinate2D)coordinate onBearing:(double)bearingInRadians atDistance:(double)distanceInMetres
-{
-    double coordinateLatitudeInRadians = coordinate.latitude * M_PI / 180;
-    double coordinateLongitudeInRadians = coordinate.longitude * M_PI / 180;
-    
-    double distanceComparedToEarth = distanceInMetres / 6378100;
-    
-    double resultLatitudeInRadians = asin(sin(coordinateLatitudeInRadians) * cos(distanceComparedToEarth) + cos(coordinateLatitudeInRadians) * sin(distanceComparedToEarth) * cos(bearingInRadians));
-    double resultLongitudeInRadians = coordinateLongitudeInRadians + atan2(sin(bearingInRadians) * sin(distanceComparedToEarth) * cos(coordinateLatitudeInRadians), cos(distanceComparedToEarth) - sin(coordinateLatitudeInRadians) * sin(resultLatitudeInRadians));
-    
-    CLLocationCoordinate2D result;
-    result.latitude = resultLatitudeInRadians * 180 / M_PI;
-    result.longitude = resultLongitudeInRadians * 180 / M_PI;
-    
-    return result;
-}
-*/
 
 -(instancetype) init
 {
@@ -99,7 +79,7 @@
     
     NSString* distanceCriteria = NSLocalizedString(@"DEFAULT_DISTANCE_FILTER", nil);
     
-    NSString* budgetCriteria = DEFAULT_BUDGET_FILTER;
+    NSString* budgetCriteria = NSLocalizedString(@"DEFAULT_BUDGET", nil);
     
     NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
     
@@ -186,14 +166,7 @@
         [self addToRequestHistory:task];
         
         if (responseObject) {
-            
-            
-            //NSArray* dict = [responseObject valueForKey:KEY_LIST];
-            
-            //NSDictionary* obj = dict[0];
-            
-            //NSInteger total = [[obj valueForKey:DEAL_COUNT] integerValue];
-            
+
             NSArray* deals = [responseObject valueForKey:KEY_DEALS];
             
             NSInteger total = deals.count;
@@ -221,6 +194,7 @@
             }
             
         }
+        else completionBlock(nil);
         
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         
@@ -405,15 +379,7 @@
 
 #pragma mark -
 #pragma mark - Map Annotation Methods
--(void)addAnnotationToDeal:(Deal *)deal
-{
-    if(!deal) return;
-    
-    DealMapAnnotation* annotation = [[DealMapAnnotation alloc] initWithTitle:deal.venueName Location:deal.address Discipline:@"Event"];
-    [deal setMapAnnotation:annotation];
-    
-}
-
+/*
 -(void)groupAnnotationByCoordinates:(NSMutableArray *)annotations addCompletionHandler:(dataResponseBlockResponse)completionHandler
 {
     if(annotations == nil || annotations.count <= 0) completionHandler(nil);
@@ -477,36 +443,7 @@
     
     completionHandler(NO);
 }
-
--(NSArray *)extractAnnotationsFromDeals:(NSArray *)deals
-{
-    if(!deals) return nil;
-    
-    NSMutableArray* mutableAnnotations = [[NSMutableArray alloc] init];
-    
-    for (Deal* d in deals) {
-        DealMapAnnotation* annotation = d.getMapAnnotation;
-        if(!annotation) return nil;
-        [mutableAnnotations addObject:annotation];
-    }
-    
-    return mutableAnnotations.copy;
-}
-
--(NSArray *)extractUnannotatedDeals:(NSArray *)deals
-{
-    if(!deals) return nil;
-    
-    NSMutableArray* unannotatedDeals = [[NSMutableArray alloc] init];
-    
-    for (Deal* deal in deals) {
-        DealMapAnnotation* annotation = [deal getMapAnnotation];
-        if(!annotation) [unannotatedDeals addObject:deal];
-    }
-    
-    return unannotatedDeals.copy;
-}
-
+*/
 -(NSArray *)extractAddressFromDeals:(NSArray *)deals
 {
     if(!deals) return nil;
@@ -541,8 +478,6 @@
         });
         
     });
-    
-    //[self.requestManager.operationQueue cancelAllOperations];
     
     [self.sessionManager.operationQueue cancelAllOperations];
     

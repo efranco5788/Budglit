@@ -7,6 +7,7 @@
 //
 
 #import "TwitterManager.h"
+#import "AppDelegate.h"
 #import "Deal.h"
 #import "TwitterFeed.h"
 #import "TwitterEngine.h"
@@ -160,29 +161,45 @@ typedef NS_ENUM(NSInteger, NSTwitterFilterType) {
     else return [self.engine constructRateLimitRequest:query];
 }
 
--(TwitterRequestObject *)constructTwitterSearchRequestForDeal:(Deal *)deal
+-(void)constructTwitterSearchRequestForDeal:(Deal *)deal addCompletion:(dataBlockResponse)completionBlock
 {
-    NSMutableDictionary* params = [[NSMutableDictionary alloc] init];
+    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
-    NSMutableString* mutableQuery = [[NSMutableString alloc] initWithString:@""];
+    [appDelegate.databaseManager fetchGeocodeForAddress:deal.address additionalParams:nil shouldParse:YES addCompletetion:^(id response) {
+        
+        NSDictionary* geocodeResponse = (NSDictionary*)response;
+        
+        NSArray* coords = [geocodeResponse valueForKey:@"coordinates"];
+        NSString* latitude = [coords valueForKey:@"lat"];
+        NSString* longtitude = [coords valueForKey:@"lng"];
+        NSLog(@"lng %@ nd lat %@",longtitude, latitude);
+        NSLog(@"Deal %@", deal.addressString);
+        CLLocation* location = [appDelegate.locationManager managerCreateLocationFromStringLongtitude:longtitude andLatitude:latitude];
+        
+        CLLocationCoordinate2D coordinates = CLLocationCoordinate2DMake(location.coordinate.latitude, location.coordinate.longitude);
+        
+        NSMutableDictionary* params = [[NSMutableDictionary alloc] init];
+        
+        NSMutableString* mutableQuery = [[NSMutableString alloc] initWithString:@""];
+        
+        NSString* query = mutableQuery.copy;
+        
+        params[TWITTER_SEARCH_QUERY_KEY] = query;
+        
+        NSString* geocode = [NSString stringWithFormat:@"%f,%f,%@km", coordinates.latitude, coordinates.longitude, TWITTER_SEARCH_GEOCODE_RADIUS_KM_DEFAULT];
+        
+        params[TWITTER_SEARCH_COUNT_KEY] = TWITTER_SEARCH_COUNT_DEFAULT;
+        
+        params[TWITTER_SEARCH_GEOCODE_KEY] = geocode;
+        
+        params[TWITTER_SEARCH_RESULT_TYPE_KEY] = TWITTER_SEARCH_RESULT_TYPE_DEFAULT;
+        
+        TwitterRequestObject* twitterRequest = [self.engine constructSearchRequestWithParams:params.copy];
+        
+        completionBlock(twitterRequest);
+        
+    }];
 
-    NSString* query = mutableQuery.copy;
-    
-    params[TWITTER_SEARCH_QUERY_KEY] = query;
-    
-    //CLLocation* dealLocation = [deal getLocation];
-    
-    CLLocationCoordinate2D coord = deal.getCoordinates;
-    
-    NSString* geocode = [NSString stringWithFormat:@"%f,%f,%@km", coord.latitude, coord.longitude, TWITTER_SEARCH_GEOCODE_RADIUS_KM_DEFAULT];
-    
-    params[TWITTER_SEARCH_COUNT_KEY] = TWITTER_SEARCH_COUNT_DEFAULT;
-    
-    params[TWITTER_SEARCH_GEOCODE_KEY] = geocode;
-    
-    params[TWITTER_SEARCH_RESULT_TYPE_KEY] = TWITTER_SEARCH_RESULT_TYPE_DEFAULT;
-    
-    return [self.engine constructSearchRequestWithParams:params.copy];
 }
 
 -(TwitterRequestObject *)constructTwitterTokenRequest

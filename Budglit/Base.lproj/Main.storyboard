@@ -35,41 +35,52 @@
                                 </connections>
                             </mapView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Gwr-gc-EPS">
-                                <rect key="frame" x="43" y="35" width="27" height="22"/>
+                                <rect key="frame" x="43" y="35" width="25" height="20"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="27" id="DLB-ma-PDx"/>
+                                    <constraint firstAttribute="width" constant="25" id="DLB-ma-PDx"/>
                                 </constraints>
                                 <state key="normal" image="empty_filter_app_icon_selected.png"/>
                                 <connections>
                                     <action selector="filterBtnPressed:" destination="ZFm-UY-e1g" eventType="touchUpInside" id="56h-8t-DM9"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TvH-jk-uz8">
-                                <rect key="frame" x="301" y="35" width="27" height="22"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TvH-jk-uz8">
+                                <rect key="frame" x="301" y="35" width="25" height="20"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="27" id="5CS-yv-DjW"/>
+                                    <constraint firstAttribute="width" constant="25" id="5CS-yv-DjW"/>
                                 </constraints>
                                 <color key="tintColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                                <state key="normal">
+                                <state key="normal" image="hamburgerMenuGroup.png">
                                     <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
                                     <action selector="menuBtnPressed:" destination="ZFm-UY-e1g" eventType="touchUpInside" id="T8U-XV-Fna"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="y4c-V1-qe6">
+                                <rect key="frame" x="301" y="617" width="30" height="30"/>
+                                <state key="normal" image="currentLocationIconGroup.png"/>
+                                <connections>
+                                    <action selector="currentLocationBtnPressed:" destination="ZFm-UY-e1g" eventType="touchUpInside" id="esT-Gd-WdO"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="iFT-vK-n9W" firstAttribute="trailing" secondItem="TvH-jk-uz8" secondAttribute="trailing" constant="47" id="9Tc-k8-lN2"/>
+                            <constraint firstItem="y4c-V1-qe6" firstAttribute="top" secondItem="iFT-vK-n9W" secondAttribute="top" constant="597" id="379-6N-ygF"/>
+                            <constraint firstItem="y4c-V1-qe6" firstAttribute="trailing" secondItem="mRa-ZA-qSm" secondAttribute="trailingMargin" constant="-28" id="46J-hJ-p1z"/>
+                            <constraint firstItem="iFT-vK-n9W" firstAttribute="trailing" secondItem="TvH-jk-uz8" secondAttribute="trailing" constant="49" id="9Tc-k8-lN2"/>
                             <constraint firstItem="Gwr-gc-EPS" firstAttribute="top" secondItem="TvH-jk-uz8" secondAttribute="top" id="9dX-Sg-d9L"/>
                             <constraint firstAttribute="trailing" secondItem="sOL-SR-wrI" secondAttribute="trailing" id="BIF-oH-zWk"/>
+                            <constraint firstItem="y4c-V1-qe6" firstAttribute="leading" secondItem="iFT-vK-n9W" secondAttribute="leading" constant="301" id="HaK-aj-dBc"/>
                             <constraint firstItem="Gwr-gc-EPS" firstAttribute="bottom" secondItem="TvH-jk-uz8" secondAttribute="bottom" id="LBr-u4-vcs"/>
-                            <constraint firstItem="iFT-vK-n9W" firstAttribute="bottom" secondItem="Gwr-gc-EPS" secondAttribute="bottom" constant="610" id="Ndx-Wc-Q6Q"/>
+                            <constraint firstItem="iFT-vK-n9W" firstAttribute="bottom" secondItem="Gwr-gc-EPS" secondAttribute="bottom" constant="612" id="Ndx-Wc-Q6Q"/>
                             <constraint firstItem="Gwr-gc-EPS" firstAttribute="leading" secondItem="iFT-vK-n9W" secondAttribute="leading" constant="43" id="QzK-OW-70h"/>
                             <constraint firstItem="sOL-SR-wrI" firstAttribute="bottom" secondItem="iFT-vK-n9W" secondAttribute="bottom" id="ZEv-oO-73R"/>
                             <constraint firstItem="sOL-SR-wrI" firstAttribute="top" secondItem="mRa-ZA-qSm" secondAttribute="top" id="mYE-hZ-df5"/>
                             <constraint firstItem="Gwr-gc-EPS" firstAttribute="top" secondItem="iFT-vK-n9W" secondAttribute="top" constant="15" id="n6A-Dh-1vf"/>
                             <constraint firstItem="sOL-SR-wrI" firstAttribute="leading" secondItem="mRa-ZA-qSm" secondAttribute="leading" id="wtr-8f-1FV"/>
+                            <constraint firstAttribute="bottom" secondItem="y4c-V1-qe6" secondAttribute="bottom" constant="20" symbolic="YES" id="xx7-X9-Pf6"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="iFT-vK-n9W"/>
                     </view>
@@ -83,7 +94,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="f1W-RQ-ZCI" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2007" y="-697"/>
+            <point key="canvasLocation" x="2005.5999999999999" y="-697.60119940029995"/>
         </scene>
         <!--Home View Controller-->
         <scene sceneID="EOh-R8-y5T">
@@ -394,7 +405,9 @@
     </scenes>
     <resources>
         <image name="address_icon.png" width="22" height="22"/>
+        <image name="currentLocationIconGroup.png" width="102" height="95"/>
         <image name="empty_filter_app_icon_selected.png" width="22" height="22"/>
+        <image name="hamburgerMenuGroup.png" width="84" height="45"/>
         <image name="phone_icon.png" width="22" height="22"/>
     </resources>
     <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>

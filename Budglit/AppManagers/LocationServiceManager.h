@@ -42,6 +42,7 @@ typedef void (^fetchPostalCompletionHandler)(id object);
 @property (nonatomic, strong) GNEngine* engine;
 @property (nonatomic, assign) id<LocationManagerDelegate> delegate;
 @property (nonatomic, copy) NSArray* cities;
+@property (nonatomic, strong) CLLocation *currentLocation;
 
 //@property (nonatomic) int updateState;
 
@@ -65,6 +66,8 @@ typedef void (^fetchPostalCompletionHandler)(id object);
 
 -(void) attemptToAddCurrentLocation:(CityDataObject*) aCity addCompletionHandler:(addLocationResponse)completionHandler;
 
+-(CityDataObject*) getCurrentLocationCityObject;
+
 @property (NS_NONATOMIC_IOSONLY, readonly, copy) NSString *retrieveCurrentLocationString;
 
 -(void) fetchLocationInformation:(NSArray*) locations;
@@ -79,14 +82,13 @@ typedef void (^fetchPostalCompletionHandler)(id object);
 
 @property (NS_NONATOMIC_IOSONLY, readonly) BOOL hasMetLocationTimeThreshold;
 
-@property (NS_NONATOMIC_IOSONLY, getter=getCurrentLocation, readonly, copy) CLLocation *currentLocation;
-
 @property (NS_NONATOMIC_IOSONLY, getter=getCurrentZipcode, readonly, copy) NSString *currentZipcode;
 
-//-(void) fetchSurroundingZipcodesWithPostalCode:(NSString*)postalCode andObjects:(NSDictionary*) usersObjects;
+-(CLLocation *)getCurrentLocation;
 
 -(void) fetchSurroundingZipcodesWithPostalCode:(NSString*)postalCode andObjects:(NSDictionary*) usersObjects addCompletionHandler:(fetchPostalCompletionHandler)completionHandler;
-//-(void) fetchSurroundingZipcodesWithPostalCode:(NSString*)postalCode andObjects:(NSDictionary*)usersObject addCompletionHandler:(fetchPostalCompletionHandler)completionHandler;
+
+-(void) fetchZipcodesForCity:(CityDataObject*)city andObjects:(NSDictionary*)usersObject addCompletionHandler:(fetchPostalCompletionHandler)completionHandler;
 
 -(void) fetchSurroundingZipcodesWithCurrentLocation:(CLLocation*)currentLocation andObjects:(NSDictionary*) usersObjects addCompletionHandler:(fetchPostalCompletionHandler)completionHandler;
 

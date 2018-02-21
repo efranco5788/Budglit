@@ -48,10 +48,16 @@
         [self toggleWebView];
         
         if (signedIn){
-            
-            TwitterRequestObject* searchTweets = [appDelegate.twitterManager constructTwitterSearchRequestForDeal:self.currentDeal];
-            
-            [appDelegate.twitterManager twitterSendGeneralRequest:searchTweets];
+            [appDelegate.twitterManager constructTwitterSearchRequestForDeal:self.currentDeal addCompletion:^(id response) {
+                
+                if (response) {
+                    TwitterRequestObject* searchTweetsRequest = (TwitterRequestObject*) response;
+                    
+                    [appDelegate.twitterManager twitterSendGeneralRequest:searchTweetsRequest];
+                }
+                
+            }];
+
         }
         else{
             
@@ -71,10 +77,8 @@
 
 -(void)viewWillLayoutSubviews
 {
-    CGRect newFrame = CGRectInset(self.view.frame, 1, 1);
-    
-    //self.signInButton.center = CGPointMake(self.view.frame.size.width / 2, self.signInButton.center.y);
-    
+    CGRect newFrame = CGRectInset(self.view.bounds, 1, 1);
+
     (self.signInButton).frame = newFrame;
     
     [super viewDidLayoutSubviews];
@@ -101,9 +105,15 @@
                 [self toggleWebView];
             }
             
-            TwitterRequestObject* searchTweets = [appDelegate.twitterManager constructTwitterSearchRequestForDeal:self.currentDeal];
-            
-            [appDelegate.twitterManager twitterSendGeneralRequest:searchTweets];
+            [appDelegate.twitterManager constructTwitterSearchRequestForDeal:self.currentDeal addCompletion:^(id response) {
+                
+                if (response) {
+                    TwitterRequestObject* searchTweetsRequest = (TwitterRequestObject*) response;
+                    
+                    [appDelegate.twitterManager twitterSendGeneralRequest:searchTweetsRequest];
+                }
+                
+            }];
         }
         
     }
@@ -118,9 +128,7 @@
 
 -(void)frameWebView
 {
-    CGRect screenSize = [UIScreen mainScreen].bounds;
-    
-    CGRect frameSize = CGRectMake(self.view.bounds.origin.x, self.view.bounds.origin.y, screenSize.size.width, self.view.bounds.size.height);
+    CGRect frameSize = CGRectMake(self.view.bounds.origin.x, self.view.bounds.origin.y, self.view.bounds.size.width, self.view.bounds.size.height);
     
     (self.webView).frame = frameSize;
 }
@@ -234,11 +242,16 @@
 {
     AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
-    TwitterRequestObject* searchTweets = [appDelegate.twitterManager constructTwitterSearchRequestForDeal:self.currentDeal];
+    [appDelegate.twitterManager constructTwitterSearchRequestForDeal:self.currentDeal addCompletion:^(id response) {
+        
+        if (response) {
+            TwitterRequestObject* searchTweetsRequest = (TwitterRequestObject*) response;
+            
+            [appDelegate.twitterManager twitterSendGeneralRequest:searchTweetsRequest];
+        }
+        
+    }];
     
-    //NSLog(@"%@", searchTweets.requestSignatureBase);
-    
-    [appDelegate.twitterManager twitterSendGeneralRequest:searchTweets];
 }
 
 -(void)twitterGeneralRequestSucessful

@@ -25,7 +25,6 @@
 #define ZIPCODE_INPUT @"Input Zipcode"
 #define ZIPCODE @"zipcode"
 
-#define BUDGET_FILTER @"budget_filter"
 #define DISTANCE_FILTER @"distance_filter"
 #define DATE_FILTER @"date_filter"
 #define BUDGET_AMOUNTS @"budget_amounts"
@@ -198,6 +197,7 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
     
     NSDictionary* defaultSearchFilter = [appDelegate.databaseManager fetchPrimaryDefaultSearchFiltersWithZipcodes:nil];
     
+    /*
     // Location Manager Method to fetch surrounding zipcodes
     [appDelegate.locationManager fetchSurroundingZipcodesWithPostalCode:postalCode andObjects:defaultSearchFilter addCompletionHandler:^(id object) {
         
@@ -237,7 +237,32 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
         //[self reloadDeals:criteria];
         
     }];
+     
+    */
+    CityDataObject* city = [appDelegate.locationManager getCurrentLocationCityObject];
+    
+    [appDelegate.locationManager fetchZipcodesForCity:city andObjects:defaultSearchFilter addCompletionHandler:^(id object) {
+        
+        NSArray* zipcodes = (NSArray*) object;
+        
+        NSMutableArray* postalCodes = [[NSMutableArray alloc] init];
+        
+        // Extract the postal codes
+        for (id zipcode in zipcodes) {
+            
+            PostalCode* postalCode = (PostalCode*) zipcode;
+            
+            [postalCodes addObject:postalCode.postalCode];
+        }
+        
+        NSDictionary* criteria = [appDelegate.databaseManager fetchPrimaryDefaultSearchFiltersWithZipcodes:postalCodes];
+        
+        [appDelegate.databaseManager.engine appendToCurrentSearchFilter:criteria];
 
+        [self.delegate loadingPageDismissed:criteria];
+        
+    }];
+    
 }
 
 -(void)verifyBudget
@@ -259,9 +284,7 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
         [appDelegate.databaseManager setZipcodeCriteria:currentPostal];
         
         NSDictionary* userSearchCriteria = [appDelegate.databaseManager getUsersCurrentCriteria];
-        
-        //[appDelegate.locationManager fetchSurroundingZipcodesWithPostalCode:currentPostal andObjects:userSearchCriteria];
-        
+                
         [appDelegate.locationManager fetchSurroundingZipcodesWithPostalCode:currentPostal andObjects:userSearchCriteria addCompletionHandler:^(id object) {
             
             if(object){
@@ -282,8 +305,6 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
         
         NSDictionary* userSearchCriteria = [appDelegate.databaseManager getUsersCurrentCriteria];
         
-        //[appDelegate.locationManager fetchSurroundingZipcodesWithPostalCode:currentPostal andObjects:userSearchCriteria];
-        
         [appDelegate.locationManager fetchSurroundingZipcodesWithPostalCode:currentPostal andObjects:userSearchCriteria addCompletionHandler:^(id object) {
             
         }];
@@ -296,7 +317,7 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
 {
     NSString* budgetCriteria;
     
-    NSString* budgetValue = [searchCriteria valueForKey:BUDGET_FILTER];
+    NSString* budgetValue = [searchCriteria valueForKey:NSLocalizedString(@"BUDGET_FILTER", nil)];
     
     NSArray* budgetAmounts = [searchCriteria valueForKey:BUDGET_AMOUNTS];
     
@@ -333,7 +354,7 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
     
     currentState = CLEAR;
     
-    [appDelegate.budgetManager addBudget:selectedCriteria[BUDGET_FILTER]];
+    [appDelegate.budgetManager addBudget:selectedCriteria[NSLocalizedString(@"BUDGET_FILTER", nil)]];
     
     if (self.budgetPickerView) {
         
@@ -444,6 +465,7 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
     }];
     
     [zipcode_Alert addAction:done];
+    
     [zipcode_Alert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
         textField.keyboardType = UIKeyboardTypeNumberPad;
         textField.tag = 100;

@@ -398,6 +398,36 @@ static LocationSeviceManager* sharedManager;
 
 #pragma mark -
 #pragma mark - Current Location
+-(CLLocation *)getCurrentLocation
+{
+    if (self.locationHistory == 0) {
+        return nil;
+    }
+    else
+    {
+        CLLocation* currentLocation = [(self.locationHistory).lastObject valueForKey:LOCATION];
+        
+        return currentLocation;
+    }
+}
+
+-(CityDataObject*)getCurrentLocationCityObject
+{
+    NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
+    
+    NSString* zipcode = [defaults objectForKey:ZIPCODE];
+    
+    NSString* stateName = [defaults objectForKey:STATE];
+    
+    NSString* stateAbbreviation = [defaults objectForKey:ABBREVIATION];
+    
+    NSString* cityName = [defaults objectForKey:CITY];
+    
+    CityDataObject* city = [[CityDataObject alloc] initWithCity:cityName State:stateName stateAbbr:stateAbbreviation andPostal:zipcode];
+    
+    return city;
+}
+
 -(NSString*)retrieveCurrentLocationString
 {
     NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
@@ -503,7 +533,7 @@ static LocationSeviceManager* sharedManager;
         
         CLLocationCoordinate2D coordinates = location.location.coordinate;
         
-        [deal setCoordinates:coordinates];
+        //[deal setCoordinates:coordinates];
         
         completionHandler(YES);
         
@@ -569,19 +599,6 @@ static LocationSeviceManager* sharedManager;
     else return YES;
 }
 
--(CLLocation *)getCurrentLocation
-{
-    if (self.locationHistory == 0) {
-        return nil;
-    }
-    else
-    {
-        CLLocation* currentLocation = [(self.locationHistory).lastObject valueForKey:LOCATION];
-        
-        return currentLocation;
-    }
-}
-
 -(NSString*)getCurrentZipcode
 {
     NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
@@ -604,7 +621,6 @@ static LocationSeviceManager* sharedManager;
 
 -(void)fetchSurroundingZipcodesWithCurrentLocation:(CLLocation*)currentLocation andObjects:(NSDictionary *)usersObjects addCompletionHandler:(fetchPostalCompletionHandler)completionHandler
 {
-    
     if (currentLocation == nil) {
         currentLocation = [self getCurrentLocation];
     }
@@ -676,6 +692,53 @@ static LocationSeviceManager* sharedManager;
         else completionHandler(nil);
         
     }];
+}
+
+-(void)fetchZipcodesForCity:(CityDataObject*)city andObjects:(NSDictionary *)usersObject addCompletionHandler:(fetchPostalCompletionHandler)completionHandler
+{
+    if (city == nil) completionHandler(nil);
+    
+    NSString* cityName = city.name;
+    
+    NSString* stateName = city.stAbbr;
+    
+    NSArray* keys = @[@"city", @"state"];
+    
+    NSArray* objects = @[cityName, stateName];
+    
+    NSDictionary* parameters = [NSDictionary dictionaryWithObjects:objects forKeys:keys];
+    
+    [self.engine GNFetchPostalCodesForCity:parameters addCompletionHandler:^(id response) {
+        
+        if(response)
+        {
+            NSDictionary* postalCodes = (NSDictionary*) response;
+            
+            NSArray* fetchedPostalCodes = postalCodes[@"parsedList"];
+            
+            NSArray* postalCodesList = [fetchedPostalCodes firstObject];
+ 
+            __block NSMutableArray* allPostalCodes = [[NSMutableArray alloc] init];
+            
+            for (NSString* postalCode in postalCodesList) {
+                
+                NSLog(@"%@", postalCode);
+                
+                PostalCode* newPostalCode = [[PostalCode alloc] initWithPostalCode:postalCode andDistance:nil];
+                
+                [allPostalCodes addObject:newPostalCode];
+                
+            }
+            
+            NSArray* zipcodes = allPostalCodes.copy;
+
+            completionHandler(zipcodes);
+        }
+        else completionHandler(nil);
+        
+        
+    }];
+    
 }
 
 

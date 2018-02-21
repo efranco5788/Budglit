@@ -25,11 +25,11 @@
     
     self.restorationIdentifier = RESTORATION_STRING;
     
-    CGRect screenSize = [UIScreen mainScreen].bounds;
-    
-    CGRect frameSize = CGRectMake(self.tableView.frame.origin.x, self.tableView.frame.origin.y, screenSize.size.width, self.tableView.frame.size.height);
+    CGRect frameSize = CGRectMake(self.tableView.bounds.origin.x, self.tableView.bounds.origin.y, self.tableView.bounds.size.width, self.tableView.bounds.size.height);
     
     (self.tableView).frame = frameSize;
+    
+    self.tableView.cellLayoutMarginsFollowReadableWidth = TRUE;
 }
 
 -(void)reloadDataWithNewData
@@ -80,7 +80,7 @@
     TWTRTweet* tweet = [appDelegate.twitterManager tweetAtIndex:indexPath.row];
     
     // Grab the height for this cell
-    CGFloat height = [TWTRTweetTableViewCell heightForTweet:tweet style:TWTRTweetViewStyleCompact width:CGRectGetWidth(self.view.bounds) showingActions:YES];
+    CGFloat height = [TWTRTweetTableViewCell heightForTweet:tweet style:TWTRTweetViewStyleCompact width:self.tableView.bounds.size.width showingActions:YES];
     
     return height;
 }

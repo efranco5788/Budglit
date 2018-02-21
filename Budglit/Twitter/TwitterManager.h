@@ -14,6 +14,8 @@
 @class TwitterEngine;
 @class TwitterRequestObject;
 
+typedef void (^dataBlockResponse)(id response);
+
 @protocol TwitterManagerDelegate <NSObject>
 @optional
 -(void)twitterGeneralRequestSucessful;
@@ -40,17 +42,17 @@
 
 @property (NS_NONATOMIC_IOSONLY, readonly) BOOL userSignedIn;
 
--(void)twitterExtractTokenVerifierFromURL:(NSString*)URL;
-
--(TwitterRequestObject*)constructTwitterSearchRequestForDeal:(Deal*)deal;
-
 @property (NS_NONATOMIC_IOSONLY, readonly, strong) TwitterRequestObject *constructTwitterTokenRequest;
 
 @property (NS_NONATOMIC_IOSONLY, readonly, strong) TwitterRequestObject *constructTwitterAccessTokenRequest;
 
 @property (NS_NONATOMIC_IOSONLY, readonly, strong) TwitterRequestObject *constructTwitterAuthenticateRequest;
 
--(TwitterRequestObject*) constructTwitterRateLimitRequest:(NSArray*)query;
+-(void)twitterExtractTokenVerifierFromURL:(NSString*)URL;
+
+-(void)constructTwitterSearchRequestForDeal:(Deal*)deal addCompletion:(dataBlockResponse)completionBlock;
+
+-(TwitterRequestObject *)constructTwitterRateLimitRequest:(NSArray *)query;
 
 -(void)twitterSignInAuthenticateRequest:(TwitterRequestObject*)request;
 
