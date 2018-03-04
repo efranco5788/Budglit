@@ -322,7 +322,11 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
     BudgetPickerViewController* filterPanel = [[BudgetPickerViewController alloc] init];
     
-    [drawer configureCenterViewController:centerView leftDrawerViewController:filterPanel rightDrawerViewController:rigthPanel];
+    UINavigationController* budgetNavigationController = [[UINavigationController alloc] initWithRootViewController:filterPanel];
+    
+    [BudgetPickerViewController setNavigationBar:budgetNavigationController.navigationBar];
+    
+    [drawer configureCenterViewController:centerView leftDrawerViewController:budgetNavigationController rightDrawerViewController:rigthPanel];
     
     [drawer setShowsShadow:YES];
     

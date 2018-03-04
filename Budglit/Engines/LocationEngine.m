@@ -1,21 +1,19 @@
 //
-//  GNEngine.m
+//  LocationEngine.m
 //  PocketStretch
 //
 //  Created by Emmanuel Franco on 9/26/15.
 //  Copyright © 2015 Emmanuel Franco. All rights reserved.
 //
 
-#import "GNEngine.h"
+#import "LocationEngine.h"
 
 #define PARAM_USERNAME @"efranco5788"
 #define KEY_FOR_USERNAME @"username"
-//#define POSTAL_CODE_NEARBY_SEARCH_URL @"http://api.geonames.org/findNearbyPostalCodesJSON"
-//#define POSTAL_CODE_NEARBY_SEARCH_URL @"findNearbyPostalCodesJSON"
 #define POSTAL_CODE_NEARBY_SEARCH_URL @"api/zipcode"
 #define MakeLocation(lat,lon) [[CLLocation alloc]initWithLatitude: lat longitude: lon]
 
-@implementation GNEngine
+@implementation LocationEngine
 
 -(instancetype)init
 {

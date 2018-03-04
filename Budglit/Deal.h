@@ -51,9 +51,13 @@ extern NSString* const kDefaultEventEndNotification;
 
 @property (NS_NONATOMIC_IOSONLY, readonly, copy) NSString *detailDescription;
 
+@property (NS_NONATOMIC_IOSONLY, getter=getOriginalPosition) CGRect originalPosition;
+
 -(NSInteger)getID;
 
 -(NSString*)getDealIDString;
+
+-(double) getBudget;
 
 -(void)addTags:(NSArray*)tags;
 
@@ -61,6 +65,4 @@ extern NSString* const kDefaultEventEndNotification;
 
 -(UILabel*)animateCountdownEndDate:(UILabel*)aLabel;
 
-
-@property (NS_NONATOMIC_IOSONLY, getter=getOriginalPosition) CGRect originalPosition;
 @end

@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@class PSDealDetailViewController;
+@class DealDetailViewController;
 @class LoadingLocalDealsViewController;
 @class AppDelegate;
 @class AccountManager;

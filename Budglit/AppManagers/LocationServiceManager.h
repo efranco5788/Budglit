@@ -13,7 +13,7 @@
 
 @class LoadingLocalDealsViewController;
 @class CityDataObject;
-@class GNEngine;
+@class LocationEngine;
 @class Deal;
 
 typedef void (^addLocationResponse)(BOOL success);
@@ -39,7 +39,7 @@ typedef void (^fetchPostalCompletionHandler)(id object);
 + (LocationSeviceManager *) sharedLocationServiceManager;
 
 @property (nonatomic, strong) CLLocationManager* locationManager;
-@property (nonatomic, strong) GNEngine* engine;
+@property (nonatomic, strong) LocationEngine* engine;
 @property (nonatomic, assign) id<LocationManagerDelegate> delegate;
 @property (nonatomic, copy) NSArray* cities;
 @property (nonatomic, strong) CLLocation *currentLocation;
@@ -84,7 +84,7 @@ typedef void (^fetchPostalCompletionHandler)(id object);
 
 @property (NS_NONATOMIC_IOSONLY, getter=getCurrentZipcode, readonly, copy) NSString *currentZipcode;
 
--(CLLocation *)getCurrentLocation;
+-(CLLocation*)getCurrentLocation;
 
 -(void) fetchSurroundingZipcodesWithPostalCode:(NSString*)postalCode andObjects:(NSDictionary*) usersObjects addCompletionHandler:(fetchPostalCompletionHandler)completionHandler;
 

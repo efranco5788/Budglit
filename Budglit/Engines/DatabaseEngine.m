@@ -378,6 +378,26 @@
 }
 
 #pragma mark -
+#pragma mark - Sort Methods
+-(void)sortArray:(NSArray *)array byKey:(NSString *)key ascending:(BOOL)shouldAscend localizeCompare:(BOOL)shouldLocalize addCompletion:(dataResponseBlockResponse)completionHandler
+{
+    if(!array) completionHandler(nil);
+    
+    if(!key) completionHandler(nil);
+    
+    NSSortDescriptor* descriptor;
+    
+    if (shouldLocalize) {
+        descriptor = [[NSSortDescriptor alloc] initWithKey:key ascending:shouldAscend selector:@selector(localizedStandardCompare:)];
+    }
+    else descriptor = [[NSSortDescriptor alloc] initWithKey:key ascending:shouldAscend];
+    
+    NSArray* sortedArray = [array sortedArrayUsingDescriptors:@[descriptor]];
+    
+    completionHandler(sortedArray.copy);
+}
+
+#pragma mark -
 #pragma mark - Map Annotation Methods
 /*
 -(void)groupAnnotationByCoordinates:(NSMutableArray *)annotations addCompletionHandler:(dataResponseBlockResponse)completionHandler

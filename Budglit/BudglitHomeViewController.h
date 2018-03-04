@@ -1,5 +1,5 @@
 //
-//  PSHomeViewController.h
+//  BudglitHomeViewController.h
 //  PocketStretch
 //
 //  Created by Emmanuel Franco on 9/26/15.
@@ -19,7 +19,7 @@
 #define HAS_LAUNCHED_ONCE @"HasLaunchedOnce"
 #define BUDGET_TITLE @"Budget"
 
-@interface PSHomeViewController : UIViewController< UIViewControllerTransitioningDelegate, UIAlertViewDelegate, UITextFieldDelegate>
+@interface BudglitHomeViewController : UIViewController< UIViewControllerTransitioningDelegate, UIAlertViewDelegate, UITextFieldDelegate>
 
 @property (nonatomic, strong) LoginPageViewController* loginPage;
 

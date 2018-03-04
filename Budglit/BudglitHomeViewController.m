@@ -1,12 +1,12 @@
 //
-//  PSHomeViewController.m
+//  BudglitHomeViewController.m
 //  PocketStretch
 //
 //  Created by Emmanuel Franco on 9/26/15.
 //  Copyright © 2015 Emmanuel Franco. All rights reserved.
 //
 
-#import "PSHomeViewController.h"
+#import "BudglitHomeViewController.h"
 #import <CoreLocation/CoreLocation.h>
 #import "AppDelegate.h"
 #import "DrawerViewController.h"
@@ -22,11 +22,11 @@
 #define PUSH_TO_MAIN_CONTAINER_VIEW @"pushToMainContainer"
 #define PUSH_TO_DRAWER_CONTROLLER @"pushToDrawerController"
 
-@interface PSHomeViewController () <LoginPageDelegate, LoadingPageDelegate>
+@interface BudglitHomeViewController () <LoginPageDelegate, LoadingPageDelegate>
 
 @end
 
-@implementation PSHomeViewController
+@implementation BudglitHomeViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];

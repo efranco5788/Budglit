@@ -8,7 +8,7 @@
 
 #import "DealDetailedAnimationController.h"
 #import "PSAllDealsTableViewController.h"
-#import "PSDealDetailViewController.h"
+#import "DealDetailViewController.h"
 
 @implementation DealDetailedAnimationController
 
@@ -21,7 +21,7 @@
 {
     PSAllDealsTableViewController* fromViewController = (PSAllDealsTableViewController*) [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
     
-    PSDealDetailViewController* toViewController = (PSDealDetailViewController*) [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
+    DealDetailViewController* toViewController = (DealDetailViewController*) [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
     
     UIView* containerView = [transitionContext containerView];
     

@@ -100,7 +100,7 @@
 
 -(void)slideDrawerSide:(MMDrawerSide*)drawerSide Animated:(BOOL)isAnimated
 {
-    [self toggleDrawerSide:*drawerSide animated:isAnimated completion:^(BOOL finished) {
+    [self toggleDrawerSide:drawerSide animated:isAnimated completion:^(BOOL finished) {
 
     }];
     
@@ -189,7 +189,7 @@
     
     if ([segue.identifier isEqualToString:SEGUE_ALL_CUURENT_DEAL_TO_DEAL_DETAIL_CONTROLLER]) {
         
-        PSDealDetailViewController* ACDDVC = (PSDealDetailViewController*) segue.destinationViewController;
+        DealDetailViewController* ACDDVC = (DealDetailViewController*) segue.destinationViewController;
         
         ACDDVC.transitioningDelegate = self;
         

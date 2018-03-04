@@ -1,12 +1,12 @@
 //
-//  PSDealDetailViewController.m
+//  DealDetailViewController.m
 //  PocketStretch
 //
 //  Created by Emmanuel Franco on 9/26/15.
 //  Copyright © 2015 Emmanuel Franco. All rights reserved.
 //
 
-#import "PSDealDetailViewController.h"
+#import "DealDetailViewController.h"
 #import "AppDelegate.h"
 #import "DatabaseEngine.h"
 #import "Deal.h"
@@ -20,7 +20,7 @@
 #define ALLDEALS_VC_SB_ID @"PSAllDealsTableViewController"
 #define LAST_INDEX 2
 
-@interface PSDealDetailViewController ()<UIGestureRecognizerDelegate, TwitterViewDelegate, UIPageViewControllerDelegate, UIPageViewControllerDataSource, PSAllDealsTableViewControllerDelegate, DatabaseManagerDelegate>
+@interface DealDetailViewController ()<UIGestureRecognizerDelegate, TwitterViewDelegate, UIPageViewControllerDelegate, UIPageViewControllerDataSource, PSAllDealsTableViewControllerDelegate, DatabaseManagerDelegate>
 {
     CGRect originalTwitterView;
     UIView* backgroundDimmerMainView;
@@ -31,7 +31,7 @@
 
 
 
-@implementation PSDealDetailViewController
+@implementation DealDetailViewController
 @synthesize descriptionTextView, addressTextView, phoneNumberTextView, addressText, phoneText, venueImage;
 - (void)viewDidLoad
 {

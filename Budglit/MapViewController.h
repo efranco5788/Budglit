@@ -22,10 +22,9 @@ typedef void (^generalBlockResponse)(BOOL success);
 @property (strong, nonatomic) IBOutlet MKMapView* mapView;
 @property (strong, nonatomic) IBOutlet UIButton* menuBtn;
 @property (strong, nonatomic) IBOutlet UIButton* filterBtn;
-- (IBAction)currentLocationBtnPressed:(UIButton *)sender;
-
 @property (strong, nonatomic) UIView* backgroundScreen;
 
+- (IBAction)currentLocationBtnPressed:(UIButton *)sender;
 - (IBAction)menuBtnPressed:(id)sender;
 - (IBAction)filterBtnPressed:(id)sender;
 

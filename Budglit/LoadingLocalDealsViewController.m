@@ -333,17 +333,6 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
     self.budgetPickerView.budgetText.text = budgetCriteria;
 }
 
--(void)updateResultLabels
-{
-    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
-    
-    NSInteger count = [appDelegate.databaseManager totalCountDealsLoaded];
-    
-    NSString* title_doneButton = [NSString stringWithFormat:@"%li Results", (long)count];
-    
-    self.budgetPickerView.doneButton.title = title_doneButton;
-}
-
 -(void)budgetSelected:(NSDictionary *)selectedCriteria
 {
     AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;

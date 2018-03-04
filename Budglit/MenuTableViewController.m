@@ -75,6 +75,10 @@ static NSString *userProfileIdentifier = @"profileCell";
     UIImage* image = [user getProfileImage];
     
     (profileCell.imageView).image = image;
+    
+    [profileCell.imageView setContentMode:UIViewContentModeScaleAspectFit];
+    
+    [profileCell.imageView setClipsToBounds:YES];
 }
 
 
@@ -85,19 +89,22 @@ static NSString *userProfileIdentifier = @"profileCell";
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if(section == 0) {
-        return 1;
+    
+    switch (section) {
+        case 0:
+            return 1;
+            break;
+        case 1:
+            return 4;
+            break;
+        case 2:
+            return 1;
+            break;
+        default:
+            return 0;
+            break;
     }
     
-    if (section == 1) {
-        return 4;
-    }
-    
-    if (section == 2) {
-        return 1;
-    }
-    
-    return 0;
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
@@ -255,20 +262,6 @@ static NSString *userProfileIdentifier = @"profileCell";
  } else if (editingStyle == UITableViewCellEditingStyleInsert) {
  // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
  }
- }
- */
-
-/*
- // Override to support rearranging the table view.
- - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
- }
- */
-
-/*
- // Override to support conditional rearranging of the table view.
- - (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
- // Return NO if you do not want the item to be re-orderable.
- return YES;
  }
  */
 

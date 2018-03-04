@@ -69,12 +69,12 @@
                         <constraints>
                             <constraint firstItem="y4c-V1-qe6" firstAttribute="top" secondItem="iFT-vK-n9W" secondAttribute="top" constant="597" id="379-6N-ygF"/>
                             <constraint firstItem="y4c-V1-qe6" firstAttribute="trailing" secondItem="mRa-ZA-qSm" secondAttribute="trailingMargin" constant="-28" id="46J-hJ-p1z"/>
-                            <constraint firstItem="iFT-vK-n9W" firstAttribute="trailing" secondItem="TvH-jk-uz8" secondAttribute="trailing" constant="49" id="9Tc-k8-lN2"/>
+                            <constraint firstItem="TvH-jk-uz8" firstAttribute="trailing" secondItem="iFT-vK-n9W" secondAttribute="trailing" constant="-49" id="9Tc-k8-lN2"/>
                             <constraint firstItem="Gwr-gc-EPS" firstAttribute="top" secondItem="TvH-jk-uz8" secondAttribute="top" id="9dX-Sg-d9L"/>
                             <constraint firstAttribute="trailing" secondItem="sOL-SR-wrI" secondAttribute="trailing" id="BIF-oH-zWk"/>
                             <constraint firstItem="y4c-V1-qe6" firstAttribute="leading" secondItem="iFT-vK-n9W" secondAttribute="leading" constant="301" id="HaK-aj-dBc"/>
                             <constraint firstItem="Gwr-gc-EPS" firstAttribute="bottom" secondItem="TvH-jk-uz8" secondAttribute="bottom" id="LBr-u4-vcs"/>
-                            <constraint firstItem="iFT-vK-n9W" firstAttribute="bottom" secondItem="Gwr-gc-EPS" secondAttribute="bottom" constant="612" id="Ndx-Wc-Q6Q"/>
+                            <constraint firstItem="Gwr-gc-EPS" firstAttribute="bottom" secondItem="iFT-vK-n9W" secondAttribute="bottom" constant="-612" id="Ndx-Wc-Q6Q"/>
                             <constraint firstItem="Gwr-gc-EPS" firstAttribute="leading" secondItem="iFT-vK-n9W" secondAttribute="leading" constant="43" id="QzK-OW-70h"/>
                             <constraint firstItem="sOL-SR-wrI" firstAttribute="bottom" secondItem="iFT-vK-n9W" secondAttribute="bottom" id="ZEv-oO-73R"/>
                             <constraint firstItem="sOL-SR-wrI" firstAttribute="top" secondItem="mRa-ZA-qSm" secondAttribute="top" id="mYE-hZ-df5"/>
@@ -96,10 +96,10 @@
             </objects>
             <point key="canvasLocation" x="2005.5999999999999" y="-697.60119940029995"/>
         </scene>
-        <!--Home View Controller-->
+        <!--Budglit Home View Controller-->
         <scene sceneID="EOh-R8-y5T">
             <objects>
-                <viewController storyboardIdentifier="PSHomeViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Sb9-74-8Vz" customClass="PSHomeViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="BudglitHomeViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Sb9-74-8Vz" customClass="BudglitHomeViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" restorationIdentifier="PSHomeView" id="bIf-MI-I0Y">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -244,7 +244,7 @@
         <!--Deal Detail View Controller-->
         <scene sceneID="xGL-2Q-dO9">
             <objects>
-                <viewController storyboardIdentifier="PSDealsDetailViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="txp-ao-sEd" customClass="PSDealDetailViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="PSDealsDetailViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="txp-ao-sEd" customClass="DealDetailViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Y6j-zV-qkB">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="603"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

@@ -9,7 +9,7 @@
 #import "LocationServiceManager.h"
 #import "LoadingLocalDealsViewController.h"
 #import <dispatch/dispatch.h>
-#import "GNEngine.h"
+#import "LocationEngine.h"
 #import "CityDataObject.h"
 #import "Deal.h"
 #import "AppDelegate.h"
@@ -41,13 +41,13 @@
 #define KEY_FOR_LOCAL_COUNTRY @"localCountry"
 #define KEY_FOR_USERNAME @"username"
 #define MAX_ROWS @"20"
-#define DEFAULT_RADIUS @"1"
+#define DEFAULT_RADIUS @"5"
 #define DEFAULT_ROWS @"5"
 #define GN_API_PARAM_USERNAME @"efranco5788"
 
 static LocationSeviceManager* sharedManager;
 
-@interface LocationSeviceManager()<GNEngineDelegate>
+@interface LocationSeviceManager()<LocationEngineDelegate>
 @property NSArray* locationHistory;
 
 @end
@@ -83,7 +83,7 @@ static LocationSeviceManager* sharedManager;
         return nil;
     }
     
-    self.engine = [[GNEngine alloc] initWithHostName:hostName];
+    self.engine = [[LocationEngine alloc] initWithHostName:hostName];
     
     (self.engine).delegate = self;
     
@@ -258,7 +258,7 @@ static LocationSeviceManager* sharedManager;
 {
     if (self.locationManager == nil) {
         self.locationManager = [[CLLocationManager alloc] init];
-        (self.locationManager).desiredAccuracy = kCLLocationAccuracyNearestTenMeters;
+        self.locationManager.desiredAccuracy = kCLLocationAccuracyThreeKilometers;
         [self.locationManager setDistanceFilter:DISTANCE_FILTER_THRESHOLD];
         self.locationHistory = [[NSArray alloc] init];
         attempts = 0;
@@ -271,7 +271,7 @@ static LocationSeviceManager* sharedManager;
         [self.locationManager requestWhenInUseAuthorization];
     }
     else{
-        [self.locationManager startUpdatingLocation];
+        [self.locationManager requestLocation];
     }
     
 }
@@ -279,9 +279,7 @@ static LocationSeviceManager* sharedManager;
 -(void)stopUpdates // Stop receiving updates
 {
     [self.locationManager stopUpdatingLocation];
-    
-    self.locationManager.delegate = nil;
-    
+
     attempts = 0;
     
     NSLog(@"Location Services was terminated");
@@ -804,43 +802,6 @@ static LocationSeviceManager* sharedManager;
         
     }];
 }
-
-/*
--(void)fetchSurroundingZipcodesWithPostalCode:(NSString *)postalCode andObjects:(NSDictionary *)usersObject addCompletionHandler:(fetchPostalCompletionHandler)completionHandler
-{
-    if ([postalCode isEqual:nil]) {
-        NSLog(@"Postal code not found!");
-        completionHandler(nil);
-    }
-    
-    
-    NSString* miRadius = [usersObject valueForKey:DISTANCE_FILTER];
-    
-    if (miRadius == nil) {
-        miRadius = DEFAULT_RADIUS;
-    }
-    
-    double milesToKM = ([miRadius doubleValue] * KM_PER_MILE);
-    
-    NSNumber* totalKM = [NSNumber numberWithDouble:milesToKM];
-    
-    NSString* kmRadius = [totalKM stringValue];
-    
-    NSString* rows = MAX_ROWS;
-    
-    NSString* country = @"US";
-    
-    NSString* postal = [KEY_FOR_POSTAL_CODE lowercaseString];
-    
-    NSArray* keys = [NSArray arrayWithObjects:postal, KEY_FOR_COUNTRY, KEY_FOR_RADIUS, KEY_FOR_ROWS, KEY_FOR_USERNAME, nil];
-    
-    NSArray* objects = [NSArray arrayWithObjects: postalCode, country, kmRadius, rows, GN_API_PARAM_USERNAME, nil];
-    
-    NSDictionary* parameters = [NSDictionary dictionaryWithObjects:objects forKeys:keys];
-    
-    completionHandler(parameters);
-}
-*/
 
 #pragma mark -
 #pragma mark - Location Engine Methods

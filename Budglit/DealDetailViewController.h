@@ -1,5 +1,5 @@
 //
-//  PSDealDetailViewController.h
+//  DealDetailViewController.h
 //  PocketStretch
 //
 //  Created by Emmanuel Franco on 9/26/15.
@@ -15,7 +15,7 @@
 @class PSFacebookViewController;
 @class PSInstagramViewController;
 
-@interface PSDealDetailViewController : UIViewController<SocialMediaViewDelegate>
+@interface DealDetailViewController : UIViewController<SocialMediaViewDelegate>
 
 
 @property (weak, nonatomic) Deal* dealSelected;

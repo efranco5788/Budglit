@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <MapKit/MapKit.h>
 #import "Deal.h"
-#import "PSDealDetailViewController.h"
+#import "DealDetailViewController.h"
 #import "GeneralEventAnnotationView.h"
 #import "CustomCalloutViewController.h"
 

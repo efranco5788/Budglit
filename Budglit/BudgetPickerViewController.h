@@ -20,8 +20,6 @@ typedef void (^UILablesUpdated)(BOOL success);
 @optional
 #warning deprecating delegate method
 -(void) budgetSelected:(NSDictionary*) selectedCriteria;
-//-(void) updateViewLabels:(NSDictionary*) searchCriteria;
--(void) updateResultLabels;
 -(void) dismissView;
 @end
 @interface BudgetPickerViewController : UIViewController
@@ -30,11 +28,7 @@ typedef void (^UILablesUpdated)(BOOL success);
 
 @property (nonatomic, assign) id<BudgetPickerDelegate> delegate;
 
-@property (strong, nonatomic) UIBarButtonItem* doneButton;
-
 @property (strong, nonatomic) IBOutlet UIButton *viewResultsButton;
-
-@property (strong, nonatomic) IBOutlet UILabel *currentLocationText;
 
 @property (strong, nonatomic) IBOutlet UILabel *budgetText;
 
@@ -42,13 +36,25 @@ typedef void (^UILablesUpdated)(BOOL success);
 
 @property (strong, nonatomic) IBOutlet UISegmentedControl *distanceFilterSegment;
 
-@property (strong, nonatomic) IBOutlet UISlider*budgetSlider;
+@property (strong, nonatomic) IBOutlet UISlider* budgetSlider;
+
+@property (strong, nonatomic) IBOutlet UISlider* distanceSlider;
+
+@property (strong, nonatomic) IBOutlet UILabel* lbl_DistanceMin;
+
+@property (strong, nonatomic) IBOutlet UILabel* lbl_DistanceMax;
+
+@property (strong, nonatomic) IBOutlet UILabel* lbl_BudgetMin;
+
+@property (strong, nonatomic) IBOutlet UILabel* lbl_BudgetMax;
 
 @property (strong, nonatomic) NSArray* budgetAmounts;
 
 @property (strong, nonatomic) NSDictionary* currentFilterCriteria_Labels;
 
 @property (NS_NONATOMIC_IOSONLY, getter=getCurrentSearchCriteria, readonly, copy) NSDictionary *currentSearchCriteria;
+
++(void) setNavigationBar:(UINavigationBar*)bar;
 
 -(NSDictionary*)getCurrentSearchCriteriaWithSurrondingZipcodes:(NSArray*) zipcodes;
 
@@ -63,6 +69,8 @@ typedef void (^UILablesUpdated)(BOOL success);
 - (IBAction)dragEnded:(id)sender;
 
 -(void)configureBlocks;
+
+-(void)updateLabels;
 
 -(void)updateSearchLables:(UILablesUpdated)completionHandler;
 

@@ -165,7 +165,7 @@ static double USE_CURRENT_RADIUS = -1;
         if(success){
             AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
             
-            NSArray* deals = [appDelegate.databaseManager currentDeals];
+            NSArray* deals = [appDelegate.databaseManager getSavedDeals];
             
             NSLog(@"%@", deals);
             
@@ -288,7 +288,6 @@ static double USE_CURRENT_RADIUS = -1;
 
 -(void)plotDealOnMap:(Deal *)deal addCompletion:(generalBlockResponse)completionHandler
 {
-    
     if(!deal) return;
     
     AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
@@ -400,10 +399,6 @@ static double USE_CURRENT_RADIUS = -1;
         NSDictionary* filter = [appDelegate.databaseManager getUsersCurrentCriteria];
         
         NSInteger miles = [[filter valueForKey:NSLocalizedString(@"DISTANCE_FILTER", nil)] integerValue];
-        
-        if (miles <= 5) miles = miles;
-        else if(miles > 5 && miles <= 10) miles = 9;
-        else miles = 15;
         
         double meters = (miles * 1609.34);
         
@@ -550,7 +545,7 @@ static double USE_CURRENT_RADIUS = -1;
         
         UIStoryboard* storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
         
-        PSDealDetailViewController* detailedViewController = (PSDealDetailViewController*) [storyboard instantiateViewControllerWithIdentifier:@"PSDealsDetailViewController"];
+        DealDetailViewController* detailedViewController = (DealDetailViewController*) [storyboard instantiateViewControllerWithIdentifier:@"PSDealsDetailViewController"];
         
         detailedViewController.venueName = a.dealAnnotated.venueName;
         

@@ -17,9 +17,7 @@
 #import "math.h"
 #import <dispatch/dispatch.h>
 
-#define DEFAULT_RESULT_BUTTON_TITLE @"View 0 Results"
-
-#define DISTANCE_FILTER @"distance_filter"
+#define MINIMUM_BUDGET_LABEL_DEFAULT @"Free"
 #define DATE_FILTER @"date_filter"
 #define BUDGET_AMOUNTS @"budget_amounts"
 #define DISTANCE_AMOUNTS @"distance_amounts"
@@ -49,7 +47,22 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
 {
     NSInteger currentState;
 }
-@synthesize currentLocationText, budgetText, mileText, distanceFilterSegment, budgetSlider, budgetAmounts;
+@synthesize distanceFilterSegment, budgetSlider, distanceSlider, budgetAmounts, lbl_BudgetMax, lbl_BudgetMin, lbl_DistanceMax, lbl_DistanceMin;
+
++(void) setNavigationBar:(UINavigationBar*)bar {
+    
+    [bar setBarTintColor:[UIColor colorWithRed:31.0/255.0 green:80.0/255.0 blue:155.0/255.0 alpha:1.0]];
+    
+    [bar setTintColor:[UIColor whiteColor]];
+    
+    NSDictionary* titleAttributes = @{
+                                      NSForegroundColorAttributeName : [UIColor whiteColor],
+                                      NSFontAttributeName : [UIFont fontWithName:@"Helvetica" size:21.0]
+                                      };
+    
+    [bar setTitleTextAttributes:titleAttributes];
+    
+}
 
 - (void)viewDidLoad {
     
@@ -61,16 +74,10 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
     
     AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
+    [self.navigationItem setTitle:@"Filter"];
+    
     NSString* location = [appDelegate.locationManager retrieveCurrentLocationString];
-    
-    UIBarButtonItem* resultButton = [[UIBarButtonItem alloc] initWithTitle:DEFAULT_RESULT_BUTTON_TITLE style:UIBarButtonItemStylePlain target:self action:@selector(startPressed:)];
-    
-    self.doneButton = resultButton;
-    
-    self.navigationItem.rightBarButtonItem = self.doneButton;
-    
-    self.currentLocationText.text = location;
-    
+
     if (self.budgetAmounts == nil) {
         self.budgetAmounts = @[@"Free", @"5", @"10", @"15", @"20", @"25", @"30", @"35", @"40", @"45", @"50", @"55", @"60", @"65", @"70", @"75", @"80", @"85", @"90", @"95", @"100"];
     }
@@ -83,7 +90,6 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
     colorFillTransitionAnimation = [CATransition animation];
     
     location = nil;
-    resultButton = nil;
 }
 
 -(void)viewWillAppear:(BOOL)animated
@@ -113,6 +119,8 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
     
     
     [self toggleButtons];
+    
+    [self updateLabels];
     
     [self updateSearchLables:^(BOOL success) {
 
@@ -182,7 +190,7 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
         [self updateViewLabels:self.currentFilterCriteria_Labels addCompletion:^(BOOL success) {
             
         }];
-        //[self.delegate updateViewLabels:self.currentFilterCriteria_Labels];
+        
     }];
 }
 
@@ -291,6 +299,43 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
     
 }
 
+-(void)updateLabels
+{
+    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
+    
+    CLLocation* userLocation = [appDelegate.locationManager getCurrentLocation];
+    
+    NSArray* deals = [appDelegate.databaseManager getSavedDeals];
+    
+    NSString* minimumBudgetLbl = MINIMUM_BUDGET_LABEL_DEFAULT;
+    
+    NSString* maximumBudgetLbl = @"Expensive";
+    
+    double min = 0.00;
+    
+    double max = 0.00;
+    
+    if (deals.count > 0) {
+        for (Deal* deal in deals) {
+            double budget = [deal getBudget];
+            
+            if (budget < min) {
+                minimumBudgetLbl = [[NSNumber numberWithDouble:budget] stringValue];
+                min = budget;
+            }
+            else if (budget > max)
+            {
+                maximumBudgetLbl = [[NSNumber numberWithDouble:budget] stringValue];
+                max = budget;
+            }
+        }
+    }
+    
+    [self.lbl_BudgetMin setText:minimumBudgetLbl];
+    
+    [self.lbl_BudgetMax setText:maximumBudgetLbl];
+}
+
 -(void)updateSearchLables:(UILablesUpdated)completionHandler
 {
     NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
@@ -329,18 +374,6 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
     NSArray* budgetAmounts = [searchCriteria valueForKey:BUDGET_AMOUNTS];
     
     NSInteger budget = budgetValue.integerValue;
-    
-    if (budget == 0) {
-        budgetCriteria = @"Anything that's Free!!";
-    }
-    else{
-        budgetCriteria = [NSString stringWithFormat:@"Under $%@", budgetAmounts[budget]];
-    }
-    
-    dispatch_async(dispatch_get_main_queue(), ^{
-       self.budgetText.text = budgetCriteria;
-        
-    });
     
     completionHandler(YES);
 }
@@ -409,7 +442,6 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
     [appDelegate.databaseManager fetchTotalDealCountOnly:searchCriteria addCompletionBlock:^(BOOL success) {
         
         if(success){
-            //[self.delegate updateResultLabels];
             [self toggleButtons];
             
         }
@@ -421,13 +453,11 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
 
 -(void)toggleButtons
 {
-    if ((self.doneButton).enabled || (self.viewResultsButton).enabled) {
+    if ((self.viewResultsButton).enabled) {
         
         currentState = BUSY;
         
         [self.viewResultsButton.layer removeAnimationForKey:ANIMATION_BACKGROUND_COLOR_CHANGE];
-        
-        [self.doneButton setEnabled:NO];
         [self.viewResultsButton setEnabled:NO];
         
         NSLog(@"Buttons are now disabled");
@@ -455,7 +485,6 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
         
         [self.viewResultsButton.layer addAnimation:animationGroup forKey:@"backgroundColorChange"];
         
-        [self.doneButton setEnabled:YES];
         [self.viewResultsButton setEnabled:YES];
         
         [self.view setNeedsDisplay];

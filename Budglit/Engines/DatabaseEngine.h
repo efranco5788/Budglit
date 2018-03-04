@@ -18,12 +18,12 @@ typedef void (^dataResponseBlockResponse)(id response);
 
 
 @protocol DatabaseEngineDelegate <NSObject>
+@optional
 -(void)totalDealCountReturned:(NSInteger)responseCount;
 -(void)totalDealCountFailedWithError:(NSError*)error;
 -(void)dealsReturned:(NSArray*)deals;
 -(void)dealsFailedWithError:(NSError*)error;
 -(void)operationsCancelled;
-@optional
 
 @end
 
@@ -32,22 +32,41 @@ typedef void (^dataResponseBlockResponse)(id response);
 @property (nonatomic, strong) id <DatabaseEngineDelegate> delegate;
 
 -(NSValue*)calculateCoordinateFrom:(NSValue*)coordinateValue onBearing:(double)bearingInRadians atDistance:(double)distanceInMetres;
+
 -(instancetype)init;
+
 -(instancetype)initWithHostName:(NSString*)hostName NS_DESIGNATED_INITIALIZER;
+
 -(NSDictionary*)primaryDefaultForSearchFilterWithZipcodes:(NSArray*)zipcodes;
+
+-(void)sortArray:(NSArray*)array byKey:(NSString*)key ascending:(BOOL)shouldAscend localizeCompare:(BOOL)shouldLocalize addCompletion:(dataResponseBlockResponse)completionHandler;
+
 -(void)sendSearchCriteriaForTotalCountOnly:(NSDictionary*)searchCriteria addCompletion:(dataResponseBlockResponse) completionBlock;
+
 -(void)sendSearchCriteria:(NSDictionary*)searchCriteria addCompletion:(dataResponseBlockResponse) completionBlock;
+
 -(void)sendAddressForGeocode:(NSDictionary*)params parseAfterCompletion:(BOOL)willParse addCompletionHandler:(dataResponseBlockResponse)completionHandler;
+
 -(void)sendAddressesForGeocode:(NSDictionary*)params parseAfterCompletion:(BOOL)willParse addCompletionHandler:(dataResponseBlockResponse)completionHandler;
+
 -(void)downloadImageFromURL:(NSString*)urlString forImageView:(UIImageView*)imageView addCompletionHandler:(fetchedDataResponse)completionHandler;
+
 -(void)downloadImageFromRequest:(NSURLRequest*)request addCompletionHandler:(fetchedDataResponse)completionHandler;
+
 -(void)cacheImage:(UIImage*)img forKey:(NSString*)key;
+
 -(UIImage*)getImageFromCacheWithKey:(NSString*)key;
+
 -(void)groupAnnotationByCoordinates:(NSMutableArray*)annotations addCompletionHandler:(dataResponseBlockResponse)completionHandler;
+
 -(void)attemptToRepositionAnnotations:(id)annotations addCompletionHandler:(generalBlockResponse)completionHandler;
+
 -(NSArray*)extractAddressFromDeals:(NSArray*)deals;
+
 -(NSDictionary*)parseGeocodeLocation:(NSDictionary*)locationInfo;
+
 -(NSString*)getCurrentDate;
+
 -(void) cancelOperations:(generalBlockResponse)completionHandler;
 
 @end

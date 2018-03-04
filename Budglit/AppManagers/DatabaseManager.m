@@ -31,10 +31,10 @@ static DatabaseManager* sharedManager;
     dispatch_queue_t backgroundQueue;
     NSInteger totalCountAttempts;
 }
+@property (nonatomic, strong) NSArray* currentDeals;
 @end
 
 @implementation DatabaseManager
-@synthesize currentDeals;
 
 +(DatabaseManager *)sharedDatabaseManager
 {
@@ -75,6 +75,11 @@ static DatabaseManager* sharedManager;
     }
     
     return self;
+}
+
+-(NSArray*)getSavedDeals
+{
+    return self.currentDeals.copy;
 }
 
 -(void)setZipcodeCriteria:(NSString *)zipcode
@@ -163,30 +168,26 @@ static DatabaseManager* sharedManager;
 #warning needs better error handling
 -(void)fetchDeals:(NSDictionary *)searchCriteria addCompletionBlock:(generalBlockResponse)completionHandler
 {
-    NSDictionary* criteria;
+    NSMutableArray* newDealArray = [[NSMutableArray alloc] init];
     
-    if (searchCriteria == nil) {
-        
-        criteria = [self getUsersCurrentCriteria];
-    }
-    else criteria = searchCriteria;
+    if (searchCriteria == nil) searchCriteria = [[self getUsersCurrentCriteria] copy];
     
     NSLog(@"%@", searchCriteria);
     
-    [self.engine sendSearchCriteria:criteria addCompletion:^(id response) {
+    [self.engine sendSearchCriteria:searchCriteria addCompletion:^(id response) {
         
         if(response){
-            
-            [self resetDeals];
 
             [self.dealParser parseDeals:response addCompletionHandler:^(NSArray *parsedList) {
                 if (parsedList) {
                     
-                    NSLog(@"%@", parsedList);
-                    
                     for (Deal* node in parsedList) {
-                        [self.currentDeals addObject:node];
+                        [newDealArray addObject:node];
                     }
+                    
+                    // reset and add current Deals
+                    [self resetDeals];
+                    self.currentDeals = newDealArray.copy;
                     
                 }
                 completionHandler(YES);
@@ -194,8 +195,7 @@ static DatabaseManager* sharedManager;
             }]; // End of Parser method
             
         }
-        
-        completionHandler(NO);
+        else completionHandler(NO);
         
     }];  //End of search criteria method
             
@@ -385,6 +385,25 @@ static DatabaseManager* sharedManager;
     }];
 }
 
+-(void)sortDeals:(NSArray *)deals byKey:(NSString *)key ascendingOrder:(BOOL)shouldAscend localizeCompare:(BOOL)shouldLocalize addCompletetion:(dataBlockResponse)completionHandler
+{
+    [self.engine sortArray:deals byKey:key ascending:shouldAscend localizeCompare:shouldLocalize addCompletion:^(id response) {
+        
+        if(response){
+            
+            NSArray* sortedArray = (NSArray*) response;
+            
+            NSLog(@"Sorted Array is %@", sortedArray);
+            
+            completionHandler(sortedArray);
+            
+        }
+        else completionHandler(nil);
+        
+    }];
+    
+}
+
 -(NSString *)getCurrentDate
 {
     NSString* today = [self.engine getCurrentDate];
@@ -411,7 +430,9 @@ static DatabaseManager* sharedManager;
 
 -(void)resetDeals
 {
-    [self.currentDeals removeAllObjects];
+    //[self.currentDeals removeAllObjects];
+    NSArray* newArray = [[NSArray alloc] init];
+    self.currentDeals = newArray.copy;
     totalLoadedDeals_Count = 0;
     NSLog(@"Deals removed!");
 }
@@ -438,5 +459,6 @@ static DatabaseManager* sharedManager;
     
     
 }
+
 
 @end

@@ -88,6 +88,11 @@ NSString* const kDefaultEventEndNotification = @"EventEndNotification";
     return stringValue;
 }
 
+-(double)getBudget
+{
+    return budget;
+}
+
 -(void)setOriginalPosition:(CGRect)frame
 {
     tableCellPosition = frame;

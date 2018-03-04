@@ -8,15 +8,7 @@
 
 #import "UserAccount.h"
 
-/*
-#define DEFAULT_NAME @"User"
-#define DEFAULT_USER_PROFILE @"user_profile.png"
-#define DEFAULT_FIRST_NAME @"firstname"
-#define DEFAULT_LAST_NAME @"lastName"
-#define DEFAULT_EMAIL @"email"
-#define DEFAULT_IMAGE_URL @"imgURL"
-#define DEFAULT_PROFILE_IMAGE @"profileImg"
-*/
+
 static UserAccount* loggedAccount;
 
 @interface UserAccount()

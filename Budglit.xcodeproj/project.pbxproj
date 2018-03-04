@@ -71,15 +71,15 @@
 		89385B391BB67C0500441A63 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89385B381BB67C0500441A63 /* CoreGraphics.framework */; };
 		89385B3B1BB67C1F00441A63 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89385B3A1BB67C1F00441A63 /* Foundation.framework */; };
 		89385B3D1BB67C2900441A63 /* Twitter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89385B3C1BB67C2900441A63 /* Twitter.framework */; };
-		89385B401BB6F86500441A63 /* PSHomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 89385B3F1BB6F86500441A63 /* PSHomeViewController.m */; };
-		89385B491BB7217C00441A63 /* PSDealDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 89385B481BB7217C00441A63 /* PSDealDetailViewController.m */; };
+		89385B401BB6F86500441A63 /* BudglitHomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 89385B3F1BB6F86500441A63 /* BudglitHomeViewController.m */; };
+		89385B491BB7217C00441A63 /* DealDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 89385B481BB7217C00441A63 /* DealDetailViewController.m */; };
 		89385B4C1BB7221F00441A63 /* PSEditZipcodeOfflineTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 89385B4B1BB7221F00441A63 /* PSEditZipcodeOfflineTableViewController.m */; };
 		89385B4F1BB722AD00441A63 /* DatabaseManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 89385B4E1BB722AD00441A63 /* DatabaseManager.m */; };
 		89385B521BB722CE00441A63 /* AccountManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 89385B511BB722CE00441A63 /* AccountManager.m */; };
 		89385B551BB722F700441A63 /* BudgetManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 89385B541BB722F700441A63 /* BudgetManager.m */; };
 		89385B581BB724C000441A63 /* LocationServiceManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 89385B571BB724C000441A63 /* LocationServiceManager.m */; };
 		89385B5B1BB7272C00441A63 /* Engine.m in Sources */ = {isa = PBXBuildFile; fileRef = 89385B5A1BB7272C00441A63 /* Engine.m */; };
-		89385B5E1BB7282B00441A63 /* GNEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = 89385B5D1BB7282B00441A63 /* GNEngine.m */; };
+		89385B5E1BB7282B00441A63 /* LocationEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = 89385B5D1BB7282B00441A63 /* LocationEngine.m */; };
 		89385B611BB7532400441A63 /* DatabaseEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = 89385B601BB7532400441A63 /* DatabaseEngine.m */; };
 		8938ADD41E58D9EC00CAF965 /* icon_username.png in Resources */ = {isa = PBXBuildFile; fileRef = 8938ADD11E58D9EC00CAF965 /* icon_username.png */; };
 		8938ADD51E58D9EC00CAF965 /* icon_username@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8938ADD21E58D9EC00CAF965 /* icon_username@2x.png */; };
@@ -283,10 +283,10 @@
 		89385B381BB67C0500441A63 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		89385B3A1BB67C1F00441A63 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		89385B3C1BB67C2900441A63 /* Twitter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Twitter.framework; path = System/Library/Frameworks/Twitter.framework; sourceTree = SDKROOT; };
-		89385B3E1BB6F86500441A63 /* PSHomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PSHomeViewController.h; sourceTree = "<group>"; };
-		89385B3F1BB6F86500441A63 /* PSHomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PSHomeViewController.m; sourceTree = "<group>"; };
-		89385B471BB7217C00441A63 /* PSDealDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PSDealDetailViewController.h; sourceTree = "<group>"; };
-		89385B481BB7217C00441A63 /* PSDealDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PSDealDetailViewController.m; sourceTree = "<group>"; };
+		89385B3E1BB6F86500441A63 /* BudglitHomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BudglitHomeViewController.h; sourceTree = "<group>"; };
+		89385B3F1BB6F86500441A63 /* BudglitHomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BudglitHomeViewController.m; sourceTree = "<group>"; };
+		89385B471BB7217C00441A63 /* DealDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DealDetailViewController.h; sourceTree = "<group>"; };
+		89385B481BB7217C00441A63 /* DealDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DealDetailViewController.m; sourceTree = "<group>"; };
 		89385B4A1BB7221F00441A63 /* PSEditZipcodeOfflineTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PSEditZipcodeOfflineTableViewController.h; sourceTree = "<group>"; };
 		89385B4B1BB7221F00441A63 /* PSEditZipcodeOfflineTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PSEditZipcodeOfflineTableViewController.m; sourceTree = "<group>"; };
 		89385B4D1BB722AD00441A63 /* DatabaseManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DatabaseManager.h; sourceTree = "<group>"; };
@@ -299,8 +299,8 @@
 		89385B571BB724C000441A63 /* LocationServiceManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocationServiceManager.m; sourceTree = "<group>"; };
 		89385B591BB7272C00441A63 /* Engine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Engine.h; sourceTree = "<group>"; };
 		89385B5A1BB7272C00441A63 /* Engine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Engine.m; sourceTree = "<group>"; };
-		89385B5C1BB7282B00441A63 /* GNEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GNEngine.h; sourceTree = "<group>"; };
-		89385B5D1BB7282B00441A63 /* GNEngine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GNEngine.m; sourceTree = "<group>"; };
+		89385B5C1BB7282B00441A63 /* LocationEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocationEngine.h; sourceTree = "<group>"; };
+		89385B5D1BB7282B00441A63 /* LocationEngine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocationEngine.m; sourceTree = "<group>"; };
 		89385B5F1BB7532400441A63 /* DatabaseEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DatabaseEngine.h; sourceTree = "<group>"; };
 		89385B601BB7532400441A63 /* DatabaseEngine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DatabaseEngine.m; sourceTree = "<group>"; };
 		8938ADD11E58D9EC00CAF965 /* icon_username.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_username.png; sourceTree = "<group>"; };
@@ -596,8 +596,8 @@
 				89385AFD1BB67B4C00441A63 /* Main.storyboard */,
 				89385AF71BB67B4C00441A63 /* AppDelegate.h */,
 				89385AF81BB67B4C00441A63 /* AppDelegate.m */,
-				89385B3E1BB6F86500441A63 /* PSHomeViewController.h */,
-				89385B3F1BB6F86500441A63 /* PSHomeViewController.m */,
+				89385B3E1BB6F86500441A63 /* BudglitHomeViewController.h */,
+				89385B3F1BB6F86500441A63 /* BudglitHomeViewController.m */,
 				89179D111BB76F0C00F60BA7 /* LoadingLocalDealsViewController.h */,
 				89179D121BB76F0C00F60BA7 /* LoadingLocalDealsViewController.m */,
 				89179D1B1BB7AB2D00F60BA7 /* MapViewController.h */,
@@ -610,8 +610,8 @@
 				89179D0D1BB76E6D00F60BA7 /* BudgetPickerViewController.m */,
 				89179D161BB76F4300F60BA7 /* LoginPageViewController.h */,
 				89179D171BB76F4300F60BA7 /* LoginPageViewController.m */,
-				89385B471BB7217C00441A63 /* PSDealDetailViewController.h */,
-				89385B481BB7217C00441A63 /* PSDealDetailViewController.m */,
+				89385B471BB7217C00441A63 /* DealDetailViewController.h */,
+				89385B481BB7217C00441A63 /* DealDetailViewController.m */,
 				89385B4A1BB7221F00441A63 /* PSEditZipcodeOfflineTableViewController.h */,
 				89385B4B1BB7221F00441A63 /* PSEditZipcodeOfflineTableViewController.m */,
 				89231DB61D8B911F00D6B932 /* UserAccount.h */,
@@ -931,8 +931,8 @@
 				89385B5A1BB7272C00441A63 /* Engine.m */,
 				89179D591BBDEAB600F60BA7 /* AccountEngine.h */,
 				89179D5A1BBDEAB600F60BA7 /* AccountEngine.m */,
-				89385B5C1BB7282B00441A63 /* GNEngine.h */,
-				89385B5D1BB7282B00441A63 /* GNEngine.m */,
+				89385B5C1BB7282B00441A63 /* LocationEngine.h */,
+				89385B5D1BB7282B00441A63 /* LocationEngine.m */,
 				89385B5F1BB7532400441A63 /* DatabaseEngine.h */,
 				89385B601BB7532400441A63 /* DatabaseEngine.m */,
 			);
@@ -1099,7 +1099,7 @@
 				89385B611BB7532400441A63 /* DatabaseEngine.m in Sources */,
 				89179D2D1BB7BAA500F60BA7 /* PSDismissTransitionFromBudgetViewController.m in Sources */,
 				8936331C1E275A3C00C64E3D /* InstagramFeed.m in Sources */,
-				89385B401BB6F86500441A63 /* PSHomeViewController.m in Sources */,
+				89385B401BB6F86500441A63 /* BudglitHomeViewController.m in Sources */,
 				89EB8DFB1BE46A220044833A /* Tweet.m in Sources */,
 				89EEF9751D482D9F00CCE163 /* State.m in Sources */,
 				896A89751BCE093800A21F30 /* PostalCode.m in Sources */,
@@ -1120,7 +1120,7 @@
 				89385B581BB724C000441A63 /* LocationServiceManager.m in Sources */,
 				89385B5B1BB7272C00441A63 /* Engine.m in Sources */,
 				899AEFC11F933E47001065C3 /* UIRefreshControl+AFNetworking.m in Sources */,
-				89385B5E1BB7282B00441A63 /* GNEngine.m in Sources */,
+				89385B5E1BB7282B00441A63 /* LocationEngine.m in Sources */,
 				89EB8DEF1BE469A50044833A /* NSString+Encode.m in Sources */,
 				89119F091FAD103100A84F3C /* DealMapAnnotation.m in Sources */,
 				892401681CD9BF3A00793EE5 /* DrawerViewController.m in Sources */,
@@ -1145,7 +1145,7 @@
 				893633151E25F88100C64E3D /* InstagramTableViewCell.m in Sources */,
 				899AEFBA1F933E47001065C3 /* UIImageView+AFNetworking.m in Sources */,
 				89067BCA1C76B6780058B4DF /* AFNetworkReachabilityManager.m in Sources */,
-				89385B491BB7217C00441A63 /* PSDealDetailViewController.m in Sources */,
+				89385B491BB7217C00441A63 /* DealDetailViewController.m in Sources */,
 				89B3DBD31DE9F95F00DCEDB6 /* PSFacebookViewController.m in Sources */,
 				897711AC1BE2DF5F00028B74 /* PSTwitterViewController.m in Sources */,
 				89DEE6501E4BEC0E00C2A1B2 /* DealDetailedAnimationController.m in Sources */,

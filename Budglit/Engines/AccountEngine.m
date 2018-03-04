@@ -8,10 +8,6 @@
 
 #import "AccountEngine.h"
 
-//#define LOGIN_PATH @"login_authentication.php"
-//#define SIGNUP_PATH @"signup.php"
-//#define RESET_PASSWORD @"reset_password.php"
-//#define LOGIN_PATH @"authentication"
 #define LOGIN_PATH @"login"
 #define VALIDATE_SESSION_PATH @"validate"
 #define LOGOUT_PATH @"logout"

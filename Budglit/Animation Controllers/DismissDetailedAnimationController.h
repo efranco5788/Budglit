@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 
 @class PSAllDealsTableViewController;
-@class PSDealDetailViewController;
+@class DealDetailViewController;
 
 @interface DismissDetailedAnimationController : NSObject<UIViewControllerAnimatedTransitioning>
 

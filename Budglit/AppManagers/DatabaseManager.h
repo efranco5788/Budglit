@@ -42,7 +42,6 @@ typedef void (^newDataFetchedResponse)(UIBackgroundFetchResult result);
 +(DatabaseManager*) sharedDatabaseManager;
 
 @property (nonatomic, strong) NSDictionary* usersCurrentCriteria;
-@property (nonatomic, strong) NSMutableArray* currentDeals;
 @property (nonatomic, strong) UIImageView* tmpImageView;
 @property (nonatomic, strong) DealParser* dealParser;
 @property (nonatomic, strong) id<DatabaseManagerDelegate> delegate;
@@ -56,21 +55,41 @@ typedef void (^newDataFetchedResponse)(UIBackgroundFetchResult result);
 -(instancetype) initWithEngineHostName:(NSString*)hostName NS_DESIGNATED_INITIALIZER;
 
 -(void)fetchDeals: (NSDictionary*) searchCriteria addCompletionBlock:(generalBlockResponse)completionHandler;
+
 -(void)fetchTotalDealCountOnly: (NSDictionary*) searchCriteria addCompletionBlock:(generalBlockResponse)completionHandler;
+
 -(NSDictionary*)fetchPrimaryDefaultSearchFiltersWithZipcodes:(NSArray*)zipcodes;
+
 -(void)fetchImageForRequest:(NSURLRequest*)request addCompletion:(fetchedImageResponse)completionHandler;
+
 -(UIImage*)fetchCachedImageForKey:(NSString*)key;
+
 -(void)fetchNewDataWithCompletion:(newDataFetchedResponse)completionHandler;
+
 -(void)fetchGeocodeForAddress:(NSString*)address additionalParams:(NSDictionary*)params shouldParse:(BOOL)parse addCompletetion:(dataBlockResponse)completionHandler;
+
 -(void)fetchGeocodeForAddresses:(NSArray*)addressList additionalParams:(NSDictionary*)params shouldParse:(BOOL)parse addCompletetion:(dataBlockResponse)completionHandler;
+
 -(void)startDownloadImageFromURL:(NSString *)url forObject:(id)object forIndexPath:(NSIndexPath*)indexPath imageView:(UIImageView*)imgView;
+
 -(void)startDownloadImageFromURL:(NSString *)url forDeal:(Deal*)deal forIndexPath:(NSIndexPath*)indexPath imageView:(UIImageView*)imgView;
+
 -(void)startDownloadImageFromURL:(NSString *)url forIndexPath:(NSIndexPath*)indexPath andImageView:(UIImageView*)imgView;
+
 -(void)cancelDownloads:(generalBlockResponse)completionHandler;
+
+-(void)sortDeals:(NSArray*)deals byKey:(NSString*)key ascendingOrder:(BOOL)shouldAscend localizeCompare:(BOOL)shouldLocalize addCompletetion:(dataBlockResponse)completionHandler;
+
 -(NSDictionary*)getUsersCurrentCriteria;
+
 -(void)saveUsersCriteria:(NSDictionary*)usersCriteria;
+
 -(void)setZipcodeCriteria:(NSString*)zipcode;
+
 -(NSString*)getCurrentDate;
+
+-(NSArray*)getSavedDeals;
+
 -(void)resetDeals;
 
 @end

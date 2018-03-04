@@ -7,7 +7,7 @@
 //
 
 #import "PSAllDealsTableViewController.h"
-#import "PSDealDetailViewController.h"
+#import "DealDetailViewController.h"
 #import "Deal.h"
 #import "DrawerViewController.h"
 #import "AppDelegate.h"
@@ -220,7 +220,7 @@ static NSString* const emptyCellIdentifier = @"holderCell";
 {
     AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
-    NSArray* deals = [NSArray arrayWithArray:(appDelegate.databaseManager).currentDeals];
+    NSArray* deals = [NSArray arrayWithArray:[appDelegate.databaseManager getSavedDeals]];
     
     if (deals.count > 0) {
         
@@ -272,7 +272,7 @@ static NSString* const emptyCellIdentifier = @"holderCell";
     
     AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
-    NSArray* deals = [NSArray arrayWithArray:(appDelegate.databaseManager).currentDeals];
+    NSArray* deals = [NSArray arrayWithArray:[appDelegate.databaseManager getSavedDeals]];
     
     if (deals && deals.count >= 1) {
         return 1;
@@ -303,7 +303,7 @@ static NSString* const emptyCellIdentifier = @"holderCell";
     
     AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
-    NSArray* deals = [NSArray arrayWithArray:(appDelegate.databaseManager).currentDeals];
+    NSArray* deals = [NSArray arrayWithArray:[appDelegate.databaseManager getSavedDeals]];
     
     if (deals == nil) {
         return customRowCount;
@@ -325,7 +325,7 @@ static NSString* const emptyCellIdentifier = @"holderCell";
     
     AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
-    NSArray* deals = [NSArray arrayWithArray:(appDelegate.databaseManager).currentDeals];
+    NSArray* deals = [NSArray arrayWithArray:[appDelegate.databaseManager getSavedDeals]];
     
     DealTableViewCell* dealCell = nil;
     
@@ -359,7 +359,7 @@ static NSString* const emptyCellIdentifier = @"holderCell";
     
     AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
-    NSArray* deals = [NSArray arrayWithArray:(appDelegate.databaseManager).currentDeals];
+    NSArray* deals = [NSArray arrayWithArray:[appDelegate.databaseManager getSavedDeals]];
     
     NSUInteger nodeCount = deals.count;
     
@@ -410,7 +410,7 @@ static NSString* const emptyCellIdentifier = @"holderCell";
 {
     AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
-    NSArray* deals = [NSArray arrayWithArray:(appDelegate.databaseManager).currentDeals];
+    NSArray* deals = [NSArray arrayWithArray:[appDelegate.databaseManager getSavedDeals]];
     
     CGRect cellPosition = [tableView rectForRowAtIndexPath: indexPath];
     CGRect positionInSuperview = [tableView convertRect:cellPosition toView:tableView.superview];
@@ -466,7 +466,7 @@ static NSString* const emptyCellIdentifier = @"holderCell";
     
     if ([segue.identifier isEqualToString:SEGUE_ALL_CUURENT_DEAL_TO_DEAL_DETAIL_CONTROLLER]) {
         
-        PSDealDetailViewController* ACDDVC = (PSDealDetailViewController*) segue.destinationViewController;
+        DealDetailViewController* ACDDVC = (DealDetailViewController*) segue.destinationViewController;
         
         ACDDVC.transitioningDelegate = self;
         
@@ -648,7 +648,7 @@ static NSString* const emptyCellIdentifier = @"holderCell";
     // Background Thread Queue
     dispatch_async(backgroundToken, ^{
         
-        NSArray* deals = [NSArray arrayWithArray:(appDelegate.databaseManager).currentDeals];
+        NSArray* deals = [NSArray arrayWithArray:[appDelegate.databaseManager getSavedDeals]];
         
         Deal* endedDeal = (Deal*) notification.object;
         

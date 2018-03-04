@@ -1,5 +1,5 @@
 //
-//  GNEngine.h
+//  LocationEngine.h
 //  PocketStretch
 //
 //  Created by Emmanuel Franco on 9/26/15.
@@ -11,7 +11,7 @@
 
 typedef void (^dataResponseBlockResponse)(id response);
 
-@protocol GNEngineDelegate <NSObject>
+@protocol LocationEngineDelegate <NSObject>
 @optional
 -(void) zipcodeCoordinatesFound:(NSDictionary*)coordinates;
 -(void) zipcodeCoordinatesFailedWithError:(NSError*)error;
@@ -19,9 +19,9 @@ typedef void (^dataResponseBlockResponse)(id response);
 -(void) nearbyPostalCodesFailedWithError:(NSError*) error;
 @end
 
-@interface GNEngine : Engine
+@interface LocationEngine : Engine
 
-@property (nonatomic, strong) id <GNEngineDelegate> delegate;
+@property (nonatomic, strong) id <LocationEngineDelegate> delegate;
 
 -(instancetype) init;
 
