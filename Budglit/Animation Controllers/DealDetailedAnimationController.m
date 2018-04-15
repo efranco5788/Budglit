@@ -9,6 +9,7 @@
 #import "DealDetailedAnimationController.h"
 #import "PSAllDealsTableViewController.h"
 #import "DealDetailViewController.h"
+#import "AppDelegate.h"
 
 @implementation DealDetailedAnimationController
 
@@ -38,7 +39,9 @@
     
     UINavigationController* navController = [[UINavigationController alloc] initWithRootViewController:toViewController];
     
-    UIColor* barColor = [UIColor colorWithRed:(float)31/255 green:(float)80/255 blue:(float)155/255 alpha:1.0];
+    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
+    
+    UIColor* barColor = [appDelegate getPrimaryColor];
     
     [navController.navigationBar setBarTintColor:barColor];
     

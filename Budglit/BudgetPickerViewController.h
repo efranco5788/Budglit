@@ -18,8 +18,6 @@ typedef void (^UILablesUpdated)(BOOL success);
 
 @protocol BudgetPickerDelegate <NSObject>
 @optional
-#warning deprecating delegate method
--(void) budgetSelected:(NSDictionary*) selectedCriteria;
 -(void) dismissView;
 @end
 @interface BudgetPickerViewController : UIViewController
@@ -33,8 +31,6 @@ typedef void (^UILablesUpdated)(BOOL success);
 @property (strong, nonatomic) IBOutlet UILabel *budgetText;
 
 @property (strong, nonatomic) IBOutlet UILabel *mileText;
-
-@property (strong, nonatomic) IBOutlet UISegmentedControl *distanceFilterSegment;
 
 @property (strong, nonatomic) IBOutlet UISlider* budgetSlider;
 
@@ -50,15 +46,9 @@ typedef void (^UILablesUpdated)(BOOL success);
 
 @property (strong, nonatomic) NSArray* budgetAmounts;
 
-@property (strong, nonatomic) NSDictionary* currentFilterCriteria_Labels;
-
-@property (NS_NONATOMIC_IOSONLY, getter=getCurrentSearchCriteria, readonly, copy) NSDictionary *currentSearchCriteria;
+@property (strong, nonatomic) NSArray* mapAnnotations;
 
 +(void) setNavigationBar:(UINavigationBar*)bar;
-
--(NSDictionary*)getCurrentSearchCriteriaWithSurrondingZipcodes:(NSArray*) zipcodes;
-
-- (IBAction)distanceFilterSegement_Action:(id)sender;
 
 - (IBAction)startPressed:(UIButton *)sender;
 
@@ -72,8 +62,6 @@ typedef void (^UILablesUpdated)(BOOL success);
 
 -(void)updateLabels;
 
--(void)updateSearchLables:(UILablesUpdated)completionHandler;
-
 -(void)updateViewLabels:(NSDictionary*)searchCriteria addCompletion:(UILablesUpdated)completionHandler;
 
 -(void)toggleButtons;
@@ -81,7 +69,5 @@ typedef void (^UILablesUpdated)(BOOL success);
 -(void) dismissView;
 
 -(void)reloadDealResultsReturnCount:(NSDictionary *)searchCriteria;
-
--(void)fetchSurroundingZipcodes:(NSDictionary*)criteria;
 
 @end

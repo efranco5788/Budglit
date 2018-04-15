@@ -33,11 +33,10 @@
 
 @implementation DealDetailViewController
 @synthesize descriptionTextView, addressTextView, phoneNumberTextView, addressText, phoneText, venueImage;
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    (self.venueImage).image = self.image;
     
     (self.descriptionTextView).text = self.descriptionText;
     
@@ -101,23 +100,7 @@
 {
     [super viewWillAppear:YES];
     
-    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
-    
-    if ([self.dealSelected.imgStateObject imageExists]) {
-        /*
-        [appDelegate.databaseManager fetchImageForRequest:self.dealSelected.imgStateObject.request addCompletion:^(UIImage *image) {
-            
-            self.image = image;
-            
-            (self.venueImage).image = self.image;
-            
-        }];
-         */
-        
-        self.image = [appDelegate.databaseManager fetchCachedImageForKey:_dealSelected.imgStateObject.imagePath];
-        
-        (self.venueImage).image = self.image;
-    }
+    self.image = nil;
     
     UIBarButtonItem* backButton = [[UIBarButtonItem alloc] init];
     
@@ -156,13 +139,94 @@
 -(void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:YES];
+    
+    __block CATransition* transition = [CATransition animation];
+    
+    transition.duration = 0.1f;
+    transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn];
+    transition.type = kCATransitionFade;
+    
+    [self.venueImage.layer addAnimation:transition forKey:nil];
+    
+    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
+    
+    dispatch_queue_t background_queue = dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0);
+    
+    //Test response time 
+    CFTimeInterval startTime = CACurrentMediaTime();
+    
+    dispatch_async(background_queue, ^{
+        
+        // Check if image is cached in memory
+        [appDelegate.databaseManager fetchCachedImageForKey:self.dealSelected.imgStateObject.imagePath addCompletion:^(UIImage *cachedImage) {
+            
+            if (cachedImage) {
+                
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    
+                    CFTimeInterval elapsed = CACurrentMediaTime() - startTime;
+                    
+                    NSLog(@"Time for memory cache %f", elapsed);
+                    
+                    //self.image = cachedImage;
+                    
+                    (self.venueImage).image = cachedImage;
+                    
+                    [self.imgActivityIndicator setHidden:YES];
 
-   // CGFloat originalTwitterViewX = self.socialMediaContainer.layer.frame.origin.x;
-    
-    //CGFloat originalTwitterViewY = (self.view.frame.size.height - self.socialMediaContainer.layer.frame.size.height);
-    
-    // Save the original dimensions of the twitter view
-    //originalTwitterView = CGRectMake(originalTwitterViewX, originalTwitterViewY, self.view.frame.size.height, self.view.frame.size.width);
+                });
+                
+            }
+            else{
+                
+                [appDelegate.databaseManager fetchPersistentStorageCachedImageForKey:self.dealSelected.imgStateObject.imagePath deal:self.dealSelected addCompletion:^(UIImage *persistentStorageImg) {
+                    
+                    // check if image is in Persistent Storage Caches
+                    if(persistentStorageImg){
+                        
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            
+                            CFTimeInterval elapsed = CACurrentMediaTime() - startTime;
+                            
+                            NSLog(@"Time for persistent storage cache %f", elapsed);
+                            
+                            //self.image = persistentStorageImg;
+                            
+                            (self.venueImage).image = persistentStorageImg;
+                            
+                            [self.imgActivityIndicator setHidden:YES];
+                            
+                        });
+                        
+                        
+                    }
+                    else{
+                        
+                        [appDelegate.databaseManager startDownloadImageFromURLString:self.dealSelected.imgStateObject.imagePath forDeal:self.dealSelected addCompletion:^(UIImage *imageResponse) {
+                            
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                
+                                CFTimeInterval elapsed = CACurrentMediaTime() - startTime;
+                                
+                                NSLog(@"Time for http request %f", elapsed);
+                                
+                                (self.venueImage).image = imageResponse;
+                                
+                                [self.imgActivityIndicator setHidden:YES];
+
+                            });
+                            
+                        }];
+                        
+                    } // End of Web download of image
+                    
+                }]; // End of Persistent Storage Cache fetch
+                
+            }
+            
+        }]; // End of Memory Cache fetch
+        
+    });
     
     CGFloat originalTwitterViewX = self.socialMediaContainer.layer.bounds.origin.x;
     
@@ -598,29 +662,22 @@
     
     if ([presentViewController isKindOfClass:[PSTwitterViewController class]]) {
         
-        //[self.SMPageViewController.view setBackgroundColor:[UIColor colorWithRed:0.00 green:0.67 blue:0.93 alpha:1.0]];
-        
         (self.socialMediaNavBar).barTintColor = [UIColor colorWithRed:0.00 green:0.67 blue:0.93 alpha:1.0];
 
     }
     else if ([presentViewController isKindOfClass:[PSFacebookViewController class]])
     {
         
-        //[self.SMPageViewController.view setBackgroundColor:[UIColor colorWithRed:0.23 green:0.35 blue:0.60 alpha:1.0]];
-        
         (self.socialMediaNavBar).barTintColor = [UIColor colorWithRed:0.23 green:0.35 blue:0.60 alpha:1.0];
     }
     else if ([presentViewController isKindOfClass:[PSInstagramViewController class]])
     {
-        
-        //[self.SMPageViewController.view setBackgroundColor:[UIColor colorWithRed:0.74 green:0.16 blue:0.55 alpha:1.0]];
+
         
         (self.socialMediaNavBar).barTintColor = [UIColor colorWithRed:0.74 green:0.16 blue:0.55 alpha:1.0];
     }
     else
     {
-        //[self.SMPageViewController.view setBackgroundColor:[UIColor whiteColor]];
-        
         (self.socialMediaNavBar).barTintColor = [UIColor whiteColor];
     }
 }

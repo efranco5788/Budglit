@@ -63,11 +63,16 @@
     
     gradient.frame = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height);
     
+    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
+    
+    UIColor* primaryColor = [appDelegate getPrimaryColor];
+    
+    /*
     UIColor* primaryColor = [UIColor colorWithRed:44.0f/255.0f
                                             green:83.0f/255.0f
                                              blue:143.0f/255.0f
                                             alpha:1.0f];
-    
+    */
     gradient.colors = @[(id)primaryColor.CGColor, (id)[UIColor whiteColor].CGColor];
     
     [self.view.layer insertSublayer:gradient atIndex:0];

@@ -19,7 +19,7 @@
     self.imagePath = nil;
     self.request = nil;
     self.response = nil;
-    hasImage = NO;
+    [self setHasImage:NO];
     queuedOp = NO;
     imageCached = NO;
     
@@ -28,16 +28,13 @@
 
 -(void)recordImageHTTPResponse:(NSHTTPURLResponse *)response andRequest:(NSURLRequest *)request hasImage:(BOOL)exist
 {
-    if (exist) hasImage = YES;
-    
+    NSLog(@"%@", self.request);
+    [self setHasImage:exist];
     imageCached = YES;
     self.request = request;
     self.response = response;
-}
-
--(BOOL)imageExists
-{
-    return hasImage;
+    
+    
 }
 
 @end

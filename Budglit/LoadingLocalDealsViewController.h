@@ -43,7 +43,7 @@ typedef void (^completionBlock)(id results);
 
 -(void) fetchUserLocationOnline;
 
--(void) fetchSurroundingZipcodes:(NSString*)zipcode;
+//-(void) fetchSurroundingZipcodes:(NSString*)zipcode;
 
 -(void) applicationReactivated;
 

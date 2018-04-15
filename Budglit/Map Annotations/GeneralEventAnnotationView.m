@@ -37,7 +37,7 @@ static CGFloat kTopMargin = 5.0;
     
     //self.canShowCallout = YES;
     
-    UILabel *annotationLabel = [self makeiOSLabel:mapItem.locationName];
+    UILabel* annotationLabel = [self makeiOSLabelWithTitle:mapItem.locationName andSubtitle:mapItem.distanceFromUser];
     
     [self addSubview:annotationLabel];
     
@@ -57,13 +57,15 @@ static CGFloat kTopMargin = 5.0;
     self.showCustomCallOut = shouldShowCallout;
 }
 
-- (UILabel *)makeiOSLabel:(NSString *)placeLabel
+- (UILabel *)makeiOSLabelWithTitle:(NSString *)title andSubtitle:(NSString*)subtitle
 {
     // add the annotation's label
     UILabel *annotationLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+    annotationLabel.numberOfLines = 0;
     annotationLabel.font = [UIFont fontWithName:@"Helvetica" size:10];
     annotationLabel.textColor = [UIColor blackColor];
-    annotationLabel.text = placeLabel;
+    NSString* lblText = [NSString stringWithFormat:@"%@\n %@", title, subtitle];
+    annotationLabel.text = lblText;
     [annotationLabel sizeToFit];   // get the right vertical size
     
     // compute the optimum width of our annotation, based on the size of our annotation label

@@ -54,21 +54,25 @@ typedef void (^newDataFetchedResponse)(UIBackgroundFetchResult result);
 
 -(instancetype) initWithEngineHostName:(NSString*)hostName NS_DESIGNATED_INITIALIZER;
 
--(void)fetchDeals: (NSDictionary*) searchCriteria addCompletionBlock:(generalBlockResponse)completionHandler;
+-(void)fetchDeals: (NSDictionary*)searchCriteria addCompletionBlock:(generalBlockResponse)completionHandler;
 
--(void)fetchTotalDealCountOnly: (NSDictionary*) searchCriteria addCompletionBlock:(generalBlockResponse)completionHandler;
+-(void)fetchTotalDealCountOnly: (NSDictionary*)searchCriteria addCompletionBlock:(generalBlockResponse)completionHandler;
 
 -(NSDictionary*)fetchPrimaryDefaultSearchFiltersWithZipcodes:(NSArray*)zipcodes;
 
--(void)fetchImageForRequest:(NSURLRequest*)request addCompletion:(fetchedImageResponse)completionHandler;
+-(NSDictionary*)fetchPrimaryDefaultSearchFiltersWithLocation;
 
--(UIImage*)fetchCachedImageForKey:(NSString*)key;
+-(void)fetchCachedImageForKey:(NSString*)key addCompletion:(fetchedImageResponse)completionHandler;
+
+-(void)fetchPersistentStorageCachedImageForKey:(NSString*)key deal:(Deal*)aDeal addCompletion:(fetchedImageResponse)completionHandler;
 
 -(void)fetchNewDataWithCompletion:(newDataFetchedResponse)completionHandler;
 
 -(void)fetchGeocodeForAddress:(NSString*)address additionalParams:(NSDictionary*)params shouldParse:(BOOL)parse addCompletetion:(dataBlockResponse)completionHandler;
 
 -(void)fetchGeocodeForAddresses:(NSArray*)addressList additionalParams:(NSDictionary*)params shouldParse:(BOOL)parse addCompletetion:(dataBlockResponse)completionHandler;
+
+-(void)startDownloadImageFromURLString:(NSString*)requestString forDeal:(Deal*)deal addCompletion:(fetchedImageResponse)completionHandler;
 
 -(void)startDownloadImageFromURL:(NSString *)url forObject:(id)object forIndexPath:(NSIndexPath*)indexPath imageView:(UIImageView*)imgView;
 

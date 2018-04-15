@@ -21,7 +21,6 @@ typedef void (^dataResponseBlockResponse)(id response);
 @optional
 -(void)totalDealCountReturned:(NSInteger)responseCount;
 -(void)totalDealCountFailedWithError:(NSError*)error;
--(void)dealsReturned:(NSArray*)deals;
 -(void)dealsFailedWithError:(NSError*)error;
 -(void)operationsCancelled;
 
@@ -39,23 +38,29 @@ typedef void (^dataResponseBlockResponse)(id response);
 
 -(NSDictionary*)primaryDefaultForSearchFilterWithZipcodes:(NSArray*)zipcodes;
 
+-(NSDictionary*)primaryDefaultForSearchFilterAtLocation;
+
 -(void)sortArray:(NSArray*)array byKey:(NSString*)key ascending:(BOOL)shouldAscend localizeCompare:(BOOL)shouldLocalize addCompletion:(dataResponseBlockResponse)completionHandler;
 
 -(void)sendSearchCriteriaForTotalCountOnly:(NSDictionary*)searchCriteria addCompletion:(dataResponseBlockResponse) completionBlock;
 
 -(void)sendSearchCriteria:(NSDictionary*)searchCriteria addCompletion:(dataResponseBlockResponse) completionBlock;
 
--(void)sendAddressForGeocode:(NSDictionary*)params parseAfterCompletion:(BOOL)willParse addCompletionHandler:(dataResponseBlockResponse)completionHandler;
+-(void)sendAddressForGeocode:(NSDictionary*)params addCompletionHandler:(dataResponseBlockResponse)completionHandler;
 
--(void)sendAddressesForGeocode:(NSDictionary*)params parseAfterCompletion:(BOOL)willParse addCompletionHandler:(dataResponseBlockResponse)completionHandler;
+-(void)sendAddressesForGeocode:(NSDictionary*)params addCompletionHandler:(dataResponseBlockResponse)completionHandler;
 
 -(void)downloadImageFromURL:(NSString*)urlString forImageView:(UIImageView*)imageView addCompletionHandler:(fetchedDataResponse)completionHandler;
 
--(void)downloadImageFromRequest:(NSURLRequest*)request addCompletionHandler:(fetchedDataResponse)completionHandler;
+-(void)downloadImageFromURL:(NSString*)urlSting addCompletionHandler:(fetchedDataResponse)completionHandler;
 
--(void)cacheImage:(UIImage*)img forKey:(NSString*)key;
+-(void)cacheImage:(UIImage*)img forKey:(NSString*)key addCompletionHandler:(generalBlockResponse)completionHandler;
 
--(UIImage*)getImageFromCacheWithKey:(NSString*)key;
+-(void)saveToCachePersistenceStorageImage:(UIImage*)img forKey:(NSString*)key addCompletionHandler:(generalBlockResponse)completionHandler;
+
+-(void)getImageFromCacheWithKey:(NSString*)key addCompletionHandler:(dataResponseBlockResponse)completionHandler;
+
+-(void)getImageFromCachePersistenceStorageWithKey:(NSString*)key addCompletionHandler:(dataResponseBlockResponse)completionHandler;
 
 -(void)groupAnnotationByCoordinates:(NSMutableArray*)annotations addCompletionHandler:(dataResponseBlockResponse)completionHandler;
 
@@ -65,7 +70,9 @@ typedef void (^dataResponseBlockResponse)(id response);
 
 -(NSDictionary*)parseGeocodeLocation:(NSDictionary*)locationInfo;
 
--(NSString*)getCurrentDate;
+-(NSString*)getCurrentDateString;
+
+-(NSString*)convertUTCDateToLocal:(NSString*)utcDate;
 
 -(void) cancelOperations:(generalBlockResponse)completionHandler;
 

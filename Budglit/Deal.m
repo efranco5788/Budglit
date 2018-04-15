@@ -37,7 +37,7 @@ NSString* const kDefaultEventEndNotification = @"EventEndNotification";
     
 }
 
--(instancetype)initWithVenueName:(NSString *)venue andVenueAddress:(NSString *)anAddress andVenueDescription:(NSString *)aVenueDes andVenueTwtrUsername:(NSString *)useranme andDate:(NSString *)dateString andEndDate:(NSString *)end andDealDescription:(NSString *)aDealDescription andPhoneNumber:(NSString *)aNumber andCity:(NSString *)aCity andState:(NSString *)aState andZipcode:(NSString *)aZip andBudget:(double)aBudget andDealID:(NSInteger)aDealID andURLImage:(NSString *)url andAddTags:(NSArray *)dealTags
+-(instancetype)initWithVenueName:(NSString *)venue andVenueAddress:(NSString *)anAddress andVenueDescription:(NSString *)aVenueDes andVenueTwtrUsername:(NSString *)useranme andDate:(NSString *)dateString andEndDate:(NSString *)end andDealDescription:(NSString *)aDealDescription andPhoneNumber:(NSString *)aNumber andCity:(NSString *)aCity andState:(NSString *)aState andZipcode:(NSString *)aZip andBudget:(double)aBudget andDealID:(NSString*)aDealID andURLImage:(NSString *)url andAddTags:(NSArray *)dealTags
 {
     self = [super init];
     
@@ -45,7 +45,7 @@ NSString* const kDefaultEventEndNotification = @"EventEndNotification";
     
     if(self)
     {
-        dealID = aDealID;
+        self.dealID = aDealID;
         self.venueName = venue;
         self.venueTwtrUsername = useranme;
         self.address = anAddress;
@@ -74,18 +74,6 @@ NSString* const kDefaultEventEndNotification = @"EventEndNotification";
     
     return self;
         
-}
-
--(NSInteger)getID
-{
-    return dealID;
-}
-
--(NSString *)getDealIDString
-{
-    NSString* stringValue = [[NSString alloc] initWithFormat:@"%ld", (long)dealID];
-    
-    return stringValue;
 }
 
 -(double)getBudget

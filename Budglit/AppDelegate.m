@@ -19,8 +19,7 @@
 #import "MenuTableViewController.h"
 #import "UserAccount.h"
 
-//#define GN_API_URL @"http://api.geonames.org"
-//#define GN_API_URL @"https://budglit.com"
+
 #define HOST_NAME @"https://www.budglit.com"
 #define TWITTER_HOST_NAME @"https://api.twitter.com"
 #define INSTAGRAM_HOST_NAME @"https://api.instagram.com"
@@ -247,29 +246,7 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     return appDefaults;
 }
 
-/*
--(NSDictionary *)constructDefaultObjects:(UserAccount *)account
-{
-    NSNumber* launched = @NO;
-    
-    NSMutableDictionary* currentSearchFilters = [[NSMutableDictionary alloc] init];
-    
-    UserAccount* loggedAccount;
-    
-    if (!account) loggedAccount = [[UserAccount alloc] initWithFirstName:NSLocalizedString(@"DEFAULT_NO_ACCOUNT_NAME", nil) andLastName:nil];
-    else [loggedAccount isEqual:account];
-    
-    NSData* accountData = [NSKeyedArchiver archivedDataWithRootObject:loggedAccount];
-    
-    NSArray* defaultObjects = @[launched, NSLocalizedString(@"DEFAULT_ZIPCODE", nil), NSLocalizedString(@"DEFAULT", nil), NSLocalizedString(@"DEFAULT", nil), NSLocalizedString(@"DEFAULT", nil), NSLocalizedString (@"DEFAULT_BUDGET", nil), accountData, currentSearchFilters];
-    
-    NSArray* defaultKeys = @[NSLocalizedString(@"HAS_LAUNCHED_ONCE", nil), NSLocalizedString(@"ZIPCODE", nil), NSLocalizedString(@"CITY", nil), NSLocalizedString(@"STATE", nil), NSLocalizedString(@"ABBRVIATION", nil), NSLocalizedString(@"BUDGET", nil),  NSLocalizedString(@"ACCOUNT", nil), NSLocalizedString(@"CURRENT_SEARCH_FILTERS", nil)];
-    
-    NSDictionary* appDefaults = [NSDictionary dictionaryWithObjects:defaultObjects forKeys:defaultKeys];
-    
-    return appDefaults;
-}
-*/
+
 #pragma mark -
 #pragma mark - Manager Initializers
 -(void)construct_TwitterEngine
@@ -308,6 +285,7 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 -(void)construct_LocationServiceManager
 {
     self.locationManager = [[LocationSeviceManager alloc] initWithEngineHostName:HOST_NAME];
+    [self.locationManager setDistanceConversionType:0];
 }
 
 -(void)construct_DrawerController
@@ -338,6 +316,20 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     self.imageDataCache = [[ImageDataCache alloc] init];
     
     [self.imageDataCache setName:IMAGE_CACHE_NAME];
+}
+
+-(UIColor *)getPrimaryColor
+{
+    /*
+    return [UIColor colorWithRed:(float)44/255
+                           green:(float)83/255
+                            blue:(float)143/255
+                           alpha:(float)1];
+    */
+    return [UIColor colorWithRed:(float)31/255
+                           green:(float)80/255
+                            blue:(float)155/255
+                           alpha:(float)1];
 }
 
 

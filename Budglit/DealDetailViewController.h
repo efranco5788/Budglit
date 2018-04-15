@@ -18,13 +18,14 @@
 @interface DealDetailViewController : UIViewController<SocialMediaViewDelegate>
 
 
-@property (weak, nonatomic) Deal* dealSelected;
+@property (strong, nonatomic) Deal* dealSelected;
 @property (weak, nonatomic) IBOutlet UIView* socialMediaContainer;
 @property (strong, nonatomic) UIPageViewController* SMPageViewController;
 @property (strong, nonatomic) PSTwitterViewController* twitterViewController;
 @property (strong, nonatomic) PSFacebookViewController* fbViewController;
 @property (strong, nonatomic) PSInstagramViewController* instaViewController;
-@property (weak, nonatomic) IBOutlet UIImageView* venueImage;
+@property (strong, nonatomic) IBOutlet UIImageView* venueImage;
+@property (strong, nonatomic) IBOutlet UIActivityIndicatorView *imgActivityIndicator;
 @property (weak, nonatomic) IBOutlet UITextView* descriptionTextView;
 @property (strong, nonatomic) IBOutlet UIImageView *addressImage;
 @property (strong, nonatomic) IBOutlet UIImageView *phoneImage;
@@ -37,7 +38,7 @@
 @property (weak, nonatomic) NSString* descriptionText;
 @property (strong, nonatomic) NSString* addressText;
 @property (strong, nonatomic) NSString* phoneText;
-@property (weak, nonatomic) UIImage* image;
+@property (strong, nonatomic) UIImage* image;
 @property (strong, nonatomic) IBOutlet UIPanGestureRecognizer *twitterViewGesture;
 @property (strong, nonatomic) UITapGestureRecognizer* tapTwitterView;
 @property (strong, nonatomic) UITapGestureRecognizer* tapDealView;

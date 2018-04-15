@@ -8,13 +8,16 @@
 
 #import "DealMapAnnotation.h"
 #import "GeneralEventAnnotationView.h"
+#import "AppDelegate.h"
+
+#define kDEFAULT_DISTANCE_FROM_USER @"0"
 
 @implementation DealMapAnnotation
 @synthesize coordinate = _coordinate;
 
 + (MKAnnotationView *)createViewAnnotationForMapView:(MKMapView *)mapView annotation:(id <MKAnnotation>)annotation
 {
-    MKAnnotationView *returnedAnnotationView = (GeneralEventAnnotationView*) [mapView dequeueReusableAnnotationViewWithIdentifier:NSStringFromClass([DealMapAnnotation class])];
+    GeneralEventAnnotationView* returnedAnnotationView = (GeneralEventAnnotationView*) [mapView dequeueReusableAnnotationViewWithIdentifier:NSStringFromClass([DealMapAnnotation class])];
     
     if(returnedAnnotationView == nil)
     {
@@ -39,6 +42,7 @@
         self.dealAnnotated = deal;
         self.title = deal.venueName;
         self.locationName = deal.venueName;
+        self.distanceFromUser = [NSString stringWithFormat:@"%@ mi", kDEFAULT_DISTANCE_FROM_USER];
         self.discipline = @"Event";
     }
     
@@ -64,18 +68,15 @@
     self.showCustomCallOut = shouldShowCallout;
 }
 
+-(void)distanceFromUser:(NSString *)distance
+{
+    self.distanceFromUser = [NSString stringWithFormat:@"%@ mi", distance];
+}
+
 -(void)setCoordinate:(CLLocationCoordinate2D)newCoordinate
 {
     _coordinate = newCoordinate;
 }
-
--(NSString *)subtitle
-{
-    return self.locationName;
-}
-
-
-
 
 
 

@@ -19,14 +19,20 @@
 @property (strong, nonatomic) Deal* dealAnnotated;
 @property (copy, nonatomic) NSString* title;
 @property (strong, nonatomic) NSString* locationName;
+@property (strong, nonatomic) NSString* distanceFromUser;
 @property (strong, nonatomic) NSString* discipline;
 @property (nonatomic, assign) BOOL showCustomCallOut;
 
 + (MKAnnotationView *)createViewAnnotationForMapView:(MKMapView *)mapView annotation:(id <MKAnnotation>)annotation;
 
 -(id)initWithDeal:(Deal*)deal;
+
 -(void)setFrameForCalloutView:(CGRect)tmpFrame;
+
 -(void)setCustomCallout:(BOOL)shouldShowCallout;
+
+-(void)distanceFromUser:(NSString *)distance;
+
 -(void) showCustomCallout;
 
 @end

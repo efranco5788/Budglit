@@ -27,6 +27,14 @@ typedef void (^dataResponseBlockResponse)(id response);
 
 -(instancetype) initWithHostName:(NSString *)hostName NS_DESIGNATED_INITIALIZER;
 
+-(void)setDistanceConversionType:(NSInteger)type;
+
+-(double)convertLocationDistanceMeters:(double)meters;
+
+-(NSDictionary*)loadStates;
+
+-(CLLocationDistance)getLocationBetweenLocations:(NSArray*)locations;
+
 -(CLLocation*)createLocationFromStringLongtitude:(NSString*)lng andLatitude:(NSString*)lat;
 
 -(CLLocation*)createLocationWithLongtitude:(CLLocationDegrees)longtitude andLatitude:(CLLocationDegrees)latitude;

@@ -108,6 +108,8 @@ static NSString* const emptyCellIdentifier = @"holderCell";
 
 -(void)viewWillAppear:(BOOL)animated
 {
+    [self.dealsTableView setScrollEnabled:YES];
+    
     [self.navigationController setNavigationBarHidden:NO];
 
     NSNotificationCenter* center = [NSNotificationCenter defaultCenter];
@@ -117,7 +119,6 @@ static NSString* const emptyCellIdentifier = @"holderCell";
 
 -(void)viewDidAppear:(BOOL)animated
 {
-    [self.dealsTableView setScrollEnabled:YES];
     
     if (@available(iOS 11.0, *)) {
         [self.tableView setContentInsetAdjustmentBehavior:UIScrollViewContentInsetAdjustmentNever];
@@ -200,13 +201,12 @@ static NSString* const emptyCellIdentifier = @"holderCell";
         
         (appDelegate.databaseManager).delegate = self;
         
-        NSString* url = deal.imgStateObject.imagePath;
-        
+        // Background Queue Token
         backgroundQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0);
         
-        dispatch_async(backgroundQueue, ^{ // Background Thread Queue
+        dispatch_async(backgroundQueue, ^{
             
-            [appDelegate.databaseManager startDownloadImageFromURL:url forObject:cell forIndexPath:indexPath imageView:cell.dealImage];
+            [appDelegate.databaseManager startDownloadImageFromURL:deal.imgStateObject.imagePath forObject:cell forIndexPath:indexPath imageView:cell.dealImage];
             
             (self.imageDownloadInProgress)[indexPath] = deal;
             
@@ -234,12 +234,36 @@ static NSString* const emptyCellIdentifier = @"holderCell";
             
             __block Deal* visibleDeal = deals[index.row];
             
-            if (![visibleDeal.imgStateObject imageExists]) {
+            [appDelegate.databaseManager fetchCachedImageForKey:visibleDeal.imgStateObject.imagePath addCompletion:^(UIImage *image) {
                 
-                [visibleCell setUserInteractionEnabled:NO]; // Disable any interaction if image for the deal has not loaded yet
+                if(image){
+                    [visibleCell.dealImage setImage:image];
+                    [visibleCell.imageLoadingActivityIndicator stopAnimating];
+                }
+                else{
+                    
+                    // Disable any interaction if image for the deal has not loaded yet
+                    [visibleCell setUserInteractionEnabled:NO];
+                    
+                    [appDelegate.databaseManager fetchPersistentStorageCachedImageForKey:visibleDeal.imgStateObject.imagePath deal:visibleDeal addCompletion:^(UIImage *img) {
+                        
+                        if(img){
+                            
+                            [visibleCell.imageLoadingActivityIndicator stopAnimating];
+                            
+                            visibleCell.dealImage.image = img;
+                            
+                            [visibleCell setUserInteractionEnabled:YES];
+                        
+                            
+                        }
+                        else [weakSelf startImageDownloadForDeal:visibleDeal forIndexPath:index andTableCell:visibleCell];
+                        
+                    }]; // End of Persistent Storage Fetch
+                }
                 
-                [weakSelf startImageDownloadForDeal:visibleDeal forIndexPath:index andTableCell:visibleCell];
-            }
+            }]; // End of Memory Cache image search
+            
             
         } // End of visible cell for loop
     
@@ -369,24 +393,52 @@ static NSString* const emptyCellIdentifier = @"holderCell";
         
         DealTableViewCell* dealCell = (DealTableViewCell*) cell;
         
-        UIImage* img = [appDelegate.databaseManager fetchCachedImageForKey:deal.imgStateObject.imagePath];
-        
-        if (img) [dealCell.dealImage setImage:img];
-        else{
+        [appDelegate.databaseManager fetchCachedImageForKey:deal.imgStateObject.imagePath addCompletion:^(UIImage *image) {
             
-            dealCell.dealImage.image = self.placeholderImage;
-            
-            [dealCell setUserInteractionEnabled:NO]; // Disable any interaction if image for the deal has not loaded yet
-            
-            [dealCell.imageLoadingActivityIndicator startAnimating];
-            
-            if (self.dealsTableView.dragging == NO && self.dealsTableView.decelerating == NO){
-                if(dealCell){
-                    [self startImageDownloadForDeal:deal forIndexPath:indexPath andTableCell:dealCell];
-                }
+            if (image){
+                
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    dealCell.dealImage.image = image;
+                    [dealCell.imageLoadingActivityIndicator stopAnimating];
+                });
                 
             }
-        }
+            else {
+                
+                [dealCell setUserInteractionEnabled:NO]; // Disable any interaction if image for the deal has not loaded yet
+                
+                dealCell.dealImage.image = self.placeholderImage;
+                
+                [dealCell.imageLoadingActivityIndicator startAnimating];
+                
+                [appDelegate.databaseManager fetchPersistentStorageCachedImageForKey:deal.imgStateObject.imagePath deal:deal addCompletion:^(UIImage *img) {
+                    
+                    if(!img){
+                        if (self.dealsTableView.dragging == NO && self.dealsTableView.decelerating == NO){
+                            
+                            if(dealCell){
+                                [self startImageDownloadForDeal:deal forIndexPath:indexPath andTableCell:dealCell];
+                            }
+                            
+                        }
+                    }
+                    else{
+                        
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            dealCell.dealImage.image = img;
+                            [dealCell setUserInteractionEnabled:YES];
+                            [dealCell.imageLoadingActivityIndicator stopAnimating];
+                            
+                        });
+                        
+                    }
+                    
+                    
+                }]; // End of fetching image in Persistent Storage Cache
+                
+            }
+            
+        }]; // End of Fetching Image in Cache
      
         if ([dealCell.dealTimer.text isEqualToString:NSLocalizedString(@"TIMER_LABEL_DEFAULT_TEXT", nil)]) {
             dealCell.dealTimer = [deal generateCountDownEndDate:dealCell.dealTimer];
@@ -483,7 +535,10 @@ static NSString* const emptyCellIdentifier = @"holderCell";
         
         ACDDVC.dealSelected = selectedDeal;
         
-        ACDDVC.image = self.placeholderImage;
+        //AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
+        
+        //ACDDVC.image = [appDelegate.databaseManager fetchCachedImageForKey:selectedDeal.imgStateObject.imagePath];
+        
         
     }
     else if ([segue.identifier isEqualToString:SEGUE_ALL_CURRENT_DEAL_TO_EDIT_ZIPCODE_OFFLINE_CONTROLLER]) {
@@ -522,49 +577,36 @@ static NSString* const emptyCellIdentifier = @"holderCell";
 
 
 #pragma mark -
-#pragma mark - Menu View Delegate
--(void)menuBeingPresented
-{
-    
-}
-
--(void)menuPresented
-{
-    
-}
-
--(void)menuDismissed
-{
-    [self.dealsTableView setScrollEnabled:YES];
-}
-
+#pragma mark - Database Delegate Methods
 -(void)imageFetchedForObject:(id)obj forIndexPath:(NSIndexPath *)indexPath andImage:(UIImage *)image andImageView:(UIImageView *)imageView
 {
+    
+    DealTableViewCell* cell = (DealTableViewCell*) [self.dealsTableView cellForRowAtIndexPath:indexPath];
+    
+    __block CATransition* transition = [CATransition animation];
+    
+    transition.duration = 0.1f;
+    transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn];
+    transition.type = kCATransitionFade;
+    
+    if(cell){
 
-    // Load the images on the main queue
-    dispatch_async(dispatch_get_main_queue(), ^{
+        [cell.dealImage.layer addAnimation:transition forKey:nil];
         
-        DealTableViewCell* cell = (DealTableViewCell*) [self.dealsTableView cellForRowAtIndexPath:indexPath];
-        
-        if(cell){
+        dispatch_async(dispatch_get_main_queue(), ^{
+            
+            cell.dealImage.image = image;
+            
             [cell setUserInteractionEnabled:YES];
             
             [cell.imageLoadingActivityIndicator stopAnimating];
             
-            __block CATransition* transition = [CATransition animation];
-            
-            transition.duration = 0.1f;
-            transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn];
-            transition.type = kCATransitionFade;
-            
-            [cell.dealImage.layer addAnimation:transition forKey:nil];
-            
-            cell.dealImage.image = image;
-            
             [self.imageDownloadInProgress removeObjectForKey:indexPath];
-        }
+            
+        });
+        
+    }
     
-    });
 }
 
 

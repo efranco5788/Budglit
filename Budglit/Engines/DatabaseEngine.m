@@ -8,6 +8,7 @@
 
 #import "DatabaseEngine.h"
 #import "AppDelegate.h"
+#import "CityDataObject.h"
 #import "Deal.h"
 #import "ImageData.h"
 #import "UIImage+Resizing.h"
@@ -22,6 +23,7 @@
 #define KEY_DEALS @"deals"
 #define KEY_LIST @"parsedList"
 #define DEAL_COUNT @"count"
+#define DATE_FORMAT @"yyyy-MM-dd'T'HH:mm:ss.sssZ"
 
 #define RESCALE_IMAGE_WIDTH 1024
 #define RESCALE_IMAGE_HEIGHT 1024
@@ -73,6 +75,33 @@
     return self;
 }
 
+-(NSDictionary *)primaryDefaultForSearchFilterAtLocation
+{
+    NSArray* keys = @[NSLocalizedString(@"DISTANCE_FILTER", nil), NSLocalizedString(@"BUDGET_FILTER", nil), NSLocalizedString(@"DATE_FILTER", nil), NSLocalizedString(@"CITY", nil), NSLocalizedString(@"STATE", nil)];
+    
+    NSString* distanceCriteria = NSLocalizedString(@"DEFAULT_DISTANCE_FILTER", nil);
+    
+    NSString* budgetCriteria = NSLocalizedString(@"DEFAULT_BUDGET", nil);
+    
+    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
+    
+    CityDataObject* city = appDelegate.locationManager.getCurrentLocationCityObject;
+    
+    NSString* cityName = city.name;
+    
+    NSString* state = city.state;
+    
+    NSString* currentDate = [self getCurrentDateString];
+    
+    NSLog(@"%@", currentDate);
+    
+    NSArray* values = @[distanceCriteria, budgetCriteria, currentDate, cityName, state];
+    
+    NSDictionary* filterCriteria = [NSDictionary dictionaryWithObjects:values forKeys:keys];
+    
+    return filterCriteria;
+}
+
 -(NSDictionary*)primaryDefaultForSearchFilterWithZipcodes:(NSArray *)zipcodes
 {
     NSArray* keys = @[NSLocalizedString(@"DISTANCE_FILTER", nil), NSLocalizedString(@"BUDGET_FILTER", nil), NSLocalizedString(@"DATE_FILTER", nil), NSLocalizedString(@"ZIPCODE", nil), NSLocalizedString(@"SURROUNDING_ZIPCODES", nil)];
@@ -85,7 +114,7 @@
     
     NSString* userZipcode = [defaults valueForKey:NSLocalizedString(@"ZIPCODE", nil)];
     
-    NSString* currentDate = [self getCurrentDate];
+    NSString* currentDate = [self getCurrentDateString];
     
     NSArray* values;
     
@@ -97,15 +126,37 @@
     return filterCriteria;
 }
 
--(NSString*)getCurrentDate
+-(NSString*)getCurrentDateString
 {
-    NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
     
-    [formatter setDateFormat:NSLocalizedString(@"DATE_FORMAT", nil)];
+    NSTimeZone* timeZone = [NSTimeZone localTimeZone];
     
-    NSString* currentDate = [formatter stringFromDate:[NSDate date]];
+    NSISO8601DateFormatOptions options = NSISO8601DateFormatWithInternetDateTime | NSISO8601DateFormatWithDashSeparatorInDate | NSISO8601DateFormatWithColonSeparatorInTime | NSISO8601DateFormatWithTimeZone;
+
+    NSString* currentDate = [NSISO8601DateFormatter stringFromDate:[NSDate date] timeZone:timeZone formatOptions:options];
     
     return currentDate;
+}
+
+-(NSString*)convertUTCDateToLocal:(NSString*)utcDate
+{
+    if(!utcDate) return nil;
+    
+    NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
+    
+    formatter.dateFormat = DATE_FORMAT;
+    
+    NSDate* date = [formatter dateFromString:utcDate];
+    
+    if(!date) return nil;
+    
+    NSTimeZone* timeZone = [NSTimeZone localTimeZone];
+    
+    NSISO8601DateFormatOptions options = NSISO8601DateFormatWithInternetDateTime | NSISO8601DateFormatWithDashSeparatorInDate | NSISO8601DateFormatWithColonSeparatorInTime | NSISO8601DateFormatWithTimeZone;
+    
+    NSString* localTime = [NSISO8601DateFormatter stringFromDate:date timeZone:timeZone formatOptions:options];
+    
+    return localTime;
 }
 
 -(void)sendSearchCriteriaForTotalCountOnly:(NSDictionary *)searchCriteria addCompletion:(dataResponseBlockResponse)completionBlock
@@ -178,17 +229,12 @@
                 NSLog(@"%@", errorMessage);
                 
                 NSArray* array = [[NSArray alloc] init];
-                
-               // [self.delegate dealsReturned:array];
+
                 completionBlock(array);
             }
             else{
-                
-                //NSArray* deals = [responseObject valueForKey:@"deals"];
-                
                 NSLog(@"%@", deals);
                 
-                //[self.delegate dealsReturned:deals];
                 completionBlock(deals);
                 
             }
@@ -205,7 +251,7 @@
     
 }
 
--(void)sendAddressForGeocode:(NSDictionary *)params parseAfterCompletion:(BOOL)willParse addCompletionHandler:(dataResponseBlockResponse)completionHandler
+-(void)sendAddressForGeocode:(NSDictionary *)params addCompletionHandler:(dataResponseBlockResponse)completionHandler
 {
     if(!params) return;
     
@@ -214,17 +260,9 @@
     
     [self.sessionManager POST:API_PLACES parameters:params progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         
-        if(!responseObject){
-            completionHandler(nil);
-        }
+        if(!responseObject) completionHandler(nil);
         
-        if (willParse == NO) completionHandler(responseObject);
-        
-        NSDictionary* unparsedAddress = (NSDictionary*) responseObject;
-        
-        NSDictionary* parsedAddress = [self parseGeocodeLocation:unparsedAddress];
-        
-        completionHandler(parsedAddress);
+        completionHandler(responseObject);
         
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         NSLog(@"%@", error);
@@ -237,7 +275,7 @@
 }
 
 #warning needs better error handling
--(void)sendAddressesForGeocode:(NSDictionary *)params parseAfterCompletion:(BOOL)willParse addCompletionHandler:(dataResponseBlockResponse)completionHandler
+-(void)sendAddressesForGeocode:(NSDictionary *)params addCompletionHandler:(dataResponseBlockResponse)completionHandler
 {
     if(!params) return;
     
@@ -248,20 +286,7 @@
         
         if(!responseObject) completionHandler(nil);
         
-        if(willParse == NO) completionHandler(responseObject);
-        
-        NSArray* addressList = (NSArray*) responseObject;
-        
-        NSMutableArray* mutableParsedList = [[NSMutableArray alloc] init];
-        
-        for (NSDictionary* address in addressList) {
-            NSDictionary* parsedAddress = [self parseGeocodeLocation:address];
-            [mutableParsedList addObject:parsedAddress];
-        }
-        
-        NSDictionary* parsedList = mutableParsedList.copy;
-        
-        completionHandler(parsedList);
+        completionHandler(responseObject);
         
         
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
@@ -332,49 +357,105 @@
     
 }
 
--(void)downloadImageFromRequest:(NSURLRequest *)request addCompletionHandler:(fetchedDataResponse)completionHandler
+-(void)downloadImageFromURL:(NSString *)urlSting addCompletionHandler:(fetchedDataResponse)completionHandler
 {
-    UIImageView* imgView = [[UIImageView alloc] init];
+    self.sessionManager.responseSerializer = [AFImageResponseSerializer serializer];
+    self.sessionManager.requestSerializer = [AFHTTPRequestSerializer serializer];
     
-    [imgView setImageWithURLRequest:request placeholderImage:nil success:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, UIImage * _Nonnull image) {
+    [self.sessionManager GET:urlSting parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         
-        NSLog(@"Image fetched %@", response);
+        NSLog(@"Image fetched %@", responseObject);
         
+        NSHTTPURLResponse *response = ((NSHTTPURLResponse *)[task response]);
         
-        completionHandler(image, response, request);
+        completionHandler(responseObject, response, task.originalRequest);
         
-        
-    } failure:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, NSError * _Nonnull error) {
-        
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        NSLog(@"%@", error);
     }];
+    
 }
 
--(void)cacheImage:(UIImage *)img forKey:(NSString *)key
+-(void)getImageFromCacheWithKey:(NSString *)key addCompletionHandler:(dataResponseBlockResponse)completionHandler
 {
-    if(img || key) {
-
-        dispatch_async(dispatch_get_main_queue(), ^{
-            AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        
+        AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
+        
+        if(!key) completionHandler(nil);
+        else{
             
-            [appDelegate.imageDataCache setObject:img forKey:key];
-        });
+            id imgObject = [appDelegate.imageDataCache objectForKey:key];
+            
+            if(!imgObject) completionHandler(nil);
+            else completionHandler(imgObject);
+        }
+    });
+    
+}
+
+-(void)getImageFromCachePersistenceStorageWithKey:(NSString *)key addCompletionHandler:(dataResponseBlockResponse)completionHandler
+{
+    if(!key) completionHandler(nil);
+    else{
+        
+        AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
+        
+        [appDelegate.imageDataCache getFileFromPersistentStorageCache:key addCompletion:^(id object) {
+            
+            if(!object) completionHandler(nil);
+            else{
+                
+                UIImage* img = [UIImage imageWithData:object];
+                
+                if(!img) completionHandler(nil);
+                else completionHandler(img);
+
+            }
+            
+        }];
+        
     }
     
 }
 
--(UIImage *)getImageFromCacheWithKey:(NSString *)key
+
+-(void)cacheImage:(UIImage *)img forKey:(NSString *)key addCompletionHandler:(generalBlockResponse)completionHandler
 {
-    if(!key) return nil;
+    if(!img || !key) completionHandler(NO);
+    else{
+        
+        AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
+        
+        [appDelegate.imageDataCache setObject:img forKey:key];
+        
+        completionHandler(YES);
+    }
     
-    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
-    
-    id imgObject = [appDelegate.imageDataCache objectForKey:key];
-    
-    if(!imgObject) return nil;
-    
-    UIImage* cachedImage = (UIImage*) imgObject;
-    
-    return cachedImage;
+}
+
+-(void)saveToCachePersistenceStorageImage:(UIImage *)img forKey:(NSString *)key addCompletionHandler:(generalBlockResponse)completionHandler
+{
+    if(!img || !key) completionHandler(NO);
+    else{
+        
+        AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
+        
+        NSData* imgData = UIImagePNGRepresentation(img);
+        
+        NSArray* stringComponents = [key componentsSeparatedByString:@"/"];
+        
+        NSString* imgName = [stringComponents lastObject];
+        
+        [appDelegate.imageDataCache saveFileToPersistentStorageCache:imgData withKey:imgName addCompletion:^(BOOL success) {
+            
+            if(success == NO) completionHandler(nil);
+            else completionHandler(YES);
+            
+        }];
+        
+    }
+
 }
 
 #pragma mark -

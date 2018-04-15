@@ -41,7 +41,7 @@ typedef void (^fetchPostalCompletionHandler)(id object);
 @property (nonatomic, strong) CLLocationManager* locationManager;
 @property (nonatomic, strong) LocationEngine* engine;
 @property (nonatomic, assign) id<LocationManagerDelegate> delegate;
-@property (nonatomic, copy) NSArray* cities;
+//@property (nonatomic, copy) NSArray* cities;
 @property (nonatomic, strong) CLLocation *currentLocation;
 
 //@property (nonatomic) int updateState;
@@ -56,13 +56,11 @@ typedef void (^fetchPostalCompletionHandler)(id object);
 
 -(void) stopUpdates;
 
+-(NSString*)findStateNameFor:(NSString*)stateAbbr;
+
 -(void) populateStatesList;
 
 @property (NS_NONATOMIC_IOSONLY, getter=isCurrentZipcodeExists, readonly) BOOL currentZipcodeExists;
-
--(BOOL) searchZipcode: (NSString *) aZipcode;
-
--(BOOL) isValidZipcode: (NSString *) aZipcode;
 
 -(void) attemptToAddCurrentLocation:(CityDataObject*) aCity addCompletionHandler:(addLocationResponse)completionHandler;
 
@@ -71,8 +69,6 @@ typedef void (^fetchPostalCompletionHandler)(id object);
 @property (NS_NONATOMIC_IOSONLY, readonly, copy) NSString *retrieveCurrentLocationString;
 
 -(void) fetchLocationInformation:(NSArray*) locations;
-
--(void) fetchCoordinates:(Deal*) deal addCompletionHandler:(generalCompletionHandler)completionHandler;
 
 -(BOOL) validateZipcodeInput:(NSString*)newInput withOldString: (NSString*)oldString;
 
@@ -86,13 +82,15 @@ typedef void (^fetchPostalCompletionHandler)(id object);
 
 -(CLLocation*)getCurrentLocation;
 
--(void) fetchSurroundingZipcodesWithPostalCode:(NSString*)postalCode andObjects:(NSDictionary*) usersObjects addCompletionHandler:(fetchPostalCompletionHandler)completionHandler;
+-(CLLocationDistance)distanceFromLocation:(CLLocation*)locationA toLocation:(CLLocation*)locationB;
+
+-(void)setDistanceConversionType:(NSInteger)type;
+
+-(double)convertDistance:(double)meters;
+
+//-(void) fetchSurroundingZipcodesWithPostalCode:(NSString*)postalCode andObjects:(NSDictionary*) usersObjects addCompletionHandler:(fetchPostalCompletionHandler)completionHandler;
 
 -(void) fetchZipcodesForCity:(CityDataObject*)city andObjects:(NSDictionary*)usersObject addCompletionHandler:(fetchPostalCompletionHandler)completionHandler;
-
--(void) fetchSurroundingZipcodesWithCurrentLocation:(CLLocation*)currentLocation andObjects:(NSDictionary*) usersObjects addCompletionHandler:(fetchPostalCompletionHandler)completionHandler;
-
--(void) fetchSurroundingZipcodesWithCurrentLocation;
 
 -(CLLocation*)managerCreateLocationFromStringLongtitude:(NSString *)lng andLatitude:(NSString *)lat;
 

@@ -37,9 +37,9 @@
 @property (readonly, strong, nonatomic) NSPersistentStoreCoordinator *persistentStoreCoordinator;
 
 - (void) saveContext;
-//-(NSDictionary*)constructDefaultObjects: (UserAccount*) account;
 -(NSDictionary*)constructDefaultObjects; // Constructs the basic default data for the app
 -(NSDictionary*)constructDefaultUserAccount;
+-(UIColor*)getPrimaryColor;
 
 
 @end

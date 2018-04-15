@@ -21,14 +21,13 @@
 
 @interface Deal : NSObject
 {
-    NSInteger dealID;
     double budget;
-    
 }
 
 extern NSString* const kDefaultEventEndNotification;
 
 @property (nonatomic, assign) id<DealDelegate> delegate;
+@property (nonatomic, strong) NSString* dealID;
 @property (nonatomic, strong) NSString* venueName;
 @property (nonatomic, strong) NSString* venueDescription;
 @property (nonatomic, strong) NSString* venueTwtrUsername;
@@ -44,7 +43,7 @@ extern NSString* const kDefaultEventEndNotification;
 @property (nonatomic, strong) ImageStateObject* imgStateObject;
 @property (nonatomic, strong) MZTimerLabel* eventCountDwn;
 
-- (instancetype) initWithVenueName:(NSString*) venue andVenueAddress:(NSString*) anAddress andVenueDescription:(NSString*) aVenueDes andVenueTwtrUsername:(NSString*)useranme andDate:(NSString*)dateString andEndDate:(NSString*)end andDealDescription:(NSString*) aDealDescription andPhoneNumber:(NSString*) aNumber andCity:(NSString*) aCity andState:(NSString*) aState andZipcode:(NSString*)aZip andBudget:(double) aBudget andDealID:(NSInteger) aDealID andURLImage:(NSString*) url andAddTags:(NSArray*) dealTags NS_DESIGNATED_INITIALIZER;
+- (instancetype) initWithVenueName:(NSString*) venue andVenueAddress:(NSString*) anAddress andVenueDescription:(NSString*) aVenueDes andVenueTwtrUsername:(NSString*)useranme andDate:(NSString*)dateString andEndDate:(NSString*)end andDealDescription:(NSString*) aDealDescription andPhoneNumber:(NSString*) aNumber andCity:(NSString*) aCity andState:(NSString*) aState andZipcode:(NSString*)aZip andBudget:(double) aBudget andDealID:(NSString*) aDealID andURLImage:(NSString*) url andAddTags:(NSArray*) dealTags NS_DESIGNATED_INITIALIZER;
 
 
 @property (NS_NONATOMIC_IOSONLY, getter=getAddressString, readonly, copy) NSString *addressString;
@@ -52,10 +51,6 @@ extern NSString* const kDefaultEventEndNotification;
 @property (NS_NONATOMIC_IOSONLY, readonly, copy) NSString *detailDescription;
 
 @property (NS_NONATOMIC_IOSONLY, getter=getOriginalPosition) CGRect originalPosition;
-
--(NSInteger)getID;
-
--(NSString*)getDealIDString;
 
 -(double) getBudget;
 

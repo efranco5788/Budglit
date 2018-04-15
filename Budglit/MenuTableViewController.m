@@ -20,7 +20,7 @@
 #define MAX_SECTION_LOGIN_HEIGHT 0.30
 #define MAX_SECTION_SECOND_HEIGHT 0.60
 #define MAX_SECTION_THIRD_HEIGHT 0.55
-#define MAX_USER_ROW_HEIGHT 60
+#define MAX_USER_ROW_HEIGHT 120
 #define RESTORATION_STRING @"menuTableViewController"
 
 @interface MenuTableViewController () <DrawerControllerDelegate>
@@ -112,10 +112,10 @@ static NSString *userProfileIdentifier = @"profileCell";
     switch (section) {
         case 0:
         {
-            CGRect statusBarFrame = [[UIApplication sharedApplication] statusBarFrame];
+            //CGRect statusBarFrame = [[UIApplication sharedApplication] statusBarFrame];
             
-            //return 0.1f;
-            return statusBarFrame.size.height;
+            return 0.0f;
+            //return statusBarFrame.size.height;
             break;
         }
         case 1:
@@ -162,7 +162,7 @@ static NSString *userProfileIdentifier = @"profileCell";
         
         UserProfileTableViewCell* cell = (UserProfileTableViewCell*) [self.tableView dequeueReusableCellWithIdentifier:userProfileIdentifier];
 
-        CGRect frame = CGRectMake(10, 0, MAX_USER_ROW_HEIGHT, MAX_USER_ROW_HEIGHT);
+        CGRect frame = CGRectMake(10, 30, MAX_USER_ROW_HEIGHT - 30, MAX_USER_ROW_HEIGHT - 30);
         (cell.imageView).bounds = frame;
         (cell.imageView).frame = frame;
         
@@ -173,8 +173,13 @@ static NSString *userProfileIdentifier = @"profileCell";
         [cell.imageView.layer setMasksToBounds:YES];
         (cell.imageView.layer).cornerRadius = (cell.imageView.frame.size.width / 2);
         [cell.textLabel setAdjustsFontSizeToFitWidth:YES];
+        cell.textLabel.textColor = [UIColor whiteColor];
         cell.contentMode = UIViewContentModeScaleAspectFit;
         cell.imageView.contentMode = UIViewContentModeScaleAspectFit;
+        
+        AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
+        
+        [cell setBackgroundColor:[appDelegate getPrimaryColor]];
         
         return cell;
     }

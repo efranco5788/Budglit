@@ -160,6 +160,11 @@ static DatabaseManager* sharedManager;
     return closeDB_Status;
 }
 
+-(NSDictionary *)fetchPrimaryDefaultSearchFiltersWithLocation
+{
+    return [self.engine primaryDefaultForSearchFilterAtLocation];
+}
+
 -(NSDictionary *)fetchPrimaryDefaultSearchFiltersWithZipcodes:(NSArray *)zipcodes
 {
     return [self.engine primaryDefaultForSearchFilterWithZipcodes:zipcodes];
@@ -231,15 +236,6 @@ static DatabaseManager* sharedManager;
     }];
 }
 
--(void)fetchImageForRequest:(NSURLRequest *)request addCompletion:(fetchedImageResponse)completionHandler
-{
-    [self.engine downloadImageFromRequest:request addCompletionHandler:^(UIImage *imageResponse, NSHTTPURLResponse *response, NSURLRequest *request) {
-        
-        completionHandler(imageResponse);
-        
-    }];
-}
-
 -(void)fetchGeocodeForAddress:(NSString *)address additionalParams:(NSDictionary *)params shouldParse:(BOOL)parse addCompletetion:(dataBlockResponse)completionHandler
 {
     if(!address && !params) return;
@@ -248,6 +244,7 @@ static DatabaseManager* sharedManager;
     
     if (address) {
         NSDictionary* parameters = [self.engine constructParameterWithKey:KEY_ADDRESS AndValue:address addToDictionary:params];
+        
         tmpMutableParameters = parameters.mutableCopy;
     }
     
@@ -257,8 +254,18 @@ static DatabaseManager* sharedManager;
     
     NSDictionary* parameters = tmpMutableParameters.copy;
     
-    [self.engine sendAddressForGeocode:parameters parseAfterCompletion:parse addCompletionHandler:^(id response) {
-        completionHandler(response);
+    [self.engine sendAddressForGeocode:parameters addCompletionHandler:^(id response){
+        
+        if(!response) completionHandler(nil);
+        
+        if (!parse) completionHandler(response);
+        
+        NSDictionary* unparsedAddress = (NSDictionary*) response;
+        
+        NSDictionary* parsedAddress = [self.engine parseGeocodeLocation:unparsedAddress];
+        
+        completionHandler(parsedAddress);
+        
     }];
 }
 
@@ -275,9 +282,7 @@ static DatabaseManager* sharedManager;
         [tmpMutableParameters addEntriesFromDictionary:params];
     }
     
-    __block NSDictionary* preFinalParameters = tmpMutableParameters;
-    
-    NSArray* address = [preFinalParameters valueForKey:KEY_ADDRESS];
+    NSArray* address = [tmpMutableParameters valueForKey:KEY_ADDRESS];
     
     NSArray* unorderedAddressList = [self.engine removeDuplicateFromArray:address Unordered:YES];
     
@@ -285,11 +290,24 @@ static DatabaseManager* sharedManager;
     
     NSDictionary* finalParameters = tmpMutableParameters.copy;  
     
-    [self.engine sendAddressesForGeocode:finalParameters parseAfterCompletion:YES addCompletionHandler:^(id response) {
-
-        if(response){
-            completionHandler(response);
+    [self.engine sendAddressesForGeocode:finalParameters addCompletionHandler:^(id response) {
+        
+        if(!response) completionHandler(nil);
+        
+        if(!parse) completionHandler(response);
+        
+        NSArray* addressList = (NSArray*) response;
+        
+        NSMutableArray* mutableParsedList = [[NSMutableArray alloc] init];
+        
+        for (NSDictionary* address in addressList) {
+            NSDictionary* parsedAddress = [self.engine parseGeocodeLocation:address];
+            [mutableParsedList addObject:parsedAddress];
         }
+        
+        NSDictionary* parsedList = mutableParsedList.copy;
+        
+        completionHandler(parsedList);
         
     }];
 }
@@ -299,13 +317,92 @@ static DatabaseManager* sharedManager;
     
 }
 
+// Fetch Memory Cahce for Image
+-(void)fetchCachedImageForKey:(NSString *)key addCompletion:(fetchedImageResponse)completionHandler
+{
+    __block UIImage* cachedImage;
+    
+    [self.engine getImageFromCacheWithKey:key addCompletionHandler:^(id response) {
+        
+        if(!response) completionHandler(nil);
+        else{
+            
+            cachedImage = (UIImage*) response;
+            
+            completionHandler(cachedImage);
+        }
+        
+    }];
+    
+    
+}
+
+// Fetch Persistent Storage Cache for Image
+-(void)fetchPersistentStorageCachedImageForKey:(NSString *)key deal:(Deal *)aDeal addCompletion:(fetchedImageResponse)completionHandler
+{
+    __block UIImage* cachedImage = [[UIImage alloc] init];
+    
+    [self.engine getImageFromCachePersistenceStorageWithKey:key addCompletionHandler:^(id response) {
+        
+        if(!response){
+            completionHandler(nil);
+        }
+        else{
+            
+            cachedImage = (UIImage*) response;
+            completionHandler(cachedImage);
+            
+            [self.engine cacheImage:cachedImage forKey:key addCompletionHandler:^(BOOL success) {
+                
+                if(!success) completionHandler(nil);
+                else{
+                    
+                    [aDeal.imgStateObject recordImageHTTPResponse:nil andRequest:nil hasImage:YES];
+                    
+                    //completionHandler(cachedImage);
+                    
+                }
+                
+            }];
+        }
+        
+    }];
+}
+
+// Download Image Manager
+-(void)startDownloadImageFromURLString:(NSString *)requestString forDeal:(Deal *)deal addCompletion:(fetchedImageResponse)completionHandler
+{
+    
+    [self.engine downloadImageFromURL:requestString addCompletionHandler:^(UIImage *imageResponse, NSHTTPURLResponse *response, NSURLRequest *request) {
+        
+        [self.engine cacheImage:imageResponse forKey:deal.imgStateObject.imagePath addCompletionHandler:^(BOOL success) {
+            
+            if(success){
+                
+                [deal.imgStateObject recordImageHTTPResponse:response andRequest:request hasImage:YES];
+
+                
+                [self.engine saveToCachePersistenceStorageImage:imageResponse forKey:deal.imgStateObject.imagePath addCompletionHandler:^(BOOL success) {
+                    
+                    completionHandler(imageResponse);
+                    
+                }];
+
+            }
+            
+        }];
+        
+    }];
+    
+}
+
 -(void)startDownloadImageFromURL:(NSString *)url forObject:(id)object forIndexPath:(NSIndexPath *)indexPath imageView:(UIImageView *)imgView
 {
     [self.engine downloadImageFromURL:url forImageView:imgView addCompletionHandler:^(UIImage *imageResponse, NSHTTPURLResponse *response, NSURLRequest *request) {
         
+        __block BOOL imgExist = NO;
+        
         dispatch_async(dispatch_get_main_queue(), ^{
-            
-            BOOL imgExist = NO;
             
             AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
             
@@ -329,11 +426,21 @@ static DatabaseManager* sharedManager;
                     Deal* objDeal = list[indexPath.row];
                     
                     //Cache the image
-                    [self.engine cacheImage:imageResponse forKey:objDeal.imgStateObject.imagePath];
-                    
-                    [objDeal.imgStateObject recordImageHTTPResponse:response andRequest:request hasImage:imgExist];
-                    
-                    [self.delegate imageFetchedForObject:object forIndexPath:indexPath andImage:imageResponse andImageView:imgView];
+                    [self.engine cacheImage:imageResponse forKey:objDeal.imgStateObject.imagePath addCompletionHandler:^(BOOL success) {
+                       
+                        if(success){
+                            
+                            [objDeal.imgStateObject recordImageHTTPResponse:response andRequest:request hasImage:imgExist];
+                            
+                            [self.engine saveToCachePersistenceStorageImage:imageResponse forKey:objDeal.imgStateObject.imagePath addCompletionHandler:^(BOOL success) {
+                                
+                                [self.delegate imageFetchedForObject:object forIndexPath:indexPath andImage:imageResponse andImageView:imgView];
+                                
+                            }];
+                            
+                        }
+                        
+                    }];
                     
                 }
                 
@@ -341,13 +448,6 @@ static DatabaseManager* sharedManager;
         });
         
     }];
-}
-
--(UIImage *)fetchCachedImageForKey:(NSString *)key
-{
-    UIImage* cachedImage = [self.engine getImageFromCacheWithKey:key];
-    
-    return cachedImage;
 }
 
 -(void)startDownloadImageFromURL:(NSString *)url forDeal:(Deal *)deal forIndexPath:(NSIndexPath *)indexPath imageView:(UIImageView *)imgView
@@ -370,6 +470,7 @@ static DatabaseManager* sharedManager;
 // Methods to download general images
 -(void)startDownloadImageFromURL:(NSString *)url forIndexPath:(NSIndexPath *)indexPath andImageView:(UIImageView *)imgView
 {
+    
     [self.engine downloadImageFromURL:url forImageView:imgView addCompletionHandler:^(UIImage *imageResponse, NSHTTPURLResponse *response, NSURLRequest *request) {
         
         [self.delegate imageFetchedForObject:nil forIndexPath:indexPath andImage:imageResponse andImageView:imgView];
@@ -406,7 +507,7 @@ static DatabaseManager* sharedManager;
 
 -(NSString *)getCurrentDate
 {
-    NSString* today = [self.engine getCurrentDate];
+    NSString* today = [self.engine getCurrentDateString];
     
     return today;
 }

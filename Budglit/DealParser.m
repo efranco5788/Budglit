@@ -7,12 +7,14 @@
 //
 
 #import "DealParser.h"
+#import "AppDelegate.h"
 
-#define KEY_DEAL_ID @"@dealID"
+#define KEY_DEAL_ID @"_id"
 #define KEY_DEAL_BUDGET @"dealBudget"
 #define KEY_VENUE_ZIPCODE @"zipcode"
 #define KEY_DEAL_DESCRIPTION @"dealDescription"
-#define KEY_DEAL_DATE @"date_of_event"
+//#define KEY_DEAL_DATE @"date_of_event"
+#define KEY_DEAL_DATE @"date"
 #define KEY_DEAL_START @"duration_start"
 #define KEY_DEAL_END @"duration_end"
 #define KEY_DEAL_TAGS @"tags"
@@ -52,39 +54,39 @@
         
         NSMutableArray* dealList = [[NSMutableArray alloc] init];
         
-        for (id dic in list) {
+        for (id eventDic in list) {
             
-            NSDictionary* deal = dic[@"deal"];
+            NSArray* eventArray = eventDic[@"deal"];
             
-            NSLog(@"%@", deal);
+            NSDictionary* event = [eventArray firstObject];
             
-            NSInteger dealID = [deal[@"dealID"] integerValue];
+            NSString* dealID = event[KEY_DEAL_ID];
             
-            NSString* dealDate = deal[KEY_DEAL_DATE];
+            NSString* dealDate = event[KEY_DEAL_DATE];
             
-            NSString* endDate = deal[KEY_DEAL_END];
+            NSString* endDate = event[KEY_DEAL_END];
             
-            double dealBudget = [deal[KEY_DEAL_BUDGET] doubleValue];
+            double dealBudget = [event[KEY_DEAL_BUDGET] doubleValue];
             
-            NSString* dealDescription = deal[KEY_DEAL_DESCRIPTION];
+            NSString* dealDescription = event[KEY_DEAL_DESCRIPTION];
             
-            NSString* dealTags = deal[KEY_DEAL_TAGS];
+            NSString* dealTags = event[KEY_DEAL_TAGS];
             
-            NSString* venue = deal[KEY_VENUE_NAME];
+            NSString* venue = event[KEY_VENUE_NAME];
             
-            NSString* venueAddress = deal[KEY_VENUE_ADDRESS];
+            NSString* venueAddress = event[KEY_VENUE_ADDRESS];
             
-            NSString* venueCity = deal[KEY_VENUE_CITY];
+            NSString* venueCity = event[KEY_VENUE_CITY];
             
-            NSString* venueState = deal[KEY_VENUE_STATE];
+            NSString* venueState = event[KEY_VENUE_STATE];
             
-            NSString* twtrUsername = deal[KEY_VENUE_TWTR_USERNAME];
+            NSString* twtrUsername = event[KEY_VENUE_TWTR_USERNAME];
             
-            NSString* zipcode = [deal[KEY_VENUE_ZIPCODE] stringValue];
+            NSString* zipcode = [event[KEY_VENUE_ZIPCODE] stringValue];
             
-            NSString* venuePhone = deal[KEY_VENUE_PHONE_NUMBER];
+            NSString* venuePhone = event[KEY_VENUE_PHONE_NUMBER];
             
-            NSString* imgURL = deal[KEY_VENUE_IMAGE_URL];
+            NSString* imgURL = event[KEY_VENUE_IMAGE_URL];
             
             NSArray* arryOfTags;
             
@@ -94,6 +96,12 @@
                 
             }
             else arryOfTags = [dealTags componentsSeparatedByString:@","];
+            
+            AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
+            
+            NSString* localEventTime = [appDelegate.databaseManager.engine convertUTCDateToLocal:dealDate];
+            
+            NSLog(@"%@", localEventTime);
             
             Deal* newDeal = [[Deal alloc] initWithVenueName:venue andVenueAddress:venueAddress andVenueDescription:nil andVenueTwtrUsername:twtrUsername andDate:dealDate andEndDate:endDate andDealDescription:dealDescription andPhoneNumber:venuePhone andCity:venueCity andState:venueState andZipcode:zipcode andBudget:dealBudget andDealID:dealID andURLImage:imgURL andAddTags:arryOfTags];
             

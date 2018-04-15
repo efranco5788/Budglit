@@ -37,9 +37,9 @@ static NSString* const cellIdentifier = @"Cell";
     
     NSSortDescriptor* postalDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"postal" ascending:YES selector:nil];
     
-    self.dataCityFiltered = [(appDelegate.locationManager).cities sortedArrayUsingDescriptors:@[cityDescriptor]];
+    //self.dataCityFiltered = [(appDelegate.locationManager).cities sortedArrayUsingDescriptors:@[cityDescriptor]];
     
-    self.dataPostalCodeFiltered = [(appDelegate.locationManager).cities sortedArrayUsingDescriptors:@[postalDescriptor]];
+    //self.dataPostalCodeFiltered = [(appDelegate.locationManager).cities sortedArrayUsingDescriptors:@[postalDescriptor]];
     
     return self;
 }

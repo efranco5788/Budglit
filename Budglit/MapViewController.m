@@ -22,7 +22,6 @@ static double USE_CURRENT_RADIUS = -1;
 
 @property (strong, nonatomic) MapToListAnimationController* transitionController;
 @property (strong, nonatomic) DismissMapToListAnimationController* dismissTransitionController;
-
 @property (strong, nonatomic) UIView* annotationCalloutView;
 
 @end
@@ -100,7 +99,9 @@ static double USE_CURRENT_RADIUS = -1;
 - (IBAction)menuBtnPressed:(id)sender {
     AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
-    [appDelegate.drawerController slideDrawerSide:MMDrawerSideRight Animated:YES];
+    MMDrawerSide sideRight = MMDrawerSideRight;
+    
+    [appDelegate.drawerController slideDrawerSide:sideRight Animated:YES];
     
     [appDelegate.drawerController setDelegate:self];
     
@@ -112,9 +113,13 @@ static double USE_CURRENT_RADIUS = -1;
     
     BudgetPickerViewController* budgetView = (BudgetPickerViewController*) [appDelegate.drawerController leftDrawerViewController];
     
+    //budgetView.mapAnnotations = self.mapView.
+    
     budgetView.delegate = self;
-
-    [appDelegate.drawerController slideDrawerSide:MMDrawerSideLeft Animated:YES];
+    
+    MMDrawerSide sideLeft = MMDrawerSideLeft;
+    
+    [appDelegate.drawerController slideDrawerSide:sideLeft Animated:YES];
 }
 
 -(CGRect)initialCalloutViewFrameForView:(UIView*)view
@@ -143,7 +148,19 @@ static double USE_CURRENT_RADIUS = -1;
 {
     CLLocation* currentLocation = self.mapView.userLocation.location;
     
-    [self centerMapOnLocation:currentLocation isUserLocation:YES AndRadius:USE_CURRENT_RADIUS animate:YES addCompletion:^(BOOL success) {
+    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
+    
+    NSDictionary* filter = [appDelegate.databaseManager getUsersCurrentCriteria];
+    
+    NSInteger miles = [[filter valueForKey:NSLocalizedString(@"DISTANCE_FILTER", nil)] integerValue];
+    
+    double meters = (miles * 1609.34);
+    
+    CLLocationDistance radius = meters;
+    
+    NSLog(@"%li", (long)miles);
+    
+    [self centerMapOnLocation:currentLocation isUserLocation:YES AndRadius:radius animate:YES addCompletion:^(BOOL success) {
         
     }];
 }
@@ -240,11 +257,11 @@ static double USE_CURRENT_RADIUS = -1;
     {
         [self.mapView setCenterCoordinate:location.coordinate animated:animated];
         
-        MKCoordinateRegion originalRegion = [self.mapView regionThatFits:MKCoordinateRegionMake(location.coordinate, self.mapView.region.span)];
+        MKCoordinateRegion region = [self.mapView regionThatFits:MKCoordinateRegionMakeWithDistance(location.coordinate, radius, radius)];
 
         [UIView animateWithDuration:0.5 animations:^{
             
-            [self.mapView setRegion:originalRegion];
+            [self.mapView setRegion:region];
             
         } completion:^(BOOL finished) {
             [self.mapView layoutIfNeeded];
@@ -337,18 +354,29 @@ static double USE_CURRENT_RADIUS = -1;
                     NSString* longtitude = [coords valueForKey:@"lng"];
                     NSLog(@"lng %@ nd lat %@",longtitude, latitude);
                     NSLog(@"Deal %@", deal.addressString);
-                    CLLocation* location = [appDelegate.locationManager managerCreateLocationFromStringLongtitude:longtitude andLatitude:latitude];
-                    CLLocationCoordinate2D coordinates = CLLocationCoordinate2DMake(location.coordinate.latitude, location.coordinate.longitude);
+                    
+                    CLLocation* eventLocation = [appDelegate.locationManager managerCreateLocationFromStringLongtitude:longtitude andLatitude:latitude];
+                    
+                    CLLocationCoordinate2D coordinates = CLLocationCoordinate2DMake(eventLocation.coordinate.latitude, eventLocation.coordinate.longitude);
                     
                     DealMapAnnotation* mapAnnotation = [[DealMapAnnotation alloc] initWithDeal:deal];
                     [mapAnnotation setCoordinate:coordinates];
+                    
+                    CLLocation* user = [appDelegate.locationManager getCurrentLocation];
+                    
+                    CLLocationDistance distance = [appDelegate.locationManager distanceFromLocation:user toLocation:eventLocation];
+                    
+                    CLLocationDistance convertedDistance = [appDelegate.locationManager convertDistance:distance];
+
+                    [mapAnnotation distanceFromUser:[NSString stringWithFormat:@"%.1f", convertedDistance]];
                     
                     [annotations addObject:mapAnnotation];
                 }
             }
         }
         
-        [self.mapView addAnnotations:annotations.mutableCopy];
+        [self.mapView addAnnotations:annotations.copy];
+
         completionHandler(YES);
         
     }]; // End of Geocode Fetching
@@ -413,6 +441,7 @@ static double USE_CURRENT_RADIUS = -1;
                 if(success){
                     [self.view layoutIfNeeded];
                 }
+                
             }];
             
         }];
@@ -429,7 +458,7 @@ static double USE_CURRENT_RADIUS = -1;
     if(![annotation isKindOfClass:[MKUserLocation class]]){
         
         returnedAnnotationView = [DealMapAnnotation createViewAnnotationForMapView:self.mapView annotation:annotation];
-        
+
     }
     
     return returnedAnnotationView;
@@ -437,6 +466,8 @@ static double USE_CURRENT_RADIUS = -1;
 
 -(void)mapView:(MKMapView *)mapView didSelectAnnotationView:(MKAnnotationView *)view
 {
+    [self.mapView deselectAnnotation:view.annotation animated:false];
+    
     CLLocation* annotationLocation = [[CLLocation alloc] initWithLatitude:view.annotation.coordinate.latitude longitude:view.annotation.coordinate.longitude];
     
     [self centerMapOnLocation:annotationLocation isUserLocation:NO AndRadius:USE_CURRENT_RADIUS animate:YES addCompletion:^(BOOL success) {
@@ -484,8 +515,8 @@ static double USE_CURRENT_RADIUS = -1;
 {
     if(!view) completionBlock(NO);
     
-    DealMapAnnotation* a = (DealMapAnnotation*) view.annotation;
-    
+    DealMapAnnotation* annotation = (DealMapAnnotation*) view.annotation;
+
     __block UIView* prepView = nil;
     
     CGRect startFrame = [self initialCalloutViewFrameForView:view];
@@ -543,28 +574,31 @@ static double USE_CURRENT_RADIUS = -1;
         
     } completion:^(BOOL finished) {
         
-        UIStoryboard* storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-        
-        DealDetailViewController* detailedViewController = (DealDetailViewController*) [storyboard instantiateViewControllerWithIdentifier:@"PSDealsDetailViewController"];
-        
-        detailedViewController.venueName = a.dealAnnotated.venueName;
-        
-        detailedViewController.descriptionText = a.dealAnnotated.dealDescription;
-        
-        detailedViewController.addressText = [NSString stringWithFormat:@"\n%@ \n"
-                              "%@, %@ %@", a.dealAnnotated.address, a.dealAnnotated.city, a.dealAnnotated.state, a.dealAnnotated.zipcode];
-        
-        detailedViewController.phoneText = [NSString stringWithFormat:@"\n%@", a.dealAnnotated.phoneNumber];
-        
-        detailedViewController.dealSelected = a.dealAnnotated;
-        
-        [self.annotationCalloutView addSubview:detailedViewController.view];
-        
-        [detailedViewController.view setFrame:self.annotationCalloutView.bounds];
-        
-        detailedViewController.view.layer.cornerRadius = 5.0f;
-        
-        completionBlock(YES);
+        if(finished){
+            
+            UIStoryboard* storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+            
+            DealDetailViewController* detailedViewController = (DealDetailViewController*) [storyboard instantiateViewControllerWithIdentifier:@"PSDealsDetailViewController"];
+            
+            detailedViewController.dealSelected = annotation.dealAnnotated;
+            
+            detailedViewController.venueName = annotation.dealAnnotated.venueName;
+            
+            detailedViewController.descriptionText = annotation.dealAnnotated.dealDescription;
+            
+            detailedViewController.addressText = [NSString stringWithFormat:@"\n%@ \n"
+                                                  "%@, %@ %@", annotation.dealAnnotated.address, annotation.dealAnnotated.city, annotation.dealAnnotated.state, annotation.dealAnnotated.zipcode];
+            
+            detailedViewController.phoneText = [NSString stringWithFormat:@"\n%@", annotation.dealAnnotated.phoneNumber];
+            
+            [self.annotationCalloutView addSubview:detailedViewController.view];
+            
+            [detailedViewController.view setFrame:self.annotationCalloutView.bounds];
+            
+            detailedViewController.view.layer.cornerRadius = 5.0f;
+            
+            completionBlock(YES);
+        }
         
     }];
     
@@ -577,9 +611,7 @@ static double USE_CURRENT_RADIUS = -1;
 
 -(id<UIViewControllerAnimatedTransitioning>)navigationController:(UINavigationController *)navigationController animationControllerForOperation:(UINavigationControllerOperation)operation fromViewController:(UIViewController *)fromVC toViewController:(UIViewController *)toVC
 {
-    if ([fromVC isKindOfClass:[PSAllDealsTableViewController class]]) {
-        return self.dismissTransitionController;
-    }
+    if ([fromVC isKindOfClass:[PSAllDealsTableViewController class]]) return self.dismissTransitionController;
     else return self.transitionController;
 }
 

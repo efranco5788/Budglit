@@ -35,7 +35,7 @@
                                 </connections>
                             </mapView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Gwr-gc-EPS">
-                                <rect key="frame" x="43" y="35" width="25" height="20"/>
+                                <rect key="frame" x="43" y="35" width="25" height="16"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="25" id="DLB-ma-PDx"/>
                                 </constraints>
@@ -45,12 +45,12 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TvH-jk-uz8">
-                                <rect key="frame" x="301" y="35" width="25" height="20"/>
+                                <rect key="frame" x="301" y="35" width="25" height="16"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="25" id="5CS-yv-DjW"/>
                                 </constraints>
                                 <color key="tintColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                                <state key="normal" image="hamburgerMenuGroup.png">
+                                <state key="normal" image="menuGroup.png">
                                     <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
@@ -58,7 +58,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="y4c-V1-qe6">
-                                <rect key="frame" x="301" y="617" width="30" height="30"/>
+                                <rect key="frame" x="301" y="617" width="25" height="25"/>
                                 <state key="normal" image="currentLocationIconGroup.png"/>
                                 <connections>
                                     <action selector="currentLocationBtnPressed:" destination="ZFm-UY-e1g" eventType="touchUpInside" id="esT-Gd-WdO"/>
@@ -68,19 +68,19 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="y4c-V1-qe6" firstAttribute="top" secondItem="iFT-vK-n9W" secondAttribute="top" constant="597" id="379-6N-ygF"/>
-                            <constraint firstItem="y4c-V1-qe6" firstAttribute="trailing" secondItem="mRa-ZA-qSm" secondAttribute="trailingMargin" constant="-28" id="46J-hJ-p1z"/>
+                            <constraint firstItem="y4c-V1-qe6" firstAttribute="trailing" secondItem="mRa-ZA-qSm" secondAttribute="trailingMargin" constant="-33" id="46J-hJ-p1z"/>
                             <constraint firstItem="TvH-jk-uz8" firstAttribute="trailing" secondItem="iFT-vK-n9W" secondAttribute="trailing" constant="-49" id="9Tc-k8-lN2"/>
                             <constraint firstItem="Gwr-gc-EPS" firstAttribute="top" secondItem="TvH-jk-uz8" secondAttribute="top" id="9dX-Sg-d9L"/>
                             <constraint firstAttribute="trailing" secondItem="sOL-SR-wrI" secondAttribute="trailing" id="BIF-oH-zWk"/>
                             <constraint firstItem="y4c-V1-qe6" firstAttribute="leading" secondItem="iFT-vK-n9W" secondAttribute="leading" constant="301" id="HaK-aj-dBc"/>
                             <constraint firstItem="Gwr-gc-EPS" firstAttribute="bottom" secondItem="TvH-jk-uz8" secondAttribute="bottom" id="LBr-u4-vcs"/>
-                            <constraint firstItem="Gwr-gc-EPS" firstAttribute="bottom" secondItem="iFT-vK-n9W" secondAttribute="bottom" constant="-612" id="Ndx-Wc-Q6Q"/>
+                            <constraint firstItem="Gwr-gc-EPS" firstAttribute="bottom" secondItem="iFT-vK-n9W" secondAttribute="bottom" constant="-616" id="Ndx-Wc-Q6Q"/>
                             <constraint firstItem="Gwr-gc-EPS" firstAttribute="leading" secondItem="iFT-vK-n9W" secondAttribute="leading" constant="43" id="QzK-OW-70h"/>
                             <constraint firstItem="sOL-SR-wrI" firstAttribute="bottom" secondItem="iFT-vK-n9W" secondAttribute="bottom" id="ZEv-oO-73R"/>
                             <constraint firstItem="sOL-SR-wrI" firstAttribute="top" secondItem="mRa-ZA-qSm" secondAttribute="top" id="mYE-hZ-df5"/>
                             <constraint firstItem="Gwr-gc-EPS" firstAttribute="top" secondItem="iFT-vK-n9W" secondAttribute="top" constant="15" id="n6A-Dh-1vf"/>
                             <constraint firstItem="sOL-SR-wrI" firstAttribute="leading" secondItem="mRa-ZA-qSm" secondAttribute="leading" id="wtr-8f-1FV"/>
-                            <constraint firstAttribute="bottom" secondItem="y4c-V1-qe6" secondAttribute="bottom" constant="20" symbolic="YES" id="xx7-X9-Pf6"/>
+                            <constraint firstAttribute="bottom" secondItem="y4c-V1-qe6" secondAttribute="bottom" constant="25" id="xx7-X9-Pf6"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="iFT-vK-n9W"/>
                     </view>
@@ -94,7 +94,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="f1W-RQ-ZCI" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2005.5999999999999" y="-697.60119940029995"/>
+            <point key="canvasLocation" x="1982" y="-192"/>
         </scene>
         <!--Budglit Home View Controller-->
         <scene sceneID="EOh-R8-y5T">
@@ -214,7 +214,7 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="qvH-ay-FSc" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="aJO-LD-GyB" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="2481.6000000000004" y="72.863568215892059"/>
+            <point key="canvasLocation" x="1982" y="602"/>
         </scene>
         <!--Edit Zipcode Offline-->
         <scene sceneID="yt3-FP-WXU">
@@ -239,7 +239,7 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="8Vr-dw-huO" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="dcn-W3-QuV" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="3270.4000000000001" y="-591.00449775112452"/>
+            <point key="canvasLocation" x="2769" y="985"/>
         </scene>
         <!--Deal Detail View Controller-->
         <scene sceneID="xGL-2Q-dO9">
@@ -255,6 +255,11 @@
                                     <constraint firstAttribute="height" constant="219" id="zuD-Hk-PeX"/>
                                 </constraints>
                             </imageView>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" hidesWhenStopped="YES" animating="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="WeM-xm-P4r">
+                                <rect key="frame" x="169" y="91" width="37" height="37"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="color" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </activityIndicatorView>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="J9v-Vd-bkx">
                                 <rect key="frame" x="0.0" y="220" width="375" height="79"/>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -341,6 +346,7 @@
                         <outlet property="SMContainerTopConstraint" destination="xgC-Lj-0go" id="A6O-lG-lv6"/>
                         <outlet property="addressImage" destination="ItR-4E-3Xg" id="qNU-DW-Hcp"/>
                         <outlet property="descriptionTextView" destination="J9v-Vd-bkx" id="Qcz-lR-NFg"/>
+                        <outlet property="imgActivityIndicator" destination="WeM-xm-P4r" id="RAf-CS-AQy"/>
                         <outlet property="phoneImage" destination="C1d-8H-dAM" id="1Dx-CR-Xl3"/>
                         <outlet property="socialMediaContainer" destination="J0a-iD-VAU" id="ibI-vc-nlB"/>
                         <outlet property="socialMediaNavBar" destination="DzZ-61-UTU" id="pFx-bT-4mQ"/>
@@ -357,7 +363,7 @@
                     </connections>
                 </panGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="3880" y="72.863568215892059"/>
+            <point key="canvasLocation" x="2769" y="141"/>
         </scene>
         <!--Drawer View Controller-->
         <scene sceneID="MUS-8d-czC">
@@ -405,9 +411,9 @@
     </scenes>
     <resources>
         <image name="address_icon.png" width="22" height="22"/>
-        <image name="currentLocationIconGroup.png" width="102" height="95"/>
+        <image name="currentLocationIconGroup.png" width="59" height="58"/>
         <image name="empty_filter_app_icon_selected.png" width="22" height="22"/>
-        <image name="hamburgerMenuGroup.png" width="84" height="45"/>
+        <image name="menuGroup.png" width="61" height="23"/>
         <image name="phone_icon.png" width="22" height="22"/>
     </resources>
     <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>

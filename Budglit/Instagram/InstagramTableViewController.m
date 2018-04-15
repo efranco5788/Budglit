@@ -129,20 +129,17 @@ static NSString* const reuseIdentifier = @"InstagramTableViewCell";
         
         InstagramObject* instaObj = objs[indexPath.row];
         
-        if (![instaObj.mediaStateHandler imageExists]) {
-            
-            instaCell.instaImageView.autoresizingMask =
-            ( UIViewAutoresizingFlexibleBottomMargin
-             | UIViewAutoresizingFlexibleHeight
-             | UIViewAutoresizingFlexibleLeftMargin
-             | UIViewAutoresizingFlexibleRightMargin
-             | UIViewAutoresizingFlexibleTopMargin
-             | UIViewAutoresizingFlexibleWidth );
-            
-            [instaCell.activityIndicator startAnimating];
-            
-            [self startImageDownloadForInstaObj:instaObj forIndexPath:indexPath andTableCell:instaCell];
-        }
+        instaCell.instaImageView.autoresizingMask =
+        ( UIViewAutoresizingFlexibleBottomMargin
+         | UIViewAutoresizingFlexibleHeight
+         | UIViewAutoresizingFlexibleLeftMargin
+         | UIViewAutoresizingFlexibleRightMargin
+         | UIViewAutoresizingFlexibleTopMargin
+         | UIViewAutoresizingFlexibleWidth );
+        
+        [instaCell.activityIndicator startAnimating];
+        
+        [self startImageDownloadForInstaObj:instaObj forIndexPath:indexPath andTableCell:instaCell];
         
     }
 }
@@ -255,9 +252,7 @@ static NSString* const reuseIdentifier = @"InstagramTableViewCell";
             
             __block InstagramObject* visibleObj = instaObjs[index.row];
             
-            if (![visibleObj.mediaStateHandler imageExists]) {
-                [weakSelf startImageDownloadForInstaObj:visibleObj forIndexPath:index andTableCell:visibleCell];
-            }
+            [weakSelf startImageDownloadForInstaObj:visibleObj forIndexPath:index andTableCell:visibleCell];
             
         }
 
