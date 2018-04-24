@@ -58,8 +58,6 @@ typedef void (^newDataFetchedResponse)(UIBackgroundFetchResult result);
 
 -(void)fetchTotalDealCountOnly: (NSDictionary*)searchCriteria addCompletionBlock:(generalBlockResponse)completionHandler;
 
--(NSDictionary*)fetchPrimaryDefaultSearchFiltersWithZipcodes:(NSArray*)zipcodes;
-
 -(NSDictionary*)fetchPrimaryDefaultSearchFiltersWithLocation;
 
 -(void)fetchCachedImageForKey:(NSString*)key addCompletion:(fetchedImageResponse)completionHandler;
@@ -86,11 +84,11 @@ typedef void (^newDataFetchedResponse)(UIBackgroundFetchResult result);
 
 -(NSDictionary*)getUsersCurrentCriteria;
 
+-(NSString*)getCurrentDateString;
+
 -(void)saveUsersCriteria:(NSDictionary*)usersCriteria;
 
 -(void)setZipcodeCriteria:(NSString*)zipcode;
-
--(NSString*)getCurrentDate;
 
 -(NSArray*)getSavedDeals;
 

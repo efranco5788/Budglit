@@ -33,6 +33,7 @@ static NSString *userProfileIdentifier = @"profileCell";
 @implementation MenuTableViewController
 
 - (void)viewDidLoad {
+    
     [super viewDidLoad];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUser:) name:NSLocalizedString(@"USER_CHANGED_NOTIFICATION", nil) object:nil];
@@ -132,7 +133,9 @@ static NSString *userProfileIdentifier = @"profileCell";
             CGFloat rowsIncludedHeight = startingHeight - (MAX_USER_ROW_HEIGHT + (MAX_SECTION_DEFAULT_HEIGHT * 4));
             
             CGRect statusBarFrame = [[UIApplication sharedApplication] statusBarFrame];
-            CGFloat finalHeight = (rowsIncludedHeight - MAX_SECTION_DEFAULT_HEIGHT) - (statusBarFrame.size.height * 2);
+            CGFloat postFinalHeight = (rowsIncludedHeight - MAX_SECTION_DEFAULT_HEIGHT) - (statusBarFrame.size.height * 2);
+            
+            CGFloat finalHeight = postFinalHeight + statusBarFrame.size.height;
             
             return finalHeight;
             break;
@@ -146,8 +149,17 @@ static NSString *userProfileIdentifier = @"profileCell";
 
 }
 
+-(void)tableView:(UITableView *)tableView willDisplayHeaderView:(UIView *)view forSection:(NSInteger)section
+{
+    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
+    
+    [view setTintColor:[appDelegate getPrimaryColor]];
+    
+}
+
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    
     if (indexPath.section == 0) {
         return MAX_USER_ROW_HEIGHT;
     }
@@ -162,11 +174,13 @@ static NSString *userProfileIdentifier = @"profileCell";
         
         UserProfileTableViewCell* cell = (UserProfileTableViewCell*) [self.tableView dequeueReusableCellWithIdentifier:userProfileIdentifier];
 
-        CGRect frame = CGRectMake(10, 30, MAX_USER_ROW_HEIGHT - 30, MAX_USER_ROW_HEIGHT - 30);
+        CGRect frame = CGRectMake(15, 30, MAX_USER_ROW_HEIGHT - 60, MAX_USER_ROW_HEIGHT - 60);
         (cell.imageView).bounds = frame;
         (cell.imageView).frame = frame;
         
-        CGRect labelFrame = CGRectMake((frame.size.width + 20), cell.center.y, (cell.frame.size.width / 2), (cell.frame.size.height / 2));
+        NSLog(@"%f", cell.frame.size.height);
+        
+        CGRect labelFrame = CGRectMake((frame.size.width + 30), (MAX_USER_ROW_HEIGHT / 2) - 30, (cell.frame.size.width / 2), (cell.frame.size.height / 2));
         
         (cell.textLabel).frame = labelFrame;
         
@@ -192,22 +206,32 @@ static NSString *userProfileIdentifier = @"profileCell";
         if (indexPath.row == 0) {
             [cell setMenuOption:MENUSWITCHMODE];
             cell.textLabel.text = [NSString stringWithFormat:@"%@", NSLocalizedString(@"LIST_MODE", nil)];
+            cell.textLabel.font = [cell.textLabel.font fontWithSize:14.0];
         }
         
         if (indexPath.row == MENUCURRENTLOCATION) {
             [cell setMenuOption:MENUCURRENTLOCATION];
             cell.textLabel.text = [NSString stringWithFormat:@"%@", NSLocalizedString(@"USE_CURRENT_LOCATION", nil)];
+            cell.textLabel.font = [cell.textLabel.font fontWithSize:14.0];
         }
         
         if (indexPath.row == MENUCHANGELOCATION) {
             [cell setMenuOption:MENUCHANGELOCATION];
             cell.textLabel.text = [NSString stringWithFormat:@"%@", NSLocalizedString(@"CHANGE_LOCATION", nil)];
+            cell.textLabel.font = [cell.textLabel.font fontWithSize:14.0];
         }
         
         if (indexPath.row == MENUCHANGEBUDGET) {
             [cell setMenuOption:MENUCHANGEBUDGET];
             cell.textLabel.text = [NSString stringWithFormat:@"%@", NSLocalizedString(@"EDIT_MY_BUDGET", nil)];
+            cell.textLabel.font = [cell.textLabel.font fontWithSize:14.0];
         }
+        
+        AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
+        
+        [cell setBackgroundColor:[appDelegate getPrimaryColor]];
+        
+        cell.textLabel.textColor = [UIColor whiteColor];
         
         return cell;
     }
@@ -219,6 +243,14 @@ static NSString *userProfileIdentifier = @"profileCell";
         
         [cell setMenuOption:MENULOGOUT];
         cell.textLabel.text = [NSString stringWithFormat:@"%@", NSLocalizedString(@"LOGOUT", nil)];
+        
+        cell.textLabel.font = [cell.textLabel.font fontWithSize:14.0];
+        
+        AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
+        
+        [cell setBackgroundColor:[appDelegate getPrimaryColor]];
+        
+        cell.textLabel.textColor = [UIColor whiteColor];
         
         return cell;
     }

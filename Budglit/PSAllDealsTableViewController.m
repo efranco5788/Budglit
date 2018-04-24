@@ -535,10 +535,6 @@ static NSString* const emptyCellIdentifier = @"holderCell";
         
         ACDDVC.dealSelected = selectedDeal;
         
-        //AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
-        
-        //ACDDVC.image = [appDelegate.databaseManager fetchCachedImageForKey:selectedDeal.imgStateObject.imagePath];
-        
         
     }
     else if ([segue.identifier isEqualToString:SEGUE_ALL_CURRENT_DEAL_TO_EDIT_ZIPCODE_OFFLINE_CONTROLLER]) {
@@ -646,7 +642,7 @@ static NSString* const emptyCellIdentifier = @"holderCell";
         
         NSMutableDictionary* currentCriteria = [[appDelegate.databaseManager getUsersCurrentCriteria] mutableCopy];
         
-        NSString* currentDate = [appDelegate.databaseManager getCurrentDate];
+        NSString* currentDate = [appDelegate.databaseManager currentDate];
         
         [currentCriteria removeObjectForKey:NSLocalizedString(@"DATE_FILTER", nil)];
         
@@ -655,8 +651,6 @@ static NSString* const emptyCellIdentifier = @"holderCell";
         NSDictionary* updatedCriteria = [NSDictionary dictionaryWithDictionary:currentCriteria];
         
         [appDelegate.databaseManager saveUsersCriteria:updatedCriteria];
-        
-        //[self.loadingPage reloadDeals:nil];
     }
 }
 
@@ -667,8 +661,6 @@ static NSString* const emptyCellIdentifier = @"holderCell";
     NSString* currentBudget = [NSString stringWithString:[appDelegate.budgetManager retreieveBudget]];
     
     (self.budgetButton).title = currentBudget;
-    
-    //[self.loadingPage reloadDeals:nil];
 }
 
 -(void)newDealsFetched

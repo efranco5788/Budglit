@@ -19,7 +19,6 @@ typedef void (^dataResponseBlockResponse)(id response);
 
 @protocol DatabaseEngineDelegate <NSObject>
 @optional
--(void)totalDealCountReturned:(NSInteger)responseCount;
 -(void)totalDealCountFailedWithError:(NSError*)error;
 -(void)dealsFailedWithError:(NSError*)error;
 -(void)operationsCancelled;
@@ -30,13 +29,11 @@ typedef void (^dataResponseBlockResponse)(id response);
 
 @property (nonatomic, strong) id <DatabaseEngineDelegate> delegate;
 
--(NSValue*)calculateCoordinateFrom:(NSValue*)coordinateValue onBearing:(double)bearingInRadians atDistance:(double)distanceInMetres;
-
 -(instancetype)init;
 
 -(instancetype)initWithHostName:(NSString*)hostName NS_DESIGNATED_INITIALIZER;
 
--(NSDictionary*)primaryDefaultForSearchFilterWithZipcodes:(NSArray*)zipcodes;
+-(NSValue*)calculateCoordinateFrom:(NSValue*)coordinateValue onBearing:(double)bearingInRadians atDistance:(double)distanceInMetres;
 
 -(NSDictionary*)primaryDefaultForSearchFilterAtLocation;
 
@@ -70,7 +67,7 @@ typedef void (^dataResponseBlockResponse)(id response);
 
 -(NSDictionary*)parseGeocodeLocation:(NSDictionary*)locationInfo;
 
--(NSString*)getCurrentDateString;
+-(NSString*)currentDateString;
 
 -(NSString*)convertUTCDateToLocal:(NSString*)utcDate;
 

@@ -165,11 +165,6 @@ static DatabaseManager* sharedManager;
     return [self.engine primaryDefaultForSearchFilterAtLocation];
 }
 
--(NSDictionary *)fetchPrimaryDefaultSearchFiltersWithZipcodes:(NSArray *)zipcodes
-{
-    return [self.engine primaryDefaultForSearchFilterWithZipcodes:zipcodes];
-}
-
 #warning needs better error handling
 -(void)fetchDeals:(NSDictionary *)searchCriteria addCompletionBlock:(generalBlockResponse)completionHandler
 {
@@ -505,9 +500,9 @@ static DatabaseManager* sharedManager;
     
 }
 
--(NSString *)getCurrentDate
+-(NSString *)getCurrentDateString
 {
-    NSString* today = [self.engine getCurrentDateString];
+    NSString* today = [self.engine currentDateString];
     
     return today;
 }

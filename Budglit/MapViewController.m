@@ -52,7 +52,7 @@ static double USE_CURRENT_RADIUS = -1;
 
 -(void)viewDidAppear:(BOOL)animated
 {
-    [super viewDidAppear:NO];
+    [super viewDidAppear:YES];
     
     AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
@@ -75,15 +75,16 @@ static double USE_CURRENT_RADIUS = -1;
             [self.view layoutIfNeeded];
             
             if (success) {
-                                
+
                 [self reloadDealsAddCompletion:^(BOOL reloadSuccess) {
+                    
                     if(reloadSuccess){
                         [self.mapView layoutIfNeeded];
                         hasAppearedOnce = YES;
                     }
                 }];
-                
-            }
+            
+            } // If success
             
         }];
         
@@ -470,21 +471,26 @@ static double USE_CURRENT_RADIUS = -1;
     
     CLLocation* annotationLocation = [[CLLocation alloc] initWithLatitude:view.annotation.coordinate.latitude longitude:view.annotation.coordinate.longitude];
     
-    [self centerMapOnLocation:annotationLocation isUserLocation:NO AndRadius:USE_CURRENT_RADIUS animate:YES addCompletion:^(BOOL success) {
+    if(![[view annotation] isKindOfClass:[MKUserLocation class]]){
         
-        if(success){
+        [self centerMapOnLocation:annotationLocation isUserLocation:NO AndRadius:USE_CURRENT_RADIUS animate:YES addCompletion:^(BOOL success) {
             
-            [self prepareAnnotationCalloutViewForAnnotationView:view addCompletionBlock:^(BOOL hasCompleted) {
+            if(success){
                 
-                if (hasCompleted) {
-                    [self.view layoutIfNeeded];
-                }
+                [self.view layoutIfNeeded];
                 
-            }];
-        }
+                [self prepareAnnotationCalloutViewForAnnotationView:view addCompletionBlock:^(BOOL hasCompleted) {
+                    
+                    if(hasCompleted) [self.view layoutIfNeeded];
+                    
+                }];
+                
+            }
+            
+        }];
         
-    }];
-
+    }
+    else [self currentLocationBtnPressed:nil];
 
 }
 

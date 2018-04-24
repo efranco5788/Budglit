@@ -41,7 +41,4 @@ typedef void (^dataResponseBlockResponse)(id response);
 
 -(void)GNFetchPostalCodesForCity:(NSDictionary *)parameters addCompletionHandler:(dataResponseBlockResponse)completionHandler;
 
--(void)GNFetchNeabyPostalCodesWithCoordinates:(NSDictionary *)parameters addCompletionHandler:(dataResponseBlockResponse)completionHandler;
-
--(void)GNFetchNeabyPostalCodesWithPostalCode:(NSDictionary *)parameters addCompletionHandler:(dataResponseBlockResponse)completionHandler;
 @end

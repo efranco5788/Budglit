@@ -106,58 +106,6 @@ DISTANCE_CONERSION conversionType;
     }];
 }
 
--(void)GNFetchNeabyPostalCodesWithCoordinates:(NSDictionary *)parameters addCompletionHandler:(dataResponseBlockResponse)completionHandler
-{    
-    self.sessionManager.requestSerializer = [AFHTTPRequestSerializer serializer];
-    
-    self.sessionManager.responseSerializer = [AFJSONResponseSerializer serializer];
-    
-    [self.sessionManager GET:POSTAL_CODE_NEARBY_SEARCH_URL parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        
-        [self addToRequestHistory:task];
-        
-        if(responseObject)
-        {
-            completionHandler(responseObject);
-        }
-        else
-        {
-            completionHandler(nil);
-        }
-        
-    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        [self logFailedRequest:task];
-        [self.delegate nearbyPostalCodesFailedWithError:error];
-    }];
-    
-}
-
--(void)GNFetchNeabyPostalCodesWithPostalCode:(NSDictionary *)parameters addCompletionHandler:(dataResponseBlockResponse)completionHandler
-{
-    self.sessionManager.requestSerializer = [AFHTTPRequestSerializer serializer];
-    
-    self.sessionManager.responseSerializer = [AFJSONResponseSerializer serializer];
-    
-    [self.sessionManager GET:POSTAL_CODE_NEARBY_SEARCH_URL parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        
-        [self addToRequestHistory:task];
-        
-        NSLog(@"%@", responseObject);
-        
-        if (responseObject) completionHandler(responseObject);
-        else{
-            completionHandler(nil);
-        }
-        
-    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        
-        [self.delegate nearbyPostalCodesFailedWithError:error];
-        [self logFailedRequest:task];
-        
-    }];
-    
-}
-
 -(CLLocationDistance)getLocationBetweenLocations:(NSArray *)locations
 {
     if(!locations || locations.count < 1) return -1;

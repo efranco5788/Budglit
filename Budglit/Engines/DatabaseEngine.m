@@ -30,28 +30,6 @@
 
 @implementation DatabaseEngine
 
--(NSValue*)calculateCoordinateFrom:(NSValue *)coordinateValue onBearing:(double)bearingInRadians atDistance:(double)distanceInMetres
-{
-    CLLocationCoordinate2D coordinate;
-    [coordinateValue getValue:&coordinate];
-    
-    double coordinateLatitudeInRadians = coordinate.latitude * M_PI / 180;
-    double coordinateLongitudeInRadians = coordinate.longitude * M_PI / 180;
-    
-    double distanceComparedToEarth = distanceInMetres / 6378100;
-    
-    double resultLatitudeInRadians = asin(sin(coordinateLatitudeInRadians) * cos(distanceComparedToEarth) + cos(coordinateLatitudeInRadians) * sin(distanceComparedToEarth) * cos(bearingInRadians));
-    double resultLongitudeInRadians = coordinateLongitudeInRadians + atan2(sin(bearingInRadians) * sin(distanceComparedToEarth) * cos(coordinateLatitudeInRadians), cos(distanceComparedToEarth) - sin(coordinateLatitudeInRadians) * sin(resultLatitudeInRadians));
-    
-    CLLocationCoordinate2D result;
-    result.latitude = resultLatitudeInRadians * 180 / M_PI;
-    result.longitude = resultLongitudeInRadians * 180 / M_PI;
-    
-    NSValue* newCoordinateValue = [NSValue valueWithBytes:&result objCType:@encode(CLLocationCoordinate2D)];
-    
-    return newCoordinateValue;
-}
-
 -(instancetype) init
 {
     self = [self initWithHostName:nil];
@@ -75,6 +53,29 @@
     return self;
 }
 
+-(NSValue*)calculateCoordinateFrom:(NSValue *)coordinateValue onBearing:(double)bearingInRadians atDistance:(double)distanceInMetres
+{
+    CLLocationCoordinate2D coordinate;
+    [coordinateValue getValue:&coordinate];
+    
+    double coordinateLatitudeInRadians = coordinate.latitude * M_PI / 180;
+    double coordinateLongitudeInRadians = coordinate.longitude * M_PI / 180;
+    
+    double distanceComparedToEarth = distanceInMetres / 6378100;
+    
+    double resultLatitudeInRadians = asin(sin(coordinateLatitudeInRadians) * cos(distanceComparedToEarth) + cos(coordinateLatitudeInRadians) * sin(distanceComparedToEarth) * cos(bearingInRadians));
+    double resultLongitudeInRadians = coordinateLongitudeInRadians + atan2(sin(bearingInRadians) * sin(distanceComparedToEarth) * cos(coordinateLatitudeInRadians), cos(distanceComparedToEarth) - sin(coordinateLatitudeInRadians) * sin(resultLatitudeInRadians));
+    
+    CLLocationCoordinate2D result;
+    result.latitude = resultLatitudeInRadians * 180 / M_PI;
+    result.longitude = resultLongitudeInRadians * 180 / M_PI;
+    
+    NSValue* newCoordinateValue = [NSValue valueWithBytes:&result objCType:@encode(CLLocationCoordinate2D)];
+    
+    return newCoordinateValue;
+}
+
+
 -(NSDictionary *)primaryDefaultForSearchFilterAtLocation
 {
     NSArray* keys = @[NSLocalizedString(@"DISTANCE_FILTER", nil), NSLocalizedString(@"BUDGET_FILTER", nil), NSLocalizedString(@"DATE_FILTER", nil), NSLocalizedString(@"CITY", nil), NSLocalizedString(@"STATE", nil)];
@@ -91,7 +92,7 @@
     
     NSString* state = city.state;
     
-    NSString* currentDate = [self getCurrentDateString];
+    NSString* currentDate = [self currentDateString];
     
     NSLog(@"%@", currentDate);
     
@@ -102,31 +103,7 @@
     return filterCriteria;
 }
 
--(NSDictionary*)primaryDefaultForSearchFilterWithZipcodes:(NSArray *)zipcodes
-{
-    NSArray* keys = @[NSLocalizedString(@"DISTANCE_FILTER", nil), NSLocalizedString(@"BUDGET_FILTER", nil), NSLocalizedString(@"DATE_FILTER", nil), NSLocalizedString(@"ZIPCODE", nil), NSLocalizedString(@"SURROUNDING_ZIPCODES", nil)];
-    
-    NSString* distanceCriteria = NSLocalizedString(@"DEFAULT_DISTANCE_FILTER", nil);
-    
-    NSString* budgetCriteria = NSLocalizedString(@"DEFAULT_BUDGET", nil);
-    
-    NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
-    
-    NSString* userZipcode = [defaults valueForKey:NSLocalizedString(@"ZIPCODE", nil)];
-    
-    NSString* currentDate = [self getCurrentDateString];
-    
-    NSArray* values;
-    
-    if (!zipcodes || zipcodes.count <= 1) values = @[distanceCriteria, budgetCriteria, currentDate, userZipcode, NSLocalizedString(@"EMPTY_SURROUNDING_ZIPCODES", nil)];
-    else values = @[distanceCriteria, budgetCriteria, currentDate, userZipcode, zipcodes];
-    
-    NSDictionary* filterCriteria = [NSDictionary dictionaryWithObjects:values forKeys:keys];
-    
-    return filterCriteria;
-}
-
--(NSString*)getCurrentDateString
+-(NSString*)currentDateString
 {
     
     NSTimeZone* timeZone = [NSTimeZone localTimeZone];
@@ -192,8 +169,6 @@
                 
                 completionBlock(total);
                 
-                //[self.delegate totalDealCountReturned:total];
-                
             }
             
         }
@@ -233,6 +208,7 @@
                 completionBlock(array);
             }
             else{
+                
                 NSLog(@"%@", deals);
                 
                 completionBlock(deals);

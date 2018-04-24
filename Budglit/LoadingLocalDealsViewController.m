@@ -274,8 +274,6 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
     
     UIAlertAction* retryAction = [UIAlertAction actionWithTitle:@"Retry" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         
-        //[self reloadDeals:nil];
-        
     }];
     
     UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {

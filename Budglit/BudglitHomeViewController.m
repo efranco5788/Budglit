@@ -31,7 +31,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
+    //self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
 }
 
 -(void)viewDidAppear:(BOOL)animated
