@@ -5,19 +5,18 @@
 //  Created by Emmanuel Franco on 9/26/15.
 //  Copyright © 2015 Emmanuel Franco. All rights reserved.
 //
-
 #import "LoadingLocalDealsViewController.h"
 #import "AppDelegate.h"
-#import "LocationServiceManager.h"
-#import "DatabaseManager.h"
-#import "BudgetPickerViewController.h"
-#import "BudgetManager.h"
 #import "Deal.h"
+#import "BudgetManager.h"
+#import "DatabaseManager.h"
+#import "LocationServiceManager.h"
+#import "BudgetPickerViewController.h"
+#import "LoginPageViewController.h"
 #import "PSEditZipcodeOfflineTableViewController.h"
 #import "PSAllDealsTableViewController.h"
 #import "PSTransitionToBudgetViewController.h"
 #import "PSDismissTransitionFromBudgetViewController.h"
-#import "PostalCode.h"
 #import "UINavigationController+CompletionHandler.h"
 
 #define BUDGET_TITLE @"Budget"
@@ -150,92 +149,7 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
     }];
     
 }
-/*
--(void)fetchSurroundingZipcodes:(NSString *)zipcode
-{
-    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
-    
-    currentState = CLEAR;
-    
-    NSLog(@"Location complete, app state now clear");
-    
-    NSString* postalCode;
-    
-    if(!zipcode) postalCode = [appDelegate.locationManager getCurrentZipcode];
-    else postalCode = zipcode;
-    
-    if (!postalCode){
-        NSError* err = [NSError errorWithDomain:NSCocoaErrorDomain code:NSKeyValueValidationError userInfo:nil];
-        
-        [self.delegate loadingPageErrorFound:err];
-    }
-    
-    (appDelegate.locationManager).delegate = self;
-    
-    [appDelegate.databaseManager setZipcodeCriteria:postalCode];
-    
-    NSDictionary* defaultSearchFilter = [appDelegate.databaseManager fetchPrimaryDefaultSearchFiltersWithZipcodes:nil];
-    
-    CityDataObject* city = [appDelegate.locationManager getCurrentLocationCityObject];
-    
-    [appDelegate.locationManager fetchZipcodesForCity:city andObjects:defaultSearchFilter addCompletionHandler:^(id object) {
-        
-        NSArray* zipcodes = (NSArray*) object;
-        
-        NSMutableArray* postalCodes = [[NSMutableArray alloc] init];
-        
-        // Extract the postal codes
-        for (id zipcode in zipcodes) {
-            
-            PostalCode* postalCode = (PostalCode*) zipcode;
-            
-            [postalCodes addObject:postalCode.postalCode];
-        }
-        
-        NSDictionary* criteria = [appDelegate.databaseManager fetchPrimaryDefaultSearchFiltersWithZipcodes:postalCodes];
-        
-        [appDelegate.databaseManager.engine appendToCurrentSearchFilter:criteria];
 
-        [self.delegate loadingPageDismissed:criteria];
-        
-    }];
-    
-}
-*/
--(void)verifyBudget
-{
-    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
-    
-    currentState = CLEAR;
-    
-    NSLog(@"Location complete, app state now clear");
-    
-    NSString* usersBudget = [appDelegate.budgetManager retreieveBudget];
-    
-    if ([usersBudget isEqualToString:NSLocalizedString(@"DEFAULT_BUDGET", nil)])
-    {
-        (appDelegate.locationManager).delegate = self;
-        
-        NSString* currentPostal = [appDelegate.locationManager getCurrentZipcode];
-        
-        [appDelegate.databaseManager setZipcodeCriteria:currentPostal];
-        
-        NSDictionary* userSearchCriteria = [appDelegate.databaseManager getUsersCurrentCriteria];
-
-    }
-    else
-    {
-        (appDelegate.locationManager).delegate = self;
-        
-        NSString* currentPostal = [appDelegate.locationManager getCurrentZipcode];
-        
-        [appDelegate.databaseManager setZipcodeCriteria:currentPostal];
-        
-        NSDictionary* userSearchCriteria = [appDelegate.databaseManager getUsersCurrentCriteria];
-        
-        
-    }
-}
 
 #pragma mark -
 #pragma mark - Budget Picker Delegate
@@ -286,13 +200,6 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
     [dealsAlert addAction:cancelAction];
     
     [self presentViewController:dealsAlert animated:YES completion:nil];
-}
-
--(void)imagesFetched
-{
-    NSLog(@"Images loaded sucessfully");
-    
-    [self.delegate loadingPageDismissed:nil];
 }
 
 #pragma mark -
@@ -399,7 +306,7 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
     
     (appDelegate.locationManager).delegate = self;
     
-    [appDelegate.locationManager startUpdates:self];
+    [appDelegate.locationManager startUpdates];
 }
 
 
@@ -413,11 +320,21 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
     
     AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
-    NSDictionary* criteria = [appDelegate.databaseManager fetchPrimaryDefaultSearchFiltersWithLocation];
+    NSDictionary* appDefaults = [appDelegate.databaseManager getUsersCurrentCriteria];
     
-    [appDelegate.databaseManager.engine appendToCurrentSearchFilter:criteria];
+    if(!appDefaults || appDefaults.count == 0){
+        
+        appDefaults = [appDelegate.databaseManager fetchPrimaryDefaultSearchFiltersWithLocation];
+        
+    }
     
-    [self.delegate loadingPageDismissed:criteria];
+    NSLog(@"%@", appDefaults);
+    
+    [appDelegate.databaseManager saveUsersCriteria:appDefaults];
+
+    //[appDelegate.databaseManager.engine appendToCurrentSearchFilter:criteria];
+    
+    [self.delegate loadingPageDismissed:appDefaults];
     
 }
 
@@ -440,8 +357,6 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
         self.editOfflinePage = nil;
         
     }];
-    
-    [self verifyBudget];
     
 }
 

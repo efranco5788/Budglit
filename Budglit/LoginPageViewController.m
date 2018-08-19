@@ -5,24 +5,25 @@
 //  Created by Emmanuel Franco on 9/26/15.
 //  Copyright © 2015 Emmanuel Franco. All rights reserved.
 //
-
 #import "LoginPageViewController.h"
 #import "AccountManager.h"
 #import "AppDelegate.h"
 
-#define EMAIL_TF 1
-#define PASSWORD_TF 2
-#define EMAIL_CONFIRMATION_TF 7
-#define FIRST_NAME_TF 3
-#define LAST_NAME_TF 4
-#define EMAIL_FIELD @"user_email"
-#define PASSWORD_FIELD @"user_password"
-#define EMAIL_TEXTFIELD_PLACEHOLDER @"*Email"
-#define PASSWORD_TEXTFIELD_PLACEHOLDER @"*Password"
-#define FIRST_NAME_TEXTFIELD_PLACEHOLDER @"*First Name"
-#define LAST_NAME_TEXTFIELD_PLACEHOLDER @"Last Name"
 #define USERNAME_IMAGE @"icon_username.png"
 #define PASSWORD_IMAGE @"icon_lock.png"
+//#define EMAIL_FIELD @"user_email"
+//#define PASSWORD_FIELD @"user_password"
+//#define FIRST_NAME_FIELD @"user_FName"
+//#define LAST_NAME_FIELD @"user_LName"
+#define EMAIL_FIELD @"email"
+#define PASSWORD_FIELD @"password"
+#define FIRST_NAME_FIELD @"firstName"
+#define LAST_NAME_FIELD @"lastName"
+#define EMAIL_TEXTFIELD_PLACEHOLDER @"*Email"
+#define PASSWORD_TEXTFIELD_PLACEHOLDER @"*Password"
+#define CONFIRM_PASSWORD_TEXTFIELD_PLACEHOLDER @"*Confirm Password"
+#define FIRST_NAME_TEXTFIELD_PLACEHOLDER @"First Name"
+#define LAST_NAME_TEXTFIELD_PLACEHOLDER @"Last Name"
 
 
 @interface LoginPageViewController () <AccountManagerDelegate>
@@ -35,9 +36,19 @@
 
 @implementation LoginPageViewController
 
++(BOOL)validateEmailAddress:(NSString *)email
+{
+    if(!email) return NO;
+    
+    NSRegularExpression* regEx = [[NSRegularExpression alloc] initWithPattern:@"([A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{1,})" options:NSRegularExpressionCaseInsensitive error:nil];
+    
+    NSUInteger regExpResult = [regEx numberOfMatchesInString:email options:0 range:NSMakeRange(0, email.length)];
+    
+    return (regExpResult == 0) ? NO : YES;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
 }
 
 -(void)viewWillAppear:(BOOL)animated
@@ -67,12 +78,6 @@
     
     UIColor* primaryColor = [appDelegate getPrimaryColor];
     
-    /*
-    UIColor* primaryColor = [UIColor colorWithRed:44.0f/255.0f
-                                            green:83.0f/255.0f
-                                             blue:143.0f/255.0f
-                                            alpha:1.0f];
-    */
     gradient.colors = @[(id)primaryColor.CGColor, (id)[UIColor whiteColor].CGColor];
     
     [self.view.layer insertSublayer:gradient atIndex:0];
@@ -89,12 +94,9 @@
     (self.emailField).leftViewMode = UITextFieldViewModeAlways;
     (self.emailField).leftView = imgUsrView;
     
-    
     (self.passwordField).leftViewMode = UITextFieldViewModeAlways;
     (self.passwordField).leftView = imgPasswrdView;
     
-    //self.kbConstraint.active = NO;
-    //self.viewConstraint.active = NO;
 }
 
 -(void)viewWillDisappear:(BOOL)animated
@@ -110,39 +112,49 @@
     [super didReceiveMemoryWarning];
 }
 
--(BOOL)prefersStatusBarHidden{
+-(BOOL)prefersStatusBarHidden
+{
     return YES;
 }
 
--(void)refreshInterface{
-    
+-(void)refreshInterface
+{
     UIColor *color = [UIColor whiteColor];
     
-    UIFont* font = [UIFont fontWithName:@"Helvetica" size:17.0f];
+    UIFont* font = [UIFont fontWithName:@"HelveticaNeue" size:17.0f];
+    UIFont* italicFont = [UIFont fontWithName:@"HelveticaNeue-Italic" size:17.0f];
     
     if ([self.emailField respondsToSelector:@selector(setAttributedPlaceholder:)]) {
-        self.emailField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"Email" attributes:@{NSForegroundColorAttributeName: color}];
+        self.emailField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:EMAIL_TEXTFIELD_PLACEHOLDER attributes:@{NSForegroundColorAttributeName: color}];
         (self.emailField).font = font;
     }
     
     if ([self.passwordField respondsToSelector:@selector(setAttributedPlaceholder:)]) {
-        self.passwordField.attributedPlaceholder = [[NSAttributedString alloc]initWithString:@"Password" attributes:@{NSForegroundColorAttributeName:color}];
+        self.passwordField.attributedPlaceholder = [[NSAttributedString alloc]initWithString:PASSWORD_TEXTFIELD_PLACEHOLDER attributes:@{NSForegroundColorAttributeName:color}];
         (self.passwordField).font = font;
     }
     
+    if([self.confirmPasswordField respondsToSelector:@selector(setAttributedPlaceholder:)]){
+        self.confirmPasswordField.attributedPlaceholder = [[NSAttributedString alloc]initWithString:CONFIRM_PASSWORD_TEXTFIELD_PLACEHOLDER attributes:@{NSForegroundColorAttributeName:color}];
+        (self.confirmPasswordField).font = font;
+    }
+    
     [self.passwordField setSecureTextEntry:YES];
+    [self.confirmPasswordField setSecureTextEntry:YES];
     
     if ([self.FNameField respondsToSelector:@selector(setAttributedPlaceholder:)]) {
-        self.FNameField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"First Name" attributes:@{NSForegroundColorAttributeName: color}];
-        (self.FNameField).font = font;
+        self.FNameField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:FIRST_NAME_TEXTFIELD_PLACEHOLDER attributes:@{NSForegroundColorAttributeName: color}];
+        (self.FNameField).font = italicFont;
     }
     
     if ([self.LNameField respondsToSelector:@selector(setAttributedPlaceholder:)]) {
-        self.LNameField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"Last Name" attributes:@{NSForegroundColorAttributeName: color}];
-        (self.LNameField).font = font;
+        self.LNameField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:LAST_NAME_TEXTFIELD_PLACEHOLDER attributes:@{NSForegroundColorAttributeName: color}];
+        (self.LNameField).font = italicFont;
     }
     
     [self.passwordVisibility setSelected:YES];
+    
+    [self.view setNeedsDisplay];
 }
 
 -(void)refreshInterface:(UITextField*)field {
@@ -157,6 +169,8 @@
     [textField becomeFirstResponder];
     
     textField.adjustsFontSizeToFitWidth = YES;
+    
+    if([textField isEqual:self.emailField]) [self.emailField setTextColor:[UIColor whiteColor]];
 }
  
 
@@ -171,22 +185,32 @@
 
 -(void)textFieldDidEndEditing:(UITextField *)textField
 {
-    /*
-    if ([textField.text isEqualToString:@""]) {
-        if (textField.tag == EMAIL_TF) {
-            textField.placeholder = EMAIL_TEXTFIELD_PLACEHOLDER;
+    
+    if([textField isEqual:self.emailField])
+    {
+        NSString* email = self.emailField.text.lowercaseString;
+        
+        BOOL isValid = [LoginPageViewController validateEmailAddress:email];
+        
+        if (isValid == NO) {
+            [self.emailField setTextColor:[UIColor redColor]];
         }
-        else if (textField.tag == PASSWORD_TF){
-            textField.placeholder = PASSWORD_TEXTFIELD_PLACEHOLDER;
-        }
-        else if (textField.tag == FIRST_NAME_TF){
-            textField.placeholder = FIRST_NAME_TEXTFIELD_PLACEHOLDER;
-        }
-        else if (textField.tag == LAST_NAME_TF){
-            textField.placeholder = LAST_NAME_TEXTFIELD_PLACEHOLDER;
-        }
+        else [self.emailField setTextColor:[UIColor whiteColor]];
+        
     }
-    */
+    
+    if([textField isEqual:self.confirmPasswordField])
+    {
+        self.passwordField.text = [self.passwordField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+        
+        self.confirmPasswordField.text = [self.confirmPasswordField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+        
+        if(![self.confirmPasswordField.text isEqualToString:self.passwordField.text])
+        {
+            [self.passwordMismatch_Img setHidden:NO];
+        }
+        else [self.passwordMismatch_Img setHidden:YES];
+    }
 }
 
 
@@ -207,7 +231,6 @@
     UIAlertController* resetPassword = [UIAlertController alertControllerWithTitle:resetPasswordTitle message:resetPasswordMessage preferredStyle:UIAlertControllerStyleAlert];
     
     [resetPassword addTextFieldWithConfigurationHandler:^(UITextField *textField) {
-        textField.tag = EMAIL_CONFIRMATION_TF;
         textField.placeholder = EMAIL_TEXTFIELD_PLACEHOLDER;
         textField.delegate = self;
     }];
@@ -233,6 +256,7 @@
 -(void)toggleNameFields
 {
     if ((self.FNameField).hidden) {
+        [self.confirmPasswordField setHidden:NO];
         [self.FNameField setHidden:NO];
         [self.LNameField setHidden:NO];
     }
@@ -263,15 +287,6 @@
 
 #pragma mark -
 #pragma mark - Account Manager delegate
--(void)loginSucessful
-{
-    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
-    
-    (appDelegate.accountManager).delegate = self;
-
-    [appDelegate.accountManager saveCredentials];
-}
-
 -(void)loginFailedWithError:(NSError *)error
 {
     NSString* failedTitle = @"Login Failed";
@@ -295,24 +310,9 @@
     [self presentViewController:failedAlert animated:YES completion:nil];
 }
 
--(void)signupSucessfully
-{
-    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
-    
-    (appDelegate.accountManager).delegate = self;
-    
-    [appDelegate.accountManager saveCredentials];
-}
-
 -(void)signupFailedWithError:(NSError *)error
 {
     
-}
-
--(void)credentialsSaved
-{
-    NSLog(@"Credentials Saved...");
-    [self.delegate loginSucessful];
 }
 
 #pragma mark -
@@ -320,9 +320,6 @@
 -(void)keyboardWasShown:(NSNotification*)notification
 {
     NSDictionary* keyboardInfo = notification.userInfo;
-    
-    //CGSize keyboardSize = [keyboardInfo[UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
-    //double kbAnimationDuration = [[keyboardInfo valueForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue];
     
     CGRect keyboardEndFrame = [[keyboardInfo valueForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
     
@@ -353,9 +350,7 @@
 -(void)keyboardWillHide:(NSNotification *)notification
 {
     [self.view layoutIfNeeded];
-    //[self.kbConstraint setActive:NO];
-    //[self.viewConstraint setActive:NO];
-    
+
     NSLayoutConstraint* constraints[2];
     constraints[0] = self.kbConstraint;
     constraints[1] = self.viewConstraint;
@@ -367,52 +362,104 @@
     [self.view layoutIfNeeded];
 }
 
+#pragma mark -
+#pragma mark - User Login Methods
 - (IBAction)loginButtonPressed:(UIButton *)sender {
     
     NSString* user_email = self.emailField.text;
     NSString* user_password = self.passwordField.text;
     
-    if ([user_email  isEqualToString:@""] || [user_password  isEqualToString:@""]) {
-        NSLog(@"Empty");
-    }
+    if ([user_email  isEqualToString:@""] || [user_password  isEqualToString:@""]) NSLog(@"Empty");
     else{
         
         [[UIApplication sharedApplication].keyWindow endEditing:YES];
-        
-        NSDictionary* credentials = @{EMAIL_FIELD: user_email, PASSWORD_FIELD: user_password};
         
         AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
         
         (appDelegate.accountManager).delegate = self;
         
-        [appDelegate.accountManager login:credentials];
+        [appDelegate.accountManager login:@{EMAIL_FIELD: user_email, PASSWORD_FIELD: user_password} shouldSaveCredentials:YES addCompletion:^(BOOL success) {
+            
+            if(success){
+                
+                NSLog(@"Login Sucessful");
+                
+                [self.delegate loginSucessful];
+            }
+            
+        }];
         
     }
     
 }
 
+
+#pragma mark -
+#pragma mark - User Signup Methods
 - (IBAction)signUpButtonPressed:(UIButton *)sender
 {
-    [self toggleNameFields];
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
-    NSString* user_email = self.emailField.text;
-    
-    NSString* user_password = self.passwordField.text;
-    
-    if ([user_email  isEqualToString:@""] || [user_password  isEqualToString:@""]) {
-        NSLog(@"Empty");
+    if(self.FNameField.hidden){
+        [self toggleNameFields];
     }
     else{
         
-        [[UIApplication sharedApplication].keyWindow endEditing:YES];
+        for (UITextField* textField in self.fieldCollection) textField.text = [textField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
         
-        NSDictionary* credentials = @{EMAIL_FIELD: user_email, PASSWORD_FIELD: user_password};
+        if ([self.emailField.text  isEqualToString:@""] || [self.passwordField.text  isEqualToString:@""]) {
+            
+            UIAlertController* emptyFieldsAlert = [UIAlertController alertControllerWithTitle:@"Incomplete Information" message:@"Please provide atleast an email and password" preferredStyle:UIAlertControllerStyleAlert];
+            
+            UIAlertAction* ok = [UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault handler:nil];
+            
+            [emptyFieldsAlert addAction:ok];
+            
+            [self presentViewController:emptyFieldsAlert animated:YES completion:nil];
+            
+        }
+        else{
+            
+            self.emailField.text = self.emailField.text.lowercaseString;
+            
+            if([LoginPageViewController validateEmailAddress:self.emailField.text]){
+                
+                [[UIApplication sharedApplication].keyWindow endEditing:YES];
+                
+                AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
+                
+                (appDelegate.accountManager).delegate = self;
+                
+                [appDelegate.accountManager signup:@{EMAIL_FIELD: self.emailField.text, PASSWORD_FIELD: self.passwordField.text, FIRST_NAME_FIELD: self.FNameField.text, LAST_NAME_FIELD: self.LNameField.text} shouldSaveCredentials:YES addCompletion:^(id object) {
+                    
+                    if([object isKindOfClass:[UIAlertController class]])
+                    {
+                        UIAlertController* alert = (UIAlertController*) object;
+                        
+                        UIAlertAction* okAction = [UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault handler:nil];
+                        
+                        [alert addAction:okAction];
+                        
+                        [self presentViewController:alert animated:YES completion:^{
+                            [self refreshInterface:self.emailField];
+                        }];
+                    }
+                    
+                }]; // End of Account Manager signup call
+                
+            }
+            else{
+                
+                UIAlertController* emptyFieldsAlert = [UIAlertController alertControllerWithTitle:@"Invalid Email" message:@"Please provide a valid email" preferredStyle:UIAlertControllerStyleAlert];
+                
+                UIAlertAction* ok = [UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault handler:nil];
+                
+                [emptyFieldsAlert addAction:ok];
+                
+                [self presentViewController:emptyFieldsAlert animated:YES completion:nil];
+                
+            }
+            
+        } // End of else statement, attempt to sign up new user
         
-        AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
-        
-        (appDelegate.accountManager).delegate = self;
-        
-        [appDelegate.accountManager signup:credentials];
     }
     
 }
@@ -421,10 +468,12 @@
     
     if (self.passwordVisibility.isSelected) {
         [self.passwordField setSecureTextEntry:NO];
+        [self.confirmPasswordField setSecureTextEntry:NO];
         [self.passwordVisibility setSelected:NO];
     }
     else{
         [self.passwordField setSecureTextEntry:YES];
+        [self.confirmPasswordField setSecureTextEntry:YES];
         [self.passwordVisibility setSelected:YES];
     }
 }

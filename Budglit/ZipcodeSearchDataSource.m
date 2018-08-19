@@ -31,11 +31,11 @@ static NSString* const cellIdentifier = @"Cell";
         return nil;
     }
     
-    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
+    //AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
-    NSSortDescriptor* cityDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
+    //NSSortDescriptor* cityDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
     
-    NSSortDescriptor* postalDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"postal" ascending:YES selector:nil];
+    //NSSortDescriptor* postalDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"postal" ascending:YES selector:nil];
     
     //self.dataCityFiltered = [(appDelegate.locationManager).cities sortedArrayUsingDescriptors:@[cityDescriptor]];
     

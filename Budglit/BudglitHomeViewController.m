@@ -35,29 +35,55 @@
 }
 
 -(void)viewDidAppear:(BOOL)animated
-{    
-    NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
-    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
-    UserAccount* user = appDelegate.accountManager.getSignedAccount;
-    NSString* budgetValue = [defaults valueForKey:NSLocalizedString(@"BUDGET", nil)];
-
-    if (!user) {
-        [self launchLoginPage];
-    }
-    else if ([user.firstName isEqualToString:NSLocalizedString(@"DEFAULT_NO_ACCOUNT_NAME", nil)])
-    {
-        //[self launchLoginPage];
-        [self launchLoadingPage];
-    }
-    else
-    {
-        //[appDelegate.accountManager sessionValidator];
-        [self launchLoadingPage];
-    }
+{
+    [super viewDidAppear:animated];
     
-    user = nil;
-    budgetValue = nil;
-    defaults = nil;
+    //NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
+    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
+    //UserAccount* user = appDelegate.accountManager.getSignedAccount;
+    //NSString* budgetValue = [defaults valueForKey:NSLocalizedString(@"BUDGET", nil)];
+    
+    __block BudglitHomeViewController* blocksafeSelf = self;
+    
+    [appDelegate.accountManager validateSessionForDomain:@"www.budglit.com" addCompletion:^(id object) {
+        
+        NSLog(@"%@", object);
+        
+        if(object == nil || object == NULL) [blocksafeSelf launchLoginPage];
+        else if ([object isKindOfClass:[NSError class]]){
+            
+        }
+        else{
+            
+            NSDictionary* validInfo = (NSDictionary*) object;
+            
+            id validationValue = [appDelegate.accountManager getValidationValue:validInfo];
+            
+            BOOL isValid = [validationValue integerValue];
+            
+            if(isValid == NO){
+                
+                [appDelegate.accountManager logoutFromDomain:@"www.budglit.com" addCompletion:^(id logoutInfo) {
+                    
+                    if(logoutInfo) {
+                        
+                        BOOL loggedOffSuccess = [appDelegate.accountManager checkLoggedOut:object];
+                        
+                        if(loggedOffSuccess == YES) {
+                            [blocksafeSelf launchLoginPage];
+                        }
+                    }
+                    
+                    
+                }];
+                
+            }
+            else [blocksafeSelf launchLoadingPage];
+            
+        }
+        
+    }];
+    
 }
 
 -(void)launchLoginPage
@@ -172,7 +198,9 @@
 -(void)loginSucessful
 {
     [self dismissViewControllerAnimated:YES completion:^{
+        
         [self destroyLoginPage];
+        
     }];
 }
 

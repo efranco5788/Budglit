@@ -76,9 +76,18 @@ NSString* const kDefaultEventEndNotification = @"EventEndNotification";
         
 }
 
--(double)getBudget
+-(double)budget
 {
-    return budget;
+    NSNumberFormatter* formatter = [[NSNumberFormatter alloc] init];
+    [formatter setNumberStyle:NSNumberFormatterDecimalStyle];
+    formatter.maximumFractionDigits = 2;
+    [formatter setRoundingMode:NSNumberFormatterRoundUp];
+    
+    NSString* formattedStringBudget = [formatter stringFromNumber:[NSNumber numberWithDouble:budget]];
+    
+    double roundedBudget = [formattedStringBudget doubleValue];
+
+    return roundedBudget;
 }
 
 -(void)setOriginalPosition:(CGRect)frame

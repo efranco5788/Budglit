@@ -285,7 +285,21 @@
     
     (appDelegate.accountManager).delegate = self;
     
-    [appDelegate.accountManager logout];
+    [appDelegate.accountManager logoutFromDomain:nil addCompletion:^(id object) {
+        
+        BOOL loggedOffSuccess = [appDelegate.accountManager checkLoggedOut:object];
+        
+        if(loggedOffSuccess == TRUE){
+            
+            AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
+            
+            [appDelegate.accountManager setDelegate:nil];
+            
+            [self.navigationController popToRootViewControllerAnimated:NO];
+            
+        }
+        
+    }];
 }
 
 #pragma mark -
@@ -323,17 +337,6 @@
         [view refreshDeals];
         
     }];
-}
-
-#pragma mark -
-#pragma mark - Account Manager Delegate
--(void)logoutSucessfully
-{
-    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
-    
-    [appDelegate.accountManager setDelegate:nil];
-    
-    [self.navigationController popToRootViewControllerAnimated:NO];
 }
 
 #pragma mark -

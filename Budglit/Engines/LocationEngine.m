@@ -41,6 +41,9 @@ DISTANCE_CONERSION conversionType;
         return nil;
     }
     
+    self.sessionManager.requestSerializer = [AFHTTPRequestSerializer serializer];
+    self.sessionManager.responseSerializer = [AFJSONResponseSerializer serializer];
+    
     conversionType = MILE_CONVERSION;
     
     return self;
@@ -82,9 +85,6 @@ DISTANCE_CONERSION conversionType;
 
 -(void)GNFetchPostalCodesForCity:(NSDictionary *)parameters addCompletionHandler:(dataResponseBlockResponse)completionHandler
 {
-    self.sessionManager.requestSerializer = [AFHTTPRequestSerializer serializer];
-    
-    self.sessionManager.responseSerializer = [AFJSONResponseSerializer serializer];
     
     [self.sessionManager GET:POSTAL_CODE_NEARBY_SEARCH_URL parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         
@@ -104,6 +104,22 @@ DISTANCE_CONERSION conversionType;
         [self logFailedRequest:task];
         [self.delegate nearbyPostalCodesFailedWithError:error];
     }];
+}
+
+-(CLLocation *)convertAddressToLocation:(NSDictionary *)addressInfo
+{
+    if(!addressInfo) return nil;
+    
+    NSArray* coords = [addressInfo valueForKey:@"coordinates"];
+    NSString* latitude = [coords valueForKey:@"lat"];
+    NSString* longtitude = [coords valueForKey:@"lng"];
+    NSLog(@"lng %@ nd lat %@",longtitude, latitude);
+    
+    CLLocation* evntlocation = [self createLocationFromStringLongtitude:longtitude andLatitude:latitude];
+
+    if(!evntlocation) return nil;
+    
+    return evntlocation;
 }
 
 -(CLLocationDistance)getLocationBetweenLocations:(NSArray *)locations

@@ -10,7 +10,7 @@
 #import "AppDelegate.h"
 
 #define KEY_DEAL_ID @"_id"
-#define KEY_DEAL_BUDGET @"dealBudget"
+#define KEY_DEAL_BUDGET @"budget"
 #define KEY_VENUE_ZIPCODE @"zipcode"
 #define KEY_DEAL_DESCRIPTION @"dealDescription"
 //#define KEY_DEAL_DATE @"date_of_event"
@@ -48,8 +48,12 @@
     return self;
 }
 
--(void)parseDeals:(NSArray *)list addCompletionHandler:(parseCompletionBlock)completionBlock
+-(NSArray*)parseDeals:(NSArray *)list
 {
+    //NSLog(@"%@", list);
+    
+    if(!list){return nil;}
+    
     if (list.count >= 1) {
         
         NSMutableArray* dealList = [[NSMutableArray alloc] init];
@@ -99,7 +103,7 @@
             
             AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
             
-            NSString* localEventTime = [appDelegate.databaseManager.engine convertUTCDateToLocal:dealDate];
+            NSString* localEventTime = [appDelegate.databaseManager.engine convertUTCDateToLocalString:dealDate];
             
             NSLog(@"%@", localEventTime);
             
@@ -108,11 +112,11 @@
             [dealList addObject:newDeal];
         }
         
-        NSArray* arryofDeals = dealList.copy;
-        
-        completionBlock(arryofDeals);
+        return dealList.copy;
         
     }
+    else return nil;
+    
 }
 
 @end

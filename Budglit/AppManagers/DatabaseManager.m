@@ -31,7 +31,8 @@ static DatabaseManager* sharedManager;
     dispatch_queue_t backgroundQueue;
     NSInteger totalCountAttempts;
 }
-@property (nonatomic, strong) NSArray* currentDeals;
+@property (nonatomic, strong) NSArray* fetchedDeals;
+@property (nonatomic, strong) NSDictionary* searchFilter;
 @end
 
 @implementation DatabaseManager
@@ -63,7 +64,7 @@ static DatabaseManager* sharedManager;
     
     (self.engine).delegate = self;
     
-    self.currentDeals = [[NSMutableArray alloc] init];
+    self.fetchedDeals = nil;
     
     NSString* sqliteDB = [[NSBundle mainBundle] pathForResource:SQLITE_DB_NAME ofType:@"sqlite3"];
     
@@ -79,19 +80,33 @@ static DatabaseManager* sharedManager;
 
 -(NSArray*)getSavedDeals
 {
-    return self.currentDeals.copy;
+    return self.fetchedDeals.copy;
+}
+
+-(BOOL)saveFetchedDeals:(NSArray *)dealsFetched
+{
+    if(dealsFetched){
+        
+        self.fetchedDeals = dealsFetched;
+        
+        return YES;
+    }
+    else return NO;
 }
 
 -(void)setZipcodeCriteria:(NSString *)zipcode
 {
-    NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
+    //NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
     
-    NSDictionary* searchFilters = [defaults valueForKey:NSLocalizedString(@"KEY_CURRENT_SEARCH_FILTERS", nil)];
+    //NSDictionary* searchFilters = [defaults valueForKey:NSLocalizedString(@"KEY_CURRENT_SEARCH_FILTERS", nil)];
     
-    NSMutableDictionary* newCriteria = [[NSMutableDictionary alloc] init];
+    NSMutableDictionary* mutableFilterCopy = self.searchFilter.mutableCopy;
     
-    NSArray* keys = searchFilters.allKeys;
-    NSArray* values = searchFilters.allValues;
+    //NSMutableDictionary* newCriteria = [[NSMutableDictionary alloc] init];
+    
+    /*
+    NSArray* keys = self.searchFilter.allKeys;
+    NSArray* values = self.searchFilter.allValues;
     
     NSDictionary* critera = [NSDictionary dictionaryWithObjects:values forKeys:keys];
     
@@ -100,11 +115,16 @@ static DatabaseManager* sharedManager;
     newCriteria[NSLocalizedString(@"ZIPCODE", nil)] = zipcode;
     
     [self saveUsersCriteria:newCriteria];
+    */
+
+    mutableFilterCopy[NSLocalizedString(@"ZIPCODE", nil)] = zipcode;
     
+    [self saveUsersCriteria:mutableFilterCopy.copy];
 }
 
 -(void)saveUsersCriteria:(NSDictionary *)usersCriteria
 {
+    /*
     NSDictionary* criteria = usersCriteria;
     
     NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
@@ -117,13 +137,16 @@ static DatabaseManager* sharedManager;
     
     [defaults setValue:criteria forKeyPath:NSLocalizedString(@"KEY_CURRENT_SEARCH_FILTERS", nil)];
     
-    criteria = nil;
-    savedCriteria = nil;
-    defaults = nil;
+    [defaults synchronize];
+     
+    */
+    
+    self.searchFilter = usersCriteria;
 }
 
 -(NSDictionary *)getUsersCurrentCriteria
 {
+    /*
     NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
     
     NSDictionary* searchFilters = [defaults valueForKey:NSLocalizedString(@"KEY_CURRENT_SEARCH_FILTERS", nil)];
@@ -132,12 +155,12 @@ static DatabaseManager* sharedManager;
     NSArray* values = searchFilters.allValues;
     
     NSDictionary* critera = [NSDictionary dictionaryWithObjects:values forKeys:keys];
-    
-    keys = nil;
-    values = nil;
-    searchFilters = nil;
-    
+
     return critera;
+     
+     */
+    
+    return self.searchFilter.copy;
 }
 
 -(NSString*)getZipcode
@@ -165,9 +188,65 @@ static DatabaseManager* sharedManager;
     return [self.engine primaryDefaultForSearchFilterAtLocation];
 }
 
-#warning needs better error handling
--(void)fetchDeals:(NSDictionary *)searchCriteria addCompletionBlock:(generalBlockResponse)completionHandler
+-(NSArray *)extractDeals:(NSArray *)filteredDeals fromDeals:(NSArray *)deals
 {
+    if(!filteredDeals) return nil;
+    
+    NSMutableSet* newDealsSet;
+    
+    if (deals) newDealsSet = [NSMutableSet setWithArray:deals];
+    else newDealsSet = [NSMutableSet setWithArray:self.getSavedDeals];
+
+    NSSet* filteredSet = [NSSet setWithArray:filteredDeals];
+    
+    [newDealsSet minusSet:filteredSet];
+    
+    NSArray* extractedDeals = [newDealsSet allObjects];
+    
+    if(!extractedDeals) return nil;
+    
+    return extractedDeals;
+}
+
+-(NSArray *)filterDeals:(NSArray *)deals byBudget:(double)budget
+{
+    if(!deals){
+        deals = [self getSavedDeals];
+    }
+    
+    NSPredicate* dealPredicate = [NSPredicate predicateWithFormat:@"SELF.class == %@", [Deal class]];
+    
+    NSArray* foundDeals = [deals filteredArrayUsingPredicate:dealPredicate];
+    
+    if(!foundDeals || foundDeals.count < 1){
+        return nil;
+    }
+    
+    NSArray* filtered = [self.engine filterOutDeals:foundDeals byBudgetAmount:budget];
+    
+    return filtered;
+    
+}
+
+-(NSInteger)getLowestBudgetFromDeals:(NSArray *)deals
+{
+    if (!deals || deals.count < 1) return -1;
+    
+    return [self.engine findLowestBudget:deals.copy];
+}
+
+-(NSInteger)getHighestBudgetFromDeals:(NSArray *)deals
+{
+    if(!deals || deals.count < 1) return -1;
+    
+    return [self.engine findHighestBudget:deals.copy];
+    
+}
+
+#warning needs better error handling
+-(void)fetchDeals:(NSDictionary *)searchCriteria addCompletionBlock:(dataBlockResponse)completionHandler
+{
+    // Fetches Deals from Server
     NSMutableArray* newDealArray = [[NSMutableArray alloc] init];
     
     if (searchCriteria == nil) searchCriteria = [[self getUsersCurrentCriteria] copy];
@@ -177,58 +256,41 @@ static DatabaseManager* sharedManager;
     [self.engine sendSearchCriteria:searchCriteria addCompletion:^(id response) {
         
         if(response){
-
-            [self.dealParser parseDeals:response addCompletionHandler:^(NSArray *parsedList) {
-                if (parsedList) {
+            
+            NSDictionary* dict = (NSDictionary*) response;
+            
+            BOOL authenticated = [self.engine extractAuthetication:dict];
+            
+            if(authenticated == FALSE) [self.delegate userNotAuthenticated];
+            else{
+                
+                NSArray* deals = [self.engine extractDeals:dict];
+                
+                NSArray* parsedDeals = [self.dealParser parseDeals:deals];
+                
+                if(parsedDeals){
                     
-                    for (Deal* node in parsedList) {
+                    for (Deal* node in parsedDeals) {
                         [newDealArray addObject:node];
                     }
                     
                     // reset and add current Deals
-                    [self resetDeals];
-                    self.currentDeals = newDealArray.copy;
+                    //[self resetDeals];
+                    
+                    //self.fetchedDeals = newDealArray.copy;
+                    completionHandler(newDealArray);
                     
                 }
-                completionHandler(YES);
+                else completionHandler(nil);
                 
-            }]; // End of Parser method
+            }
             
         }
-        else completionHandler(NO);
+        else completionHandler(nil);
         
     }];  //End of search criteria method
             
     
-}
-
--(void)fetchTotalDealCountOnly:(NSDictionary *)searchCriteria addCompletionBlock:(generalBlockResponse)completionHandler
-{
-    [self.engine sendSearchCriteriaForTotalCountOnly:searchCriteria addCompletion:^(id response) {
-        
-        if(response){
-            
-            NSInteger responseNum;
-            
-            if([response isMemberOfClass:[NSNumber class]])
-            {
-                NSNumber* instanceResponse = (NSNumber*)response;
-                responseNum = [instanceResponse integerValue];
-                
-                totalLoadedDeals_Count = responseNum;
-            }
-            else if([response isMemberOfClass:[NSString class]])
-            {
-                NSLog(@"%@", response);
-                totalLoadedDeals_Count = 0;
-            }
-            else totalLoadedDeals_Count = 0;
-            
-            completionHandler(YES);
-        }
-        else completionHandler(NO);
-        
-    }];
 }
 
 -(void)fetchGeocodeForAddress:(NSString *)address additionalParams:(NSDictionary *)params shouldParse:(BOOL)parse addCompletetion:(dataBlockResponse)completionHandler
@@ -252,14 +314,17 @@ static DatabaseManager* sharedManager;
     [self.engine sendAddressForGeocode:parameters addCompletionHandler:^(id response){
         
         if(!response) completionHandler(nil);
-        
-        if (!parse) completionHandler(response);
-        
-        NSDictionary* unparsedAddress = (NSDictionary*) response;
-        
-        NSDictionary* parsedAddress = [self.engine parseGeocodeLocation:unparsedAddress];
-        
-        completionHandler(parsedAddress);
+        else{
+            
+            if (!parse) completionHandler(response);
+            
+            NSDictionary* unparsedAddress = (NSDictionary*) response;
+            
+            NSDictionary* parsedAddress = [self.engine parseGeocodeLocation:unparsedAddress];
+            
+            completionHandler(parsedAddress);
+            
+        }
         
     }];
 }
@@ -288,21 +353,28 @@ static DatabaseManager* sharedManager;
     [self.engine sendAddressesForGeocode:finalParameters addCompletionHandler:^(id response) {
         
         if(!response) completionHandler(nil);
-        
-        if(!parse) completionHandler(response);
-        
-        NSArray* addressList = (NSArray*) response;
-        
-        NSMutableArray* mutableParsedList = [[NSMutableArray alloc] init];
-        
-        for (NSDictionary* address in addressList) {
-            NSDictionary* parsedAddress = [self.engine parseGeocodeLocation:address];
-            [mutableParsedList addObject:parsedAddress];
+        else{
+            
+            if(!parse) completionHandler(response);
+            else{
+                
+                NSArray* addressList = (NSArray*) response;
+                
+                NSMutableArray* mutableParsedList = [[NSMutableArray alloc] init];
+                
+                for (NSDictionary* address in addressList) {
+                    NSDictionary* parsedAddress = [self.engine parseGeocodeLocation:address];
+                    [mutableParsedList addObject:parsedAddress];
+                }
+                
+                NSDictionary* parsedList = mutableParsedList.copy;
+                
+                completionHandler(parsedList);
+                
+            }
+            
         }
         
-        NSDictionary* parsedList = mutableParsedList.copy;
-        
-        completionHandler(parsedList);
         
     }];
 }
@@ -416,9 +488,7 @@ static DatabaseManager* sharedManager;
                     
                     imgExist = YES;
                     
-                    NSArray* list = appDelegate.databaseManager.currentDeals;
-                    
-                    Deal* objDeal = list[indexPath.row];
+                    Deal* objDeal = self.fetchedDeals[indexPath.row];
                     
                     //Cache the image
                     [self.engine cacheImage:imageResponse forKey:objDeal.imgStateObject.imagePath addCompletionHandler:^(BOOL success) {
@@ -526,9 +596,7 @@ static DatabaseManager* sharedManager;
 
 -(void)resetDeals
 {
-    //[self.currentDeals removeAllObjects];
-    NSArray* newArray = [[NSArray alloc] init];
-    self.currentDeals = newArray.copy;
+    self.fetchedDeals = [[NSArray alloc] init];
     totalLoadedDeals_Count = 0;
     NSLog(@"Deals removed!");
 }

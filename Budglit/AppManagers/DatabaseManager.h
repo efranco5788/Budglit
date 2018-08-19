@@ -26,11 +26,9 @@ typedef void (^newDataFetchedResponse)(UIBackgroundFetchResult result);
 @protocol DatabaseManagerDelegate <NSObject>
 @optional
 -(void)dealsDidNotLoad;
--(void)totalCountFailed;
--(void)totalCountReattempt:(NSDictionary*) criteria;
+-(void)userNotAuthenticated;
 -(void)imageFetchedForObject:(id)obj forIndexPath:(NSIndexPath*)indexPath andImage:(UIImage*)image andImageView:(UIImageView*)imageView;
 -(void)imageFetchedForDeal:(Deal*)deal forIndexPath:(NSIndexPath*)indexPath andImage:(UIImage*)image andImageView:(UIImageView*)imageView;
--(void)imagesFetched;
 @end
 
 @interface DatabaseManager : NSObject
@@ -54,11 +52,9 @@ typedef void (^newDataFetchedResponse)(UIBackgroundFetchResult result);
 
 -(instancetype) initWithEngineHostName:(NSString*)hostName NS_DESIGNATED_INITIALIZER;
 
--(void)fetchDeals: (NSDictionary*)searchCriteria addCompletionBlock:(generalBlockResponse)completionHandler;
-
--(void)fetchTotalDealCountOnly: (NSDictionary*)searchCriteria addCompletionBlock:(generalBlockResponse)completionHandler;
-
 -(NSDictionary*)fetchPrimaryDefaultSearchFiltersWithLocation;
+
+-(void)fetchDeals:(NSDictionary*)searchCriteria addCompletionBlock:(dataBlockResponse)completionHandler;
 
 -(void)fetchCachedImageForKey:(NSString*)key addCompletion:(fetchedImageResponse)completionHandler;
 
@@ -86,9 +82,19 @@ typedef void (^newDataFetchedResponse)(UIBackgroundFetchResult result);
 
 -(NSString*)getCurrentDateString;
 
+-(NSArray*) extractDeals:(NSArray*)filteredDeals fromDeals:(NSArray*)deals;
+
+-(NSArray*)filterDeals:(NSArray*)deals byBudget:(double)budget;
+
+-(NSInteger)getLowestBudgetFromDeals:(NSArray*)deals;
+
+-(NSInteger)getHighestBudgetFromDeals:(NSArray*)deals;
+
 -(void)saveUsersCriteria:(NSDictionary*)usersCriteria;
 
 -(void)setZipcodeCriteria:(NSString*)zipcode;
+
+-(BOOL)saveFetchedDeals:(NSArray*)dealsFetched;
 
 -(NSArray*)getSavedDeals;
 

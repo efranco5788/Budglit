@@ -77,6 +77,7 @@ static NSString* const emptyCellIdentifier = @"holderCell";
 }
 
 - (void)viewDidLoad {
+    
     [super viewDidLoad];
     
     [self setNeedsStatusBarAppearanceUpdate];
@@ -119,12 +120,18 @@ static NSString* const emptyCellIdentifier = @"holderCell";
 
 -(void)viewDidAppear:(BOOL)animated
 {
-    
     if (@available(iOS 11.0, *)) {
         [self.tableView setContentInsetAdjustmentBehavior:UIScrollViewContentInsetAdjustmentNever];
     } else {
         // Fallback on earlier versions
     }
+    
+    CGRect frame = self.dealsTableView.frame;
+    
+    [self.dealsTableView setFrame:CGRectMake(0, self.navigationController.navigationBar.frame.size.height, frame.size.width, frame.size.height - self.navigationController.navigationBar.frame.size.height)];
+    
+    [self.view layoutIfNeeded];
+    
 }
 
 -(void)viewDidDisappear:(BOOL)animated
@@ -148,9 +155,9 @@ static NSString* const emptyCellIdentifier = @"holderCell";
 #warning Needs error handling
 -(void)refreshDeals
 {
-    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
+    //AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
-    (appDelegate.databaseManager).delegate = self;
+    //(appDelegate.databaseManager).delegate = self;
     
     if (self.refreshControl) {
         
@@ -165,6 +172,18 @@ static NSString* const emptyCellIdentifier = @"holderCell";
         
     }
     
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        
+        if(self.refreshControl){
+            [self.refreshControl endRefreshing];
+        }
+        
+        [self loadDeals];
+        
+        [self.view layoutIfNeeded];
+    });
+    
+    /*
     [appDelegate.databaseManager fetchDeals:nil addCompletionBlock:^(BOOL success) {
         
         if (self.refreshControl) {
@@ -173,19 +192,24 @@ static NSString* const emptyCellIdentifier = @"holderCell";
         
         if(success){
             [self loadDeals];
+            
         }
         else{
 
         }
         
     }];
+     */
 }
 
 -(void)loadDeals
 {
     [self.dealTimers removeAllObjects];
     
-    [self.dealsTableView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
+    [self.dealsTableView reloadData];
+    
+    //[self.dealsTableView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
+    
 }
 
 
@@ -219,10 +243,8 @@ static NSString* const emptyCellIdentifier = @"holderCell";
 -(void)loadOnScreenDealImages
 {
     AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
-    
-    NSArray* deals = [NSArray arrayWithArray:[appDelegate.databaseManager getSavedDeals]];
-    
-    if (deals.count > 0) {
+
+    if ([appDelegate.databaseManager getSavedDeals].count > 0) {
         
         PSAllDealsTableViewController* __weak weakSelf = self;
         
@@ -232,7 +254,7 @@ static NSString* const emptyCellIdentifier = @"holderCell";
             
             NSIndexPath* index = [self.dealsTableView indexPathForCell:visibleCell];
             
-            __block Deal* visibleDeal = deals[index.row];
+            __block Deal* visibleDeal = [appDelegate.databaseManager getSavedDeals][index.row];
             
             [appDelegate.databaseManager fetchCachedImageForKey:visibleDeal.imgStateObject.imagePath addCompletion:^(UIImage *image) {
                 
@@ -243,18 +265,19 @@ static NSString* const emptyCellIdentifier = @"holderCell";
                 else{
                     
                     // Disable any interaction if image for the deal has not loaded yet
-                    [visibleCell setUserInteractionEnabled:NO];
+                    //[visibleCell setUserInteractionEnabled:NO];
                     
                     [appDelegate.databaseManager fetchPersistentStorageCachedImageForKey:visibleDeal.imgStateObject.imagePath deal:visibleDeal addCompletion:^(UIImage *img) {
                         
                         if(img){
                             
-                            [visibleCell.imageLoadingActivityIndicator stopAnimating];
-                            
-                            visibleCell.dealImage.image = img;
-                            
-                            [visibleCell setUserInteractionEnabled:YES];
-                        
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                
+                                [visibleCell.imageLoadingActivityIndicator stopAnimating];
+                                visibleCell.dealImage.image = img;
+                                //[visibleCell setUserInteractionEnabled:YES];
+                                
+                            });
                             
                         }
                         else [weakSelf startImageDownloadForDeal:visibleDeal forIndexPath:index andTableCell:visibleCell];
@@ -327,13 +350,11 @@ static NSString* const emptyCellIdentifier = @"holderCell";
     
     AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
-    NSArray* deals = [NSArray arrayWithArray:[appDelegate.databaseManager getSavedDeals]];
-    
-    if (deals == nil) {
+    if ([appDelegate.databaseManager getSavedDeals] == nil) {
         return customRowCount;
     }
     
-    NSUInteger totalCount = deals.count;
+    NSUInteger totalCount = [appDelegate.databaseManager getSavedDeals].count;
     
     if (totalCount < 1)
     {
@@ -348,12 +369,10 @@ static NSString* const emptyCellIdentifier = @"holderCell";
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
-    
-    NSArray* deals = [NSArray arrayWithArray:[appDelegate.databaseManager getSavedDeals]];
-    
+
     DealTableViewCell* dealCell = nil;
     
-    NSUInteger nodeCount = deals.count;
+    NSUInteger nodeCount = [appDelegate.databaseManager getSavedDeals].count;
     
     if (nodeCount == 0 && indexPath.row == 0) {
         
@@ -365,8 +384,8 @@ static NSString* const emptyCellIdentifier = @"holderCell";
         dealCell = (DealTableViewCell*) [self.dealsTableView dequeueReusableCellWithIdentifier:reuseIdentifier forIndexPath:indexPath];
         
         if (nodeCount > 0) {
-            
-            Deal* deal = deals[indexPath.row];
+
+            Deal* deal = [appDelegate.databaseManager getSavedDeals][indexPath.row];
             
             dealCell.dealDescription.text = deal.dealDescription;
             
@@ -377,19 +396,20 @@ static NSString* const emptyCellIdentifier = @"holderCell";
     return dealCell;
 }
 
-
 -(void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
     AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
-    NSArray* deals = [NSArray arrayWithArray:[appDelegate.databaseManager getSavedDeals]];
-    
-    NSUInteger nodeCount = deals.count;
+    NSUInteger nodeCount = [appDelegate.databaseManager getSavedDeals].count;
     
     if (nodeCount > 0) {
         
-        Deal* deal = deals[indexPath.row];
+        if([indexPath row] == ((NSIndexPath*)[[tableView indexPathsForVisibleRows] lastObject]).row){
+
+        }
+        
+        Deal* deal = [appDelegate.databaseManager getSavedDeals][indexPath.row];
         
         DealTableViewCell* dealCell = (DealTableViewCell*) cell;
         
@@ -405,7 +425,7 @@ static NSString* const emptyCellIdentifier = @"holderCell";
             }
             else {
                 
-                [dealCell setUserInteractionEnabled:NO]; // Disable any interaction if image for the deal has not loaded yet
+                //[dealCell setUserInteractionEnabled:NO]; // Disable any interaction if image for the deal has not loaded yet
                 
                 dealCell.dealImage.image = self.placeholderImage;
                 
@@ -426,7 +446,7 @@ static NSString* const emptyCellIdentifier = @"holderCell";
                         
                         dispatch_async(dispatch_get_main_queue(), ^{
                             dealCell.dealImage.image = img;
-                            [dealCell setUserInteractionEnabled:YES];
+                            //[dealCell setUserInteractionEnabled:YES];
                             [dealCell.imageLoadingActivityIndicator stopAnimating];
                             
                         });
@@ -439,6 +459,8 @@ static NSString* const emptyCellIdentifier = @"holderCell";
             }
             
         }]; // End of Fetching Image in Cache
+         
+         
      
         if ([dealCell.dealTimer.text isEqualToString:NSLocalizedString(@"TIMER_LABEL_DEFAULT_TEXT", nil)]) {
             dealCell.dealTimer = [deal generateCountDownEndDate:dealCell.dealTimer];
@@ -593,7 +615,7 @@ static NSString* const emptyCellIdentifier = @"holderCell";
             
             cell.dealImage.image = image;
             
-            [cell setUserInteractionEnabled:YES];
+            //[cell setUserInteractionEnabled:YES];
             
             [cell.imageLoadingActivityIndicator stopAnimating];
             
@@ -671,9 +693,7 @@ static NSString* const emptyCellIdentifier = @"holderCell";
 -(void)dealEnded:(NSNotification*)notification
 {
     
-    if (!notification) {
-        return;
-    }
+    if (!notification) return;
     
     dispatch_queue_t backgroundToken = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0);
     

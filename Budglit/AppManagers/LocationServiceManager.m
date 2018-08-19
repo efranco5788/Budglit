@@ -46,7 +46,9 @@
 static LocationSeviceManager* sharedManager;
 
 @interface LocationSeviceManager()<LocationEngineDelegate>
+
 @property NSArray* locationHistory;
+@property (nonatomic, strong) CityDataObject* currentCity;
 
 @end
 
@@ -82,6 +84,8 @@ static LocationSeviceManager* sharedManager;
     self.engine = [[LocationEngine alloc] initWithHostName:hostName];
     
     (self.engine).delegate = self;
+    
+    self.currentCity = nil;
     
     self.locationHistory = [[NSArray alloc] init];
     
@@ -138,6 +142,7 @@ static LocationSeviceManager* sharedManager;
     }
     else{
         
+        /*
         NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
         
         NSString* zipcode = aCity.postal;
@@ -154,6 +159,9 @@ static LocationSeviceManager* sharedManager;
         [defaults setObject:city forKey:NSLocalizedString(@"CITY", nil)];
         
         [defaults synchronize];
+         */
+        
+        self.currentCity = aCity;
         
         NSLog(@"Current Location saved");
         
@@ -162,7 +170,7 @@ static LocationSeviceManager* sharedManager;
     
 }
 
--(CLLocationDistance)distanceFromLocation:(CLLocation *)locationA toLocation:(CLLocation *)locationB
+-(CLLocationDistance)managerDistanceFromLocation:(CLLocation *)locationA toLocation:(CLLocation *)locationB
 {
     if (locationA && locationB) {
         
@@ -182,7 +190,7 @@ static LocationSeviceManager* sharedManager;
     else return -1;
 }
 
--(double)convertDistance:(double)meters
+-(double)managerConvertDistance:(double)meters
 {
     return [self.engine convertLocationDistanceMeters:meters];
 }
@@ -190,12 +198,6 @@ static LocationSeviceManager* sharedManager;
 
 #pragma mark -
 #pragma mark - Location Services Methods
--(void)startUpdates: (id)currentVC
-{
-    currentViewController = currentVC;
-    [self startUpdates];
-}
-
 -(void)startUpdates
 {
     if (self.locationManager == nil) {
@@ -352,6 +354,7 @@ static LocationSeviceManager* sharedManager;
 
 -(CityDataObject*)getCurrentLocationCityObject
 {
+    /*
     NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
     
     NSString* zipcode = [defaults objectForKey:ZIPCODE];
@@ -367,8 +370,14 @@ static LocationSeviceManager* sharedManager;
     cityName = cityName.lowercaseString;
     
     CityDataObject* city = [[CityDataObject alloc] initWithCity:cityName State:stateName stateAbbr:stateAbbreviation andPostal:zipcode];
+     
+     return city;
+     
+     */
     
-    return city;
+    NSLog(@"%@", self.currentCity.name);
+    
+    return self.currentCity;
 }
 
 -(NSString*)retrieveCurrentLocationString
@@ -398,16 +407,20 @@ static LocationSeviceManager* sharedManager;
             }
             else
             {
-                CLPlacemark* currentLocation = placemarks[0];
+                CLPlacemark* currentLocation = [placemarks firstObject];
                 
                 NSDictionary* address = currentLocation.addressDictionary;
                 
-                NSString* cityName = [address valueForKey:@"City"];
+                //NSLog(@"%@", currentLocation.locality);
+                
+                NSLog(@"%@", currentLocation);
+                
+                NSString* cityName = [[address valueForKey:@"City"] lowercaseString];
                 
                 NSString* stateAbbr = [[address valueForKey:@"State"] uppercaseString];
                 
                 NSString* state = [self findStateNameFor:stateAbbr];
-                
+
                 if(state) state = [state lowercaseString];
                 
                 NSString* postal = currentLocation.postalCode;
@@ -592,6 +605,15 @@ static LocationSeviceManager* sharedManager;
 -(CLLocation *)managerCreateLocationFromStringLongtitude:(NSString *)lng andLatitude:(NSString *)lat
 {
     CLLocation* location = [self.engine createLocationFromStringLongtitude:lng andLatitude:lat];
+    
+    return location;
+}
+
+-(CLLocation *)managerConvertAddressToLocation:(NSDictionary *)dict
+{
+    CLLocation* location = [self.engine convertAddressToLocation:dict];
+    
+    if(!location) return nil;
     
     return location;
 }

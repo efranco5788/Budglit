@@ -96,7 +96,7 @@ static NSString *userProfileIdentifier = @"profileCell";
             return 1;
             break;
         case 1:
-            return 4;
+            return 3;
             break;
         case 2:
             return 1;
@@ -177,9 +177,7 @@ static NSString *userProfileIdentifier = @"profileCell";
         CGRect frame = CGRectMake(15, 30, MAX_USER_ROW_HEIGHT - 60, MAX_USER_ROW_HEIGHT - 60);
         (cell.imageView).bounds = frame;
         (cell.imageView).frame = frame;
-        
-        NSLog(@"%f", cell.frame.size.height);
-        
+
         CGRect labelFrame = CGRectMake((frame.size.width + 30), (MAX_USER_ROW_HEIGHT / 2) - 30, (cell.frame.size.width / 2), (cell.frame.size.height / 2));
         
         (cell.textLabel).frame = labelFrame;
@@ -203,7 +201,7 @@ static NSString *userProfileIdentifier = @"profileCell";
         
         [cell.textLabel setAdjustsFontSizeToFitWidth:YES];
         
-        if (indexPath.row == 0) {
+        if (indexPath.row == MENUSWITCHMODE) {
             [cell setMenuOption:MENUSWITCHMODE];
             cell.textLabel.text = [NSString stringWithFormat:@"%@", NSLocalizedString(@"LIST_MODE", nil)];
             cell.textLabel.font = [cell.textLabel.font fontWithSize:14.0];
@@ -220,13 +218,13 @@ static NSString *userProfileIdentifier = @"profileCell";
             cell.textLabel.text = [NSString stringWithFormat:@"%@", NSLocalizedString(@"CHANGE_LOCATION", nil)];
             cell.textLabel.font = [cell.textLabel.font fontWithSize:14.0];
         }
-        
+        /*
         if (indexPath.row == MENUCHANGEBUDGET) {
             [cell setMenuOption:MENUCHANGEBUDGET];
             cell.textLabel.text = [NSString stringWithFormat:@"%@", NSLocalizedString(@"EDIT_MY_BUDGET", nil)];
             cell.textLabel.font = [cell.textLabel.font fontWithSize:14.0];
         }
-        
+        */
         AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
         
         [cell setBackgroundColor:[appDelegate getPrimaryColor]];
@@ -242,6 +240,7 @@ static NSString *userProfileIdentifier = @"profileCell";
         [cell.textLabel setAdjustsFontSizeToFitWidth:YES];
         
         [cell setMenuOption:MENULOGOUT];
+        
         cell.textLabel.text = [NSString stringWithFormat:@"%@", NSLocalizedString(@"LOGOUT", nil)];
         
         cell.textLabel.font = [cell.textLabel.font fontWithSize:14.0];

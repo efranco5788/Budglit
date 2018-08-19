@@ -14,10 +14,8 @@
 #import "UserAccount.h"
 #import <dispatch/dispatch.h>
 
-#define KEY_EMAIL @"email"
-#define KEY_FIRST_NAME @"fName"
-#define KEY_LAST_NAME @"lName"
-#define KEY_IMAGE_URL @"profileIMG"
+#define VALID_KEY @"valid"
+#define LOGGED_OUT_KEY @"loggedOut"
 
 static AccountManager* sharedManager;
 
@@ -66,13 +64,87 @@ static AccountManager* sharedManager;
     return self;
 }
 
--(void)sessionValidator
+-(BOOL)checkLoggedOut:(NSDictionary *)loggedOutInfo
 {
-    [self.engine validateSessionAddCompletion:^(BOOL success) {
-        
-    }];
+    if(!loggedOutInfo) return nil;
+    
+    BOOL value = [loggedOutInfo valueForKey:LOGGED_OUT_KEY];
+    
+    return value;
 }
 
+#pragma mark -
+#pragma mark - Cookie Session Validator Methods
+-(id)getValidationValue:(NSDictionary *)validationInfo
+{
+    if(!validationInfo) return nil;
+    
+    return [validationInfo valueForKey:VALID_KEY];
+}
+
+-(void)validateSessionForDomain:(NSString *)domain addCompletion:(generalReturnBlockResponse)completionHandler
+{
+    NSString* sessionDomain = [domain lowercaseString];
+    
+    if(!sessionDomain) sessionDomain = [[self.engine baseURLString] lowercaseString];
+    
+    NSHTTPCookie* cookie = [self.engine getSavedCookieForDomain:sessionDomain];
+    
+    NSLog(@"%@", cookie);
+    
+    if(cookie == nil)completionHandler(nil);
+    else{
+        
+        __block NSNumber* validValue;
+        
+        [self.engine cookieHasExpired:cookie addCompletion:^(BOOL hasPassed) {
+            
+            if(hasPassed == NO){
+                
+                validValue = [NSNumber numberWithBool:YES];
+                
+                NSDictionary* results = [NSDictionary dictionaryWithObject:validValue forKey:VALID_KEY];
+                
+                completionHandler(results);
+                
+            }
+            else{
+                
+                validValue = [NSNumber numberWithBool:NO];
+                
+                NSDictionary* results = [NSDictionary dictionaryWithObject:validValue forKey:VALID_KEY];
+                
+                completionHandler(results);
+                
+            } // end of else statement
+            
+        }];
+        
+    }
+    
+    
+}
+
+-(void)removeAccountSessionCookieForDomain:(NSString *)domainName addCompletion:(generalBlockResponse)completionHandler
+{
+    NSHTTPCookie* cookie = [self.engine getSavedCookieForDomain:domainName];
+    
+    if(!cookie) completionHandler(YES);
+    else{
+        
+        [self.engine removeCookie:cookie addCompletion:^(BOOL success) {
+            
+            completionHandler(success);
+            
+        }];
+        
+    }
+    
+}
+
+
+#pragma mark -
+#pragma mark - Signed User Account Methods
 // Get User information already stored in device
 -(UserAccount*)getSignedAccount
 {
@@ -87,81 +159,103 @@ static AccountManager* sharedManager;
     return user;
 }
 
-// Fetch User Account from server
--(void)getSessionAccount:(NSString *)sessionID AddCompletion:(generalReturnBlockResponse)completionHandler
+-(void)removeUserAccountClearSavedAccount:(BOOL)clear AddCompletion:(generalBlockResponse)completionHandler
 {
-    NSString* sID;
-    
-    if(sessionID) sID = [NSString stringWithString:sessionID];
-    else sID = [self.engine getSessionID];
-    
-    if(!sID) [self.delegate loginFailedWithError:nil];
-    
-    [self.engine fetchSessionUserAccountAddCompletionHandler:^(id dataResponse) {
+    [self.engine deleteLoggedInUserAccountAddCompletion:^(BOOL success) {
         
-        NSLog(@"request brought back %@", dataResponse);
+        if(success){
+            
+            if(clear){
+                [self.signedAccount clear];
+            }
+            
+            
+        }
+       
+        completionHandler(success);
         
     }];
 }
 
--(NSString *)getSessionID
+#pragma mark -
+#pragma mark - Requests for user accounts
+// Fetch User Account from server
+-(void)login:(NSDictionary *)loginCredentials shouldSaveCredentials:(BOOL)save addCompletion:(generalBlockResponse)completionHandler
 {
-    return [self.engine getSessionID];
+    [self.engine loginWithCredentials:loginCredentials addCompletion:^(id dataResponse) {
+        
+        if(dataResponse){
+            
+            if([dataResponse isKindOfClass:[NSDictionary class]]){
+                
+                NSDictionary* userInfo = (NSDictionary*) dataResponse;
+                
+                NSLog(@"%@", userInfo);
+                
+                
+                self.signedAccount = [self.engine parseUserAccount:userInfo];
+                
+                NSLog(@"%@", self.signedAccount);
+                
+                if(!self.signedAccount) completionHandler(NO);
+                else{
+                    
+                    if(save){
+                        
+                        [self.engine saveLoggedInUserAccount:self.signedAccount addCompletion:^(BOOL success) {
+                            if(success)completionHandler(YES);
+                        }];
+                    }
+                    else completionHandler(YES);
+                    
+                }
+                
+            } // end of response kind of class finder
+            
+        }
+        else completionHandler(NO);
+        
+    }]; // End of loginWithCredentials block
+    
+    
 }
 
--(void)clearSessionInfo
+-(void)signup:(NSDictionary *)newCredentials shouldSaveCredentials:(BOOL)save addCompletion:(generalReturnBlockResponse)signUpCompletionHandler
 {
-    [self.engine clearSession];
-}
-
--(void)login:(NSDictionary *)loginCredentials
-{
-    backgroundQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-    
-    NSDictionary* credentials = loginCredentials.copy;
-    
-    dispatch_async(backgroundQueue, ^{
-        
-        [self.engine loginWithCredentials:credentials];
-        
-    });
-    
-}
-
--(void)signup:(NSDictionary *)newCredentials
-{
-    NSDictionary* credentials = newCredentials.copy;
-    
-    backgroundQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-    
-    dispatch_async(backgroundQueue, ^{
-        
-        [self.engine signupWithNewAccount:credentials];
-        
-    });
-}
-
--(void)saveCredentials
-{
-    
-    if (!self.signedAccount) {
-        [self.delegate credentialsNotSaved];
-        return;
-    }
-    
-    NSLog(@"here %@", self.signedAccount);
-    
-    NSUserDefaults* userDefaults = [NSUserDefaults standardUserDefaults];
-    
-    NSData* accountData = [NSKeyedArchiver archivedDataWithRootObject:self.signedAccount];
-    
-    [userDefaults setObject:accountData forKey:NSLocalizedString(@"ACCOUNT", nil)];
-    
-    [userDefaults synchronize];
-
-    [[NSNotificationCenter defaultCenter] postNotificationName:NSLocalizedString(@"USER_CHANGED_NOTIFICATION", nil) object:nil];
-    
-    [self.delegate credentialsSaved];
+    [self.engine signupWithNewAccount:newCredentials.copy addCompletion:^(id dataResponse) {
+       
+        if([dataResponse isKindOfClass:[NSError class]])
+        {
+            
+        }
+        else if ([dataResponse isKindOfClass:[UIAlertController class]])
+        {
+            signUpCompletionHandler(dataResponse);
+            
+        }
+        else if([dataResponse isKindOfClass:[NSDictionary class]])
+        {
+            NSLog(@"%@", dataResponse);
+            
+            self.signedAccount = [self.engine parseUserAccount:dataResponse];
+            
+            if(!self.signedAccount) signUpCompletionHandler(nil);
+            else{
+                
+                if(save){
+                    
+                    [self.engine saveLoggedInUserAccount:self.signedAccount addCompletion:^(BOOL success) {
+                        if(success)signUpCompletionHandler(dataResponse);
+                    }];
+                    
+                }
+                else signUpCompletionHandler(dataResponse);
+                
+            }
+            
+        }
+        else signUpCompletionHandler(nil);
+    }];
 }
 
 -(void)passwordResetEmail:(NSDictionary *)emailCredentials
@@ -177,37 +271,54 @@ static AccountManager* sharedManager;
     });
 }
 
--(void)logout
+-(void)logoutFromDomain:(NSString *)domainName addCompletion:(generalReturnBlockResponse)completionHandler
 {
-    [self.engine logout];
-}
-
--(void)logoutAddCompletion:(generalReturnBlockResponse)completionHandler
-{
+    NSString* domain;
     
-    [self.engine logoutAddCompletion:^(BOOL success) {
-        if (success) {
+    if(!domainName){
+        
+        NSError *error = NULL;
+        
+        NSRegularExpression* regex = [[NSRegularExpression alloc] initWithPattern:@"(www)+.+[a-z]+.+com" options:NSRegularExpressionCaseInsensitive error:&error];
+        
+        NSRange rangeOfFirstMatch = [regex rangeOfFirstMatchInString:self.engine.baseURLString options:0 range:NSMakeRange(0, [self.engine.baseURLString length])];
+
+        
+        if (!NSEqualRanges(rangeOfFirstMatch, NSMakeRange(NSNotFound, 0))) {
+            domain = [self.engine.baseURLString substringWithRange:rangeOfFirstMatch];
+        }
+        else domain = self.engine.baseURLString;
+
+    }
+    else domain = domainName;
+    
+    NSLog(@"%@", domain);
+    
+
+    [self.engine logoutAddCompletion:^(BOOL loggedOutSuccess) {
+        
+        if (loggedOutSuccess == TRUE) {
             
-            [self.engine clearSession];
+            [self removeAccountSessionCookieForDomain:domain addCompletion:^(BOOL cookieRemoved) {
+                
+                if(cookieRemoved == TRUE){
+                    
+                    [self removeUserAccountClearSavedAccount:YES AddCompletion:^(BOOL removed) {
+                        
+                        if(removed == TRUE){
+                            
+                            NSDictionary* info = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:LOGGED_OUT_KEY];
+                            
+                            completionHandler(info);
+                            
+                        }
+                        
+                    }];
+                    
+                }
+                
+            }];
             
-            [self.signedAccount clear];
-            
-            NSUserDefaults* userDefaults = [NSUserDefaults standardUserDefaults];
-            
-            NSData* accountData = [NSKeyedArchiver archivedDataWithRootObject:self.signedAccount];
-            
-            [userDefaults setValue:accountData forKey:NSLocalizedString(@"ACCOUNT", nil)];
-            
-            [userDefaults synchronize];
-            
-            [[NSNotificationCenter defaultCenter] postNotificationName:NSLocalizedString(@"USER_CHANGED_NOTIFICATION", nil) object:nil];
-            
-            AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
-            
-            // Reset the budget amount
-            [appDelegate.budgetManager resetBudget];
-            
-            [self.delegate logoutSucessfully];
         }
     }];
     
@@ -215,19 +326,6 @@ static AccountManager* sharedManager;
 
 #pragma mark -
 #pragma mark - Account Engine Delegates
--(void)loginSucessful:(NSDictionary *)userInfo
-{    
-    NSString* usrEmail = [userInfo valueForKey:KEY_EMAIL];
-    NSString* usrFName = [userInfo valueForKey:KEY_FIRST_NAME];
-    NSString* usrLName = [userInfo valueForKey:KEY_LAST_NAME];
-    NSString* usrImgURL = [userInfo valueForKey:KEY_IMAGE_URL];
-    
-    self.signedAccount = [[UserAccount alloc] initWithFirstName:usrFName andLastName:usrLName andProfileImage:usrImgURL andEmail:usrEmail andSessionID:nil];
-
-    
-    [self.delegate loginSucessful];
-}
-
 -(void)loginFailedWithError:(NSError *)error
 {
     [self.delegate loginFailedWithError:error];

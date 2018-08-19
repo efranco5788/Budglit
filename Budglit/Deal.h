@@ -36,6 +36,7 @@ extern NSString* const kDefaultEventEndNotification;
 @property (nonatomic, strong) NSString* dealDescription;
 @property (nonatomic, strong) NSArray* tags;
 @property (nonatomic, strong) NSString* address;
+@property (nonatomic, strong) NSDictionary* googleAddressInfo;
 @property (nonatomic, strong) NSString* phoneNumber;
 @property (nonatomic, strong) NSString* city;
 @property (nonatomic, strong) NSString* state;
@@ -52,7 +53,7 @@ extern NSString* const kDefaultEventEndNotification;
 
 @property (NS_NONATOMIC_IOSONLY, getter=getOriginalPosition) CGRect originalPosition;
 
--(double) getBudget;
+-(double) budget;
 
 -(void)addTags:(NSArray*)tags;
 

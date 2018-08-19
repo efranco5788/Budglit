@@ -15,12 +15,12 @@
 @class UserAccount;
 
 typedef void (^generalReturnBlockResponse)(id object);
+typedef void (^generalBlockResponse)(BOOL success);
 
 @protocol AccountManagerDelegate <NSObject>
 @optional
 -(void) credentialsSaved;
 -(void) credentialsNotSaved;
--(void) loginSucessful;
 -(void) loginFailedWithError:(NSError*)error;
 -(void) logoutSucessfully;
 -(void) signupSucessfully;
@@ -33,34 +33,30 @@ typedef void (^generalReturnBlockResponse)(id object);
 
 @property (nonatomic, strong) id <AccountManagerDelegate> delegate;
 @property (nonatomic, strong) AccountEngine* engine;
-//@property (nonatomic, getter=getSignedAccount, readonly, strong) UserAccount *signedAccount;
-//@property (nonatomic, getter=getSignedAccount, strong) UserAccount *signedAccount;
 @property (nonatomic, strong) UserAccount *signedAccount;
 
 +(AccountManager*) sharedAccountManager;
 
 -(instancetype) initWithEngineHostName:(NSString*)hostName NS_DESIGNATED_INITIALIZER;
 
--(void) login:(NSDictionary*) loginCredentials;
+-(void)signup:(NSDictionary*)newCredentials shouldSaveCredentials:(BOOL)save addCompletion:(generalReturnBlockResponse)signUpCompletionHandler;
 
--(void) getSessionAccount:(NSString*)sessionID AddCompletion:(generalReturnBlockResponse)completionHandler;
+-(void)login:(NSDictionary*)loginCredentials shouldSaveCredentials:(BOOL)save addCompletion:(generalBlockResponse)completionHandler;
+
+-(void)logoutFromDomain:(NSString*)domainName addCompletion:(generalReturnBlockResponse)completionHandler;
 
 -(UserAccount*) getSignedAccount;
 
--(void)sessionValidator;
+-(void)removeUserAccountClearSavedAccount:(BOOL)clear AddCompletion:(generalBlockResponse)completionHandler;
 
--(void) clearSessionInfo;
+-(id)getValidationValue:(NSDictionary*)validationInfo;
 
--(void) logout;
+-(void)validateSessionForDomain:(NSString*)domain addCompletion:(generalReturnBlockResponse) completionHandler;
 
--(void) logoutAddCompletion:(generalReturnBlockResponse)completionHandler;
+-(void)removeAccountSessionCookieForDomain:(NSString*)domainName addCompletion:(generalBlockResponse)completionHandler;
 
--(void) signup:(NSDictionary*) newCredentials;
+-(void)passwordResetEmail:(NSDictionary*) emailCredentials;
 
--(void) saveCredentials;
-
--(void) passwordResetEmail:(NSDictionary*) emailCredentials;
-
--(NSString*) getSessionID;
+-(BOOL)checkLoggedOut:(NSDictionary*)loggedOutInfo;
 
 @end

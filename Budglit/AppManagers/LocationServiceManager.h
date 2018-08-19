@@ -31,7 +31,6 @@ typedef void (^fetchPostalCompletionHandler)(id object);
 
 @interface LocationSeviceManager : NSObject<CLLocationManagerDelegate, UINavigationControllerDelegate>
 {
-@private id currentViewController;
 @private NSInteger attempts;
 @private dispatch_queue_t backgroundQueue;
 }
@@ -41,7 +40,6 @@ typedef void (^fetchPostalCompletionHandler)(id object);
 @property (nonatomic, strong) CLLocationManager* locationManager;
 @property (nonatomic, strong) LocationEngine* engine;
 @property (nonatomic, assign) id<LocationManagerDelegate> delegate;
-//@property (nonatomic, copy) NSArray* cities;
 @property (nonatomic, strong) CLLocation *currentLocation;
 
 //@property (nonatomic) int updateState;
@@ -50,15 +48,12 @@ typedef void (^fetchPostalCompletionHandler)(id object);
 -(instancetype) initWithEngineHostName:(NSString*)hostName NS_DESIGNATED_INITIALIZER;
 
 -(void) startUpdates;
--(void) startUpdates:(id) currentVC;
 
 -(BOOL) shouldStartUpdatesBasedOnAuthorization: (CLAuthorizationStatus) authorizationStatus;
 
 -(void) stopUpdates;
 
 -(NSString*)findStateNameFor:(NSString*)stateAbbr;
-
--(void) populateStatesList;
 
 @property (NS_NONATOMIC_IOSONLY, getter=isCurrentZipcodeExists, readonly) BOOL currentZipcodeExists;
 
@@ -82,19 +77,17 @@ typedef void (^fetchPostalCompletionHandler)(id object);
 
 -(CLLocation*)getCurrentLocation;
 
--(CLLocationDistance)distanceFromLocation:(CLLocation*)locationA toLocation:(CLLocation*)locationB;
+-(CLLocationDistance)managerDistanceFromLocation:(CLLocation*)locationA toLocation:(CLLocation*)locationB;
 
 -(void)setDistanceConversionType:(NSInteger)type;
 
--(double)convertDistance:(double)meters;
-
-//-(void) fetchSurroundingZipcodesWithPostalCode:(NSString*)postalCode andObjects:(NSDictionary*) usersObjects addCompletionHandler:(fetchPostalCompletionHandler)completionHandler;
-
--(void) fetchZipcodesForCity:(CityDataObject*)city andObjects:(NSDictionary*)usersObject addCompletionHandler:(fetchPostalCompletionHandler)completionHandler;
+-(double)managerConvertDistance:(double)meters;
 
 -(CLLocation*)managerCreateLocationFromStringLongtitude:(NSString *)lng andLatitude:(NSString *)lat;
 
 -(CLLocation*)managerCreateLocationWithLongtitude:(CLLocationDegrees)longtitude andLatitude:(CLLocationDegrees)latitude;
+
+-(CLLocation*)managerConvertAddressToLocation:(NSDictionary*)dict;
 
 -(void) reset;
 

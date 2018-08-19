@@ -39,6 +39,8 @@ typedef void (^dataResponseBlockResponse)(id response);
 
 -(CLLocation*)createLocationWithLongtitude:(CLLocationDegrees)longtitude andLatitude:(CLLocationDegrees)latitude;
 
+-(CLLocation*)convertAddressToLocation:(NSDictionary*)addressInfo;
+
 -(void)GNFetchPostalCodesForCity:(NSDictionary *)parameters addCompletionHandler:(dataResponseBlockResponse)completionHandler;
 
 @end

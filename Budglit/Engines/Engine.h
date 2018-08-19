@@ -20,6 +20,9 @@ typedef void (^generalBlockResponse)(BOOL success);
 @property (readonly) NSString* baseURLString;
 @property (nonatomic, strong) NSString* sessionID;
 
+
++(NSDateFormatter*)constructDateFormatterForTimezone:(NSString*)userTimezone;
+
 -(instancetype)init;
 
 -(instancetype)initWithHostName:(NSString*)hostName NS_DESIGNATED_INITIALIZER;
@@ -30,9 +33,13 @@ typedef void (^generalBlockResponse)(BOOL success);
 
 -(NSDictionary*)constructParameterWithKey:(NSString*)key AndValue:(id)value addToDictionary:(NSDictionary*)dict;
 
--(void)setSessionID:(NSString *)sessionID addCompletetion:(generalBlockResponse)completionHandler;
+-(NSString*)convertUTCDateToLocalString:(NSString*)utcDate;
 
--(NSString*)extractSessionIDFromHeaders:(NSDictionary*)headers;
+-(NSString*)convertLocalToUTCDateString:(NSString*)localDate;
+
+-(NSDate*)convertUTCDateToLocal:(NSDate*)utcDate;
+
+-(NSDate*)convertLocalToUTCDate:(NSDate*)localDate;
 
 -(void)appendToCurrentSearchFilter:(NSDictionary*)dictionary;
 
@@ -40,19 +47,13 @@ typedef void (^generalBlockResponse)(BOOL success);
 
 -(void)clearCurrentSearchFilter;
 
--(NSString*)getSessionID;
+-(id)getSavedCookieForDomain:(NSString*)domain;
 
--(void)clearSession;
+-(void)cookieHasExpired:(NSHTTPCookie*)cookie addCompletion:(generalBlockResponse)completionHandler;
 
--(void)saveCookiesFromResponse:(NSHTTPURLResponse*) response;
-
--(id)getSavedCookie;
-
--(void)loadCookies;
+-(void)removeCookie:(NSHTTPCookie*)cookie addCompletion:(generalBlockResponse)completionHandler;
 
 -(NSArray*)removeDuplicateFromArray:(NSArray*)list Unordered:(BOOL)ordered;
-
--(void)logout;
 
 -(void)logoutAddCompletion:(generalBlockResponse)completionHandler;
 

@@ -47,8 +47,6 @@ typedef void (^completionBlock)(id results);
 
 -(void) applicationReactivated;
 
--(void) verifyBudget;
-
 -(void) inputBudget;
 
 -(void) toggleBackgroundDimmer;

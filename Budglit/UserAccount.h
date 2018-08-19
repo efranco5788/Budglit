@@ -24,7 +24,9 @@
 
 -(instancetype)initWithFirstName:(NSString*)fName andLastName:(NSString*)lName andProfileImage:(NSString*)URL andEmail:(NSString*)anEmail;
 
--(instancetype)initWithFirstName:(NSString*)fName andLastName:(NSString*)lName andProfileImage:(NSString*)URL andEmail:(NSString*)anEmail andSessionID:(NSString*)sID NS_DESIGNATED_INITIALIZER;
+-(instancetype)initWithFirstName:(NSString*)fName andLastName:(NSString*)lName andProfileImage:(NSString*)URL andEmail:(NSString*)anEmail andID:(NSString*)sID NS_DESIGNATED_INITIALIZER;
+
+-(NSString*)getUserID;
 
 -(void)clear;
 

@@ -8,22 +8,26 @@
 
 #import "AccountEngine.h"
 
+#define REGISTER_PATH @"register"
 #define LOGIN_PATH @"login"
-#define VALIDATE_SESSION_PATH @"validate"
 #define LOGOUT_PATH @"logout"
-#define SIGNUP_PATH @"signup"
+#define VALIDATE_SESSION_PATH @"validate"
 #define RESET_PASSWORD @"reset_password"
-#define KEY_PASSWORD @"user_password"
-#define KEY_ACCOUNT_SESSION @"accountEngine"
 #define KEY_AUTHENTICATED @"authenticated"
-#define KEY_EMAIL_SENT @"email_sent"
-#define KEY_USER_INFO @"userInfo"
+#define KEY_ACCOUNTS_FOUND @"accounts"
+#define KEY_MESSAGE @"message"
+//#define KEY_EMAIL_SENT @"email_sent"
+#define KEY_LOGGED_IN @"isLogin"
+#define KEY_LOGGED_OUT @"loggedOut"
+#define KEY_USER @"user"
+#define KEY_USER_ID @"id"
+//#define KEY_USER_INFO @"userInfo"
 #define KEY_EMAIL @"email"
-#define KEY_FIRST_NAME @"fName"
-#define KEY_LAST_NAME @"lName"
-#define KEY_IMAGE_URL @"profileIMG"
+#define KEY_FIRST_NAME @"firstName"
+#define KEY_LAST_NAME @"lastName"
+#define KEY_IMAGE_URL @"userImg"
+#define KEY_CREATED @"created"
 #define KEY_ERROR @"error"
-#define ACCOUNT @"userAccount"
 
 @implementation AccountEngine
 
@@ -42,124 +46,158 @@
     
     if (!self) return nil;
     
+    self.sessionManager.responseSerializer = [AFJSONResponseSerializer serializer];
+    self.sessionManager.requestSerializer = [AFHTTPRequestSerializer serializer];
+    
     return self;
 }
 
--(void)validateSessionAddCompletion:(generalBlockResponse)completionHandler
+-(NSDictionary*)constructDefaultUserAccount
 {
-    /*
-    self.sessionManager.responseSerializer = [AFHTTPResponseSerializer serializer];
-    self.sessionManager.requestSerializer = [AFHTTPRequestSerializer serializer];
+    UserAccount* loggedAccount = [[UserAccount alloc] initWithFirstName:NSLocalizedString(@"DEFAULT_NO_ACCOUNT_NAME", nil) andLastName:nil];
     
-    __block AccountEngine* selfEngine = self;
+    NSData* accountData = [NSKeyedArchiver archivedDataWithRootObject:loggedAccount];
     
-    [self.sessionManager GET:VALIDATE_SESSION_PATH parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        
-        NSHTTPURLResponse *response = ((NSHTTPURLResponse *)[task response]);
-        NSDictionary *headers = [response allHeaderFields];
-        
-        NSString* sessionID = [selfEngine extractSessionIDFromHeaders:headers];
-        NSString* savedSessionID = [selfEngine getSessionID];
-        NSLog(@"Session Extracted is %@", sessionID);
-        NSLog(@"Saved Session is %@", savedSessionID);
-        //NSLog(@"Current Session is %@", [selfEngine getSessionID]);
-        
-    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        NSLog(@"Error %@", error);
-        [self logFailedRequest:task];
-    }];
-     */
+    NSArray* defaultObjects = @[accountData];
     
-    NSHTTPCookie* cookie = [self getSavedCookie];
+    NSArray* defaultKeys = @[ NSLocalizedString(@"ACCOUNT", nil)];
     
-    if(!cookie) completionHandler(NO);
+    NSDictionary* userAccountDefault = [NSDictionary dictionaryWithObjects:defaultObjects forKeys:defaultKeys];
     
-    NSDate* expierationDate = cookie.expiresDate;
-    
-    // Check wheter the cookie has expired
-    if([expierationDate timeIntervalSinceNow] < 0.0) completionHandler(NO);
-    
-    completionHandler(YES);
+    return userAccountDefault;
 }
 
--(void)fetchSessionUserAccountAddCompletionHandler:(fetchedResponse)completionHandler
+-(UserAccount *)parseUserAccount:(NSDictionary *)data
 {
-    self.sessionManager.responseSerializer = [AFJSONResponseSerializer serializer];
-    self.sessionManager.requestSerializer = [AFHTTPRequestSerializer serializer];
+    if(!data) return nil;
     
-    NSDictionary* params = [NSDictionary dictionaryWithObject:[self getSessionID] forKey:KEY_SESSION_ID];
+    NSString* userID = [data valueForKey:KEY_USER_ID];
+    NSString* usrEmail = [data valueForKey:KEY_EMAIL];
+    NSString* usrFName = [data valueForKey:KEY_FIRST_NAME];
+    NSString* usrLName = [data valueForKey:KEY_LAST_NAME];
+    NSString* usrImgURL = [data valueForKey:KEY_IMAGE_URL];
     
-    [self.sessionManager POST:LOGIN_PATH parameters:params progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        
-        NSLog(@"response is %@", responseObject);
-        completionHandler(responseObject);
-        
-    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        [self logFailedRequest:task];
-        NSLog(@"Error %@", error);
-        [self.delegate loginFailedWithError:error];
-    }];
+    NSLog(@"%@", usrImgURL);
+    
+    UserAccount* account = [[UserAccount alloc] initWithFirstName:usrFName andLastName:usrLName andProfileImage:usrImgURL andEmail:usrEmail andID:userID];
+    
+    if(!account) return nil;
+    
+    return account;
 }
 
--(void) loginWithCredentials:(NSDictionary *)userCredentials
+-(void)saveLoggedInUserAccount:(UserAccount *)user addCompletion:(generalBlockResponse)completionHandler
 {
-    self.sessionManager.responseSerializer = [AFJSONResponseSerializer serializer];
-    self.sessionManager.requestSerializer = [AFHTTPRequestSerializer serializer];
+    if(!user) completionHandler(false);
+    else{
+        
+        NSUserDefaults* userDefaults = [NSUserDefaults standardUserDefaults];
+        
+        NSData* accountData = [NSKeyedArchiver archivedDataWithRootObject:user];
+        
+        [userDefaults setValue:accountData forKey:NSLocalizedString(@"ACCOUNT", nil)];
+        
+        [userDefaults synchronize];
+        
+        completionHandler(true);
+        
+    }
     
-    __block AccountEngine* selfEngine = self;
+}
+
+-(void)deleteLoggedInUserAccountAddCompletion:(generalBlockResponse)completionHandler
+{    
+    NSUserDefaults* userDefaults = [NSUserDefaults standardUserDefaults];
+    
+    [userDefaults removeObjectForKey:NSLocalizedString(@"ACCOUNT", nil)];
+    
+    [userDefaults synchronize];
+    
+    completionHandler(true);
+}
+
+-(void)loginWithCredentials:(NSDictionary *)userCredentials addCompletion:(fetchedResponse)completionHandler
+{
+//    self.sessionManager.responseSerializer = [AFJSONResponseSerializer serializer];
+//    self.sessionManager.requestSerializer = [AFHTTPRequestSerializer serializer];
     
     [self.sessionManager POST:LOGIN_PATH parameters:userCredentials progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         
         [self addToRequestHistory:task];
         
-        NSHTTPURLResponse* response = (NSHTTPURLResponse*) task.response;
-        
-        NSLog(@"Headers %@", response.allHeaderFields);
-
-        NSInteger count = [[responseObject valueForKey:@"count"] integerValue];
-        
-        if (count < 1) [self.delegate loginFailedWithError:nil];
+        if(!responseObject){
+            
+            NSDictionary *userInfo = @{
+                                       NSLocalizedDescriptionKey: NSLocalizedString(@"Operation was unsuccessful.", nil),
+                                       NSLocalizedFailureReasonErrorKey: NSLocalizedString(@"The operation timed out.", nil),
+                                       NSLocalizedRecoverySuggestionErrorKey: NSLocalizedString(@"Please try again", nil)
+                                       };
+            
+            NSError *error = [NSError errorWithDomain:NSURLErrorDomain
+                                                 code:-57
+                                             userInfo:userInfo];
+            
+            [self.delegate signupFailedWithError:error];
+            
+        }
         else{
             
-            NSDictionary* dict = (NSDictionary*) responseObject;
-            NSHTTPURLResponse* httpResponse = (NSHTTPURLResponse*) task.response;
-            NSDictionary* headers = httpResponse.allHeaderFields;
+            NSHTTPURLResponse* response = (NSHTTPURLResponse*) task.response;
             
-            NSString* sessionID = [self extractSessionIDFromHeaders:headers];
+            NSLog(@"Headers %@", response.allHeaderFields);
             
-            [self saveCookiesFromResponse:httpResponse];
-            
-            [self setSessionID:sessionID addCompletetion:^(BOOL success) {
+            NSLog(@"Response %@", responseObject);
+
+            if(response.statusCode == 300){
                 
-                if (success) {
+            }
+            else if (response.statusCode == 200){
+                
+                NSInteger loggedIn = [[responseObject valueForKey:KEY_LOGGED_IN] integerValue];
+                
+                if (loggedIn == 0) [self.delegate loginFailedWithError:nil];
+                else{
+                    
+                    NSLog(@"%@", response.allHeaderFields);
+                    
+                    NSDictionary* dict = [responseObject valueForKey:KEY_USER];
                     
                     NSMutableDictionary* tmpUser = [[NSMutableDictionary alloc] init];
                     
+                    NSLog(@"%@", dict);
+                    
+                    NSString* userID = [dict valueForKey:@"_id"];
                     NSString* email = [dict valueForKey:KEY_EMAIL];
                     NSString* fname = [dict valueForKey:KEY_FIRST_NAME];
                     NSString* lname = [dict valueForKey:KEY_LAST_NAME];
                     NSString* img = [dict valueForKey:KEY_IMAGE_URL];
                     
+                    [tmpUser setValue:userID forKey:@"id"];
                     [tmpUser setValue:email forKey:KEY_EMAIL];
                     [tmpUser setValue:fname forKey:KEY_FIRST_NAME];
                     [tmpUser setValue:lname forKey:KEY_LAST_NAME];
                     [tmpUser setValue:img forKey:KEY_IMAGE_URL];
+
+                    completionHandler(tmpUser.copy);
                     
-                    [selfEngine.delegate loginSucessful:tmpUser.copy];
-                }
-            }];
+                } // End of else if logged in statement
+                
+            } // End of else status code 200 statement
             
-        } // End of else statement 
+        } // End of if responseObject is defined
+        
         
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         
         [self logFailedRequest:task];
         
+        NSHTTPURLResponse* httpResponse = (NSHTTPURLResponse*) task.response;
+        
+        NSLog(@"%ld", (long)httpResponse.statusCode);
+        
         NSDictionary* errInfo = error.userInfo;
         
-        NSString* errDescription = [errInfo valueForKey:@"NSDebugDescription"];
-        
-        NSLog(@"Error %@", errDescription);
+        NSLog(@"Error %@", errInfo);
         
         [self.delegate loginFailedWithError:error];
         
@@ -167,35 +205,100 @@
     
 }
 
--(void)signupWithNewAccount:(NSDictionary *)userCredentials
+-(void)signupWithNewAccount:(NSDictionary *)userCredentials addCompletion:(fetchedResponse)completionHandler
 {
-    self.sessionManager.responseSerializer = [AFJSONResponseSerializer serializer];
+//    self.sessionManager.responseSerializer = [AFJSONResponseSerializer serializer];
+//    self.sessionManager.requestSerializer = [AFHTTPRequestSerializer serializer];
     
-    self.sessionManager.requestSerializer = [AFHTTPRequestSerializer serializer];
-    
-    [self.sessionManager POST:SIGNUP_PATH parameters:userCredentials progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [self.sessionManager POST:REGISTER_PATH parameters:userCredentials progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         
         [self addToRequestHistory:task];
         
         NSDictionary* response = (NSDictionary*) responseObject;
+
+        NSUInteger accountExistIntValue = [[response valueForKey:KEY_ACCOUNTS_FOUND] integerValue];
         
-        NSString* accountCreatedValue = [response valueForKey:KEY_AUTHENTICATED];
+        NSString* message = [response valueForKey:KEY_MESSAGE];
         
-        NSUInteger accountCreatedIntValue = accountCreatedValue.integerValue;
-        
-        if (accountCreatedIntValue == 1) {
-            [self.delegate signupSucessfully];
+        if (accountExistIntValue) {
+            
+            //[self.delegate signupSucessfully];
+            if (accountExistIntValue <= 0) {
+                completionHandler(nil);
+            }
+            else{
+                UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Account Exists" message:message preferredStyle:UIAlertControllerStyleAlert];
+                
+                completionHandler(alert);
+            }
+            
         }
-        else
-        {
-            [self.delegate signupFailedWithError:nil];
+        else{
+            
+            BOOL created = [[response valueForKey:KEY_CREATED] integerValue];
+            
+            if(created){
+                
+                id userDict = [response valueForKey:KEY_USER];
+                
+                if (!userDict) completionHandler(nil);
+                
+                NSDictionary* user = (NSDictionary*) userDict;
+                
+                completionHandler(user);
+                
+            }
+            else{
+                
+                NSDictionary* userInfo = @{
+                                           NSLocalizedDescriptionKey: NSLocalizedString(@"User Account was not created", nil),
+                                           NSLocalizedRecoverySuggestionErrorKey: NSLocalizedString(@"Please try again", nil)
+                                           };
+                
+                NSError* err = [NSError errorWithDomain:NSURLErrorDomain code:-1 userInfo:userInfo];
+                
+                completionHandler(err);
+                
+            }
         }
         
         
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         
         [self logFailedRequest:task];
+        //[self.delegate signupFailedWithError:error];
+        completionHandler(error);
+        
+    }];
+    
+}
+
+-(void)logoutAddCompletion:(generalBlockResponse)completionHandler
+{
+
+    [self.sessionManager POST:LOGOUT_PATH parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        
+        if(!responseObject){
+            completionHandler(false);
+        }
+        else{
+            
+            NSDictionary* response = (NSDictionary*) responseObject;
+            NSInteger loggedOut = [[response valueForKey:KEY_LOGGED_OUT] integerValue];
+
+            if(loggedOut == true){
+                completionHandler(true);
+            }
+            else{
+                completionHandler(false);
+            }
+        }
+        
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        
+        [self logFailedRequest:task];
         [self.delegate signupFailedWithError:error];
+        //completionHandler(error);
         
     }];
     
@@ -220,129 +323,6 @@
     //    }];
     //
     //    [self enqueueOperation:resetPasswordOperation];
-}
-
--(NSString *)extractSessionIDFromHeaders:(NSDictionary *)headers
-{
-    if(!headers) return nil;
-    
-    NSString* cookieInfo = [headers objectForKey:@"Set-Cookie"];
-    
-    NSMutableCharacterSet* delimiters = [[NSMutableCharacterSet alloc] init];
-    [delimiters addCharactersInString:@"="];
-    [delimiters addCharactersInString:@";"];
-    
-    NSArray* lines = [cookieInfo componentsSeparatedByCharactersInSet:delimiters.copy];
-    
-    NSString* sessionID = nil;
-    for (int index = 0; index < lines.count; index++) {
-        NSString* value = [lines objectAtIndex:index];
-        
-        if ([value isEqualToString:KEY_SESSION_ID]){
-            NSInteger i = ++index;
-            sessionID = [lines objectAtIndex:i];
-            return sessionID;
-        }
-    }
-    
-    return nil; //returns nil if nothing is found
-}
-
--(void)saveCookiesFromResponse:(NSHTTPURLResponse *)response
-{
-    NSArray* cookies = [NSHTTPCookie cookiesWithResponseHeaderFields:response.allHeaderFields forURL:response.URL];
-
-    //[[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookies:cookies forURL:[response URL] mainDocumentURL:nil];
-    
-    for (NSHTTPCookie *cookie in cookies) {
-        
-        NSMutableDictionary *cookieProperties = [NSMutableDictionary dictionary];
-        
-        [cookieProperties setObject:cookie.name forKey:NSHTTPCookieName];
-        [cookieProperties setObject:cookie.value forKey:NSHTTPCookieValue];
-        [cookieProperties setObject:cookie.domain forKey:NSHTTPCookieDomain];
-        [cookieProperties setObject:cookie.path forKey:NSHTTPCookiePath];
-        [cookieProperties setObject:[NSNumber numberWithInt:cookie.version] forKey:NSHTTPCookieVersion];
-        
-        //[cookieProperties setObject:[[NSDate date] dateByAddingTimeInterval:86400000] forKey:NSHTTPCookieExpires];
-        
-        [cookieProperties setObject:[[NSDate date] dateByAddingTimeInterval:86400] forKey:NSHTTPCookieExpires];
-        
-        NSHTTPCookie* newCookie = [[NSHTTPCookie alloc] initWithProperties:cookieProperties];
-        
-        //NSHTTPCookie *cookie = [NSHTTPCookie cookieWithProperties:cookieProperties];
-        
-        [[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookie:newCookie];
-        
-        NSLog(@"name:%@ value:%@ date:%@", newCookie.name, newCookie.value, newCookie.expiresDate);
-    }
-    
-    NSHTTPCookie* resCookie = [cookies objectAtIndex:0];
-    
-    NSLog(@"%@", resCookie);
-    
-    NSData* cookieData = [NSKeyedArchiver archivedDataWithRootObject:resCookie];
-    
-    NSUserDefaults* userDefaults = [NSUserDefaults standardUserDefaults];
-    
-    [userDefaults setObject:cookieData forKey:KEY_ACCOUNT_SESSION];
-    
-    [userDefaults synchronize];
-}
-
--(id)getSavedCookie
-{
-    NSUserDefaults* userDefaults = [NSUserDefaults standardUserDefaults];
-    
-    NSData* cookieData = [userDefaults objectForKey:KEY_ACCOUNT_SESSION];
-    
-    if(!cookieData) return nil;
-    
-    id obj = [NSKeyedUnarchiver unarchiveObjectWithData:cookieData];
-    
-    NSHTTPCookie* savedCookie = (NSHTTPCookie*) obj;
-    
-    return savedCookie;
-}
-
--(NSString*)getSessionID
-{
-    NSHTTPCookie* savedCookie = [self getSavedCookie];
-    
-    NSString* sessionID = savedCookie.value;
-    
-    if(!sessionID) return nil;
-    
-    return sessionID;
-}
-
--(void)clearSession
-{
-    [super clearSession];
-    NSUserDefaults* userDefaults = [NSUserDefaults standardUserDefaults];
-    [userDefaults removeObjectForKey:KEY_SESSION_ID];
-}
-
--(void)logout
-{
-    self.sessionManager.requestSerializer = [AFHTTPRequestSerializer serializer];
-    
-    [self.sessionManager POST:LOGOUT_PATH parameters:nil progress:nil success:nil failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        
-    }];
-}
-
--(void)logoutAddCompletion:(generalBlockResponse)completionHandler
-{
-    self.sessionManager.requestSerializer = [AFHTTPRequestSerializer serializer];
-    
-    [self.sessionManager POST:LOGOUT_PATH parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        
-        
-        
-    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        
-    }];
 }
 
 -(void)updatesReceived:(NSNotification*)notification

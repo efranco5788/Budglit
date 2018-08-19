@@ -15,7 +15,6 @@ typedef void (^fetchedResponse)(id dataResponse);
 @optional
 -(void) credentialsSaved;
 -(void) credentialsNotSaved;
--(void) loginSucessful:(NSDictionary*)userInfo;
 -(void) loginFailedWithError:(NSError*)error;
 -(void) logoutSucessfully;
 -(void) signupSucessfully;
@@ -32,13 +31,17 @@ typedef void (^fetchedResponse)(id dataResponse);
 
 -(instancetype)initWithHostName:(NSString*)hostName NS_DESIGNATED_INITIALIZER;
 
--(void)validateSessionAddCompletion:(generalBlockResponse)completionHandler;
+-(NSDictionary *)constructDefaultUserAccount;
 
--(void)fetchSessionUserAccountAddCompletionHandler:(fetchedResponse)completionHandler;
+-(UserAccount*)parseUserAccount:(NSDictionary*)data;
 
--(void)loginWithCredentials:(NSDictionary*) userCredentials;
+-(void)saveLoggedInUserAccount:(UserAccount*)user addCompletion:(generalBlockResponse)completionHandler;
 
--(void)signupWithNewAccount:(NSDictionary*) userCredentials;
+-(void)deleteLoggedInUserAccountAddCompletion:(generalBlockResponse)completionHandler;
+
+-(void)loginWithCredentials:(NSDictionary*)userCredentials addCompletion:(fetchedResponse)completionHandler;
+
+-(void)signupWithNewAccount:(NSDictionary*)userCredentials addCompletion:(fetchedResponse)completionHandler;
 
 -(void)sendPasswordResetEmail:(NSDictionary*) email;
 

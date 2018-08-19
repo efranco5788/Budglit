@@ -9,13 +9,16 @@
 #import "MapViewController.h"
 #import "AppDelegate.h"
 #import "BudgetPickerViewController.h"
+#import "LoginPageViewController.h"
 #import "PSAllDealsTableViewController.h"
 #import "MapToListAnimationController.h"
 #import "DismissMapToListAnimationController.h"
 
+#define KEY_FORMATTED_ADDRESS @"formatted_address"
+
 static double USE_CURRENT_RADIUS = -1;
 
-@interface MapViewController()<DrawerControllerDelegate, DatabaseManagerDelegate, BudgetPickerDelegate, UIViewControllerTransitioningDelegate, UINavigationControllerDelegate, MKMapViewDelegate>
+@interface MapViewController()<DrawerControllerDelegate, DatabaseManagerDelegate, BudgetPickerDelegate, LoginPageDelegate, UIViewControllerTransitioningDelegate, UINavigationControllerDelegate, MKMapViewDelegate>
 {
     BOOL hasAppearedOnce;
 }
@@ -23,6 +26,7 @@ static double USE_CURRENT_RADIUS = -1;
 @property (strong, nonatomic) MapToListAnimationController* transitionController;
 @property (strong, nonatomic) DismissMapToListAnimationController* dismissTransitionController;
 @property (strong, nonatomic) UIView* annotationCalloutView;
+@property (strong, nonatomic) BudgetPickerViewController* budgetView;
 
 @end
 
@@ -37,6 +41,7 @@ static double USE_CURRENT_RADIUS = -1;
 
     self.transitionController = [[MapToListAnimationController alloc] init];
     self.dismissTransitionController = [[DismissMapToListAnimationController alloc] init];
+    self.budgetView = [[BudgetPickerViewController alloc] init];
     
     hasAppearedOnce = NO;
 }
@@ -70,22 +75,23 @@ static double USE_CURRENT_RADIUS = -1;
         
         CLLocationDistance radius = meters;
 
-        [self centerMapOnLocation:currentLocation isUserLocation:NO AndRadius:radius animate:YES addCompletion:^(BOOL success){
+        [self centerMapOnLocation:currentLocation isUserLocation:NO AndRadius:radius animate:NO addCompletion:^(BOOL success){
             
             [self.view layoutIfNeeded];
-            
-            if (success) {
 
-                [self reloadDealsAddCompletion:^(BOOL reloadSuccess) {
+            if (success) {
+                
+                [self reloadDealsShouldFetchDeals:YES AddCompletion:^(BOOL reloadSuccess) {
                     
                     if(reloadSuccess){
                         [self.mapView layoutIfNeeded];
                         hasAppearedOnce = YES;
                     }
+                    
                 }];
             
             } // If success
-            
+
         }];
         
     }
@@ -112,15 +118,16 @@ static double USE_CURRENT_RADIUS = -1;
     
     AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
-    BudgetPickerViewController* budgetView = (BudgetPickerViewController*) [appDelegate.drawerController leftDrawerViewController];
+    //self.budgetView = (BudgetPickerViewController*) [appDelegate.drawerController leftDrawerViewController];
     
-    //budgetView.mapAnnotations = self.mapView.
-    
-    budgetView.delegate = self;
+    [appDelegate.drawerController setLeftDrawerViewController:self.budgetView];
+
+    [self.budgetView setDelegate:self];
     
     MMDrawerSide sideLeft = MMDrawerSideLeft;
     
     [appDelegate.drawerController slideDrawerSide:sideLeft Animated:YES];
+    
 }
 
 -(CGRect)initialCalloutViewFrameForView:(UIView*)view
@@ -168,44 +175,62 @@ static double USE_CURRENT_RADIUS = -1;
 
 #pragma mark -
 #pragma mark - Deal Methods
--(void)reloadDealsAddCompletion:(generalBlockResponse) completionHandler;
+-(void)reloadDealsShouldFetchDeals:(BOOL)shouldFetch AddCompletion:(generalBlockResponse) completionHandler;
 {
     AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
     (appDelegate.databaseManager).delegate = self;
     
-    NSDictionary* criteria = [appDelegate.databaseManager getUsersCurrentCriteria];
-    
-    NSLog(@"%@", criteria);
-    
-    [appDelegate.databaseManager fetchDeals:criteria addCompletionBlock:^(BOOL success) {
-
-        if(success){
-            AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
-            
-            NSArray* deals = [appDelegate.databaseManager getSavedDeals];
-            
-            NSLog(@"%@", deals);
-            
-            if(deals && deals.count > 1){
-                
-                [self plotDealsOnMap:deals Animated:YES addCompletion:^(BOOL success) {
-                    [self.view layoutIfNeeded];
-                    
-                    completionHandler(YES);
-                }];
-                
-            }
-            else if (deals.count == 1)
-            {
-                Deal* deal = [deals objectAtIndex:0];
-                [self plotDealOnMap:deal addCompletion:^(BOOL success) {
-                    completionHandler(YES);
-                }];
-            }
-        }
+    if(shouldFetch){
         
-    }];
+        NSDictionary* criteria = [appDelegate.databaseManager getUsersCurrentCriteria];
+        
+        [appDelegate.databaseManager fetchDeals:criteria addCompletionBlock:^(id response) {
+            
+            if(response){
+                
+                NSArray* fetchedDeals = (NSArray*) response;
+                
+                [appDelegate.databaseManager resetDeals];
+                
+                BOOL saved = [appDelegate.databaseManager saveFetchedDeals:fetchedDeals];
+                
+                if(saved){
+                    
+                    NSArray* deals = [appDelegate.databaseManager getSavedDeals];
+                    
+                    if(deals && deals.count > 1){
+                        
+                        [self plotDealsOnMap:deals Animated:YES addCompletion:^(BOOL dealsPlotted) {
+                            
+                            [self.view layoutIfNeeded];
+                            
+                            completionHandler(dealsPlotted);
+                            
+                        }];
+                        
+                    }
+                    else if (deals.count == 1)
+                    {
+                        Deal* deal = [deals objectAtIndex:0];
+                        
+                        [self plotDealOnMap:deal addCompletion:^(BOOL dealPlotted) {
+                            completionHandler(dealPlotted);
+                        }];
+                    }
+                    
+                }
+                
+            } // End of if response is non-nill
+            
+        }];
+        
+    }
+    else{
+        
+    }
+    
+
 }
 
 
@@ -266,7 +291,7 @@ static double USE_CURRENT_RADIUS = -1;
             
         } completion:^(BOOL finished) {
             [self.mapView layoutIfNeeded];
-            completionHandler(YES);
+            completionHandler(finished);
         }];
     }
     else
@@ -344,30 +369,29 @@ static double USE_CURRENT_RADIUS = -1;
             NSString* deal_address = deal.addressString;
             
             for (int count = 0; count < addressInfoList.count; count++) {
+                
                 NSDictionary* addressInfo = addressInfoList[count];
-                NSArray* value = [addressInfo valueForKey:@"formatted_address"];
+                
+                NSArray* value = [addressInfo valueForKey:KEY_FORMATTED_ADDRESS];
                 NSString* formattedAddress = [value objectAtIndex:0];
                 
                 if([deal_address caseInsensitiveCompare:formattedAddress] == NSOrderedSame){
                     
-                    NSArray* coords = [addressInfo valueForKey:@"coordinates"];
-                    NSString* latitude = [coords valueForKey:@"lat"];
-                    NSString* longtitude = [coords valueForKey:@"lng"];
-                    NSLog(@"lng %@ nd lat %@",longtitude, latitude);
-                    NSLog(@"Deal %@", deal.addressString);
+                    deal.googleAddressInfo = addressInfo;
                     
-                    CLLocation* eventLocation = [appDelegate.locationManager managerCreateLocationFromStringLongtitude:longtitude andLatitude:latitude];
+                    CLLocation* eventLocation = [appDelegate.locationManager managerConvertAddressToLocation:addressInfo];
                     
                     CLLocationCoordinate2D coordinates = CLLocationCoordinate2DMake(eventLocation.coordinate.latitude, eventLocation.coordinate.longitude);
                     
                     DealMapAnnotation* mapAnnotation = [[DealMapAnnotation alloc] initWithDeal:deal];
+                    
                     [mapAnnotation setCoordinate:coordinates];
                     
                     CLLocation* user = [appDelegate.locationManager getCurrentLocation];
                     
-                    CLLocationDistance distance = [appDelegate.locationManager distanceFromLocation:user toLocation:eventLocation];
+                    CLLocationDistance distance = [appDelegate.locationManager managerDistanceFromLocation:user toLocation:eventLocation];
                     
-                    CLLocationDistance convertedDistance = [appDelegate.locationManager convertDistance:distance];
+                    CLLocationDistance convertedDistance = [appDelegate.locationManager managerConvertDistance:distance];
 
                     [mapAnnotation distanceFromUser:[NSString stringWithFormat:@"%.1f", convertedDistance]];
                     
@@ -417,17 +441,52 @@ static double USE_CURRENT_RADIUS = -1;
 
 #pragma mark -
 #pragma mark - Budget Picker View Delegate Methods
--(void)dismissView
+-(void)startButtonPressed:(NSArray *)filter
 {
     AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
     [appDelegate.drawerController closeDrawerAnimated:YES completion:^(BOOL finished) {
         
+        if(finished){
+            NSArray* filteredDeals = [appDelegate.databaseManager extractDeals:filter fromDeals:appDelegate.databaseManager.getSavedDeals];
+            
+            for (Deal* deals in filteredDeals) {
+                NSLog(@"%f", deals.budget);
+            }
+        }
+        
+        /*
+        if(filter){
+            
+            if(filter && filter.count > 1){
+                
+                [self plotDealsOnMap:filter Animated:YES addCompletion:^(BOOL dealsPlotted) {
+                    
+                    [self.view layoutIfNeeded];
+                    
+                }];
+                
+            }
+            else if (filter.count == 1)
+            {
+                Deal* deal = [filter objectAtIndex:0];
+                
+                [self plotDealOnMap:deal addCompletion:^(BOOL dealPlotted) {
+                    
+                    [self.view layoutIfNeeded];
+
+                }];
+            }
+            
+        }
+        */
+        /*
+        
         CLLocation* currentLocation = self.mapView.userLocation.location;
         
-        NSDictionary* filter = [appDelegate.databaseManager getUsersCurrentCriteria];
+        NSDictionary* criteria = [appDelegate.databaseManager getUsersCurrentCriteria];
         
-        NSInteger miles = [[filter valueForKey:NSLocalizedString(@"DISTANCE_FILTER", nil)] integerValue];
+        NSInteger miles = [[criteria valueForKey:NSLocalizedString(@"DISTANCE_FILTER", nil)] integerValue];
         
         double meters = (miles * 1609.34);
         
@@ -446,6 +505,33 @@ static double USE_CURRENT_RADIUS = -1;
             }];
             
         }];
+        */
+    }];
+}
+
+#pragma mark -
+#pragma mark - Database Manager Delegate
+-(void)userNotAuthenticated
+{
+    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
+    
+    [appDelegate.accountManager logoutFromDomain:@"www.budglit.com" addCompletion:^(id object) {
+        
+        BOOL loggedOffSuccess = [appDelegate.accountManager checkLoggedOut:object];
+        
+        if(loggedOffSuccess) {
+            
+            UIViewController* loginPage = [[LoginPageViewController alloc] initWithNibName:@"LoginPageViewController" bundle:nil];
+            
+            //loginPage.delegate = self;
+            
+            loginPage.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+            
+            [self presentViewController:loginPage animated:NO completion:^{
+                
+            }];
+            
+        }
         
     }];
 }

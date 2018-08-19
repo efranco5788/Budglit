@@ -33,6 +33,11 @@ typedef void (^dataResponseBlockResponse)(id response);
 
 -(instancetype)initWithHostName:(NSString*)hostName NS_DESIGNATED_INITIALIZER;
 
+// Constructs the basic default data for the app
+-(NSDictionary*)constructDefaultFetchingObjects;
+
+-(void)saveFetchingObjects:(NSDictionary*)objects addCompletion:(generalBlockResponse)completionHandler;
+
 -(NSValue*)calculateCoordinateFrom:(NSValue*)coordinateValue onBearing:(double)bearingInRadians atDistance:(double)distanceInMetres;
 
 -(NSDictionary*)primaryDefaultForSearchFilterAtLocation;
@@ -40,6 +45,8 @@ typedef void (^dataResponseBlockResponse)(id response);
 -(void)sortArray:(NSArray*)array byKey:(NSString*)key ascending:(BOOL)shouldAscend localizeCompare:(BOOL)shouldLocalize addCompletion:(dataResponseBlockResponse)completionHandler;
 
 -(void)sendSearchCriteriaForTotalCountOnly:(NSDictionary*)searchCriteria addCompletion:(dataResponseBlockResponse) completionBlock;
+
+-(void)sendGetRequestSearchCriteria:(NSDictionary*)searchCriteria addCompletion:(dataResponseBlockResponse) completionBlock;
 
 -(void)sendSearchCriteria:(NSDictionary*)searchCriteria addCompletion:(dataResponseBlockResponse) completionBlock;
 
@@ -63,13 +70,21 @@ typedef void (^dataResponseBlockResponse)(id response);
 
 -(void)attemptToRepositionAnnotations:(id)annotations addCompletionHandler:(generalBlockResponse)completionHandler;
 
+-(BOOL)extractAuthetication:(NSDictionary*)info;
+
+-(NSArray*)extractDeals:(NSDictionary*)info;
+
 -(NSArray*)extractAddressFromDeals:(NSArray*)deals;
+
+-(NSArray*)filterOutDeals:(NSArray*)deals byBudgetAmount:(double)amount;
+
+-(NSInteger)findLowestBudget:(NSArray*)deals;
+
+-(NSInteger)findHighestBudget:(NSArray*)deals;
 
 -(NSDictionary*)parseGeocodeLocation:(NSDictionary*)locationInfo;
 
 -(NSString*)currentDateString;
-
--(NSString*)convertUTCDateToLocal:(NSString*)utcDate;
 
 -(void) cancelOperations:(generalBlockResponse)completionHandler;
 

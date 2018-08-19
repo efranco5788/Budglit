@@ -17,7 +17,6 @@
 #import "BudgetPickerViewController.h"
 #import "MapViewController.h"
 #import "MenuTableViewController.h"
-#import "UserAccount.h"
 
 
 #define HOST_NAME @"https://www.budglit.com"
@@ -66,8 +65,7 @@
         
         [self.budgetManager resetBudget];
         
-        /*******TESTING OUT LOGGING OUT SYSTEM******/
-        //[self.accountManager logout];
+        /*
         
         NSString* sessionID = [self.accountManager getSessionID];
         
@@ -119,10 +117,12 @@
             }
             
         }
+         */
         
         return YES;
     }
     else return NO;
+         
 }
 
 /*
@@ -163,6 +163,24 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 - (void)applicationWillResignActive:(UIApplication *)application {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
     // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
+    
+    UIBlurEffect* blur = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
+    
+    UIVisualEffectView* visualEffectView = [[UIVisualEffectView alloc] initWithEffect:blur];
+    
+    visualEffectView.frame = self.window.bounds;
+    
+    visualEffectView.tag = 111;
+    
+    //[foregroundView addSubview:visualEffectView];
+    
+    //[self.window addSubview:foregroundView];
+    
+    //[self.window bringSubviewToFront:foregroundView];
+    
+    [self.window addSubview:visualEffectView];
+
+    
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
@@ -178,10 +196,20 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
+    
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+    
+    UIView* foregroundView = [self.window viewWithTag:111];
+    
+    [UIView animateWithDuration:0.1 animations:^{
+        [foregroundView setAlpha:0];
+    } completion:^(BOOL finished) {
+        [foregroundView removeFromSuperview];
+    }];
+
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
@@ -214,36 +242,6 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     if (navControlller) {
         self.window.rootViewController = navControlller;
     }
-}
-
--(NSDictionary *)constructDefaultUserAccount
-{
-    UserAccount* loggedAccount = [[UserAccount alloc] initWithFirstName:NSLocalizedString(@"DEFAULT_NO_ACCOUNT_NAME", nil) andLastName:nil];
-    
-    NSData* accountData = [NSKeyedArchiver archivedDataWithRootObject:loggedAccount];
-    
-    NSArray* defaultObjects = @[accountData];
-    
-    NSArray* defaultKeys = @[ NSLocalizedString(@"ACCOUNT", nil)];
-    
-    NSDictionary* userAccountDefault = [NSDictionary dictionaryWithObjects:defaultObjects forKeys:defaultKeys];
-    
-    return userAccountDefault;
-}
-
--(NSDictionary*)constructDefaultObjects
-{
-    NSNumber* launched = @NO;
-    
-    NSMutableDictionary* currentSearchFilters = [[NSMutableDictionary alloc] init];
-    
-    NSArray* defaultObjects = @[launched, NSLocalizedString(@"DEFAULT_ZIPCODE", nil), NSLocalizedString(@"DEFAULT", nil), NSLocalizedString(@"DEFAULT", nil), NSLocalizedString(@"DEFAULT", nil), NSLocalizedString (@"DEFAULT_BUDGET", nil), currentSearchFilters];
-    
-    NSArray* defaultKeys = @[NSLocalizedString(@"HAS_LAUNCHED_ONCE", nil), NSLocalizedString(@"ZIPCODE", nil), NSLocalizedString(@"CITY", nil), NSLocalizedString(@"STATE", nil), NSLocalizedString(@"ABBRVIATION", nil), NSLocalizedString(@"BUDGET", nil), NSLocalizedString(@"CURRENT_SEARCH_FILTERS", nil)];
-    
-    NSDictionary* appDefaults = [NSDictionary dictionaryWithObjects:defaultObjects forKeys:defaultKeys];
-    
-    return appDefaults;
 }
 
 
@@ -320,12 +318,6 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 
 -(UIColor *)getPrimaryColor
 {
-    /*
-    return [UIColor colorWithRed:(float)44/255
-                           green:(float)83/255
-                            blue:(float)143/255
-                           alpha:(float)1];
-    */
     return [UIColor colorWithRed:(float)31/255
                            green:(float)80/255
                             blue:(float)155/255

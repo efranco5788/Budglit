@@ -8,6 +8,7 @@
 
 #import "DatabaseEngine.h"
 #import "AppDelegate.h"
+#import "UserAccount.h"
 #import "CityDataObject.h"
 #import "Deal.h"
 #import "ImageData.h"
@@ -23,7 +24,8 @@
 #define KEY_DEALS @"deals"
 #define KEY_LIST @"parsedList"
 #define DEAL_COUNT @"count"
-#define DATE_FORMAT @"yyyy-MM-dd'T'HH:mm:ss.sssZ"
+#define AUTHENTICATED_KEY @"authenticated"
+#define AUTHENTICATED_STATUS_KEY @"status"
 
 #define RESCALE_IMAGE_WIDTH 1024
 #define RESCALE_IMAGE_HEIGHT 1024
@@ -41,16 +43,100 @@
 
 -(instancetype) initWithHostName:(NSString*)hostName
 {
-    
     self = [super initWithHostName:hostName];
     
     if (!self) {
         return nil;
     }
     
-    self.sessionManager.requestSerializer = [AFJSONRequestSerializer serializer];
+    self.sessionManager.responseSerializer = [AFJSONResponseSerializer serializer];
+    self.sessionManager.requestSerializer = [AFHTTPRequestSerializer serializer];
+    
+    self.sessionManager.requestSerializer.HTTPShouldHandleCookies = YES;
+    self.sessionManager.session.configuration.HTTPCookieStorage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
     
     return self;
+}
+
+// Constructs the basic default data for the app
+-(NSDictionary*)constructDefaultFetchingObjects
+{
+    NSNumber* launched = @NO;
+    
+    NSMutableDictionary* currentSearchFilters = [[NSMutableDictionary alloc] init];
+    
+    NSArray* defaultObjects = @[launched, NSLocalizedString(@"DEFAULT_ZIPCODE", nil), NSLocalizedString(@"DEFAULT", nil), NSLocalizedString(@"DEFAULT", nil), NSLocalizedString(@"DEFAULT", nil), NSLocalizedString (@"DEFAULT_BUDGET", nil), currentSearchFilters];
+    
+    NSArray* defaultKeys = @[NSLocalizedString(@"HAS_LAUNCHED_ONCE", nil), NSLocalizedString(@"ZIPCODE", nil), NSLocalizedString(@"CITY", nil), NSLocalizedString(@"STATE", nil), NSLocalizedString(@"ABBRVIATION", nil), NSLocalizedString(@"BUDGET", nil), NSLocalizedString(@"CURRENT_SEARCH_FILTERS", nil)];
+    
+    NSDictionary* appDefaults = [NSDictionary dictionaryWithObjects:defaultObjects forKeys:defaultKeys];
+    
+    return appDefaults;
+}
+
+-(void)saveFetchingObjects:(NSDictionary *)objects addCompletion:(generalBlockResponse)completionHandler
+{
+    
+}
+
+-(BOOL)extractAuthetication:(NSDictionary *)info
+{
+    NSDictionary* authenStatus = [info valueForKey:AUTHENTICATED_KEY];
+    
+    BOOL authenticationStauts = [authenStatus valueForKey:AUTHENTICATED_STATUS_KEY];
+    
+    return authenticationStauts;
+}
+
+-(NSArray*)extractDeals:(NSDictionary *)info
+{
+    NSArray* deals = [info valueForKey:@"deals"];
+    
+    return deals;
+}
+
+-(NSArray*)filterOutDeals:(NSArray *)deals byBudgetAmount:(double)amount
+{
+    NSPredicate* budgetPredicate = [NSPredicate predicateWithFormat:@"SELF.budget < %f", amount];
+    
+    NSArray* filteredArray = [deals filteredArrayUsingPredicate:budgetPredicate];
+    
+    if(!filteredArray){
+        return nil;
+    }
+    else{
+        return filteredArray;
+    }
+}
+
+- (NSInteger)findLowestBudget:(NSArray *)deals
+{
+    double lowest = 0;
+    
+    for (Deal* deal in deals) {
+        
+        double budget = [deal budget];
+        
+        if (budget < lowest) lowest = budget;
+        
+    }
+    
+    return lowest;
+}
+
+-(NSInteger)findHighestBudget:(NSArray *)deals
+{
+    double highest = 0;
+    
+    for (Deal* deal in deals) {
+        
+        double budget = [deal budget];
+        
+        if (budget > highest) highest = budget;
+        
+    }
+    
+    return highest;
 }
 
 -(NSValue*)calculateCoordinateFrom:(NSValue *)coordinateValue onBearing:(double)bearingInRadians atDistance:(double)distanceInMetres
@@ -94,8 +180,6 @@
     
     NSString* currentDate = [self currentDateString];
     
-    NSLog(@"%@", currentDate);
-    
     NSArray* values = @[distanceCriteria, budgetCriteria, currentDate, cityName, state];
     
     NSDictionary* filterCriteria = [NSDictionary dictionaryWithObjects:values forKeys:keys];
@@ -115,31 +199,10 @@
     return currentDate;
 }
 
--(NSString*)convertUTCDateToLocal:(NSString*)utcDate
-{
-    if(!utcDate) return nil;
-    
-    NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
-    
-    formatter.dateFormat = DATE_FORMAT;
-    
-    NSDate* date = [formatter dateFromString:utcDate];
-    
-    if(!date) return nil;
-    
-    NSTimeZone* timeZone = [NSTimeZone localTimeZone];
-    
-    NSISO8601DateFormatOptions options = NSISO8601DateFormatWithInternetDateTime | NSISO8601DateFormatWithDashSeparatorInDate | NSISO8601DateFormatWithColonSeparatorInTime | NSISO8601DateFormatWithTimeZone;
-    
-    NSString* localTime = [NSISO8601DateFormatter stringFromDate:date timeZone:timeZone formatOptions:options];
-    
-    return localTime;
-}
-
 -(void)sendSearchCriteriaForTotalCountOnly:(NSDictionary *)searchCriteria addCompletion:(dataResponseBlockResponse)completionBlock
 {
-    self.sessionManager.responseSerializer = [AFJSONResponseSerializer serializer];
-    self.sessionManager.requestSerializer = [AFJSONRequestSerializer serializer];
+    //self.sessionManager.responseSerializer = [AFJSONResponseSerializer serializer];
+    //self.sessionManager.requestSerializer = [AFJSONRequestSerializer serializer];
     
     NSLog(@"%@", searchCriteria);
     
@@ -182,46 +245,104 @@
     }];
 }
 
+-(void)sendGetRequestSearchCriteria:(NSDictionary *)searchCriteria addCompletion:(dataResponseBlockResponse)completionBlock
+{
+    //self.sessionManager.responseSerializer = [AFJSONResponseSerializer serializer];
+    //self.sessionManager.requestSerializer = [AFJSONRequestSerializer serializer];
+    
+    [self.sessionManager GET:SEARCH_DEALS parameters:searchCriteria progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        
+    }];
+}
+
 -(void)sendSearchCriteria:(NSDictionary *)searchCriteria addCompletion:(dataResponseBlockResponse)completionBlock
 {
-    self.sessionManager.responseSerializer = [AFJSONResponseSerializer serializer];
-    self.sessionManager.requestSerializer = [AFJSONRequestSerializer serializer];
     
     [self.sessionManager POST:SEARCH_DEALS parameters:searchCriteria progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         
         [self addToRequestHistory:task];
         
-        if (responseObject) {
+        NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse*) task.response;
 
-            NSArray* deals = [responseObject valueForKey:KEY_DEALS];
+        if (httpResponse.statusCode == 200){
             
-            NSInteger total = deals.count;
-            
-            if (total <= 0) {
+            if (responseObject) {
                 
-                NSString* errorMessage = [responseObject valueForKey:KEY_ERROR];
+                NSMutableDictionary* mutableDict = [[NSMutableDictionary alloc] init];
                 
-                NSLog(@"%@", errorMessage);
+                NSDictionary* authenticatedInfo = [responseObject valueForKey:@"authenticatedInfo"];
                 
-                NSArray* array = [[NSArray alloc] init];
+                NSString* authenticatedValue = [authenticatedInfo valueForKey:@"isAuthenticated"];
+                
+                if(authenticatedValue != nil){
+                    
+                    NSInteger isAuthenticated = authenticatedValue.integerValue;
+                    
+                    NSDictionary* authenticatedInfo;
+                    
+                    if(isAuthenticated == FALSE){
+                        
+                        authenticatedInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:FALSE] forKey:AUTHENTICATED_STATUS_KEY];
+                        
+                        [mutableDict setObject:authenticatedInfo forKey:AUTHENTICATED_KEY];
+                        
+                        completionBlock(mutableDict.copy);
+                        
+                    }
+                    else{
+                        
+                        authenticatedInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:TRUE] forKey:AUTHENTICATED_STATUS_KEY];
+                        
+                        [mutableDict setObject:authenticatedInfo forKey:AUTHENTICATED_KEY];
+                        
+                        NSDictionary* dealsDict = [responseObject valueForKey:@"dealsInfo"];
+                        
+                        NSArray* deals = [dealsDict valueForKey:KEY_DEALS];
+                        
+                        NSInteger total = deals.count;
+                        
+                        if (total <= 0) {
+                            
+                            NSString* errorMessage = [responseObject valueForKey:KEY_ERROR];
+                            
+                            NSLog(@"%@", errorMessage);
+                            
+                            NSArray* array = [[NSArray alloc] init];
+                            
+                            [mutableDict setObject:array forKey:@"deals"]; 
+                        }
+                        else{
 
-                completionBlock(array);
-            }
-            else{
+                            [mutableDict setObject:deals forKey:@"deals"];
+                            
+                        } // end of deals array count else statement
+                        
+                        completionBlock(mutableDict.copy);
+                        
+                    } // end of is authenticated status else statement
+                    
+                } // end of authentication value else statement
+                else{
+                    
+                    NSDictionary* info = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:FALSE] forKey:AUTHENTICATED_STATUS_KEY];
+                    
+                    [mutableDict setObject:info forKey:AUTHENTICATED_KEY];
+                    
+                    completionBlock(mutableDict.copy);
+                    
+                }
                 
-                NSLog(@"%@", deals);
-                
-                completionBlock(deals);
-                
-            }
-            
+            } // end of if response object is nil statement
+            else completionBlock(nil);
         }
-        else completionBlock(nil);
+        
         
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         
         [self logFailedRequest:task];
-        //[self.delegate dealsFailedWithError:error];
+        NSLog(@"%@", task.response);
         completionBlock(error);
     }];
     
@@ -261,6 +382,8 @@
     [self.sessionManager POST:API_PLACES parameters:params progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         
         if(!responseObject) completionHandler(nil);
+        
+        NSLog(@"%@", responseObject);
         
         completionHandler(responseObject);
         
@@ -425,8 +548,7 @@
         
         [appDelegate.imageDataCache saveFileToPersistentStorageCache:imgData withKey:imgName addCompletion:^(BOOL success) {
             
-            if(success == NO) completionHandler(nil);
-            else completionHandler(YES);
+            completionHandler(success);
             
         }];
         

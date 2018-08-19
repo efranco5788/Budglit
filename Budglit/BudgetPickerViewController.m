@@ -17,7 +17,10 @@
 #import "math.h"
 #import <dispatch/dispatch.h>
 
-#define MINIMUM_BUDGET_LABEL_DEFAULT @"Free"
+#define MINIMUM_BUDGET_LBL_DEFAULT @"Free"
+#define MAXIMUM_BUDGET_LBL_DEFAULT @"Expensive"
+#define MINIMUM_DISTANCE_LBL_DEFAULT @"Under 1 mile"
+#define MAXIMUM_DISTANCE_LBL_DEFAULT @"0"
 #define DATE_FILTER @"date_filter"
 #define BUDGET_AMOUNTS @"budget_amounts"
 #define DISTANCE_AMOUNTS @"distance_amounts"
@@ -26,9 +29,6 @@
 
 @interface BudgetPickerViewController ()<BudgetManagerDelegate, DatabaseManagerDelegate, LoadingPageDelegate, LocationManagerDelegate, UIViewControllerTransitioningDelegate>
 {
-    NSUInteger currentBudgetPickerValue;
-    NSUInteger currentDistanceValue;
-    NSArray* currentSurroundingZipcodes;
     dispatch_queue_t backgroundQueue;
     
     CABasicAnimation* colorButtonAnimation;
@@ -70,21 +70,22 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
     
     [super viewDidLoad];
     
-    currentState = CLEAR;
-    
     self.transitioningDelegate = self;
     
     AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
     [self.navigationItem setTitle:@"Filter"];
     
+    [self.budgetSlider addTarget:self
+               action:@selector(valueChanged:)
+     forControlEvents:UIControlEventValueChanged];
+    
     NSString* location = [appDelegate.locationManager retrieveCurrentLocationString];
 
     if (self.budgetAmounts == nil) {
         self.budgetAmounts = @[@"Free", @"5", @"10", @"15", @"20", @"25", @"30", @"35", @"40", @"45", @"50", @"55", @"60", @"65", @"70", @"75", @"80", @"85", @"90", @"95", @"100"];
     }
-    
-    currentDistanceValue = 1;
+
     
     [self configureBlocks];
     
@@ -106,24 +107,21 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
         
         [self configureBlocks];
     }
-    
-    currentSurroundingZipcodes = nil;
+ 
 }
 
 -(void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:YES];
     
-    NSString* distance = [NSString stringWithFormat:@"%li", (long)currentDistanceValue];
-    
     // Update the current results
-    NSDictionary* criteria = @{NSLocalizedString(@"DISTANCE_FILTER", nil): distance};
+    //NSDictionary* criteria = @{NSLocalizedString(@"DISTANCE_FILTER", nil): distance};
     
+    [self.viewResultsButton setEnabled:NO];
     
     [self toggleButtons];
     
     [self updateLabels];
-    
 }
 
 -(void)configureBlocks
@@ -154,27 +152,39 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
 - (IBAction)startPressed:(UIButton *)sender {
     
     AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
+
+    NSArray* deals = [appDelegate.databaseManager getSavedDeals];
     
-    (appDelegate.databaseManager).delegate = self;
+    NSArray* filtered = [appDelegate.databaseManager filterDeals:deals byBudget:self.budgetSlider.value];
     
     currentState = CLEAR;
     
-    [self.delegate dismissView];
+    //[self.delegate dismissView];
     
     NSLog(@"Budget complete, app state is now clear");
+    
+    if(filtered.count < 1 || !filtered){
+        [self.delegate startButtonPressed:nil];
+    }
+    else [self.delegate startButtonPressed:filtered];
 }
 
 - (IBAction)dragStarted:(id)sender {
-
-}
-
-- (IBAction)dragged:(id)sender {
     
+    [self toggleButtons];
+
 }
 
 - (IBAction)dragEnded:(id)sender {
     
+    [self dispalyValueForSlider:self.budgetSlider];
+    
+    [self toggleButtons];
+    
+    /*
     if (currentState == CLEAR) {
+        
+        [self dispalyValueForSlider:self.budgetSlider];
         
         [self toggleButtons];
 
@@ -195,79 +205,159 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
         }];
         
     }
+     */
 
+}
+
+-(void)valueChanged:(UISlider *)slider
+{
+    NSInteger newValue = (NSInteger)slider.value;
+    
+    [slider setValue:newValue animated:NO];
+    
+    //[slider setValue:((int)((slider.value + 2.5) / 5) * 5) animated:NO];
+}
+
+-(void)dispalyValueForSlider:(UISlider *)slider
+{
+    float sliderRange = slider.frame.size.width - slider.currentThumbImage.size.width;
+    
+    float sliderOrigin = slider.frame.origin.x + (slider.currentThumbImage.size.width / 2);
+    
+    NSInteger sliderValue = (NSInteger) floor(slider.value);
+    
+    float sliderValueToPixels = (((sliderValue - slider.minimumValue)/(slider.maximumValue - slider.minimumValue)) * sliderRange) + sliderOrigin;
+    
+    NSLog(@"slider.frame.origin.x = %f", slider.frame.origin.x + slider.frame.size.width);
+    
+    NSLog(@"sliderValueToPixels = %f", sliderValueToPixels);
+    
+    if(sliderValueToPixels == slider.frame.origin.x){
+        
+    }
+    else if(sliderValueToPixels >= slider.frame.origin.x + slider.frame.size.width){
+        
+    }
+    else{
+        
+        float sliderValueY = (slider.frame.origin.y - 40);
+        
+        float lblSize = slider.frame.size.width / 8;
+        
+        CGRect lblFrame = CGRectMake(sliderValueToPixels, sliderValueY, lblSize, lblSize);
+        
+        __block UILabel* valueDisplayLbl = [[UILabel alloc] initWithFrame:lblFrame];
+        
+        valueDisplayLbl.adjustsFontSizeToFitWidth = YES;
+        
+        [valueDisplayLbl setText:[NSString stringWithFormat:@"%li", (long)sliderValue]];
+        
+        [self.view addSubview:valueDisplayLbl];
+        
+        NSTimer* hideDisplay = [NSTimer timerWithTimeInterval:0.5f repeats:NO block:^(NSTimer * _Nonnull timer) {
+            
+            [UIView animateWithDuration:0.5f animations:^{
+                
+                [valueDisplayLbl setAlpha:0.0f];
+                
+            } completion:^(BOOL finished) {
+                [valueDisplayLbl removeFromSuperview];
+            }];
+        }];
+        
+        [hideDisplay fire];
+        
+    }
+    
 }
 
 -(void)updateLabels
 {
     AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
-    CLLocation* userLocation = [appDelegate.locationManager getCurrentLocation];
-
     NSArray* deals = [appDelegate.databaseManager getSavedDeals];
     
-    NSString* minimumBudgetLbl = MINIMUM_BUDGET_LABEL_DEFAULT;
+    NSString* minimumBudgetLbl = MINIMUM_BUDGET_LBL_DEFAULT;
     
-    NSString* maximumBudgetLbl = @"Expensive";
+    NSString* maximumBudgetLbl = MAXIMUM_BUDGET_LBL_DEFAULT;
     
-    double min = 0.00;
+    NSString* maximumDistanceLbl = MAXIMUM_DISTANCE_LBL_DEFAULT;
     
-    double max = 0.00;
+    NSString* minimumDistanceLbl = MINIMUM_DISTANCE_LBL_DEFAULT;
+    
+    int minDistance = -1;
+    
+    int maxDistance = -1;
     
     if (deals.count > 0) {
+        
+        NSInteger lowestBudget = [appDelegate.databaseManager getLowestBudgetFromDeals:deals];
+        
+        NSInteger highestBudget = [appDelegate.databaseManager getHighestBudgetFromDeals:deals];
+        
+        if(lowestBudget <= 0){
+            minimumBudgetLbl = [NSString stringWithFormat:@"Free"];
+        }
+        else minimumBudgetLbl = [NSString stringWithFormat:@"$ %@.00", [[NSNumber numberWithInteger:lowestBudget] stringValue]];
+        
+        [self.budgetSlider setMinimumValue:lowestBudget];
+        
+        maximumBudgetLbl = [NSString stringWithFormat:@"$ %@.00", [[NSNumber numberWithInteger:highestBudget] stringValue]];
+        
+        [self.budgetSlider setMaximumValue:highestBudget];
+        
         for (Deal* deal in deals) {
-            double budget = [deal getBudget];
             
-            if (budget < min) {
-                minimumBudgetLbl = [[NSNumber numberWithDouble:budget] stringValue];
-                min = budget;
+            CLLocation* evntLocation = [appDelegate.locationManager managerConvertAddressToLocation:deal.googleAddressInfo];
+
+            CLLocationDistance totalDistance = [appDelegate.locationManager managerDistanceFromLocation:evntLocation toLocation:[appDelegate.locationManager getCurrentLocation]];
+            
+            CLLocationDistance convertedDistance = [appDelegate.locationManager managerConvertDistance:totalDistance];
+            
+            minDistance = floor(convertedDistance);
+            
+            if(minDistance <= -1) {
+                
+                minimumDistanceLbl = [NSString stringWithFormat:@"%@", [NSNumber numberWithInteger:convertedDistance]];
+
             }
-            else if (budget > max)
-            {
-                maximumBudgetLbl = [[NSNumber numberWithDouble:budget] stringValue];
-                max = budget;
+            else if (minDistance == 0) {
+                
+                minimumDistanceLbl = [NSString stringWithFormat:@"Under a mile"];
+                
             }
+            else if (convertedDistance < minDistance) {
+                
+                minDistance = floor(convertedDistance);
+                
+                minimumDistanceLbl = [NSString stringWithFormat:@"%@ mi", [NSNumber numberWithInteger:minDistance]];
+                
+            }
+            
+            
+            if (maxDistance < convertedDistance){
+                
+                maxDistance = ceil(convertedDistance);
+                
+                maximumDistanceLbl = [NSString stringWithFormat:@"Under %@ mi", [NSNumber numberWithInteger:maxDistance]];
+            }
+            
+
         }
     }
     
     [self.lbl_BudgetMin setText:minimumBudgetLbl];
     
     [self.lbl_BudgetMax setText:maximumBudgetLbl];
-}
-
--(void)updateViewLabels:(NSDictionary *)searchCriteria addCompletion:(UILablesUpdated)completionHandler
-{
-    NSString* budgetCriteria;
     
-    NSString* budgetValue = [searchCriteria valueForKey:NSLocalizedString(@"BUDGET_FILTER", nil)];
+    [self.lbl_DistanceMin setText:minimumDistanceLbl];
     
-    NSArray* budgetAmounts = [searchCriteria valueForKey:BUDGET_AMOUNTS];
-    
-    NSInteger budget = budgetValue.integerValue;
-    
-    completionHandler(YES);
-}
-
--(void)reloadDealResultsReturnCount:(NSDictionary *)searchCriteria
-{
-    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
-    
-    (appDelegate.databaseManager).delegate = self;
-    
-    [appDelegate.databaseManager fetchTotalDealCountOnly:searchCriteria addCompletionBlock:^(BOOL success) {
-        
-        if(success){
-            [self toggleButtons];
-            
-        }
-
-        
-    }];
-    
+    [self.lbl_DistanceMax setText:maximumDistanceLbl];
 }
 
 -(void)toggleButtons
 {
+
     if ((self.viewResultsButton).enabled) {
         
         currentState = BUSY;
@@ -275,7 +365,7 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
         [self.viewResultsButton.layer removeAnimationForKey:ANIMATION_BACKGROUND_COLOR_CHANGE];
         [self.viewResultsButton setEnabled:NO];
         
-        NSLog(@"Buttons are now disabled");
+        //NSLog(@"Buttons are now disabled");
     }
     else{
         currentState = CLEAR;

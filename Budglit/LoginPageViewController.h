@@ -17,8 +17,11 @@
 
 @property (nonatomic, assign) id<LoginPageDelegate> delegate;
 @property (weak, nonatomic) IBOutlet UIImageView *loginPageBackground;
+@property (strong, nonatomic) IBOutletCollection(UITextField) NSArray *fieldCollection;
 @property (weak, nonatomic) IBOutlet UITextField *emailField;
 @property (weak, nonatomic) IBOutlet UITextField *passwordField;
+@property (weak, nonatomic) IBOutlet UITextField *confirmPasswordField;
+@property (weak, nonatomic) IBOutlet UIImageView *passwordMismatch_Img;
 @property (weak, nonatomic) IBOutlet UITextField *FNameField;
 @property (weak, nonatomic) IBOutlet UITextField *LNameField;
 @property (weak, nonatomic) IBOutlet UIButton *loginButton;
@@ -27,7 +30,9 @@
 @property (strong, nonatomic) IBOutlet NSLayoutConstraint *signupButtonBottom_Constraint;
 @property (strong, nonatomic) IBOutlet NSLayoutConstraint *signupButtonBottom_VerticalConstraint;
 @property (strong, nonatomic) NSLayoutConstraint* kbConstraint; // Keyboard Constraint
-@property (strong, nonatomic) NSLayoutConstraint* viewConstraint; // 
+@property (strong, nonatomic) NSLayoutConstraint* viewConstraint;
+
++ (BOOL)validateEmailAddress:(NSString*)email;
 
 - (IBAction)passwordVisibilityPressed:(id)sender;
 
@@ -35,7 +40,7 @@
 
 - (IBAction)signUpButtonPressed:(UIButton *)sender;
 
-- (void) setupPasswordResetController;
+- (void)setupPasswordResetController;
 
 - (void)toggleNameFields;
 
