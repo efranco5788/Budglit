@@ -33,6 +33,7 @@ static DatabaseManager* sharedManager;
 }
 @property (nonatomic, strong) NSArray* fetchedDeals;
 @property (nonatomic, strong) NSDictionary* searchFilter;
+@property (nonatomic, strong) NSArray* plottedMapAnnotations;
 @end
 
 @implementation DatabaseManager
@@ -58,11 +59,13 @@ static DatabaseManager* sharedManager;
         return nil;
     }
     
+    (self.engine).delegate = self;
+    
     self.engine = [[DatabaseEngine alloc] initWithHostName:hostName];
     
     self.dealParser = [[DealParser alloc] initParser];
     
-    (self.engine).delegate = self;
+    self.plottedMapAnnotations = [[NSArray alloc] init];
     
     self.fetchedDeals = nil;
     
@@ -78,12 +81,12 @@ static DatabaseManager* sharedManager;
     return self;
 }
 
--(NSArray*)getSavedDeals
+-(NSArray*)managerGetSavedDeals
 {
     return self.fetchedDeals.copy;
 }
 
--(BOOL)saveFetchedDeals:(NSArray *)dealsFetched
+-(BOOL)managerSaveFetchedDeals:(NSArray *)dealsFetched
 {
     if(dealsFetched){
         
@@ -94,7 +97,7 @@ static DatabaseManager* sharedManager;
     else return NO;
 }
 
--(void)setZipcodeCriteria:(NSString *)zipcode
+-(void)managerSetZipcodeCriteria:(NSString *)zipcode
 {
     //NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
     
@@ -119,10 +122,10 @@ static DatabaseManager* sharedManager;
 
     mutableFilterCopy[NSLocalizedString(@"ZIPCODE", nil)] = zipcode;
     
-    [self saveUsersCriteria:mutableFilterCopy.copy];
+    [self managerSaveUsersCriteria:mutableFilterCopy.copy];
 }
 
--(void)saveUsersCriteria:(NSDictionary *)usersCriteria
+-(void)managerSaveUsersCriteria:(NSDictionary *)usersCriteria
 {
     /*
     NSDictionary* criteria = usersCriteria;
@@ -144,7 +147,7 @@ static DatabaseManager* sharedManager;
     self.searchFilter = usersCriteria;
 }
 
--(NSDictionary *)getUsersCurrentCriteria
+-(NSDictionary *)managerGetUsersCurrentCriteria
 {
     /*
     NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
@@ -183,19 +186,19 @@ static DatabaseManager* sharedManager;
     return closeDB_Status;
 }
 
--(NSDictionary *)fetchPrimaryDefaultSearchFiltersWithLocation
+-(NSDictionary *)managerFetchPrimaryDefaultSearchFiltersWithLocation
 {
     return [self.engine primaryDefaultForSearchFilterAtLocation];
 }
 
--(NSArray *)extractDeals:(NSArray *)filteredDeals fromDeals:(NSArray *)deals
+-(NSArray *)managerExtractDeals:(NSArray *)filteredDeals fromDeals:(NSArray *)deals
 {
     if(!filteredDeals) return nil;
     
     NSMutableSet* newDealsSet;
     
     if (deals) newDealsSet = [NSMutableSet setWithArray:deals];
-    else newDealsSet = [NSMutableSet setWithArray:self.getSavedDeals];
+    else newDealsSet = [NSMutableSet setWithArray:self.managerGetSavedDeals];
 
     NSSet* filteredSet = [NSSet setWithArray:filteredDeals];
     
@@ -208,10 +211,10 @@ static DatabaseManager* sharedManager;
     return extractedDeals;
 }
 
--(NSArray *)filterDeals:(NSArray *)deals byBudget:(double)budget
+-(NSArray *)managerFilterDeals:(NSArray*)deals byBudget:(double)budget
 {
     if(!deals){
-        deals = [self getSavedDeals];
+        deals = [self managerGetSavedDeals];
     }
     
     NSPredicate* dealPredicate = [NSPredicate predicateWithFormat:@"SELF.class == %@", [Deal class]];
@@ -228,14 +231,14 @@ static DatabaseManager* sharedManager;
     
 }
 
--(NSInteger)getLowestBudgetFromDeals:(NSArray *)deals
+-(NSInteger)managerGetLowestBudgetFromDeals:(NSArray*)deals
 {
     if (!deals || deals.count < 1) return -1;
     
     return [self.engine findLowestBudget:deals.copy];
 }
 
--(NSInteger)getHighestBudgetFromDeals:(NSArray *)deals
+-(NSInteger)managerGetHighestBudgetFromDeals:(NSArray *)deals
 {
     if(!deals || deals.count < 1) return -1;
     
@@ -244,12 +247,12 @@ static DatabaseManager* sharedManager;
 }
 
 #warning needs better error handling
--(void)fetchDeals:(NSDictionary *)searchCriteria addCompletionBlock:(dataBlockResponse)completionHandler
+-(void)managerFetchDeals:(NSDictionary *)searchCriteria addCompletionBlock:(dataBlockResponse)completionHandler
 {
     // Fetches Deals from Server
     NSMutableArray* newDealArray = [[NSMutableArray alloc] init];
     
-    if (searchCriteria == nil) searchCriteria = [[self getUsersCurrentCriteria] copy];
+    if (searchCriteria == nil) searchCriteria = [[self managerGetUsersCurrentCriteria] copy];
     
     NSLog(@"%@", searchCriteria);
     
@@ -293,7 +296,7 @@ static DatabaseManager* sharedManager;
     
 }
 
--(void)fetchGeocodeForAddress:(NSString *)address additionalParams:(NSDictionary *)params shouldParse:(BOOL)parse addCompletetion:(dataBlockResponse)completionHandler
+-(void)managerFetchGeocodeForAddress:(NSString *)address additionalParams:(NSDictionary *)params shouldParse:(BOOL)parse addCompletetion:(dataBlockResponse)completionHandler
 {
     if(!address && !params) return;
     
@@ -329,7 +332,7 @@ static DatabaseManager* sharedManager;
     }];
 }
 
--(void)fetchGeocodeForAddresses:(NSArray *)addressList additionalParams:(NSDictionary *)params shouldParse:(BOOL)parse addCompletetion:(dataBlockResponse)completionHandler
+-(void)managerFetchGeocodeForAddresses:(NSArray*)addressList additionalParams:(NSDictionary *)params shouldParse:(BOOL)parse addCompletetion:(dataBlockResponse)completionHandler
 {
     NSMutableDictionary* tmpMutableParameters = [[NSMutableDictionary alloc] init];
     
@@ -379,7 +382,7 @@ static DatabaseManager* sharedManager;
     }];
 }
 
--(void)fetchNewDataWithCompletion:(newDataFetchedResponse)completionHandler
+-(void)managerFetchNewDataWithCompletion:(newDataFetchedResponse)completionHandler
 {
     
 }
@@ -405,7 +408,7 @@ static DatabaseManager* sharedManager;
 }
 
 // Fetch Persistent Storage Cache for Image
--(void)fetchPersistentStorageCachedImageForKey:(NSString *)key deal:(Deal *)aDeal addCompletion:(fetchedImageResponse)completionHandler
+-(void)managerFetchPersistentStorageCachedImageForKey:(NSString *)key deal:(Deal *)aDeal addCompletion:(fetchedImageResponse)completionHandler
 {
     __block UIImage* cachedImage = [[UIImage alloc] init];
     
@@ -437,7 +440,7 @@ static DatabaseManager* sharedManager;
 }
 
 // Download Image Manager
--(void)startDownloadImageFromURLString:(NSString *)requestString forDeal:(Deal *)deal addCompletion:(fetchedImageResponse)completionHandler
+-(void)managerStartDownloadImageFromURLString:(NSString *)requestString forDeal:(Deal *)deal addCompletion:(fetchedImageResponse)completionHandler
 {
     
     [self.engine downloadImageFromURL:requestString addCompletionHandler:^(UIImage *imageResponse, NSHTTPURLResponse *response, NSURLRequest *request) {
@@ -463,15 +466,13 @@ static DatabaseManager* sharedManager;
     
 }
 
--(void)startDownloadImageFromURL:(NSString *)url forObject:(id)object forIndexPath:(NSIndexPath *)indexPath imageView:(UIImageView *)imgView
+-(void)managerStartDownloadImageFromURL:(NSString *)url forObject:(id)object forIndexPath:(NSIndexPath *)indexPath imageView:(UIImageView *)imgView
 {
     [self.engine downloadImageFromURL:url forImageView:imgView addCompletionHandler:^(UIImage *imageResponse, NSHTTPURLResponse *response, NSURLRequest *request) {
         
         __block BOOL imgExist = NO;
         
         dispatch_async(dispatch_get_main_queue(), ^{
-            
-            AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
             
             if ([object isMemberOfClass:[InstagramObject class]]) {
                 
@@ -515,7 +516,7 @@ static DatabaseManager* sharedManager;
     }];
 }
 
--(void)startDownloadImageFromURL:(NSString *)url forDeal:(Deal *)deal forIndexPath:(NSIndexPath *)indexPath imageView:(UIImageView *)imgView
+-(void)managerStartDownloadImageFromURL:(NSString *)url forDeal:(Deal *)deal forIndexPath:(NSIndexPath *)indexPath imageView:(UIImageView *)imgView
 {
     
     [self.engine downloadImageFromURL:url forImageView:imgView addCompletionHandler:^(UIImage* imageResponse, NSHTTPURLResponse* response, NSURLRequest* request) {
@@ -533,7 +534,7 @@ static DatabaseManager* sharedManager;
 }
 
 // Methods to download general images
--(void)startDownloadImageFromURL:(NSString *)url forIndexPath:(NSIndexPath *)indexPath andImageView:(UIImageView *)imgView
+-(void)managerStartDownloadImageFromURL:(NSString *)url forIndexPath:(NSIndexPath *)indexPath andImageView:(UIImageView *)imgView
 {
     
     [self.engine downloadImageFromURL:url forImageView:imgView addCompletionHandler:^(UIImage *imageResponse, NSHTTPURLResponse *response, NSURLRequest *request) {
@@ -542,7 +543,7 @@ static DatabaseManager* sharedManager;
     }];
 }
 
--(void)cancelDownloads:(generalBlockResponse)completionHandler
+-(void)managerCancelDownloads:(generalBlockResponse)completionHandler
 {
     [self.engine cancelOperations:^(BOOL success) {
         
@@ -551,7 +552,7 @@ static DatabaseManager* sharedManager;
     }];
 }
 
--(void)sortDeals:(NSArray *)deals byKey:(NSString *)key ascendingOrder:(BOOL)shouldAscend localizeCompare:(BOOL)shouldLocalize addCompletetion:(dataBlockResponse)completionHandler
+-(void)managerSortDeals:(NSArray *)deals byKey:(NSString *)key ascendingOrder:(BOOL)shouldAscend localizeCompare:(BOOL)shouldLocalize addCompletetion:(dataBlockResponse)completionHandler
 {
     [self.engine sortArray:deals byKey:key ascending:shouldAscend localizeCompare:shouldLocalize addCompletion:^(id response) {
         
@@ -570,7 +571,14 @@ static DatabaseManager* sharedManager;
     
 }
 
--(NSString *)getCurrentDateString
+-(NSArray *)managerCreateMapAnnotationsForDeals:(NSArray *)deals addressInfo:(NSArray*)info
+{
+    if(!deals || !info) return nil;
+    
+    return [self.engine createMapAnnotationsForDeals:deals addressInfo:info];
+}
+
+-(NSString*)managerGetCurrentDateString
 {
     NSString* today = [self.engine currentDateString];
     
@@ -594,7 +602,7 @@ static DatabaseManager* sharedManager;
     NSLog(@"Total count attempts has been reset");
 }
 
--(void)resetDeals
+-(void)managerResetDeals
 {
     self.fetchedDeals = [[NSArray alloc] init];
     totalLoadedDeals_Count = 0;

@@ -153,9 +153,9 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
     
     AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
 
-    NSArray* deals = [appDelegate.databaseManager getSavedDeals];
+    NSArray* deals = [appDelegate.databaseManager managerGetSavedDeals];
     
-    NSArray* filtered = [appDelegate.databaseManager filterDeals:deals byBudget:self.budgetSlider.value];
+    NSArray* filtered = [appDelegate.databaseManager managerFilterDeals:deals byBudget:self.budgetSlider.value];
     
     currentState = CLEAR;
     
@@ -180,32 +180,6 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
     [self dispalyValueForSlider:self.budgetSlider];
     
     [self toggleButtons];
-    
-    /*
-    if (currentState == CLEAR) {
-        
-        [self dispalyValueForSlider:self.budgetSlider];
-        
-        [self toggleButtons];
-
-        
-    }
-    else if (currentState == BUSY) {
-        
-        AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
-        
-        [appDelegate.databaseManager cancelDownloads:^(BOOL success) {
-            
-            if (success) {
-                
-                [self toggleButtons];
-                
-            }
-            
-        }];
-        
-    }
-     */
 
 }
 
@@ -275,7 +249,7 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
 {
     AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
-    NSArray* deals = [appDelegate.databaseManager getSavedDeals];
+    NSArray* deals = [appDelegate.databaseManager managerGetSavedDeals];
     
     NSString* minimumBudgetLbl = MINIMUM_BUDGET_LBL_DEFAULT;
     
@@ -291,9 +265,9 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
     
     if (deals.count > 0) {
         
-        NSInteger lowestBudget = [appDelegate.databaseManager getLowestBudgetFromDeals:deals];
+        NSInteger lowestBudget = [appDelegate.databaseManager managerGetLowestBudgetFromDeals:deals];
         
-        NSInteger highestBudget = [appDelegate.databaseManager getHighestBudgetFromDeals:deals];
+        NSInteger highestBudget = [appDelegate.databaseManager managerGetHighestBudgetFromDeals:deals];
         
         if(lowestBudget <= 0){
             minimumBudgetLbl = [NSString stringWithFormat:@"Free"];

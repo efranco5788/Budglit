@@ -158,7 +158,7 @@
     dispatch_async(background_queue, ^{
         
         // Check if image is cached in memory
-        [appDelegate.databaseManager fetchCachedImageForKey:self.dealSelected.imgStateObject.imagePath addCompletion:^(UIImage *cachedImage) {
+        [appDelegate.databaseManager managerFetchCachedImageForKey:self.dealSelected.imgStateObject.imagePath addCompletion:^(UIImage *cachedImage) {
             
             if (cachedImage) {
                 
@@ -179,7 +179,7 @@
             }
             else{
                 
-                [appDelegate.databaseManager fetchPersistentStorageCachedImageForKey:self.dealSelected.imgStateObject.imagePath deal:self.dealSelected addCompletion:^(UIImage *persistentStorageImg) {
+                [appDelegate.databaseManager managerFetchPersistentStorageCachedImageForKey:self.dealSelected.imgStateObject.imagePath deal:self.dealSelected addCompletion:^(UIImage *persistentStorageImg) {
                     
                     // check if image is in Persistent Storage Caches
                     if(persistentStorageImg){
@@ -202,7 +202,7 @@
                     }
                     else{
                         
-                        [appDelegate.databaseManager startDownloadImageFromURLString:self.dealSelected.imgStateObject.imagePath forDeal:self.dealSelected addCompletion:^(UIImage *imageResponse) {
+                        [appDelegate.databaseManager managerStartDownloadImageFromURLString:self.dealSelected.imgStateObject.imagePath forDeal:self.dealSelected addCompletion:^(UIImage *imageResponse) {
                             
                             dispatch_async(dispatch_get_main_queue(), ^{
                                 

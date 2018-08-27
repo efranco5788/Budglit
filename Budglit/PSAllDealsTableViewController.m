@@ -230,7 +230,7 @@ static NSString* const emptyCellIdentifier = @"holderCell";
         
         dispatch_async(backgroundQueue, ^{
             
-            [appDelegate.databaseManager startDownloadImageFromURL:deal.imgStateObject.imagePath forObject:cell forIndexPath:indexPath imageView:cell.dealImage];
+            [appDelegate.databaseManager managerStartDownloadImageFromURL:deal.imgStateObject.imagePath forObject:cell forIndexPath:indexPath imageView:cell.dealImage];
             
             (self.imageDownloadInProgress)[indexPath] = deal;
             
@@ -244,7 +244,7 @@ static NSString* const emptyCellIdentifier = @"holderCell";
 {
     AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
 
-    if ([appDelegate.databaseManager getSavedDeals].count > 0) {
+    if ([appDelegate.databaseManager managerGetSavedDeals].count > 0) {
         
         PSAllDealsTableViewController* __weak weakSelf = self;
         
@@ -254,9 +254,9 @@ static NSString* const emptyCellIdentifier = @"holderCell";
             
             NSIndexPath* index = [self.dealsTableView indexPathForCell:visibleCell];
             
-            __block Deal* visibleDeal = [appDelegate.databaseManager getSavedDeals][index.row];
+            __block Deal* visibleDeal = [appDelegate.databaseManager managerGetSavedDeals][index.row];
             
-            [appDelegate.databaseManager fetchCachedImageForKey:visibleDeal.imgStateObject.imagePath addCompletion:^(UIImage *image) {
+            [appDelegate.databaseManager managerFetchCachedImageForKey:visibleDeal.imgStateObject.imagePath addCompletion:^(UIImage *image) {
                 
                 if(image){
                     [visibleCell.dealImage setImage:image];
@@ -267,7 +267,7 @@ static NSString* const emptyCellIdentifier = @"holderCell";
                     // Disable any interaction if image for the deal has not loaded yet
                     //[visibleCell setUserInteractionEnabled:NO];
                     
-                    [appDelegate.databaseManager fetchPersistentStorageCachedImageForKey:visibleDeal.imgStateObject.imagePath deal:visibleDeal addCompletion:^(UIImage *img) {
+                    [appDelegate.databaseManager managerFetchPersistentStorageCachedImageForKey:visibleDeal.imgStateObject.imagePath deal:visibleDeal addCompletion:^(UIImage *img) {
                         
                         if(img){
                             
@@ -297,7 +297,7 @@ static NSString* const emptyCellIdentifier = @"holderCell";
 {
     AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
-    [appDelegate.databaseManager cancelDownloads:^(BOOL success) {
+    [appDelegate.databaseManager managerCancelDownloads:^(BOOL success) {
         
         [self.imageDownloadInProgress removeAllObjects];
         
@@ -319,7 +319,7 @@ static NSString* const emptyCellIdentifier = @"holderCell";
     
     AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
-    NSArray* deals = [NSArray arrayWithArray:[appDelegate.databaseManager getSavedDeals]];
+    NSArray* deals = [NSArray arrayWithArray:[appDelegate.databaseManager managerGetSavedDeals]];
     
     if (deals && deals.count >= 1) {
         return 1;
@@ -350,11 +350,11 @@ static NSString* const emptyCellIdentifier = @"holderCell";
     
     AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
-    if ([appDelegate.databaseManager getSavedDeals] == nil) {
+    if ([appDelegate.databaseManager managerGetSavedDeals] == nil) {
         return customRowCount;
     }
     
-    NSUInteger totalCount = [appDelegate.databaseManager getSavedDeals].count;
+    NSUInteger totalCount = [appDelegate.databaseManager managerGetSavedDeals].count;
     
     if (totalCount < 1)
     {
@@ -372,7 +372,7 @@ static NSString* const emptyCellIdentifier = @"holderCell";
 
     DealTableViewCell* dealCell = nil;
     
-    NSUInteger nodeCount = [appDelegate.databaseManager getSavedDeals].count;
+    NSUInteger nodeCount = [appDelegate.databaseManager managerGetSavedDeals].count;
     
     if (nodeCount == 0 && indexPath.row == 0) {
         
@@ -385,7 +385,7 @@ static NSString* const emptyCellIdentifier = @"holderCell";
         
         if (nodeCount > 0) {
 
-            Deal* deal = [appDelegate.databaseManager getSavedDeals][indexPath.row];
+            Deal* deal = [appDelegate.databaseManager managerGetSavedDeals][indexPath.row];
             
             dealCell.dealDescription.text = deal.dealDescription;
             
@@ -401,7 +401,7 @@ static NSString* const emptyCellIdentifier = @"holderCell";
     
     AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
-    NSUInteger nodeCount = [appDelegate.databaseManager getSavedDeals].count;
+    NSUInteger nodeCount = [appDelegate.databaseManager managerGetSavedDeals].count;
     
     if (nodeCount > 0) {
         
@@ -409,11 +409,11 @@ static NSString* const emptyCellIdentifier = @"holderCell";
 
         }
         
-        Deal* deal = [appDelegate.databaseManager getSavedDeals][indexPath.row];
+        Deal* deal = [appDelegate.databaseManager managerGetSavedDeals][indexPath.row];
         
         DealTableViewCell* dealCell = (DealTableViewCell*) cell;
         
-        [appDelegate.databaseManager fetchCachedImageForKey:deal.imgStateObject.imagePath addCompletion:^(UIImage *image) {
+        [appDelegate.databaseManager managerFetchCachedImageForKey:deal.imgStateObject.imagePath addCompletion:^(UIImage *image) {
             
             if (image){
                 
@@ -431,7 +431,7 @@ static NSString* const emptyCellIdentifier = @"holderCell";
                 
                 [dealCell.imageLoadingActivityIndicator startAnimating];
                 
-                [appDelegate.databaseManager fetchPersistentStorageCachedImageForKey:deal.imgStateObject.imagePath deal:deal addCompletion:^(UIImage *img) {
+                [appDelegate.databaseManager managerFetchPersistentStorageCachedImageForKey:deal.imgStateObject.imagePath deal:deal addCompletion:^(UIImage *img) {
                     
                     if(!img){
                         if (self.dealsTableView.dragging == NO && self.dealsTableView.decelerating == NO){
@@ -484,7 +484,7 @@ static NSString* const emptyCellIdentifier = @"holderCell";
 {
     AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
-    NSArray* deals = [NSArray arrayWithArray:[appDelegate.databaseManager getSavedDeals]];
+    NSArray* deals = [NSArray arrayWithArray:[appDelegate.databaseManager managerGetSavedDeals]];
     
     CGRect cellPosition = [tableView rectForRowAtIndexPath: indexPath];
     CGRect positionInSuperview = [tableView convertRect:cellPosition toView:tableView.superview];
@@ -662,7 +662,7 @@ static NSString* const emptyCellIdentifier = @"holderCell";
     }
     else{
         
-        NSMutableDictionary* currentCriteria = [[appDelegate.databaseManager getUsersCurrentCriteria] mutableCopy];
+        NSMutableDictionary* currentCriteria = [[appDelegate.databaseManager managerGetUsersCurrentCriteria] mutableCopy];
         
         NSString* currentDate = [appDelegate.databaseManager currentDate];
         
@@ -672,7 +672,7 @@ static NSString* const emptyCellIdentifier = @"holderCell";
         
         NSDictionary* updatedCriteria = [NSDictionary dictionaryWithDictionary:currentCriteria];
         
-        [appDelegate.databaseManager saveUsersCriteria:updatedCriteria];
+        [appDelegate.databaseManager managerSaveUsersCriteria:updatedCriteria];
     }
 }
 
@@ -702,7 +702,7 @@ static NSString* const emptyCellIdentifier = @"holderCell";
     // Background Thread Queue
     dispatch_async(backgroundToken, ^{
         
-        NSArray* deals = [NSArray arrayWithArray:[appDelegate.databaseManager getSavedDeals]];
+        NSArray* deals = [NSArray arrayWithArray:[appDelegate.databaseManager managerGetSavedDeals]];
         
         Deal* endedDeal = (Deal*) notification.object;
         

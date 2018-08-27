@@ -176,7 +176,7 @@ static NSString* const reuseIdentifier = @"InstagramTableViewCell";
         // Background Thread Queue
         dispatch_async(backgroundQueue, ^{// Run on the background queue
             
-            [appDelegate.databaseManager startDownloadImageFromURL:fetchingMediaForIG.userImgURLString forIndexPath:indexPath andImageView:cell.instaUserProfile];
+            [appDelegate.databaseManager managerStartDownloadImageFromURL:fetchingMediaForIG.userImgURLString forIndexPath:indexPath andImageView:cell.instaUserProfile];
             
             if ([fetchingMediaForIG.type isEqualToString:KEY_INSTAGRAM_TYPE_VIDEO]) {
                 /*
@@ -209,11 +209,7 @@ static NSString* const reuseIdentifier = @"InstagramTableViewCell";
             }
             else if ([fetchingMediaForIG.type isEqualToString:KEY_INSTAGRAM_TYPE_IMAGE]) {
                 
-                //fetchingMediaForIG.imgView = [[UIImageView alloc] init];
-                
-                //[appDelegate.databaseManager startDownloadImageFromURL:fetchingMediaForIG.link.absoluteString forIndexPath:indexPath andImageView:fetchingMediaForIG.imgView];
-                
-                [appDelegate.databaseManager startDownloadImageFromURL:fetchingMediaForIG.link.absoluteString forObject:fetchingMediaForIG forIndexPath:indexPath imageView:cell.instaImageView];
+                [appDelegate.databaseManager managerStartDownloadImageFromURL:fetchingMediaForIG.link.absoluteString forObject:fetchingMediaForIG forIndexPath:indexPath imageView:cell.instaImageView];
                 /*
                 dispatch_async(dispatch_get_main_queue(), ^{ // Run on the main queue
                     CGRect parentViewSize = cell.contentView.frame;

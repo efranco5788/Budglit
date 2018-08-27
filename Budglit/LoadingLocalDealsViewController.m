@@ -159,7 +159,7 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
     
     (appDelegate.databaseManager).delegate = self;
     
-    [appDelegate.databaseManager saveUsersCriteria:selectedCriteria];
+    [appDelegate.databaseManager managerSaveUsersCriteria:selectedCriteria];
     
     currentState = CLEAR;
     
@@ -320,17 +320,19 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
     
     AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
-    NSDictionary* appDefaults = [appDelegate.databaseManager getUsersCurrentCriteria];
+    //NSDictionary* appDefaults = [appDelegate.databaseManager managerGetUsersCurrentCriteria];
+    
+    NSDictionary* appDefaults = [appDelegate.databaseManager managerGetUsersCurrentCriteria];
     
     if(!appDefaults || appDefaults.count == 0){
         
-        appDefaults = [appDelegate.databaseManager fetchPrimaryDefaultSearchFiltersWithLocation];
+        appDefaults = [appDelegate.databaseManager managerFetchPrimaryDefaultSearchFiltersWithLocation];
         
     }
     
     NSLog(@"%@", appDefaults);
     
-    [appDelegate.databaseManager saveUsersCriteria:appDefaults];
+    [appDelegate.databaseManager managerSaveUsersCriteria:appDefaults];
 
     //[appDelegate.databaseManager.engine appendToCurrentSearchFilter:criteria];
     

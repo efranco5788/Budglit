@@ -14,8 +14,6 @@
 #import "MapToListAnimationController.h"
 #import "DismissMapToListAnimationController.h"
 
-#define KEY_FORMATTED_ADDRESS @"formatted_address"
-
 static double USE_CURRENT_RADIUS = -1;
 
 @interface MapViewController()<DrawerControllerDelegate, DatabaseManagerDelegate, BudgetPickerDelegate, LoginPageDelegate, UIViewControllerTransitioningDelegate, UINavigationControllerDelegate, MKMapViewDelegate>
@@ -27,6 +25,7 @@ static double USE_CURRENT_RADIUS = -1;
 @property (strong, nonatomic) DismissMapToListAnimationController* dismissTransitionController;
 @property (strong, nonatomic) UIView* annotationCalloutView;
 @property (strong, nonatomic) BudgetPickerViewController* budgetView;
+//@property (strong, nonatomic) NSMutableArray* annotations;
 
 @end
 
@@ -67,7 +66,7 @@ static double USE_CURRENT_RADIUS = -1;
     
     if (hasAppearedOnce == NO) {
         
-        NSDictionary* filter = [appDelegate.databaseManager getUsersCurrentCriteria];
+        NSDictionary* filter = [appDelegate.databaseManager managerGetUsersCurrentCriteria];
         
         NSInteger miles = [[filter valueForKey:NSLocalizedString(@"DISTANCE_FILTER", nil)] integerValue];
         
@@ -158,7 +157,7 @@ static double USE_CURRENT_RADIUS = -1;
     
     AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
-    NSDictionary* filter = [appDelegate.databaseManager getUsersCurrentCriteria];
+    NSDictionary* filter = [appDelegate.databaseManager managerGetUsersCurrentCriteria];
     
     NSInteger miles = [[filter valueForKey:NSLocalizedString(@"DISTANCE_FILTER", nil)] integerValue];
     
@@ -183,21 +182,21 @@ static double USE_CURRENT_RADIUS = -1;
     
     if(shouldFetch){
         
-        NSDictionary* criteria = [appDelegate.databaseManager getUsersCurrentCriteria];
+        NSDictionary* criteria = [appDelegate.databaseManager managerGetUsersCurrentCriteria];
         
-        [appDelegate.databaseManager fetchDeals:criteria addCompletionBlock:^(id response) {
+        [appDelegate.databaseManager managerFetchDeals:criteria addCompletionBlock:^(id response) {
             
             if(response){
                 
                 NSArray* fetchedDeals = (NSArray*) response;
                 
-                [appDelegate.databaseManager resetDeals];
+                [appDelegate.databaseManager managerResetDeals];
                 
-                BOOL saved = [appDelegate.databaseManager saveFetchedDeals:fetchedDeals];
+                BOOL saved = [appDelegate.databaseManager managerSaveFetchedDeals:fetchedDeals];
                 
                 if(saved){
                     
-                    NSArray* deals = [appDelegate.databaseManager getSavedDeals];
+                    NSArray* deals = [appDelegate.databaseManager managerGetSavedDeals];
                     
                     if(deals && deals.count > 1){
                         
@@ -329,6 +328,22 @@ static double USE_CURRENT_RADIUS = -1;
 
 }
 
+-(void)displayAllAnnotationsAddCompletion:(generalBlockResponse)completionHandler
+{
+    NSArray* annotations = [self.mapView annotations];
+    
+    if(!annotations) completionHandler(NO);
+    else{
+        
+        for (DealMapAnnotation* annotation in annotations) {
+            [[self.mapView viewForAnnotation:annotation] setHidden:NO];
+        }
+        
+        completionHandler(YES);
+        
+    }
+}
+
 -(void)plotDealOnMap:(Deal *)deal addCompletion:(generalBlockResponse)completionHandler
 {
     if(!deal) return;
@@ -337,7 +352,7 @@ static double USE_CURRENT_RADIUS = -1;
     
     NSString* address = deal.address.copy;
     
-    [appDelegate.databaseManager fetchGeocodeForAddress:address additionalParams:nil shouldParse:YES addCompletetion:^(id response) {
+    [appDelegate.databaseManager managerFetchGeocodeForAddress:address additionalParams:nil shouldParse:YES addCompletetion:^(id response) {
         
         
     }];
@@ -358,51 +373,22 @@ static double USE_CURRENT_RADIUS = -1;
     
     NSArray* addressList = [appDelegate.databaseManager.engine extractAddressFromDeals:deals];
     
-    __block NSMutableArray* annotations = [[NSMutableArray alloc] init];
+    //__block NSMutableArray* annotations = [[NSMutableArray alloc] init];
+    //self.annotations = [[NSMutableArray alloc] init];
     
-    [appDelegate.databaseManager fetchGeocodeForAddresses:addressList additionalParams:nil shouldParse:YES addCompletetion:^(id response) {
+    [appDelegate.databaseManager managerFetchGeocodeForAddresses:addressList additionalParams:nil shouldParse:YES addCompletetion:^(id response) {
         
         NSArray* addressInfoList = (NSArray*) response;
         
-        for (Deal* deal in deals) {
-            
-            NSString* deal_address = deal.addressString;
-            
-            for (int count = 0; count < addressInfoList.count; count++) {
-                
-                NSDictionary* addressInfo = addressInfoList[count];
-                
-                NSArray* value = [addressInfo valueForKey:KEY_FORMATTED_ADDRESS];
-                NSString* formattedAddress = [value objectAtIndex:0];
-                
-                if([deal_address caseInsensitiveCompare:formattedAddress] == NSOrderedSame){
-                    
-                    deal.googleAddressInfo = addressInfo;
-                    
-                    CLLocation* eventLocation = [appDelegate.locationManager managerConvertAddressToLocation:addressInfo];
-                    
-                    CLLocationCoordinate2D coordinates = CLLocationCoordinate2DMake(eventLocation.coordinate.latitude, eventLocation.coordinate.longitude);
-                    
-                    DealMapAnnotation* mapAnnotation = [[DealMapAnnotation alloc] initWithDeal:deal];
-                    
-                    [mapAnnotation setCoordinate:coordinates];
-                    
-                    CLLocation* user = [appDelegate.locationManager getCurrentLocation];
-                    
-                    CLLocationDistance distance = [appDelegate.locationManager managerDistanceFromLocation:user toLocation:eventLocation];
-                    
-                    CLLocationDistance convertedDistance = [appDelegate.locationManager managerConvertDistance:distance];
-
-                    [mapAnnotation distanceFromUser:[NSString stringWithFormat:@"%.1f", convertedDistance]];
-                    
-                    [annotations addObject:mapAnnotation];
-                }
-            }
-        }
+        NSArray* annotations = [appDelegate.databaseManager managerCreateMapAnnotationsForDeals:deals addressInfo:addressInfoList];
         
-        [self.mapView addAnnotations:annotations.copy];
-
-        completionHandler(YES);
+        if(!annotations) completionHandler(NO);
+        else{
+            
+            [self.mapView addAnnotations:annotations];
+            
+            completionHandler(YES);
+        }
         
     }]; // End of Geocode Fetching
 
@@ -445,68 +431,37 @@ static double USE_CURRENT_RADIUS = -1;
 {
     AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
-    [appDelegate.drawerController closeDrawerAnimated:YES completion:^(BOOL finished) {
+    NSArray* filteredOutDeals = [appDelegate.databaseManager managerExtractDeals:filter fromDeals:appDelegate.databaseManager.managerGetSavedDeals];
+    
+    if(filteredOutDeals.count >= 1){
         
-        if(finished){
-            NSArray* filteredDeals = [appDelegate.databaseManager extractDeals:filter fromDeals:appDelegate.databaseManager.getSavedDeals];
+        [self displayAllAnnotationsAddCompletion:^(BOOL success) {
             
-            for (Deal* deals in filteredDeals) {
-                NSLog(@"%f", deals.budget);
-            }
-        }
-        
-        /*
-        if(filter){
-            
-            if(filter && filter.count > 1){
+            if(success){
                 
-                [self plotDealsOnMap:filter Animated:YES addCompletion:^(BOOL dealsPlotted) {
+                NSMutableArray* mapAnnotations = [[self.mapView annotations] mutableCopy];
+                
+                for(Deal* deal in filteredOutDeals){
                     
-                    [self.view layoutIfNeeded];
+                    for (DealMapAnnotation* annotation in mapAnnotations) {
+                        
+                        if([deal isEqual:annotation.dealAnnotated]){
+                            [[self.mapView viewForAnnotation:annotation] setHidden:YES];
+                            [mapAnnotations removeObject:annotation];
+                            break;
+                        }
+                        
+                    }
                     
-                }];
-                
-            }
-            else if (filter.count == 1)
-            {
-                Deal* deal = [filter objectAtIndex:0];
-                
-                [self plotDealOnMap:deal addCompletion:^(BOOL dealPlotted) {
-                    
-                    [self.view layoutIfNeeded];
-
-                }];
-            }
-            
-        }
-        */
-        /*
-        
-        CLLocation* currentLocation = self.mapView.userLocation.location;
-        
-        NSDictionary* criteria = [appDelegate.databaseManager getUsersCurrentCriteria];
-        
-        NSInteger miles = [[criteria valueForKey:NSLocalizedString(@"DISTANCE_FILTER", nil)] integerValue];
-        
-        double meters = (miles * 1609.34);
-        
-        CLLocationDistance radius = meters;
-        
-        [self centerMapOnLocation:currentLocation isUserLocation:NO AndRadius:radius animate:YES addCompletion:^(BOOL success) {
-            
-            [self.view layoutIfNeeded];
-            
-            [self reloadDealsAddCompletion:^(BOOL success) {
-                
-                if(success){
-                    [self.view layoutIfNeeded];
                 }
                 
-            }];
+                [appDelegate.drawerController closeDrawerAnimated:YES completion:nil];
+                
+            }
             
-        }];
-        */
-    }];
+        }]; // End of display annotation method
+        
+    }
 }
 
 #pragma mark -

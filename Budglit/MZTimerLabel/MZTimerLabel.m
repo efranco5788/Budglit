@@ -90,7 +90,7 @@
     return self;
 }
 
-
+/*
 - (instancetype)initWithCoder:(NSCoder *)aDecoder
 {
 	self = [super initWithCoder:aDecoder];
@@ -101,7 +101,7 @@
     
 	return self;
 }
-
+*/
 
 #pragma mark - 
 #pragma mark - Cleanup

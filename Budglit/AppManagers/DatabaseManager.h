@@ -52,52 +52,54 @@ typedef void (^newDataFetchedResponse)(UIBackgroundFetchResult result);
 
 -(instancetype) initWithEngineHostName:(NSString*)hostName NS_DESIGNATED_INITIALIZER;
 
--(NSDictionary*)fetchPrimaryDefaultSearchFiltersWithLocation;
+-(NSDictionary*)managerFetchPrimaryDefaultSearchFiltersWithLocation;
 
--(void)fetchDeals:(NSDictionary*)searchCriteria addCompletionBlock:(dataBlockResponse)completionHandler;
+-(void)managerFetchDeals:(NSDictionary*)searchCriteria addCompletionBlock:(dataBlockResponse)completionHandler;
 
--(void)fetchCachedImageForKey:(NSString*)key addCompletion:(fetchedImageResponse)completionHandler;
+-(void)managerFetchCachedImageForKey:(NSString*)key addCompletion:(fetchedImageResponse)completionHandler;
 
--(void)fetchPersistentStorageCachedImageForKey:(NSString*)key deal:(Deal*)aDeal addCompletion:(fetchedImageResponse)completionHandler;
+-(void)managerFetchPersistentStorageCachedImageForKey:(NSString*)key deal:(Deal*)aDeal addCompletion:(fetchedImageResponse)completionHandler;
 
--(void)fetchNewDataWithCompletion:(newDataFetchedResponse)completionHandler;
+-(void)managerFetchNewDataWithCompletion:(newDataFetchedResponse)completionHandler;
 
--(void)fetchGeocodeForAddress:(NSString*)address additionalParams:(NSDictionary*)params shouldParse:(BOOL)parse addCompletetion:(dataBlockResponse)completionHandler;
+-(void)managerFetchGeocodeForAddress:(NSString*)address additionalParams:(NSDictionary*)params shouldParse:(BOOL)parse addCompletetion:(dataBlockResponse)completionHandler;
 
--(void)fetchGeocodeForAddresses:(NSArray*)addressList additionalParams:(NSDictionary*)params shouldParse:(BOOL)parse addCompletetion:(dataBlockResponse)completionHandler;
+-(void)managerFetchGeocodeForAddresses:(NSArray*)addressList additionalParams:(NSDictionary*)params shouldParse:(BOOL)parse addCompletetion:(dataBlockResponse)completionHandler;
 
--(void)startDownloadImageFromURLString:(NSString*)requestString forDeal:(Deal*)deal addCompletion:(fetchedImageResponse)completionHandler;
+-(void)managerStartDownloadImageFromURLString:(NSString*)requestString forDeal:(Deal*)deal addCompletion:(fetchedImageResponse)completionHandler;
 
--(void)startDownloadImageFromURL:(NSString *)url forObject:(id)object forIndexPath:(NSIndexPath*)indexPath imageView:(UIImageView*)imgView;
+-(void)managerStartDownloadImageFromURL:(NSString *)url forObject:(id)object forIndexPath:(NSIndexPath*)indexPath imageView:(UIImageView*)imgView;
 
--(void)startDownloadImageFromURL:(NSString *)url forDeal:(Deal*)deal forIndexPath:(NSIndexPath*)indexPath imageView:(UIImageView*)imgView;
+-(void)managerStartDownloadImageFromURL:(NSString *)url forDeal:(Deal*)deal forIndexPath:(NSIndexPath*)indexPath imageView:(UIImageView*)imgView;
 
--(void)startDownloadImageFromURL:(NSString *)url forIndexPath:(NSIndexPath*)indexPath andImageView:(UIImageView*)imgView;
+-(void)managerStartDownloadImageFromURL:(NSString *)url forIndexPath:(NSIndexPath*)indexPath andImageView:(UIImageView*)imgView;
 
--(void)cancelDownloads:(generalBlockResponse)completionHandler;
+-(void)managerCancelDownloads:(generalBlockResponse)completionHandler;
 
--(void)sortDeals:(NSArray*)deals byKey:(NSString*)key ascendingOrder:(BOOL)shouldAscend localizeCompare:(BOOL)shouldLocalize addCompletetion:(dataBlockResponse)completionHandler;
+-(void)managerSortDeals:(NSArray*)deals byKey:(NSString*)key ascendingOrder:(BOOL)shouldAscend localizeCompare:(BOOL)shouldLocalize addCompletetion:(dataBlockResponse)completionHandler;
 
--(NSDictionary*)getUsersCurrentCriteria;
+-(NSDictionary*)managerGetUsersCurrentCriteria;
 
--(NSString*)getCurrentDateString;
+-(NSString*)managerGetCurrentDateString;
 
--(NSArray*) extractDeals:(NSArray*)filteredDeals fromDeals:(NSArray*)deals;
+-(NSArray*)managerExtractDeals:(NSArray*)filteredDeals fromDeals:(NSArray*)deals;
 
--(NSArray*)filterDeals:(NSArray*)deals byBudget:(double)budget;
+-(NSArray*)managerFilterDeals:(NSArray*)deals byBudget:(double)budget;
 
--(NSInteger)getLowestBudgetFromDeals:(NSArray*)deals;
+-(NSArray*)managerCreateMapAnnotationsForDeals:(NSArray*)deals addressInfo:(NSArray*)info;
 
--(NSInteger)getHighestBudgetFromDeals:(NSArray*)deals;
+-(NSInteger)managerGetLowestBudgetFromDeals:(NSArray*)deals;
 
--(void)saveUsersCriteria:(NSDictionary*)usersCriteria;
+-(NSInteger)managerGetHighestBudgetFromDeals:(NSArray*)deals;
 
--(void)setZipcodeCriteria:(NSString*)zipcode;
+-(void)managerSaveUsersCriteria:(NSDictionary*)usersCriteria;
 
--(BOOL)saveFetchedDeals:(NSArray*)dealsFetched;
+-(void)managerSetZipcodeCriteria:(NSString*)zipcode;
 
--(NSArray*)getSavedDeals;
+-(BOOL)managerSaveFetchedDeals:(NSArray*)dealsFetched;
 
--(void)resetDeals;
+-(NSArray*)managerGetSavedDeals;
+
+-(void)managerResetDeals;
 
 @end

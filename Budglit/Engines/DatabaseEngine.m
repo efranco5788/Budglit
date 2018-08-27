@@ -11,6 +11,7 @@
 #import "UserAccount.h"
 #import "CityDataObject.h"
 #import "Deal.h"
+#import "DealMapAnnotation.h"
 #import "ImageData.h"
 #import "UIImage+Resizing.h"
 #import "UIImageView+AFNetworking.h"
@@ -26,9 +27,11 @@
 #define DEAL_COUNT @"count"
 #define AUTHENTICATED_KEY @"authenticated"
 #define AUTHENTICATED_STATUS_KEY @"status"
+#define KEY_FORMATTED_ADDRESS @"formatted_address"
 
 #define RESCALE_IMAGE_WIDTH 1024
 #define RESCALE_IMAGE_HEIGHT 1024
+
 
 @implementation DatabaseEngine
 
@@ -97,7 +100,7 @@
 
 -(NSArray*)filterOutDeals:(NSArray *)deals byBudgetAmount:(double)amount
 {
-    NSPredicate* budgetPredicate = [NSPredicate predicateWithFormat:@"SELF.budget < %f", amount];
+    NSPredicate* budgetPredicate = [NSPredicate predicateWithFormat:@"SELF.budget <= %f", amount];
     
     NSArray* filteredArray = [deals filteredArrayUsingPredicate:budgetPredicate];
     
@@ -658,6 +661,52 @@
     NSArray* addresses = tmpAddresses.copy;
     
     return addresses;
+}
+
+-(NSArray*)createMapAnnotationsForDeals:(NSArray*)deals addressInfo:(NSArray*)addressInfoList
+{
+    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
+    
+    NSMutableArray* mutableAnnotations = [[NSMutableArray alloc] init];
+    
+    for (Deal* deal in deals) {
+        
+        NSString* deal_address = deal.addressString;
+        
+        for (int count = 0; count < addressInfoList.count; count++) {
+            
+            NSDictionary* addressInfo = addressInfoList[count];
+            
+            NSArray* value = [addressInfo valueForKey:KEY_FORMATTED_ADDRESS];
+            NSString* formattedAddress = [value objectAtIndex:0];
+            
+            if([deal_address caseInsensitiveCompare:formattedAddress] == NSOrderedSame){
+                
+                deal.googleAddressInfo = addressInfo;
+                
+                CLLocation* eventLocation = [appDelegate.locationManager managerConvertAddressToLocation:addressInfo];
+                
+                CLLocationCoordinate2D coordinates = CLLocationCoordinate2DMake(eventLocation.coordinate.latitude, eventLocation.coordinate.longitude);
+                
+                DealMapAnnotation* mapAnnotation = [[DealMapAnnotation alloc] initWithDeal:deal];
+                
+                [mapAnnotation setCoordinate:coordinates];
+                
+                CLLocation* user = [appDelegate.locationManager getCurrentLocation];
+                
+                CLLocationDistance distance = [appDelegate.locationManager managerDistanceFromLocation:user toLocation:eventLocation];
+                
+                CLLocationDistance convertedDistance = [appDelegate.locationManager managerConvertDistance:distance];
+                
+                [mapAnnotation distanceFromUser:[NSString stringWithFormat:@"%.1f", convertedDistance]];
+                
+                [mutableAnnotations addObject:mapAnnotation];
+            }
+        }
+    }
+    
+    return mutableAnnotations.copy;
+    
 }
 
 -(void)cancelOperations:(generalBlockResponse)completionHandler

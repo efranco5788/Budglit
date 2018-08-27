@@ -153,7 +153,7 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 -(void)application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
 {
     if (self.databaseManager) {
-        [self.databaseManager fetchNewDataWithCompletion:^(UIBackgroundFetchResult result) {
+        [self.databaseManager managerFetchNewDataWithCompletion:^(UIBackgroundFetchResult result) {
             completionHandler(result);
         }];
     }

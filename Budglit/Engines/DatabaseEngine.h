@@ -66,15 +66,13 @@ typedef void (^dataResponseBlockResponse)(id response);
 
 -(void)getImageFromCachePersistenceStorageWithKey:(NSString*)key addCompletionHandler:(dataResponseBlockResponse)completionHandler;
 
--(void)groupAnnotationByCoordinates:(NSMutableArray*)annotations addCompletionHandler:(dataResponseBlockResponse)completionHandler;
-
--(void)attemptToRepositionAnnotations:(id)annotations addCompletionHandler:(generalBlockResponse)completionHandler;
-
 -(BOOL)extractAuthetication:(NSDictionary*)info;
 
 -(NSArray*)extractDeals:(NSDictionary*)info;
 
 -(NSArray*)extractAddressFromDeals:(NSArray*)deals;
+
+-(NSArray*)createMapAnnotationsForDeals:(NSArray*)deals addressInfo:(NSArray*)info;
 
 -(NSArray*)filterOutDeals:(NSArray*)deals byBudgetAmount:(double)amount;
 

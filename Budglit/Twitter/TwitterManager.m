@@ -165,7 +165,7 @@ typedef NS_ENUM(NSInteger, NSTwitterFilterType) {
 {
     AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
-    [appDelegate.databaseManager fetchGeocodeForAddress:deal.address additionalParams:nil shouldParse:YES addCompletetion:^(id response) {
+    [appDelegate.databaseManager managerFetchGeocodeForAddress:deal.address additionalParams:nil shouldParse:YES addCompletetion:^(id response) {
         
         NSDictionary* geocodeResponse = (NSDictionary*)response;
         

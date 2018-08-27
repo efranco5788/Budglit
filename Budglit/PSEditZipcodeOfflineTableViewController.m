@@ -228,7 +228,7 @@
     
     (appDelegate.locationManager).delegate = self;
     
-    [appDelegate.databaseManager setZipcodeCriteria:selectedCity.postal];
+    [appDelegate.databaseManager managerSetZipcodeCriteria:selectedCity.postal];
     
     //[self.searchControl setActive:NO];
     
