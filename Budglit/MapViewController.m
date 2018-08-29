@@ -433,23 +433,36 @@ static double USE_CURRENT_RADIUS = -1;
     
     NSArray* filteredOutDeals = [appDelegate.databaseManager managerExtractDeals:filter fromDeals:appDelegate.databaseManager.managerGetSavedDeals];
     
+    if(filter == nil) [appDelegate.drawerController closeDrawerAnimated:YES completion:nil];
+    
     if(filteredOutDeals.count >= 1){
         
         [self displayAllAnnotationsAddCompletion:^(BOOL success) {
+            
+            NSLog(@"%i", success);
             
             if(success){
                 
                 NSMutableArray* mapAnnotations = [[self.mapView annotations] mutableCopy];
                 
+                [mapAnnotations removeObject:self.mapView.userLocation];
+                
                 for(Deal* deal in filteredOutDeals){
                     
-                    for (DealMapAnnotation* annotation in mapAnnotations) {
+                    for (id annotation in mapAnnotations) {
                         
-                        if([deal isEqual:annotation.dealAnnotated]){
-                            [[self.mapView viewForAnnotation:annotation] setHidden:YES];
-                            [mapAnnotations removeObject:annotation];
-                            break;
+                        if(![[annotation class] isKindOfClass:[MKUserLocation class]]){
+                            
+                            DealMapAnnotation* dealAnnotations = (DealMapAnnotation*) annotation;
+                            
+                            if([deal isEqual:dealAnnotations.dealAnnotated]){
+                                [[self.mapView viewForAnnotation:annotation] setHidden:YES];
+                                [mapAnnotations removeObject:annotation];
+                                break;
+                            }
+                            
                         }
+                        
                         
                     }
                     
@@ -462,6 +475,7 @@ static double USE_CURRENT_RADIUS = -1;
         }]; // End of display annotation method
         
     }
+    else [appDelegate.drawerController closeDrawerAnimated:YES completion:nil];
 }
 
 #pragma mark -

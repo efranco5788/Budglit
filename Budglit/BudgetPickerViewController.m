@@ -258,7 +258,7 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
     NSString* maximumDistanceLbl = MAXIMUM_DISTANCE_LBL_DEFAULT;
     
     NSString* minimumDistanceLbl = MINIMUM_DISTANCE_LBL_DEFAULT;
-    
+
     int minDistance = -1;
     
     int maxDistance = -1;
@@ -279,6 +279,7 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
         maximumBudgetLbl = [NSString stringWithFormat:@"$ %@.00", [[NSNumber numberWithInteger:highestBudget] stringValue]];
         
         [self.budgetSlider setMaximumValue:highestBudget];
+        [self.budgetSlider setValue:highestBudget];
         
         for (Deal* deal in deals) {
             

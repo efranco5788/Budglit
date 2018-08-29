@@ -244,8 +244,9 @@
         
     }
     
-    NSDictionary* userObject = @{NSLocalizedString(@"DISTANCE_FILTER", nil): distance};
     /*
+    NSDictionary* userObject = @{NSLocalizedString(@"DISTANCE_FILTER", nil): distance};
+    
     [appDelegate.locationManager fetchSurroundingZipcodesWithPostalCode:selectedCity.postal andObjects:userObject addCompletionHandler:^(id object) {
         
         if (object) {
