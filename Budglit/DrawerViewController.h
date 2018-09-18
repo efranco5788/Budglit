@@ -27,6 +27,6 @@
 
 @property (nonatomic, strong) LoadingLocalDealsViewController* loadingPage;
 
--(void)slideDrawerSide:(MMDrawerSide*)drawerSide Animated:(BOOL)isAnimated;
+-(void)slideDrawerSide:(MMDrawerSide)drawerSide Animated:(BOOL)isAnimated;
 
 @end

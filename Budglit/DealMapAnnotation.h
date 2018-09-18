@@ -10,29 +10,33 @@
 #import <MapKit/MapKit.h>
 #import "Deal.h"
 #import "DealDetailViewController.h"
-#import "GeneralEventAnnotationView.h"
+#import "GeneralEventPinAnnotationView.h"
 #import "CustomCalloutViewController.h"
 
-@interface DealMapAnnotation : NSObject <MKAnnotation>
+@interface DealMapAnnotation : NSObject<MKAnnotation>
 
+@property (nonatomic, strong) Deal* parentDeal;
 @property (nonatomic, strong) CustomCalloutViewController* calloutView;
-@property (strong, nonatomic) Deal* dealAnnotated;
-@property (copy, nonatomic) NSString* title;
-@property (strong, nonatomic) NSString* locationName;
-@property (strong, nonatomic) NSString* distanceFromUser;
-@property (strong, nonatomic) NSString* discipline;
+@property (nonatomic, copy) NSString* title;
+@property (nonatomic, strong) NSString* locationName;
+@property (nonatomic, strong) NSString* distanceFromUserString;
+@property (nonatomic, strong) NSString* discipline;
 @property (nonatomic, assign) BOOL showCustomCallOut;
 
-+ (MKAnnotationView *)createViewAnnotationForMapView:(MKMapView *)mapView annotation:(id <MKAnnotation>)annotation;
++(MKAnnotationView *)createViewAnnotationForMapView:(MKMapView *)mapView annotation:(id <MKAnnotation>)annotation;
 
--(id)initWithDeal:(Deal*)deal;
+-(id)initForDeal:(Deal*)deal;
 
 -(void)setFrameForCalloutView:(CGRect)tmpFrame;
 
 -(void)setCustomCallout:(BOOL)shouldShowCallout;
 
--(void)distanceFromUser:(NSString *)distance;
+-(CLLocationDistance)getDistanceFromUser;
 
--(void) showCustomCallout;
+-(NSString*)getDistanceFromUserString;
+
+-(void)setDistanceFromUser:(double)distance;
+
+-(void)showCustomCallout;
 
 @end

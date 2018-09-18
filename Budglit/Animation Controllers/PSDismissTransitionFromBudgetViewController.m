@@ -8,14 +8,14 @@
 
 #import "PSDismissTransitionFromBudgetViewController.h"
 #import "LoadingLocalDealsViewController.h"
-#import "BudgetPickerViewController.h"
+#import "FilterViewController.h"
 
 
 @implementation PSDismissTransitionFromBudgetViewController
 
 -(void)animateTransition:(id<UIViewControllerContextTransitioning>)transitionContext
 {
-    BudgetPickerViewController* fromViewController = (BudgetPickerViewController*) [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
+    FilterViewController* fromViewController = (FilterViewController*) [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
     
     //UIView *containerView = [transitionContext containerView];
     

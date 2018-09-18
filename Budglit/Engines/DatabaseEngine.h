@@ -44,8 +44,6 @@ typedef void (^dataResponseBlockResponse)(id response);
 
 -(void)sortArray:(NSArray*)array byKey:(NSString*)key ascending:(BOOL)shouldAscend localizeCompare:(BOOL)shouldLocalize addCompletion:(dataResponseBlockResponse)completionHandler;
 
--(void)sendSearchCriteriaForTotalCountOnly:(NSDictionary*)searchCriteria addCompletion:(dataResponseBlockResponse) completionBlock;
-
 -(void)sendGetRequestSearchCriteria:(NSDictionary*)searchCriteria addCompletion:(dataResponseBlockResponse) completionBlock;
 
 -(void)sendSearchCriteria:(NSDictionary*)searchCriteria addCompletion:(dataResponseBlockResponse) completionBlock;
@@ -75,6 +73,8 @@ typedef void (^dataResponseBlockResponse)(id response);
 -(NSArray*)createMapAnnotationsForDeals:(NSArray*)deals addressInfo:(NSArray*)info;
 
 -(NSArray*)filterOutDeals:(NSArray*)deals byBudgetAmount:(double)amount;
+
+-(NSArray*)filterOutDeals:(NSArray*)deals byDistance:(double)distance;
 
 -(NSInteger)findLowestBudget:(NSArray*)deals;
 

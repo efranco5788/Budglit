@@ -10,7 +10,7 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
-        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="BudgetPickerViewController">
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="FilterViewController">
             <connections>
                 <outlet property="budgetSlider" destination="GNh-1M-p0v" id="hql-0B-fOp"/>
                 <outlet property="budgetText" destination="ZvP-Tp-zXR" id="MBf-vC-awY"/>
@@ -42,11 +42,16 @@
                     </connections>
                 </button>
                 <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="0.0" translatesAutoresizingMaskIntoConstraints="NO" id="C57-oM-6cn">
-                    <rect key="frame" x="18" y="184" width="339" height="31"/>
+                    <rect key="frame" x="18" y="184" width="330" height="31"/>
                     <color key="tintColor" red="0.1215686275" green="0.31372549020000001" blue="0.60784313729999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <connections>
+                        <action selector="dragEnded:" destination="-1" eventType="touchUpInside" id="STe-qs-Lt0"/>
+                        <action selector="dragEnded:" destination="-1" eventType="touchUpOutside" id="qVP-sg-ZpO"/>
+                        <action selector="dragStarted:" destination="-1" eventType="touchDown" id="sB6-iz-1Qj"/>
+                    </connections>
                 </slider>
-                <slider opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="253" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="0.0" translatesAutoresizingMaskIntoConstraints="NO" id="GNh-1M-p0v">
-                    <rect key="frame" x="18" y="353" width="339" height="31"/>
+                <slider opaque="NO" tag="1" contentMode="scaleToFill" verticalHuggingPriority="253" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="0.0" translatesAutoresizingMaskIntoConstraints="NO" id="GNh-1M-p0v">
+                    <rect key="frame" x="18" y="353" width="330" height="31"/>
                     <color key="tintColor" red="0.12156862745098039" green="0.31372549019607843" blue="0.60784313725490191" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <connections>
                         <action selector="dragEnded:" destination="-1" eventType="touchUpInside" id="3Uk-XE-C94"/>
@@ -106,9 +111,9 @@
                 <constraint firstItem="GNh-1M-p0v" firstAttribute="top" secondItem="kbs-qT-ZIj" secondAttribute="bottom" constant="-53" id="Wpk-Bl-fvH"/>
                 <constraint firstItem="C57-oM-6cn" firstAttribute="top" secondItem="ipB-88-3Zz" secondAttribute="bottom" constant="-53" id="XAy-hT-vNf"/>
                 <constraint firstItem="kbs-qT-ZIj" firstAttribute="leading" secondItem="GNh-1M-p0v" secondAttribute="leading" id="Y3M-3R-KOq"/>
-                <constraint firstItem="3X0-70-c8J" firstAttribute="trailing" secondItem="GNh-1M-p0v" secondAttribute="trailing" id="aEU-eI-lDi"/>
+                <constraint firstItem="3X0-70-c8J" firstAttribute="trailing" secondItem="GNh-1M-p0v" secondAttribute="trailing" constant="9" id="aEU-eI-lDi"/>
                 <constraint firstItem="Ie0-3D-788" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="16" id="c2H-c4-6g7"/>
-                <constraint firstItem="GNh-1M-p0v" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="dg9-iO-8jT"/>
+                <constraint firstItem="GNh-1M-p0v" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" constant="-4.5" id="dg9-iO-8jT"/>
                 <constraint firstItem="GNh-1M-p0v" firstAttribute="bottom" relation="lessThanOrEqual" secondItem="i5M-Pr-FkT" secondAttribute="bottom" constant="-220" id="dmC-ZN-Xpv"/>
                 <constraint firstItem="ZvP-Tp-zXR" firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="GNh-1M-p0v" secondAttribute="top" priority="250" constant="-57" id="g8y-DQ-ram"/>
                 <constraint firstItem="F1v-eD-U5X" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="iip-aB-xcO"/>

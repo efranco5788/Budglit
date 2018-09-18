@@ -11,7 +11,7 @@
 
 @class Deal;
 @class AppDelegate;
-@class PSTwitterViewController;
+@class TwitterViewController;
 @class PSFacebookViewController;
 @class PSInstagramViewController;
 
@@ -21,12 +21,14 @@
 @property (strong, nonatomic) Deal* dealSelected;
 @property (weak, nonatomic) IBOutlet UIView* socialMediaContainer;
 @property (strong, nonatomic) UIPageViewController* SMPageViewController;
-@property (strong, nonatomic) PSTwitterViewController* twitterViewController;
+@property (strong, nonatomic) TwitterViewController* twitterViewController;
 @property (strong, nonatomic) PSFacebookViewController* fbViewController;
 @property (strong, nonatomic) PSInstagramViewController* instaViewController;
 @property (strong, nonatomic) IBOutlet UIImageView* venueImage;
 @property (strong, nonatomic) IBOutlet UIActivityIndicatorView *imgActivityIndicator;
 @property (weak, nonatomic) IBOutlet UITextView* descriptionTextView;
+@property (weak, nonatomic) IBOutlet UILabel *distanceLbl;
+
 @property (strong, nonatomic) IBOutlet UIImageView *addressImage;
 @property (strong, nonatomic) IBOutlet UIImageView *phoneImage;
 @property (weak, nonatomic) IBOutlet UINavigationBar *socialMediaNavBar;
@@ -36,6 +38,7 @@
 @property (weak, nonatomic) UITabBarController* socialMediaTabBarController;
 @property (weak, nonatomic) NSString* venueName;
 @property (weak, nonatomic) NSString* descriptionText;
+@property (weak, nonatomic) NSString* distanceText;
 @property (strong, nonatomic) NSString* addressText;
 @property (strong, nonatomic) NSString* phoneText;
 @property (strong, nonatomic) UIImage* image;

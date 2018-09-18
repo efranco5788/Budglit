@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
-@class BudgetPickerViewController;
+@class FilterViewController;
 @class LoadingLocalDealsViewController;
 
 @interface PSTransitionToBudgetViewController : NSObject <UIViewControllerAnimatedTransitioning>

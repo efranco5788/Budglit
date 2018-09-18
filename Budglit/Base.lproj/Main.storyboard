@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="0Jg-98-CE3">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="0Jg-98-CE3">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -236,7 +236,7 @@
         <!--Deal Detail View Controller-->
         <scene sceneID="xGL-2Q-dO9">
             <objects>
-                <viewController storyboardIdentifier="PSDealsDetailViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="txp-ao-sEd" customClass="DealDetailViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="DealsDetailViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="txp-ao-sEd" customClass="DealDetailViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Y6j-zV-qkB">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="603"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -247,16 +247,15 @@
                                     <constraint firstAttribute="height" constant="219" id="zuD-Hk-PeX"/>
                                 </constraints>
                             </imageView>
-                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" hidesWhenStopped="YES" animating="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="WeM-xm-P4r">
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" animating="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="WeM-xm-P4r">
                                 <rect key="frame" x="169" y="91" width="37" height="37"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="color" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </activityIndicatorView>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="J9v-Vd-bkx">
-                                <rect key="frame" x="0.0" y="220" width="375" height="79"/>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" bouncesZoom="NO" editable="NO" textAlignment="natural" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="J9v-Vd-bkx">
+                                <rect key="frame" x="0.0" y="220" width="375" height="58"/>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="79" id="M9C-gq-DrW"/>
+                                    <constraint firstAttribute="height" constant="58" id="M9C-gq-DrW"/>
                                 </constraints>
                                 <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation</string>
                                 <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="14"/>
@@ -270,6 +269,23 @@
                                     </userDefinedRuntimeAttribute>
                                 </userDefinedRuntimeAttributes>
                             </textView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jA5-F9-pCN">
+                                <rect key="frame" x="248" y="278" width="127" height="22"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="127" id="fhh-aJ-gmn"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="11"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Nxz-2F-vea">
+                                <rect key="frame" x="0.0" y="278" width="248" height="22"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="address_icon.png" translatesAutoresizingMaskIntoConstraints="NO" id="ItR-4E-3Xg">
                                 <rect key="frame" x="0.0" y="300" width="160" height="31"/>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -309,19 +325,28 @@
                         <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <gestureRecognizers/>
                         <constraints>
-                            <constraint firstItem="ItR-4E-3Xg" firstAttribute="top" secondItem="J9v-Vd-bkx" secondAttribute="bottom" constant="1" id="7jj-ws-4Pa"/>
+                            <constraint firstItem="jA5-F9-pCN" firstAttribute="leading" secondItem="Nxz-2F-vea" secondAttribute="trailing" id="3Iv-Qk-hdf"/>
+                            <constraint firstItem="ItR-4E-3Xg" firstAttribute="top" secondItem="J9v-Vd-bkx" secondAttribute="bottom" constant="22" id="7jj-ws-4Pa"/>
                             <constraint firstItem="J9v-Vd-bkx" firstAttribute="leading" secondItem="ItR-4E-3Xg" secondAttribute="leading" id="D34-ZA-WTl"/>
                             <constraint firstItem="TSX-bn-6sL" firstAttribute="leading" secondItem="dF4-A1-cie" secondAttribute="leading" id="E7A-uy-4CD"/>
                             <constraint firstItem="ItR-4E-3Xg" firstAttribute="leading" secondItem="J0a-iD-VAU" secondAttribute="leading" id="HEJ-Bn-pS0"/>
                             <constraint firstItem="J9v-Vd-bkx" firstAttribute="trailing" secondItem="C1d-8H-dAM" secondAttribute="trailing" id="JPt-o5-lkJ"/>
                             <constraint firstItem="TSX-bn-6sL" firstAttribute="leading" secondItem="J9v-Vd-bkx" secondAttribute="leading" id="Krl-DJ-f0U"/>
                             <constraint firstItem="J0a-iD-VAU" firstAttribute="bottom" secondItem="dF4-A1-cie" secondAttribute="bottom" id="QJD-c3-W7b"/>
+                            <constraint firstItem="Nxz-2F-vea" firstAttribute="bottom" secondItem="jA5-F9-pCN" secondAttribute="bottom" id="QcD-Yb-Qn7"/>
+                            <constraint firstItem="Nxz-2F-vea" firstAttribute="top" secondItem="jA5-F9-pCN" secondAttribute="top" id="TFf-5P-dbM"/>
                             <constraint firstItem="ItR-4E-3Xg" firstAttribute="bottom" secondItem="C1d-8H-dAM" secondAttribute="bottom" id="Tdx-Xc-ioN"/>
                             <constraint firstItem="ItR-4E-3Xg" firstAttribute="top" secondItem="C1d-8H-dAM" secondAttribute="top" id="VHM-ov-AMC"/>
+                            <constraint firstItem="WeM-xm-P4r" firstAttribute="centerX" secondItem="J9v-Vd-bkx" secondAttribute="centerX" id="Vsj-l3-pcj"/>
                             <constraint firstItem="TSX-bn-6sL" firstAttribute="trailing" secondItem="J9v-Vd-bkx" secondAttribute="trailing" id="WrA-94-GG8"/>
+                            <constraint firstItem="Nxz-2F-vea" firstAttribute="leading" secondItem="ItR-4E-3Xg" secondAttribute="leading" id="YXj-mK-iAD"/>
                             <constraint firstItem="dF4-A1-cie" firstAttribute="trailing" secondItem="TSX-bn-6sL" secondAttribute="trailing" id="YcB-IS-ZOX"/>
                             <constraint firstItem="J9v-Vd-bkx" firstAttribute="top" secondItem="TSX-bn-6sL" secondAttribute="bottom" constant="1" id="Ycr-Ef-9n8"/>
                             <constraint firstItem="C1d-8H-dAM" firstAttribute="trailing" secondItem="J0a-iD-VAU" secondAttribute="trailing" id="ar4-19-40e"/>
+                            <constraint firstItem="C1d-8H-dAM" firstAttribute="top" secondItem="jA5-F9-pCN" secondAttribute="bottom" id="c3s-TB-KHa"/>
+                            <constraint firstItem="Nxz-2F-vea" firstAttribute="top" secondItem="J9v-Vd-bkx" secondAttribute="bottom" id="dhs-TO-WWm"/>
+                            <constraint firstItem="jA5-F9-pCN" firstAttribute="trailing" secondItem="TSX-bn-6sL" secondAttribute="trailing" id="dzs-VW-R98"/>
+                            <constraint firstItem="WeM-xm-P4r" firstAttribute="centerY" secondItem="TSX-bn-6sL" secondAttribute="centerY" id="jNd-o1-VEx"/>
                             <constraint firstItem="TSX-bn-6sL" firstAttribute="top" secondItem="dF4-A1-cie" secondAttribute="top" id="ljV-hO-lo5"/>
                             <constraint firstItem="C1d-8H-dAM" firstAttribute="leading" secondItem="ItR-4E-3Xg" secondAttribute="trailing" id="tU2-iq-arR"/>
                             <constraint firstItem="J0a-iD-VAU" firstAttribute="top" secondItem="ItR-4E-3Xg" secondAttribute="bottom" constant="1" id="xgC-Lj-0go"/>
@@ -338,6 +363,7 @@
                         <outlet property="SMContainerTopConstraint" destination="xgC-Lj-0go" id="A6O-lG-lv6"/>
                         <outlet property="addressImage" destination="ItR-4E-3Xg" id="qNU-DW-Hcp"/>
                         <outlet property="descriptionTextView" destination="J9v-Vd-bkx" id="Qcz-lR-NFg"/>
+                        <outlet property="distanceLbl" destination="jA5-F9-pCN" id="bjt-Db-KSA"/>
                         <outlet property="imgActivityIndicator" destination="WeM-xm-P4r" id="RAf-CS-AQy"/>
                         <outlet property="phoneImage" destination="C1d-8H-dAM" id="1Dx-CR-Xl3"/>
                         <outlet property="socialMediaContainer" destination="J0a-iD-VAU" id="ibI-vc-nlB"/>
@@ -355,7 +381,7 @@
                     </connections>
                 </panGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="2769" y="141"/>
+            <point key="canvasLocation" x="2767.1999999999998" y="139.880059970015"/>
         </scene>
         <!--Drawer View Controller-->
         <scene sceneID="MUS-8d-czC">

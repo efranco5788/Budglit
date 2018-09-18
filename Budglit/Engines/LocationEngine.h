@@ -33,9 +33,13 @@ typedef void (^dataResponseBlockResponse)(id response);
 
 -(NSDictionary*)loadStates;
 
--(CLLocationDistance)getLocationBetweenLocations:(NSArray*)locations;
+-(CLLocationDistance)getDistanceBetweenLocations:(NSArray*)locations;
 
 -(CLLocation*)createLocationFromStringLongtitude:(NSString*)lng andLatitude:(NSString*)lat;
+
+-(NSInteger)findShortestDistance:(NSArray*)deals;
+
+-(NSInteger)findLongestDistance:(NSArray*)deals;
 
 -(CLLocation*)createLocationWithLongtitude:(CLLocationDegrees)longtitude andLatitude:(CLLocationDegrees)latitude;
 

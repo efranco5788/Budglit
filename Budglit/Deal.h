@@ -13,6 +13,7 @@
 #define DEAL_ID_KEY @"dealID"
 
 @class MZTimerLabel;
+@class DealMapAnnotation;
 
 @protocol DealDelegate <NSObject>
 @optional
@@ -43,6 +44,7 @@ extern NSString* const kDefaultEventEndNotification;
 @property (nonatomic, strong) NSString* zipcode;
 @property (nonatomic, strong) ImageStateObject* imgStateObject;
 @property (nonatomic, strong) MZTimerLabel* eventCountDwn;
+@property (nonatomic, strong) DealMapAnnotation* annotation;
 
 - (instancetype) initWithVenueName:(NSString*) venue andVenueAddress:(NSString*) anAddress andVenueDescription:(NSString*) aVenueDes andVenueTwtrUsername:(NSString*)useranme andDate:(NSString*)dateString andEndDate:(NSString*)end andDealDescription:(NSString*) aDealDescription andPhoneNumber:(NSString*) aNumber andCity:(NSString*) aCity andState:(NSString*) aState andZipcode:(NSString*)aZip andBudget:(double) aBudget andDealID:(NSString*) aDealID andURLImage:(NSString*) url andAddTags:(NSArray*) dealTags NS_DESIGNATED_INITIALIZER;
 
@@ -53,7 +55,7 @@ extern NSString* const kDefaultEventEndNotification;
 
 @property (NS_NONATOMIC_IOSONLY, getter=getOriginalPosition) CGRect originalPosition;
 
--(double) budget;
+-(double)budget;
 
 -(void)addTags:(NSArray*)tags;
 

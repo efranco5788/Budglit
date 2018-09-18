@@ -63,25 +63,29 @@ typedef void (^fetchPostalCompletionHandler)(id object);
 
 @property (NS_NONATOMIC_IOSONLY, readonly, copy) NSString *retrieveCurrentLocationString;
 
--(void) fetchLocationInformation:(NSArray*) locations;
-
--(BOOL) validateZipcodeInput:(NSString*)newInput withOldString: (NSString*)oldString;
-
--(void) applicaitonHasLaunchedOnced;
-
 @property (NS_NONATOMIC_IOSONLY, readonly) BOOL hasLocationsRecorded;
 
 @property (NS_NONATOMIC_IOSONLY, readonly) BOOL hasMetLocationTimeThreshold;
 
 @property (NS_NONATOMIC_IOSONLY, getter=getCurrentZipcode, readonly, copy) NSString *currentZipcode;
 
+-(void) fetchLocationInformation:(NSArray*) locations;
+
+-(BOOL) validateZipcodeInput:(NSString*)newInput withOldString: (NSString*)oldString;
+
+-(void) applicaitonHasLaunchedOnced;
+
 -(CLLocation*)getCurrentLocation;
 
--(CLLocationDistance)managerDistanceFromLocation:(CLLocation*)locationA toLocation:(CLLocation*)locationB;
+-(CLLocationDistance)managerDistanceMetersFromLocation:(CLLocation*)locationA toLocation:(CLLocation*)locationB;
 
 -(void)setDistanceConversionType:(NSInteger)type;
 
 -(double)managerConvertDistance:(double)meters;
+
+-(NSInteger)managerGetShortestDistanceFromDeals:(NSArray*)deals;
+
+-(NSInteger)managerGetLongestDistanceFromDeals:(NSArray*)deals;
 
 -(CLLocation*)managerCreateLocationFromStringLongtitude:(NSString *)lng andLatitude:(NSString *)lat;
 

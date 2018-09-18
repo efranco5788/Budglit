@@ -170,8 +170,12 @@ static LocationSeviceManager* sharedManager;
     
 }
 
--(CLLocationDistance)managerDistanceFromLocation:(CLLocation *)locationA toLocation:(CLLocation *)locationB
+
+#pragma mark -
+#pragma mark - Convenient Distance Methods
+-(CLLocationDistance)managerDistanceMetersFromLocation:(CLLocation *)locationA toLocation:(CLLocation *)locationB
 {
+    
     if (locationA && locationB) {
         
         NSMutableArray* tmpLocations = [[NSMutableArray alloc] init];
@@ -182,10 +186,9 @@ static LocationSeviceManager* sharedManager;
         
         NSArray* locations = tmpLocations.copy;
         
-        CLLocationDistance distance = [self.engine getLocationBetweenLocations:locations];
+        CLLocationDistance distance = [self.engine getDistanceBetweenLocations:locations];
         
         return distance;
-        
     }
     else return -1;
 }
@@ -193,6 +196,24 @@ static LocationSeviceManager* sharedManager;
 -(double)managerConvertDistance:(double)meters
 {
     return [self.engine convertLocationDistanceMeters:meters];
+}
+
+-(NSInteger)managerGetShortestDistanceFromDeals:(NSArray *)deals
+{
+    if(!deals) return -1;
+    
+    if(deals.count < 1) return 0;
+    
+    return [self.engine findShortestDistance:deals];
+}
+
+-(NSInteger)managerGetLongestDistanceFromDeals:(NSArray *)deals
+{
+    if(!deals) return -1;
+    
+    if(deals.count < 1) return 0;
+    
+    return [self.engine findLongestDistance:deals];
 }
 
 

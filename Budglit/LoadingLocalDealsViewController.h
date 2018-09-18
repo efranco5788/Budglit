@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@class BudgetPickerViewController;
+@class FilterViewController;
 @class BudgetManager;
 @class DatabaseManager;
 @class Deal;
@@ -35,7 +35,7 @@ typedef void (^completionBlock)(id results);
 
 @property (nonatomic, strong) PSEditZipcodeOfflineTableViewController* editOfflinePage;
 
-@property (nonatomic, strong) BudgetPickerViewController* budgetPickerView;
+@property (nonatomic, strong) FilterViewController* filterView;
 
 -(void) fetchInitialUserLocationOffline;
 

@@ -10,7 +10,7 @@
 #import <dispatch/dispatch.h>
 #import "AppDelegate.h"
 #import "DatabaseEngine.h"
-#import "BudgetPickerViewController.h"
+#import "FilterViewController.h"
 #import "Deal.h"
 #import "DealParser.h"
 #import "DealTableViewCell.h"
@@ -211,7 +211,7 @@ static DatabaseManager* sharedManager;
     return extractedDeals;
 }
 
--(NSArray *)managerFilterDeals:(NSArray*)deals byBudget:(double)budget
+-(NSArray*)managerFilterDeals:(NSArray*)deals byBudget:(double)budget
 {
     if(!deals){
         deals = [self managerGetSavedDeals];
@@ -229,6 +229,27 @@ static DatabaseManager* sharedManager;
     
     return filtered;
     
+}
+
+-(NSArray*)managerFilterDeals:(NSArray *)deals byDistance:(double)distance
+{
+    if(!deals){
+        deals = [self managerGetSavedDeals];
+    }
+    
+    NSPredicate* dealPredicate = [NSPredicate predicateWithFormat:@"SELF.class == %@", [Deal class]];
+    
+    NSArray* foundDeals = [deals filteredArrayUsingPredicate:dealPredicate];
+    
+    if(!foundDeals || foundDeals.count < 1){
+        return nil;
+    }
+    
+    NSArray* filtered = [self.engine filterOutDeals:foundDeals byDistance:distance];
+    
+    NSLog(@"Distance ---- %@", filtered);
+    
+    return filtered;
 }
 
 -(NSInteger)managerGetLowestBudgetFromDeals:(NSArray*)deals
@@ -388,16 +409,15 @@ static DatabaseManager* sharedManager;
 }
 
 // Fetch Memory Cahce for Image
--(void)fetchCachedImageForKey:(NSString *)key addCompletion:(fetchedImageResponse)completionHandler
+-(void)managerFetchCachedImageForKey:(NSString *)key addCompletion:(fetchedImageResponse)completionHandler
 {
-    __block UIImage* cachedImage;
-    
+
     [self.engine getImageFromCacheWithKey:key addCompletionHandler:^(id response) {
         
         if(!response) completionHandler(nil);
         else{
             
-            cachedImage = (UIImage*) response;
+            UIImage* cachedImage = (UIImage*) response;
             
             completionHandler(cachedImage);
         }

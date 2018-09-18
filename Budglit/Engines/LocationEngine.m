@@ -7,10 +7,14 @@
 //
 
 #import "LocationEngine.h"
+#import "AppDelegate.h"
+#import "Deal.h"
 
 #define PARAM_USERNAME @"efranco5788"
 #define KEY_FOR_USERNAME @"username"
 #define POSTAL_CODE_NEARBY_SEARCH_URL @"api/zipcode"
+#define MINIMUM_DISTANCE_LBL_DEFAULT @"Under 1 mile"
+#define MAXIMUM_DISTANCE_LBL_DEFAULT @"0"
 //#define MILE_CONVERSION @"miles"
 //#define KILOMETER_CONVERSION @"kilometers"
 #define MakeLocation(lat,lon) [[CLLocation alloc]initWithLatitude: lat longitude: lon]
@@ -76,11 +80,53 @@ DISTANCE_CONERSION conversionType;
 
 -(double)convertLocationDistanceMeters:(double)meters
 {
-    
     if (conversionType == MILE_CONVERSION) {
         return (meters / 1609.344);
     }
     else return (meters / 1000.0);
+}
+
+-(NSInteger)findShortestDistance:(NSArray *)deals
+{
+    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
+
+    int minDistance = 0;
+    
+    for (Deal* deal in deals) {
+        
+        CLLocation* evntLocation = [appDelegate.locationManager managerConvertAddressToLocation:deal.googleAddressInfo];
+        
+        CLLocationDistance totalMeters = [appDelegate.locationManager managerDistanceMetersFromLocation:evntLocation toLocation:[appDelegate.locationManager getCurrentLocation]];
+
+        CLLocationDistance convertedDistance = [self convertLocationDistanceMeters:totalMeters];
+        
+        if (convertedDistance < minDistance) minDistance = floor(convertedDistance);
+        
+    }
+    
+    return minDistance;
+    
+}
+
+-(NSInteger)findLongestDistance:(NSArray *)deals
+{
+    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
+
+    int maxDistance = 0;
+    
+    for (Deal* deal in deals) {
+        
+        CLLocation* evntLocation = [appDelegate.locationManager managerConvertAddressToLocation:deal.googleAddressInfo];
+        
+        CLLocationDistance totalDistance = [appDelegate.locationManager managerDistanceMetersFromLocation:evntLocation toLocation:[appDelegate.locationManager getCurrentLocation]];
+        
+        CLLocationDistance convertedDistance = [self convertLocationDistanceMeters:totalDistance];
+        
+        if (maxDistance < convertedDistance) maxDistance = ceil(convertedDistance);
+        
+    }
+    
+    return maxDistance;
 }
 
 -(void)GNFetchPostalCodesForCity:(NSDictionary *)parameters addCompletionHandler:(dataResponseBlockResponse)completionHandler
@@ -122,7 +168,7 @@ DISTANCE_CONERSION conversionType;
     return evntlocation;
 }
 
--(CLLocationDistance)getLocationBetweenLocations:(NSArray *)locations
+-(CLLocationDistance)getDistanceBetweenLocations:(NSArray *)locations
 {
     if(!locations || locations.count < 1) return -1;
     

@@ -234,11 +234,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Budglit/Engines/DatabaseEngine.m"
-            timestampString = "557124276.959268"
+            timestampString = "558750816.851818"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "640"
-            endingLineNumber = "640"
+            startingLineNumber = "613"
+            endingLineNumber = "613"
             landmarkName = "DatabaseEngine"
             landmarkType = "3">
          </BreakpointContent>
@@ -250,7 +250,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Budglit/Twitter/TwitterManager.m"
-            timestampString = "557124276.959363"
+            timestampString = "558750816.852239"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "171"
@@ -282,7 +282,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Budglit/Twitter/TwitterEngine.m"
-            timestampString = "542545226.0435489"
+            timestampString = "558918921.950297"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "515"
@@ -298,11 +298,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Budglit/Engines/DatabaseEngine.m"
-            timestampString = "557124276.959447"
+            timestampString = "558750816.85255"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "454"
-            endingLineNumber = "454"
+            startingLineNumber = "427"
+            endingLineNumber = "427"
             landmarkName = "-downloadImageFromURL:forImageView:addCompletionHandler:"
             landmarkType = "7">
          </BreakpointContent>
@@ -314,11 +314,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Budglit/Engines/DatabaseEngine.m"
-            timestampString = "557124276.959559"
+            timestampString = "558750816.852687"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "473"
-            endingLineNumber = "473"
+            startingLineNumber = "446"
+            endingLineNumber = "446"
             landmarkName = "-downloadImageFromURL:addCompletionHandler:"
             landmarkType = "7">
          </BreakpointContent>
@@ -345,24 +345,8 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Budglit/LoadingLocalDealsViewController.m"
-            timestampString = "557124276.9596699"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "334"
-            endingLineNumber = "334"
-            landmarkName = "-locationDidFinish"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
             filePath = "Budglit/UserAccount.m"
-            timestampString = "557124276.9597369"
+            timestampString = "558750816.852855"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "125"
@@ -378,7 +362,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Budglit/Engines/AccountEngine.m"
-            timestampString = "557124276.9597861"
+            timestampString = "558750816.853104"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "168"
@@ -394,7 +378,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Budglit/BudglitHomeViewController.m"
-            timestampString = "557124276.959829"
+            timestampString = "558750816.853312"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "65"
@@ -410,12 +394,12 @@
                   moduleName = "Budglit"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/emmanuelfranco/Desktop/Budglit/Budglit/BudglitHomeViewController.m"
-                  timestampString = "557038459.877494"
+                  timestampString = "558918922.361164"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "66"
                   endingLineNumber = "66"
-                  offsetFromSymbolStart = "372">
+                  offsetFromSymbolStart = "345">
                </Location>
                <Location
                   shouldBeEnabled = "Yes"
@@ -425,12 +409,12 @@
                   moduleName = "Budglit"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/emmanuelfranco/Desktop/Budglit/Budglit/BudglitHomeViewController.m"
-                  timestampString = "557038459.8796819"
+                  timestampString = "558918922.367229"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "68"
                   endingLineNumber = "68"
-                  offsetFromSymbolStart = "48">
+                  offsetFromSymbolStart = "44">
                </Location>
                <Location
                   shouldBeEnabled = "Yes"
@@ -440,12 +424,12 @@
                   moduleName = "Budglit"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/emmanuelfranco/Desktop/Budglit/Budglit/BudglitHomeViewController.m"
-                  timestampString = "557038459.881858"
+                  timestampString = "558918922.370984"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "66"
                   endingLineNumber = "66"
-                  offsetFromSymbolStart = "20">
+                  offsetFromSymbolStart = "16">
                </Location>
             </Locations>
          </BreakpointContent>
@@ -457,7 +441,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Budglit/AppManagers/AccountManager.m"
-            timestampString = "557124276.959882"
+            timestampString = "558750816.853531"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "296"
@@ -473,7 +457,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Budglit/Engines/AccountEngine.m"
-            timestampString = "557124276.959928"
+            timestampString = "558750816.8537509"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "81"
@@ -489,7 +473,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Budglit/AppManagers/AccountManager.m"
-            timestampString = "557124276.959969"
+            timestampString = "558750816.853812"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "194"
@@ -505,11 +489,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Budglit/Engines/DatabaseEngine.m"
-            timestampString = "557124276.960007"
+            timestampString = "558750816.853862"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "390"
-            endingLineNumber = "390"
+            startingLineNumber = "363"
+            endingLineNumber = "363"
             landmarkName = "-sendAddressesForGeocode:addCompletionHandler:"
             landmarkType = "7">
          </BreakpointContent>
@@ -520,45 +504,45 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Budglit/LoadingLocalDealsViewController.m"
-            timestampString = "557124276.960066"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "329"
-            endingLineNumber = "329"
-            landmarkName = "-locationDidFinish"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
             filePath = "Budglit/AppManagers/LocationServiceManager.m"
-            timestampString = "557124276.960121"
+            timestampString = "558750816.853978"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "277"
-            endingLineNumber = "277"
-            landmarkName = "-locationManager:didUpdateLocations:"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Budglit/AppManagers/LocationServiceManager.m"
-            timestampString = "557124276.9601671"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "379"
-            endingLineNumber = "379"
+            startingLineNumber = "400"
+            endingLineNumber = "400"
             landmarkName = "-getCurrentLocationCityObject"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Budglit/DealMapAnnotation.m"
+            timestampString = "558750816.8541861"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "53"
+            endingLineNumber = "53"
+            landmarkName = "-initForDeal:"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Budglit/Twitter/TwitterViewController.m"
+            timestampString = "558769324.571937"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "125"
+            endingLineNumber = "125"
+            landmarkName = "-signInButtonPressed:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

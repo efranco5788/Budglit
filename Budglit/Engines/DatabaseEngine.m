@@ -86,7 +86,7 @@
 {
     NSDictionary* authenStatus = [info valueForKey:AUTHENTICATED_KEY];
     
-    BOOL authenticationStauts = [authenStatus valueForKey:AUTHENTICATED_STATUS_KEY];
+    BOOL authenticationStauts = [[authenStatus valueForKey:AUTHENTICATED_STATUS_KEY] boolValue];
     
     return authenticationStauts;
 }
@@ -100,9 +100,29 @@
 
 -(NSArray*)filterOutDeals:(NSArray *)deals byBudgetAmount:(double)amount
 {
+    //NSLog(@"budget is ----- %f", amount);
+    
     NSPredicate* budgetPredicate = [NSPredicate predicateWithFormat:@"SELF.budget <= %f", amount];
     
     NSArray* filteredArray = [deals filteredArrayUsingPredicate:budgetPredicate];
+    
+    //NSLog(@"%@", filteredArray);
+    
+    if(!filteredArray){
+        return nil;
+    }
+    else{
+        return filteredArray;
+    }
+}
+
+-(NSArray*)filterOutDeals:(NSArray *)deals byDistance:(double)distance
+{
+    NSPredicate* distancePredicate = [NSPredicate predicateWithFormat:@"SELF.annotation.getDistanceFromUser <= %f", distance];
+    
+    NSArray* filteredArray = [deals filteredArrayUsingPredicate:distancePredicate];
+    
+    //NSLog(@"%@", filteredArray);
     
     if(!filteredArray){
         return nil;
@@ -192,7 +212,6 @@
 
 -(NSString*)currentDateString
 {
-    
     NSTimeZone* timeZone = [NSTimeZone localTimeZone];
     
     NSISO8601DateFormatOptions options = NSISO8601DateFormatWithInternetDateTime | NSISO8601DateFormatWithDashSeparatorInDate | NSISO8601DateFormatWithColonSeparatorInTime | NSISO8601DateFormatWithTimeZone;
@@ -200,52 +219,6 @@
     NSString* currentDate = [NSISO8601DateFormatter stringFromDate:[NSDate date] timeZone:timeZone formatOptions:options];
     
     return currentDate;
-}
-
--(void)sendSearchCriteriaForTotalCountOnly:(NSDictionary *)searchCriteria addCompletion:(dataResponseBlockResponse)completionBlock
-{
-    //self.sessionManager.responseSerializer = [AFJSONResponseSerializer serializer];
-    //self.sessionManager.requestSerializer = [AFJSONRequestSerializer serializer];
-    
-    NSLog(@"%@", searchCriteria);
-    
-    [self.sessionManager POST:TEMP_SEARCH_RESULTS parameters:searchCriteria progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        
-        [self addToRequestHistory:task];
-        
-        if (responseObject) {
-            
-            BOOL isEmpty = [[responseObject valueForKey:KEY_EMPTY_VALUES] boolValue];
-            
-            if (isEmpty) {
-                
-                NSString* errorMessage = [responseObject valueForKey:KEY_ERROR];
-                
-                completionBlock(errorMessage);
-            }
-            else{
-                
-                NSArray* list = [responseObject valueForKey:KEY_LIST];
-                
-                NSDictionary* obj = list[0];
-                
-                NSInteger intTotal = [[obj valueForKey:DEAL_COUNT] integerValue];
-                
-                NSNumber* total = [NSNumber numberWithInteger:intTotal];
-                
-                completionBlock(total);
-                
-            }
-            
-        }
-        
-    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        
-        NSLog(@"%@", error);
-        [self logFailedRequest:task];
-        [self.delegate dealsFailedWithError:error];
-        
-    }];
 }
 
 -(void)sendGetRequestSearchCriteria:(NSDictionary *)searchCriteria addCompletion:(dataResponseBlockResponse)completionBlock
@@ -687,18 +660,22 @@
                 CLLocation* eventLocation = [appDelegate.locationManager managerConvertAddressToLocation:addressInfo];
                 
                 CLLocationCoordinate2D coordinates = CLLocationCoordinate2DMake(eventLocation.coordinate.latitude, eventLocation.coordinate.longitude);
-                
-                DealMapAnnotation* mapAnnotation = [[DealMapAnnotation alloc] initWithDeal:deal];
+
+                DealMapAnnotation* mapAnnotation = [[DealMapAnnotation alloc] initForDeal:deal];
                 
                 [mapAnnotation setCoordinate:coordinates];
                 
+                // Users current location
                 CLLocation* user = [appDelegate.locationManager getCurrentLocation];
                 
-                CLLocationDistance distance = [appDelegate.locationManager managerDistanceFromLocation:user toLocation:eventLocation];
+                CLLocationDistance distanceFromUserMeters = [appDelegate.locationManager managerDistanceMetersFromLocation:user toLocation:eventLocation];
                 
-                CLLocationDistance convertedDistance = [appDelegate.locationManager managerConvertDistance:distance];
+                CLLocationDistance convertedDistance = [appDelegate.locationManager managerConvertDistance:distanceFromUserMeters];
                 
-                [mapAnnotation distanceFromUser:[NSString stringWithFormat:@"%.1f", convertedDistance]];
+                //[mapAnnotation distanceFromUser:[NSString stringWithFormat:@"%.1f", convertedDistance]];
+                [mapAnnotation setDistanceFromUser:convertedDistance];
+                
+                [deal setAnnotation:mapAnnotation];
                 
                 [mutableAnnotations addObject:mapAnnotation];
             }

@@ -1,12 +1,12 @@
 //
-//  PSTwitterViewController.m
+//  TwitterViewController.m
 //  PocketStretch
 //
 //  Created by Emmanuel Franco on 10/29/15.
 //  Copyright © 2015 Emmanuel Franco. All rights reserved.
 //
 
-#import "PSTwitterViewController.h"
+#import "TwitterViewController.h"
 #import "AppDelegate.h"
 #import "Deal.h"
 #import "TweetTableViewController.h"
@@ -15,11 +15,11 @@
 
 #define kDEFAULT_IMAGE_NAME @"empty_filter_app_icon_unselected.png"
 
-@interface PSTwitterViewController ()<TwitterManagerDelegate, TwitterTableViewDelegate, UIWebViewDelegate>
+@interface TwitterViewController ()<TwitterManagerDelegate, TwitterTableViewDelegate, UIWebViewDelegate>
 
 @end
 
-@implementation PSTwitterViewController
+@implementation TwitterViewController
 
 - (void)viewDidLoad {
     
@@ -72,7 +72,7 @@
 
 -(void)viewWillAppear:(BOOL)animated
 {
-    [super viewWillAppear:NO];
+    [super viewWillAppear:animated];
 }
 
 -(void)viewWillLayoutSubviews
@@ -121,6 +121,8 @@
         
         TwitterRequestObject* tokenRequest = [appDelegate.twitterManager constructTwitterTokenRequest];
         
+        NSLog(@"%@", tokenRequest);
+        
         [appDelegate.twitterManager twitterTokenRequest:tokenRequest];
     }
     
@@ -167,7 +169,6 @@
 
 -(void)toggleTwitterFilterButton
 {
-    
     if ([self.filterButton.image isEqual:[UIImage imageNamed:@"empty_filter_app_icon_unselected.png"]]) {
         
         (self.filterButton).image = [UIImage imageNamed:@"empty_filter_app_icon_selected.png"];

@@ -7,44 +7,55 @@
 //
 
 #import "DealMapAnnotation.h"
-#import "GeneralEventAnnotationView.h"
+#import "GeneralEventPinAnnotationView.h"
 #import "AppDelegate.h"
 
 #define kDEFAULT_DISTANCE_FROM_USER @"0"
+#define kReuse_Identifier @"annotation"
 
 @implementation DealMapAnnotation
-@synthesize coordinate = _coordinate;
-
-+ (MKAnnotationView *)createViewAnnotationForMapView:(MKMapView *)mapView annotation:(id <MKAnnotation>)annotation
 {
-    GeneralEventAnnotationView* returnedAnnotationView = (GeneralEventAnnotationView*) [mapView dequeueReusableAnnotationViewWithIdentifier:NSStringFromClass([DealMapAnnotation class])];
+    double distanceFromUser;
+}
+@synthesize coordinate = _coordinate;
+@synthesize title = _title;
+
+
++(MKAnnotationView*)createViewAnnotationForMapView:(MKMapView *)mapView annotation:(id <MKAnnotation>)annotation
+{
+    MKAnnotationView* returnedAnnotationView = (GeneralEventPinAnnotationView*) [mapView dequeueReusableAnnotationViewWithIdentifier:NSStringFromClass([DealMapAnnotation class])];
     
     if(returnedAnnotationView == nil)
     {
-        returnedAnnotationView =  [[GeneralEventAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:NSStringFromClass([DealMapAnnotation class])];
+        returnedAnnotationView =  [[GeneralEventPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:NSStringFromClass([DealMapAnnotation class])];
+        
+        NSLog(@"was nil %@", returnedAnnotationView);
         
         //((MKPinAnnotationView *)returnedAnnotationView).pinTintColor = [MKPinAnnotationView purplePinColor];
         //((MKPinAnnotationView *)returnedAnnotationView).animatesDrop = YES;
         //((MKPinAnnotationView *)returnedAnnotationView).canShowCallout = YES;
     }
+    else returnedAnnotationView.annotation = annotation;
     
     return returnedAnnotationView;
 }
 
 
--(id)initWithDeal:(Deal *)deal
+-(id)initForDeal:(Deal *)deal
 {
     self = [super init];
     
     if(!self) return nil;
     
-    if(deal){
-        self.dealAnnotated = deal;
-        self.title = deal.venueName;
-        self.locationName = deal.venueName;
-        self.distanceFromUser = [NSString stringWithFormat:@"%@ mi", kDEFAULT_DISTANCE_FROM_USER];
-        self.discipline = @"Event";
-    }
+    if(!deal) return nil;
+    
+    self.parentDeal = deal;
+    
+    _title = self.parentDeal.venueName;
+    NSLog(@"--------------- Title Set -------------");
+    self.locationName = self.parentDeal.venueName;
+    self.distanceFromUserString = [NSString stringWithFormat:@"%@ mi", kDEFAULT_DISTANCE_FROM_USER];
+    self.discipline = @"Event";
     
     self.calloutView = [[CustomCalloutViewController alloc] init];
     
@@ -68,9 +79,23 @@
     self.showCustomCallOut = shouldShowCallout;
 }
 
--(void)distanceFromUser:(NSString *)distance
+-(CLLocationDistance)getDistanceFromUser
 {
-    self.distanceFromUser = [NSString stringWithFormat:@"%@ mi", distance];
+    return distanceFromUser;
+}
+
+-(NSString*)getDistanceFromUserString
+{
+    return self.distanceFromUserString;
+}
+
+-(void)setDistanceFromUser:(double)distance
+{
+    if (distance < 0) distance = 0;
+    
+    distanceFromUser = distance;
+    
+    self.distanceFromUserString = [NSString stringWithFormat:@"%.1f mi", distance];
 }
 
 -(void)setCoordinate:(CLLocationCoordinate2D)newCoordinate

@@ -8,6 +8,7 @@
 
 #import "Deal.h"
 #import "MZTimerLabel/MZTimerLabel.h"
+#import "DealMapAnnotation.h"
 
 #define kDefaultDateFormat @"yyyy-MM-dd HH:mm:ss"
 #define kDefaultTimeFormat @"dd:HH:mm:ss "

@@ -47,7 +47,7 @@
     self.maximumLeftDrawerWidth = leftDrawerWidth;
     
     self.openDrawerGestureModeMask = MMOpenDrawerGestureModeAll;
-    self.closeDrawerGestureModeMask = MMCloseDrawerGestureModeAll;
+    self.closeDrawerGestureModeMask = MMCloseDrawerGestureModePanningCenterView;
     
     
     [self
@@ -98,7 +98,7 @@
     [menu setDelegate:nil];
 }
 
--(void)slideDrawerSide:(MMDrawerSide*)drawerSide Animated:(BOOL)isAnimated
+-(void)slideDrawerSide:(MMDrawerSide)drawerSide Animated:(BOOL)isAnimated
 {
     [self toggleDrawerSide:drawerSide animated:isAnimated completion:^(BOOL finished) {
 

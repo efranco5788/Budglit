@@ -1,5 +1,5 @@
 //
-//  PSTwitterViewController.h
+//  TwitterViewController.h
 //  PocketStretch
 //
 //  Created by Emmanuel Franco on 10/29/15.

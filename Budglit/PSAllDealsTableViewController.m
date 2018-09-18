@@ -579,7 +579,7 @@ static NSString* const emptyCellIdentifier = @"holderCell";
         
         NSString* viewID = fromViewController.restorationIdentifier;
         
-        if ([viewID isEqualToString:@"PSDealsDetailViewController"]) {
+        if ([viewID isEqualToString:@"DealsDetailViewController"]) {
             return YES;
         }
     }

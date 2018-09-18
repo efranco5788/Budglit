@@ -7,7 +7,7 @@
 //
 
 #import "PSTransitionToBudgetViewController.h"
-#import "BudgetPickerViewController.h"
+#import "FilterViewController.h"
 #import "LoadingLocalDealsViewController.h"
 #import "math.h"
 
@@ -23,7 +23,7 @@
 {
     LoadingLocalDealsViewController* fromViewController = (LoadingLocalDealsViewController*) [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
     
-    BudgetPickerViewController* toViewController = (BudgetPickerViewController*) [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
+    FilterViewController* toViewController = (FilterViewController*) [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
     
     UIView *containerView = [transitionContext containerView];
     

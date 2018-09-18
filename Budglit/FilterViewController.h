@@ -1,5 +1,5 @@
 //
-//  BudgetPickerViewController.h
+//  FilterViewController.h
 //  PocketStretch
 //
 //  Created by Emmanuel Franco on 9/26/15.
@@ -16,16 +16,14 @@
 
 typedef void (^UILablesUpdated)(BOOL success);
 
-@protocol BudgetPickerDelegate <NSObject>
+@protocol FilterDelegate <NSObject>
 @optional
 -(void) dismissView;
 -(void)startButtonPressed:(NSArray*)filter;
 @end
-@interface BudgetPickerViewController : UIViewController
+@interface FilterViewController : UIViewController
 
-@property (nonatomic, copy) NSString* (^budgetFilterBlock)(void);
-
-@property (strong, nonatomic) id<BudgetPickerDelegate> delegate;
+@property (strong, nonatomic) id<FilterDelegate> delegate;
 
 @property (strong, nonatomic) IBOutlet UIButton *viewResultsButton;
 @property (strong, nonatomic) IBOutlet UILabel *budgetText;
@@ -36,8 +34,7 @@ typedef void (^UILablesUpdated)(BOOL success);
 @property (strong, nonatomic) IBOutlet UILabel* lbl_DistanceMax;
 @property (strong, nonatomic) IBOutlet UILabel* lbl_BudgetMin;
 @property (strong, nonatomic) IBOutlet UILabel* lbl_BudgetMax;
-@property (strong, nonatomic) NSArray* budgetAmounts;
-@property (strong, nonatomic) NSArray* mapAnnotations;
+@property (strong, nonatomic) NSArray* dealsDisplayed;
 
 +(void) setNavigationBar:(UINavigationBar*)bar;
 
@@ -45,15 +42,15 @@ typedef void (^UILablesUpdated)(BOOL success);
 
 - (IBAction)dragStarted:(id)sender;
 
-- (IBAction)dragged:(id)sender;
-
 - (IBAction)dragEnded:(id)sender;
 
 -(void)valueChanged:(UISlider*)slider;
 
--(void)configureBlocks;
-
 -(void)updateLabels;
+
+-(void)updateBudgetLabel:(NSArray*)list;
+
+-(void)updateDistanceLabel:(NSArray*)list;
 
 -(void)toggleButtons;
 

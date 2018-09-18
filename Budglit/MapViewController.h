@@ -10,7 +10,7 @@
 #import <MapKit/MapKit.h>
 #import "Deal.h"
 #import "DealMapAnnotation.h"
-#import "GeneralEventAnnotationView.h"
+#import "GeneralEventPinAnnotationView.h"
 #import "DrawerViewController.h"
 #import "LocationServiceManager.h"
 #import "MMDrawerBarButtonItem.h"

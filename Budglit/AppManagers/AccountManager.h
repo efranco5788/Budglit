@@ -45,11 +45,11 @@ typedef void (^generalBlockResponse)(BOOL success);
 
 -(void)logoutFromDomain:(NSString*)domainName addCompletion:(generalReturnBlockResponse)completionHandler;
 
--(UserAccount*) getSignedAccount;
-
--(void)removeUserAccountClearSavedAccount:(BOOL)clear AddCompletion:(generalBlockResponse)completionHandler;
+-(UserAccount*)getSignedAccount;
 
 -(id)getValidationValue:(NSDictionary*)validationInfo;
+
+-(void)removeUserAccountClearSavedAccount:(BOOL)clear AddCompletion:(generalBlockResponse)completionHandler;
 
 -(void)validateSessionForDomain:(NSString*)domain addCompletion:(generalReturnBlockResponse) completionHandler;
 

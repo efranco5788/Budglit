@@ -11,7 +11,7 @@
 #import "DatabaseEngine.h"
 #import "Deal.h"
 #import "PSFacebookViewController.h"
-#import "PSTwitterViewController.h"
+#import "TwitterViewController.h"
 #import "PSAllDealsTableViewController.h"
 #import "PSInstagramViewController.h"
 #import <QuartzCore/QuartzCore.h>
@@ -32,13 +32,17 @@
 
 
 @implementation DealDetailViewController
-@synthesize descriptionTextView, addressTextView, phoneNumberTextView, addressText, phoneText, venueImage;
+@synthesize descriptionTextView, addressTextView, distanceLbl, phoneNumberTextView, addressText, phoneText, venueImage;
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     
+    self.descriptionTextView.contentInset = UIEdgeInsetsMake(0, 0, 7, 0);
+    
     (self.descriptionTextView).text = self.descriptionText;
+    
+    self.distanceLbl.text = self.distanceText;
     
     self.descriptionTextView.layer.borderColor = [UIColor grayColor].CGColor;
     
@@ -94,6 +98,7 @@
     (self.SMPageViewController).delegate = self;
     
     self.edgesForExtendedLayout = UIRectEdgeNone;
+    
 }
 
 -(void)viewWillAppear:(BOOL)animated
@@ -115,8 +120,7 @@
     self.navigationItem.title = self.venueName;
     
     isSocialMediaViewInView = NO;
-    
-    //[self addBackgroundDimmerViewToMainView];
+
     
     if (!self.twitterViewController) {
         [self constructTwitterView];
@@ -126,19 +130,24 @@
     
     [self.SMPageViewController setViewControllers:viewCntrlors direction:UIPageViewControllerNavigationDirectionForward animated:YES completion:nil];
     
+    [self.SMPageViewController addChildViewController:self.twitterViewController];
+    
     (self.SMPageViewController.view).backgroundColor = [UIColor clearColor];
     
     [self addChildViewController:self.SMPageViewController];
     [self.socialMediaContainer addSubview:self.SMPageViewController.view];
     
     [self addAllTapGestures];
-    
 
 }
 
 -(void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:YES];
+    
+    CGPoint topSetScroll = CGPointMake(0, -self.descriptionTextView.contentInset.top);
+    
+    [self.descriptionTextView setContentOffset:topSetScroll animated:NO];
     
     __block CATransition* transition = [CATransition animation];
     
@@ -156,6 +165,8 @@
     CFTimeInterval startTime = CACurrentMediaTime();
     
     dispatch_async(background_queue, ^{
+        
+        NSLog(@"%@", self.dealSelected.imgStateObject.imagePath);
         
         // Check if image is cached in memory
         [appDelegate.databaseManager managerFetchCachedImageForKey:self.dealSelected.imgStateObject.imagePath addCompletion:^(UIImage *cachedImage) {
@@ -514,7 +525,9 @@
  
 -(void)constructTwitterView
 {
-    self.twitterViewController = [[PSTwitterViewController alloc] init];
+    self.twitterViewController = [[TwitterViewController alloc] init];
+    
+    NSLog(@"%@", self.twitterViewController.view);
     
     (self.twitterViewController).currentDeal = self.dealSelected;
     
@@ -601,7 +614,6 @@
 
 -(UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerBeforeViewController:(UIViewController *)viewController
 {
-    
     SocialMediaViewController* view = (SocialMediaViewController*) viewController;
     
     NSUInteger index = [view getPageIndex];
@@ -660,7 +672,7 @@
 -(void)viewAppeared:(UIViewController *)presentViewController
 {
     
-    if ([presentViewController isKindOfClass:[PSTwitterViewController class]]) {
+    if ([presentViewController isKindOfClass:[TwitterViewController class]]) {
         
         (self.socialMediaNavBar).barTintColor = [UIColor colorWithRed:0.00 green:0.67 blue:0.93 alpha:1.0];
 

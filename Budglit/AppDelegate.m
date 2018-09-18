@@ -14,7 +14,7 @@
 #import <Fabric/Fabric.h>
 #import "TwitterKit/TwitterKit.h"
 #import "PSAllDealsTableViewController.h"
-#import "BudgetPickerViewController.h"
+#import "FilterViewController.h"
 #import "MapViewController.h"
 #import "MenuTableViewController.h"
 
@@ -296,11 +296,11 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
     MenuTableViewController* rigthPanel = [[MenuTableViewController alloc] init];
     
-    BudgetPickerViewController* filterPanel = [[BudgetPickerViewController alloc] init];
+    FilterViewController* filterPanel = [[FilterViewController alloc] init];
     
     UINavigationController* budgetNavigationController = [[UINavigationController alloc] initWithRootViewController:filterPanel];
     
-    [BudgetPickerViewController setNavigationBar:budgetNavigationController.navigationBar];
+    [FilterViewController setNavigationBar:budgetNavigationController.navigationBar];
     
     [drawer configureCenterViewController:centerView leftDrawerViewController:budgetNavigationController rightDrawerViewController:rigthPanel];
     

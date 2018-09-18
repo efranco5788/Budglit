@@ -1,12 +1,12 @@
 //
-//  GeneralEventAnnotationView.m
+//  GeneralEventPinAnnotationView.m
 //  Budglit
 //
 //  Created by Emmanuel Franco on 1/30/18.
 //  Copyright © 2018 Emmanuel Franco. All rights reserved.
 //
 
-#import "GeneralEventAnnotationView.h"
+#import "GeneralEventPinAnnotationView.h"
 #import "DealMapAnnotation.h"
 
 static CGFloat kMaxViewWidth = 150.0;
@@ -18,28 +18,26 @@ static CGFloat kLeftMargin = 30.0;
 static CGFloat kRightMargin = 5.0;
 static CGFloat kTopMargin = 5.0;
 
-@implementation GeneralEventAnnotationView
+@implementation GeneralEventPinAnnotationView
 
--(instancetype)initWithAnnotation:(id<MKAnnotation>)annotation reuseIdentifier:(NSString *)reuseIdentifier
+-(instancetype)initWithAnnotation:(id<MKAnnotation>)annotation reuseIdentifier:(NSString*)reuseIdentifier
 {
     self = [super initWithAnnotation:annotation reuseIdentifier:reuseIdentifier];
     
     if(!self) return nil;
     
-    DealMapAnnotation* mapItem = (DealMapAnnotation*)self.annotation;
+    //DealMapAnnotation* mapItem = (DealMapAnnotation*) self.annotation;
     
     // offset the annotation so it won't obscure the actual lat/long location
     self.centerOffset = CGPointMake(50.0, 50.0);
 
     self.backgroundColor = [UIColor clearColor];
-    
+
     self.animatesDrop = YES;
     
-    //self.canShowCallout = YES;
-    
-    UILabel* annotationLabel = [self makeiOSLabelWithTitle:mapItem.locationName andSubtitle:mapItem.distanceFromUser];
-    
-    [self addSubview:annotationLabel];
+    //UILabel* annotationLabel = [self makeiOSLabelWithTitle:mapItem.title andSubtitle:mapItem.distanceFromUserString];
+
+    //[self addSubview:annotationLabel];
     
     return self;
 }
@@ -57,12 +55,12 @@ static CGFloat kTopMargin = 5.0;
     self.showCustomCallOut = shouldShowCallout;
 }
 
-- (UILabel *)makeiOSLabelWithTitle:(NSString *)title andSubtitle:(NSString*)subtitle
+- (UILabel *)makeiOSLabelWithTitle:(NSString*)title andSubtitle:(NSString*)subtitle
 {
     // add the annotation's label
     UILabel *annotationLabel = [[UILabel alloc] initWithFrame:CGRectZero];
     annotationLabel.numberOfLines = 0;
-    annotationLabel.font = [UIFont fontWithName:@"Helvetica" size:10];
+    annotationLabel.font = [UIFont fontWithName:@"Helvetica Bold" size:10];
     annotationLabel.textColor = [UIColor blackColor];
     NSString* lblText = [NSString stringWithFormat:@"%@\n %@", title, subtitle];
     annotationLabel.text = lblText;

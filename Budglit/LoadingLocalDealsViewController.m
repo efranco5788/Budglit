@@ -11,7 +11,7 @@
 #import "BudgetManager.h"
 #import "DatabaseManager.h"
 #import "LocationServiceManager.h"
-#import "BudgetPickerViewController.h"
+#import "FilterViewController.h"
 #import "LoginPageViewController.h"
 #import "PSEditZipcodeOfflineTableViewController.h"
 #import "PSAllDealsTableViewController.h"
@@ -32,10 +32,10 @@
 
 #define KEY_TMP_LOCATION @"tmpLocation"
 
-#define BUDGET_VIEW_CONTROLLER @"BudgetPickerViewController"
+#define BUDGET_VIEW_CONTROLLER @"FilterViewController"
 #define EDIT_ZIPCODE_OFFLINE_VIEW_CONTROLLER @"EditZipcodeOffline_TableViewController"
 
-@interface LoadingLocalDealsViewController () <LocationManagerDelegate, DatabaseManagerDelegate, BudgetPickerDelegate, EditZipcodeOfflineDelegate>
+@interface LoadingLocalDealsViewController () <LocationManagerDelegate, DatabaseManagerDelegate, FilterDelegate, EditZipcodeOfflineDelegate>
 
 @property (nonatomic, strong) NSDictionary* tmpCriteriaStorage;
 @property (nonatomic, strong) UIView* backgroundDimmer;
@@ -134,17 +134,17 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
         
     } completion:^(BOOL finished) {
         
-        BudgetPickerViewController* budgetView = [[BudgetPickerViewController alloc] initWithNibName:BUDGET_VIEW_CONTROLLER bundle:nil];
+        FilterViewController* budgetView = [[FilterViewController alloc] initWithNibName:BUDGET_VIEW_CONTROLLER bundle:nil];
         
-        budgetView.delegate = self;
+        self.filterView.delegate = self;
         
-        budgetView.view.autoresizesSubviews = YES;
+        self.filterView.view.autoresizesSubviews = YES;
         
-        self.budgetPickerView = budgetView;
+        self.filterView = budgetView;
         
         (self.navigationController).delegate = self;
         
-        [self.navigationController pushViewController:self.budgetPickerView animated:NO];
+        [self.navigationController pushViewController:self.filterView animated:NO];
         
     }];
     
@@ -165,9 +165,9 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
     
     [appDelegate.budgetManager addBudget:selectedCriteria[NSLocalizedString(@"BUDGET_FILTER", nil)]];
     
-    if (self.budgetPickerView) {
+    if (self.filterView) {
         
-        [self dismissBudgetPickerView];
+        [self dismissFilterView];
     }
     else [self.delegate loadingPageBudgetHasFinished];
     
@@ -314,14 +314,8 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
 #pragma mark - Location Manager Delegate
 -(void)locationDidFinish
 {
-    //[self verifyBudget];
-    
-    //[self fetchSurroundingZipcodes:nil];
-    
     AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
-    
-    //NSDictionary* appDefaults = [appDelegate.databaseManager managerGetUsersCurrentCriteria];
-    
+
     NSDictionary* appDefaults = [appDelegate.databaseManager managerGetUsersCurrentCriteria];
     
     if(!appDefaults || appDefaults.count == 0){
@@ -329,8 +323,6 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
         appDefaults = [appDelegate.databaseManager managerFetchPrimaryDefaultSearchFiltersWithLocation];
         
     }
-    
-    NSLog(@"%@", appDefaults);
     
     [appDelegate.databaseManager managerSaveUsersCriteria:appDefaults];
 
@@ -374,7 +366,7 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
 -(id<UIViewControllerAnimatedTransitioning>)navigationController:(UINavigationController *)navigationController animationControllerForOperation:(UINavigationControllerOperation)operation fromViewController:(UIViewController *)fromVC toViewController:(UIViewController *)toVC
 {
     
-    if (fromVC == self && [toVC isKindOfClass:[BudgetPickerViewController class]]) {
+    if (fromVC == self && [toVC isKindOfClass:[FilterViewController class]]) {
         
         return [[PSTransitionToBudgetViewController alloc] init];
     }
@@ -384,15 +376,15 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
     }
 }
 
--(void) dismissBudgetPickerView
+-(void) dismissFilterView
 {
     (self.navigationController).delegate = self;
     
     [self.navigationController completionhandler_popViewControllerAnimated:NO navigationController:self.navigationController completion:^{
         
-        self.budgetPickerView.delegate = nil;
+        self.filterView.delegate = nil;
         
-        self.budgetPickerView = nil;
+        self.filterView = nil;
         
         [self.navigationController setDelegate:nil];
         

@@ -15,7 +15,7 @@
 @class Deal;
 @class DealParser;
 @class InstagramObject;
-@class BudgetPickerViewController;
+@class FilterViewController;
 @class LocationSeviceManager;
 
 typedef void (^fetchedImageResponse)(UIImage* image);
@@ -85,6 +85,8 @@ typedef void (^newDataFetchedResponse)(UIBackgroundFetchResult result);
 -(NSArray*)managerExtractDeals:(NSArray*)filteredDeals fromDeals:(NSArray*)deals;
 
 -(NSArray*)managerFilterDeals:(NSArray*)deals byBudget:(double)budget;
+
+-(NSArray*)managerFilterDeals:(NSArray*)deals byDistance:(double)distance;
 
 -(NSArray*)managerCreateMapAnnotationsForDeals:(NSArray*)deals addressInfo:(NSArray*)info;
 

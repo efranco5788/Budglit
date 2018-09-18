@@ -8,7 +8,7 @@
 
 #import "MapViewController.h"
 #import "AppDelegate.h"
-#import "BudgetPickerViewController.h"
+#import "FilterViewController.h"
 #import "LoginPageViewController.h"
 #import "PSAllDealsTableViewController.h"
 #import "MapToListAnimationController.h"
@@ -16,7 +16,7 @@
 
 static double USE_CURRENT_RADIUS = -1;
 
-@interface MapViewController()<DrawerControllerDelegate, DatabaseManagerDelegate, BudgetPickerDelegate, LoginPageDelegate, UIViewControllerTransitioningDelegate, UINavigationControllerDelegate, MKMapViewDelegate>
+@interface MapViewController()<DrawerControllerDelegate, DatabaseManagerDelegate, FilterDelegate, LoginPageDelegate, UIViewControllerTransitioningDelegate, UINavigationControllerDelegate, MKMapViewDelegate>
 {
     BOOL hasAppearedOnce;
 }
@@ -24,7 +24,7 @@ static double USE_CURRENT_RADIUS = -1;
 @property (strong, nonatomic) MapToListAnimationController* transitionController;
 @property (strong, nonatomic) DismissMapToListAnimationController* dismissTransitionController;
 @property (strong, nonatomic) UIView* annotationCalloutView;
-@property (strong, nonatomic) BudgetPickerViewController* budgetView;
+@property (strong, nonatomic) FilterViewController* filterView;
 //@property (strong, nonatomic) NSMutableArray* annotations;
 
 @end
@@ -40,8 +40,8 @@ static double USE_CURRENT_RADIUS = -1;
 
     self.transitionController = [[MapToListAnimationController alloc] init];
     self.dismissTransitionController = [[DismissMapToListAnimationController alloc] init];
-    self.budgetView = [[BudgetPickerViewController alloc] init];
-    
+    self.filterView = [[FilterViewController alloc] init];
+
     hasAppearedOnce = NO;
 }
 
@@ -104,10 +104,8 @@ static double USE_CURRENT_RADIUS = -1;
 
 - (IBAction)menuBtnPressed:(id)sender {
     AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
-    
-    MMDrawerSide sideRight = MMDrawerSideRight;
-    
-    [appDelegate.drawerController slideDrawerSide:sideRight Animated:YES];
+
+    [appDelegate.drawerController slideDrawerSide:MMDrawerSideRight Animated:YES];
     
     [appDelegate.drawerController setDelegate:self];
     
@@ -117,15 +115,31 @@ static double USE_CURRENT_RADIUS = -1;
     
     AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
-    //self.budgetView = (BudgetPickerViewController*) [appDelegate.drawerController leftDrawerViewController];
+    NSMutableArray* displayedAnnotations = [[self.mapView annotations] mutableCopy];
     
-    [appDelegate.drawerController setLeftDrawerViewController:self.budgetView];
+    [displayedAnnotations removeObject:self.mapView.userLocation];
+    
+    for (int count = 0; count < displayedAnnotations.count; count++){
+        
+        if(![[self.mapView viewForAnnotation:displayedAnnotations[count]] isHidden]){
+            displayedAnnotations[count] = (DealMapAnnotation*) displayedAnnotations[count];
+            
+        }
+        else [displayedAnnotations removeObjectAtIndex:count];
+    }
+    
+    NSArray* deals = [displayedAnnotations valueForKeyPath:@"@unionOfObjects.parentDeal"];
+    
+    if(deals) self.filterView.dealsDisplayed = deals;
+    else self.filterView.dealsDisplayed = nil;
+    
+    NSLog(@"%@", deals);
+    
+    [appDelegate.drawerController setLeftDrawerViewController:self.filterView];
 
-    [self.budgetView setDelegate:self];
-    
-    MMDrawerSide sideLeft = MMDrawerSideLeft;
-    
-    [appDelegate.drawerController slideDrawerSide:sideLeft Animated:YES];
+    [self.filterView setDelegate:self];
+
+    [appDelegate.drawerController slideDrawerSide:MMDrawerSideLeft Animated:YES];
     
 }
 
@@ -435,11 +449,12 @@ static double USE_CURRENT_RADIUS = -1;
     
     if(filter == nil) [appDelegate.drawerController closeDrawerAnimated:YES completion:nil];
     
-    if(filteredOutDeals.count >= 1){
+    if(filteredOutDeals){
         
         [self displayAllAnnotationsAddCompletion:^(BOOL success) {
             
             NSLog(@"%i", success);
+            NSLog(@"%@", filteredOutDeals);
             
             if(success){
                 
@@ -449,22 +464,8 @@ static double USE_CURRENT_RADIUS = -1;
                 
                 for(Deal* deal in filteredOutDeals){
                     
-                    for (id annotation in mapAnnotations) {
-                        
-                        if(![[annotation class] isKindOfClass:[MKUserLocation class]]){
-                            
-                            DealMapAnnotation* dealAnnotations = (DealMapAnnotation*) annotation;
-                            
-                            if([deal isEqual:dealAnnotations.dealAnnotated]){
-                                [[self.mapView viewForAnnotation:annotation] setHidden:YES];
-                                [mapAnnotations removeObject:annotation];
-                                break;
-                            }
-                            
-                        }
-                        
-                        
-                    }
+                    [[self.mapView viewForAnnotation:deal.annotation] setHidden:YES];
+                    [mapAnnotations removeObject:deal.annotation];
                     
                 }
                 
@@ -513,7 +514,7 @@ static double USE_CURRENT_RADIUS = -1;
     
     if(![annotation isKindOfClass:[MKUserLocation class]]){
         
-        returnedAnnotationView = [DealMapAnnotation createViewAnnotationForMapView:self.mapView annotation:annotation];
+        returnedAnnotationView = [DealMapAnnotation createViewAnnotationForMapView:mapView annotation:annotation];
 
     }
     
@@ -522,7 +523,7 @@ static double USE_CURRENT_RADIUS = -1;
 
 -(void)mapView:(MKMapView *)mapView didSelectAnnotationView:(MKAnnotationView *)view
 {
-    [self.mapView deselectAnnotation:view.annotation animated:false];
+    [mapView deselectAnnotation:view.annotation animated:false];
     
     CLLocation* annotationLocation = [[CLLocation alloc] initWithLatitude:view.annotation.coordinate.latitude longitude:view.annotation.coordinate.longitude];
     
@@ -554,13 +555,13 @@ static double USE_CURRENT_RADIUS = -1;
 
     if(hasAppearedOnce == YES)
     {
-        NSLog(@"------------------- REGION CHANGED ----------------------");
+        //NSLog(@"------------------- REGION CHANGED ----------------------");
     }
 }
 
 -(void)mapViewDidFinishLoadingMap:(MKMapView *)mapView
 {
-     NSLog(@"------------------- MAP LOADED ----------------------");
+     //NSLog(@"------------------- MAP LOADED ----------------------");
 }
 
 #pragma mark -
@@ -639,18 +640,22 @@ static double USE_CURRENT_RADIUS = -1;
             
             UIStoryboard* storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
             
-            DealDetailViewController* detailedViewController = (DealDetailViewController*) [storyboard instantiateViewControllerWithIdentifier:@"PSDealsDetailViewController"];
+            DealDetailViewController* detailedViewController = (DealDetailViewController*) [storyboard instantiateViewControllerWithIdentifier:@"DealsDetailViewController"];
             
-            detailedViewController.dealSelected = annotation.dealAnnotated;
+            detailedViewController.dealSelected = annotation.parentDeal;
             
-            detailedViewController.venueName = annotation.dealAnnotated.venueName;
+            detailedViewController.venueName = annotation.parentDeal.venueName;
             
-            detailedViewController.descriptionText = annotation.dealAnnotated.dealDescription;
+            detailedViewController.descriptionText = annotation.parentDeal.dealDescription;
+            
+            detailedViewController.distanceText = [NSString stringWithFormat:@"%.1f mi away", annotation.getDistanceFromUser];
             
             detailedViewController.addressText = [NSString stringWithFormat:@"\n%@ \n"
-                                                  "%@, %@ %@", annotation.dealAnnotated.address, annotation.dealAnnotated.city, annotation.dealAnnotated.state, annotation.dealAnnotated.zipcode];
+                                                  "%@, %@ %@", annotation.parentDeal.address, annotation.parentDeal.city, annotation.parentDeal.state, annotation.parentDeal.zipcode];
             
-            detailedViewController.phoneText = [NSString stringWithFormat:@"\n%@", annotation.dealAnnotated.phoneNumber];
+            NSLog(@"%@", detailedViewController.distanceLbl);
+            
+            detailedViewController.phoneText = [NSString stringWithFormat:@"\n%@", annotation.parentDeal.phoneNumber];
             
             [self.annotationCalloutView addSubview:detailedViewController.view];
             
