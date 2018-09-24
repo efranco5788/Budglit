@@ -17,16 +17,16 @@
 #define KEY_ACCOUNTS_FOUND @"accounts"
 #define KEY_MESSAGE @"message"
 //#define KEY_EMAIL_SENT @"email_sent"
+#define KEY_CREATED @"created"
 #define KEY_LOGGED_IN @"isLogin"
 #define KEY_LOGGED_OUT @"loggedOut"
+#define KEY_ACCOUNT_TYPE @"type"
 #define KEY_USER @"user"
-#define KEY_USER_ID @"id"
-//#define KEY_USER_INFO @"userInfo"
+#define KEY_USER_ID @"_id"
 #define KEY_EMAIL @"email"
 #define KEY_FIRST_NAME @"firstName"
 #define KEY_LAST_NAME @"lastName"
 #define KEY_IMAGE_URL @"userImg"
-#define KEY_CREATED @"created"
 #define KEY_ERROR @"error"
 
 @implementation AccountEngine
@@ -67,23 +67,39 @@
     return userAccountDefault;
 }
 
--(UserAccount *)parseUserAccount:(NSDictionary *)data
+-(UserAccount*)parseUserAccount:(NSDictionary *)data
 {
     if(!data) return nil;
     
     NSString* userID = [data valueForKey:KEY_USER_ID];
+    NSString* usrType = [data valueForKey:KEY_ACCOUNT_TYPE];
     NSString* usrEmail = [data valueForKey:KEY_EMAIL];
     NSString* usrFName = [data valueForKey:KEY_FIRST_NAME];
     NSString* usrLName = [data valueForKey:KEY_LAST_NAME];
     NSString* usrImgURL = [data valueForKey:KEY_IMAGE_URL];
     
-    NSLog(@"%@", usrImgURL);
+    NSLog(@"%@", data);
     
     UserAccount* account = [[UserAccount alloc] initWithFirstName:usrFName andLastName:usrLName andProfileImage:usrImgURL andEmail:usrEmail andID:userID];
+    
+    [account setAccountType:usrType];
     
     if(!account) return nil;
     
     return account;
+}
+
+-(UserAccount*)signedAccount
+{
+    NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
+    
+    NSData* userData = [defaults valueForKey:NSLocalizedString(@"ACCOUNT", nil)];
+    
+    if (!userData) return nil;
+    
+    UserAccount* user = [NSKeyedUnarchiver unarchiveObjectWithData:userData];
+    
+    return user;
 }
 
 -(void)saveLoggedInUserAccount:(UserAccount *)user addCompletion:(generalBlockResponse)completionHandler
@@ -116,7 +132,7 @@
     completionHandler(true);
 }
 
--(void)loginWithCredentials:(NSDictionary *)userCredentials addCompletion:(fetchedResponse)completionHandler
+-(void)loginWithCredentials:(NSDictionary *)userCredentials addCompletion:(blockResponse)completionHandler
 {
 //    self.sessionManager.responseSerializer = [AFJSONResponseSerializer serializer];
 //    self.sessionManager.requestSerializer = [AFHTTPRequestSerializer serializer];
@@ -166,13 +182,13 @@
                     
                     NSLog(@"%@", dict);
                     
-                    NSString* userID = [dict valueForKey:@"_id"];
+                    NSString* userID = [dict valueForKey:KEY_USER_ID];
                     NSString* email = [dict valueForKey:KEY_EMAIL];
                     NSString* fname = [dict valueForKey:KEY_FIRST_NAME];
                     NSString* lname = [dict valueForKey:KEY_LAST_NAME];
                     NSString* img = [dict valueForKey:KEY_IMAGE_URL];
                     
-                    [tmpUser setValue:userID forKey:@"id"];
+                    [tmpUser setValue:userID forKey:KEY_USER_ID];
                     [tmpUser setValue:email forKey:KEY_EMAIL];
                     [tmpUser setValue:fname forKey:KEY_FIRST_NAME];
                     [tmpUser setValue:lname forKey:KEY_LAST_NAME];
@@ -205,7 +221,7 @@
     
 }
 
--(void)signupWithNewAccount:(NSDictionary *)userCredentials addCompletion:(fetchedResponse)completionHandler
+-(void)signupWithNewAccount:(NSDictionary *)userCredentials addCompletion:(blockResponse)completionHandler
 {
 //    self.sessionManager.responseSerializer = [AFJSONResponseSerializer serializer];
 //    self.sessionManager.requestSerializer = [AFHTTPRequestSerializer serializer];

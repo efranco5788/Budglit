@@ -13,7 +13,6 @@
 		89067BCD1C76B6780058B4DF /* AFURLRequestSerialization.m in Sources */ = {isa = PBXBuildFile; fileRef = 89067BC21C76B6780058B4DF /* AFURLRequestSerialization.m */; };
 		89067BCE1C76B6780058B4DF /* AFURLResponseSerialization.m in Sources */ = {isa = PBXBuildFile; fileRef = 89067BC41C76B6780058B4DF /* AFURLResponseSerialization.m */; };
 		89067BCF1C76B6780058B4DF /* AFURLSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 89067BC61C76B6780058B4DF /* AFURLSessionManager.m */; };
-		89067BD61C784BE80058B4DF /* UIDevice-Hardware.m in Sources */ = {isa = PBXBuildFile; fileRef = 89067BD31C784BE80058B4DF /* UIDevice-Hardware.m */; };
 		89067BE31C795BD80058B4DF /* empty_filter_app_icon_unselected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 89067BE11C795BD80058B4DF /* empty_filter_app_icon_unselected@2x.png */; };
 		89067BE41C795BD80058B4DF /* empty_filter_app_icon_unselected@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 89067BE21C795BD80058B4DF /* empty_filter_app_icon_unselected@3x.png */; };
 		89067BE71C7A013A0058B4DF /* empty_filter_app_icon_selected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 89067BE51C7A013A0058B4DF /* empty_filter_app_icon_selected@2x.png */; };
@@ -45,6 +44,13 @@
 		89179D301BB8F5CC00F60BA7 /* UINavigationController+CompletionHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 89179D2F1BB8F5CC00F60BA7 /* UINavigationController+CompletionHandler.m */; };
 		89179D331BB8F86500F60BA7 /* ZipcodeSearchDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 89179D321BB8F86500F60BA7 /* ZipcodeSearchDataSource.m */; };
 		89179D5B1BBDEAB600F60BA7 /* AccountEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = 89179D5A1BBDEAB600F60BA7 /* AccountEngine.m */; };
+		891A1AE42152F6CD004D598A /* SocketIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 891A1AE32152F6CD004D598A /* SocketIO.framework */; };
+		891A1AE62152F6D6004D598A /* Starscream.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 891A1AE52152F6D6004D598A /* Starscream.framework */; };
+		891A1AE8215476AD004D598A /* Starscream.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 891A1AE52152F6D6004D598A /* Starscream.framework */; };
+		891A1AE9215476AD004D598A /* Starscream.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 891A1AE52152F6D6004D598A /* Starscream.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		891A1AEA215476AD004D598A /* SocketIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 891A1AE32152F6CD004D598A /* SocketIO.framework */; };
+		891A1AEB215476AD004D598A /* SocketIO.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 891A1AE32152F6CD004D598A /* SocketIO.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		891A1AF02156F486004D598A /* WebSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 891A1AEF2156F486004D598A /* WebSocket.m */; };
 		8921B32F1EC19022005BD8EB /* dollar_disabled.png in Resources */ = {isa = PBXBuildFile; fileRef = 8921B32C1EC19022005BD8EB /* dollar_disabled.png */; };
 		8921B3301EC19022005BD8EB /* dollar_disabled@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8921B32D1EC19022005BD8EB /* dollar_disabled@2x.png */; };
 		8921B3311EC19022005BD8EB /* dollar_disabled@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8921B32E1EC19022005BD8EB /* dollar_disabled@3x.png */; };
@@ -180,6 +186,21 @@
 		89FEDF691F932B2400FDBD6E /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89FEDF671F932B2400FDBD6E /* FBSDKCoreKit.framework */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		891A1AEC215476AE004D598A /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				891A1AE9215476AD004D598A /* Starscream.framework in Embed Frameworks */,
+				891A1AEB215476AD004D598A /* SocketIO.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		89067BB81C76B6780058B4DF /* AFHTTPSessionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPSessionManager.h; sourceTree = "<group>"; };
 		89067BB91C76B6780058B4DF /* AFHTTPSessionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPSessionManager.m; sourceTree = "<group>"; };
@@ -194,8 +215,6 @@
 		89067BC41C76B6780058B4DF /* AFURLResponseSerialization.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFURLResponseSerialization.m; sourceTree = "<group>"; };
 		89067BC51C76B6780058B4DF /* AFURLSessionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFURLSessionManager.h; sourceTree = "<group>"; };
 		89067BC61C76B6780058B4DF /* AFURLSessionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFURLSessionManager.m; sourceTree = "<group>"; };
-		89067BD31C784BE80058B4DF /* UIDevice-Hardware.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIDevice-Hardware.m"; sourceTree = "<group>"; };
-		89067BD91C784BFD0058B4DF /* UIDevice-Hardware.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIDevice-Hardware.h"; sourceTree = "<group>"; };
 		89067BE11C795BD80058B4DF /* empty_filter_app_icon_unselected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "empty_filter_app_icon_unselected@2x.png"; sourceTree = "<group>"; };
 		89067BE21C795BD80058B4DF /* empty_filter_app_icon_unselected@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "empty_filter_app_icon_unselected@3x.png"; sourceTree = "<group>"; };
 		89067BE51C7A013A0058B4DF /* empty_filter_app_icon_selected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "empty_filter_app_icon_selected@2x.png"; sourceTree = "<group>"; };
@@ -241,6 +260,10 @@
 		89179D391BBDB64100F60BA7 /* Budglit-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Budglit-Prefix.pch"; path = "/Users/emmanuelfranco/Desktop/Budglit/Budglit/Budglit-Prefix.pch"; sourceTree = "<absolute>"; };
 		89179D591BBDEAB600F60BA7 /* AccountEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AccountEngine.h; sourceTree = "<group>"; };
 		89179D5A1BBDEAB600F60BA7 /* AccountEngine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AccountEngine.m; sourceTree = "<group>"; };
+		891A1AE32152F6CD004D598A /* SocketIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SocketIO.framework; path = Carthage/Build/iOS/SocketIO.framework; sourceTree = "<group>"; };
+		891A1AE52152F6D6004D598A /* Starscream.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Starscream.framework; path = Carthage/Build/iOS/Starscream.framework; sourceTree = "<group>"; };
+		891A1AEE2156F486004D598A /* WebSocket.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WebSocket.h; sourceTree = "<group>"; };
+		891A1AEF2156F486004D598A /* WebSocket.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WebSocket.m; sourceTree = "<group>"; };
 		8921B32C1EC19022005BD8EB /* dollar_disabled.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = dollar_disabled.png; sourceTree = "<group>"; };
 		8921B32D1EC19022005BD8EB /* dollar_disabled@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dollar_disabled@2x.png"; sourceTree = "<group>"; };
 		8921B32E1EC19022005BD8EB /* dollar_disabled@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dollar_disabled@3x.png"; sourceTree = "<group>"; };
@@ -473,18 +496,22 @@
 				89385B3B1BB67C1F00441A63 /* Foundation.framework in Frameworks */,
 				89385B391BB67C0500441A63 /* CoreGraphics.framework in Frameworks */,
 				89FEDF681F932B2400FDBD6E /* FBSDKLoginKit.framework in Frameworks */,
+				891A1AE62152F6D6004D598A /* Starscream.framework in Frameworks */,
 				89FEDF691F932B2400FDBD6E /* FBSDKCoreKit.framework in Frameworks */,
 				89385B371BB67BFE00441A63 /* libsqlite3.tbd in Frameworks */,
 				89385B351BB67BE100441A63 /* CoreLocation.framework in Frameworks */,
 				89FEDF651F932AED00FDBD6E /* Bolts.framework in Frameworks */,
 				89385B331BB67BD900441A63 /* QuartzCore.framework in Frameworks */,
+				891A1AEA215476AD004D598A /* SocketIO.framework in Frameworks */,
 				897EDAC81C8C136F0042CEAB /* Crashlytics.framework in Frameworks */,
 				89385B311BB67BD100441A63 /* SystemConfiguration.framework in Frameworks */,
 				89385B2F1BB67BC500441A63 /* Security.framework in Frameworks */,
 				89385B2D1BB67BBA00441A63 /* ImageIO.framework in Frameworks */,
+				891A1AE8215476AD004D598A /* Starscream.framework in Frameworks */,
 				89385B2B1BB67BB000441A63 /* MapKit.framework in Frameworks */,
 				89E26DAA1E5C0B3F002CCD0C /* TwitterKit.framework in Frameworks */,
 				897711B91BE30EC600028B74 /* Fabric.framework in Frameworks */,
+				891A1AE42152F6CD004D598A /* SocketIO.framework in Frameworks */,
 				89385B3D1BB67C2900441A63 /* Twitter.framework in Frameworks */,
 				897711BC1BE30EC600028B74 /* TwitterCore.framework in Frameworks */,
 			);
@@ -513,13 +540,13 @@
 			path = AFNetworking;
 			sourceTree = "<group>";
 		};
-		89067BD11C784B710058B4DF /* UIDevice-Extension */ = {
+		891A1AED2156F436004D598A /* WebSockets */ = {
 			isa = PBXGroup;
 			children = (
-				89067BD91C784BFD0058B4DF /* UIDevice-Hardware.h */,
-				89067BD31C784BE80058B4DF /* UIDevice-Hardware.m */,
+				891A1AEE2156F486004D598A /* WebSocket.h */,
+				891A1AEF2156F486004D598A /* WebSocket.m */,
 			);
-			path = "UIDevice-Extension";
+			path = WebSockets;
 			sourceTree = "<group>";
 		};
 		89231DA81D8B7F3000D6B932 /* MMDrawerController */ = {
@@ -576,6 +603,8 @@
 				89385B3A1BB67C1F00441A63 /* Foundation.framework */,
 				89385B381BB67C0500441A63 /* CoreGraphics.framework */,
 				89385B361BB67BFE00441A63 /* libsqlite3.tbd */,
+				891A1AE52152F6D6004D598A /* Starscream.framework */,
+				891A1AE32152F6CD004D598A /* SocketIO.framework */,
 				89E26DA91E5C0B3F002CCD0C /* TwitterKit.framework */,
 				897711B71BE30EC600028B74 /* TwitterKitResources.bundle */,
 				897711B81BE30EC600028B74 /* TwitterCore.framework */,
@@ -661,8 +690,8 @@
 				89B3DBCF1DE9F91B00DCEDB6 /* Facebook */,
 				89EB8DFC1BE53A320044833A /* Twitter */,
 				8994068E1F933D300066180A /* UIKit+AFNetworking */,
+				891A1AED2156F436004D598A /* WebSockets */,
 				89B3DBBE1DE2B44800DCEDB6 /* SocialMedia */,
-				89067BD11C784B710058B4DF /* UIDevice-Extension */,
 			);
 			name = Budglit;
 			path = /Users/emmanuelfranco/Desktop/Budglit/Budglit;
@@ -972,6 +1001,8 @@
 				89385AEE1BB67B4B00441A63 /* Frameworks */,
 				89385AEF1BB67B4B00441A63 /* Resources */,
 				897711B41BE30DF800028B74 /* Run Script */,
+				891A1AE72152F736004D598A /* Carthage */,
+				891A1AEC215476AE004D598A /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -1090,6 +1121,26 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		891A1AE72152F736004D598A /* Carthage */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/Carthage/Build/iOS/SocketIO.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/Starscream.framework",
+			);
+			name = Carthage;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "/usr/local/bin/carthage copy-frameworks\n";
+		};
 		897711B41BE30DF800028B74 /* Run Script */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1102,7 +1153,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "./Fabric.framework/run ba7407f9a2a1f7a82ac5ceaf2545021249655aef 8250136d0ff4e85708f1122da0883d7b68ee54c7c0abfcf203b126ae1cdcfb12";
+			shellScript = "./Fabric.framework/run ba7407f9a2a1f7a82ac5ceaf2545021249655aef 8250136d0ff4e85708f1122da0883d7b68ee54c7c0abfcf203b126ae1cdcfb12\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -1128,7 +1179,6 @@
 				89EB8DFB1BE46A220044833A /* Tweet.m in Sources */,
 				89EEF9751D482D9F00CCE163 /* State.m in Sources */,
 				896A89751BCE093800A21F30 /* PostalCode.m in Sources */,
-				89067BD61C784BE80058B4DF /* UIDevice-Hardware.m in Sources */,
 				896249781FE48A6600219C8B /* MapToListAnimationController.m in Sources */,
 				899AEFB91F933E47001065C3 /* UIProgressView+AFNetworking.m in Sources */,
 				8966280A1F31748E00339957 /* DealParser.m in Sources */,
@@ -1173,6 +1223,7 @@
 				89067BCA1C76B6780058B4DF /* AFNetworkReachabilityManager.m in Sources */,
 				89385B491BB7217C00441A63 /* DealDetailViewController.m in Sources */,
 				89B3DBD31DE9F95F00DCEDB6 /* PSFacebookViewController.m in Sources */,
+				891A1AF02156F486004D598A /* WebSocket.m in Sources */,
 				897711AC1BE2DF5F00028B74 /* TwitterViewController.m in Sources */,
 				89DEE6501E4BEC0E00C2A1B2 /* DealDetailedAnimationController.m in Sources */,
 				89385B4C1BB7221F00441A63 /* PSEditZipcodeOfflineTableViewController.m in Sources */,
@@ -1270,6 +1321,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -1316,6 +1368,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
@@ -1326,6 +1379,7 @@
 		89385B221BB67B4C00441A63 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "Brand Assets";
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = NO;
@@ -1340,10 +1394,11 @@
 					"$(PROJECT_DIR)/Budglit",
 					"$(PROJECT_DIR)/FBSDKCoreKit.framework/Headers",
 					"$(PROJECT_DIR)/Budglit/TwitterKitResources.bundle",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				GCC_PREFIX_HEADER = "Budglit/Budglit-Prefix.pch";
 				INFOPLIST_FILE = Budglit/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = pocketstretch.net.PocketStretch;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Budglit/Budglit-Bridging-Header.h";
@@ -1355,6 +1410,7 @@
 		89385B231BB67B4C00441A63 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "Brand Assets";
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = NO;
@@ -1369,10 +1425,11 @@
 					"$(PROJECT_DIR)/Budglit",
 					"$(PROJECT_DIR)/FBSDKCoreKit.framework/Headers",
 					"$(PROJECT_DIR)/Budglit/TwitterKitResources.bundle",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				GCC_PREFIX_HEADER = "Budglit/Budglit-Prefix.pch";
 				INFOPLIST_FILE = Budglit/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = pocketstretch.net.PocketStretch;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Budglit/Budglit-Bridging-Header.h";

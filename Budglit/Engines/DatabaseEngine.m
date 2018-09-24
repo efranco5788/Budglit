@@ -15,6 +15,7 @@
 #import "ImageData.h"
 #import "UIImage+Resizing.h"
 #import "UIImageView+AFNetworking.h"
+#import "WebSocket.h"
 
 #define SEARCH_DEALS @"search"
 #define TEMP_SEARCH_RESULTS @"tempsearch"
@@ -32,6 +33,9 @@
 #define RESCALE_IMAGE_WIDTH 1024
 #define RESCALE_IMAGE_HEIGHT 1024
 
+@interface DatabaseEngine() <WebSocketDelegate>
+
+@end
 
 @implementation DatabaseEngine
 
@@ -59,6 +63,35 @@
     self.sessionManager.session.configuration.HTTPCookieStorage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
     
     return self;
+}
+
+-(void)constructWebSocket:(NSString *)token addCompletion:(blockResponse)completionHandler
+{
+    
+    if(!self.socket){
+        
+        NSURL* baseURL = [NSURL URLWithString:self.baseURLString];
+        
+        self.socket = [[WebSocket alloc] initWebSocketForDomain:baseURL withToken:token];
+        
+        self.socket.delegate = self;
+    }
+
+    if(!self.socket) completionHandler(nil);
+    else completionHandler(self.socket);
+    
+}
+
+-(void)setSocketEventsAddCompletion:(blockResponse)completionHandler
+{
+    if(!self.socket) completionHandler(nil);
+    else{
+        
+        [self.socket setSocketEventsShouldConnect:YES];
+        
+        completionHandler(self.socket);
+        
+    }
 }
 
 // Constructs the basic default data for the app
@@ -122,14 +155,9 @@
     
     NSArray* filteredArray = [deals filteredArrayUsingPredicate:distancePredicate];
     
-    //NSLog(@"%@", filteredArray);
+    if(!filteredArray) return nil;
     
-    if(!filteredArray){
-        return nil;
-    }
-    else{
-        return filteredArray;
-    }
+    return filteredArray;
 }
 
 - (NSInteger)findLowestBudget:(NSArray *)deals
@@ -221,7 +249,7 @@
     return currentDate;
 }
 
--(void)sendGetRequestSearchCriteria:(NSDictionary *)searchCriteria addCompletion:(dataResponseBlockResponse)completionBlock
+-(void)sendGetRequestSearchCriteria:(NSDictionary *)searchCriteria addCompletion:(blockResponse)completionBlock
 {
     //self.sessionManager.responseSerializer = [AFJSONResponseSerializer serializer];
     //self.sessionManager.requestSerializer = [AFJSONRequestSerializer serializer];
@@ -233,7 +261,7 @@
     }];
 }
 
--(void)sendSearchCriteria:(NSDictionary *)searchCriteria addCompletion:(dataResponseBlockResponse)completionBlock
+-(void)sendSearchCriteria:(NSDictionary *)searchCriteria addCompletion:(blockResponse)completionBlock
 {
     
     [self.sessionManager POST:SEARCH_DEALS parameters:searchCriteria progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
@@ -324,7 +352,7 @@
     
 }
 
--(void)sendAddressForGeocode:(NSDictionary *)params addCompletionHandler:(dataResponseBlockResponse)completionHandler
+-(void)sendAddressForGeocode:(NSDictionary *)params addCompletionHandler:(blockResponse)completionHandler
 {
     if(!params) return;
     
@@ -348,7 +376,7 @@
 }
 
 #warning needs better error handling
--(void)sendAddressesForGeocode:(NSDictionary *)params addCompletionHandler:(dataResponseBlockResponse)completionHandler
+-(void)sendAddressesForGeocode:(NSDictionary *)params addCompletionHandler:(blockResponse)completionHandler
 {
     if(!params) return;
     
@@ -404,7 +432,7 @@
 }
 
 
--(void)downloadImageFromURL:(NSString *)urlString forImageView:(UIImageView *)imageView addCompletionHandler:(fetchedDataResponse)completionHandler{
+-(void)downloadImageFromURL:(NSString *)urlString forImageView:(UIImageView *)imageView addCompletionHandler:(fetchedImageDataResponse)completionHandler{
     
     NSURLRequest* imageRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:urlString]];
     
@@ -432,7 +460,7 @@
     
 }
 
--(void)downloadImageFromURL:(NSString *)urlSting addCompletionHandler:(fetchedDataResponse)completionHandler
+-(void)downloadImageFromURL:(NSString *)urlSting addCompletionHandler:(fetchedImageDataResponse)completionHandler
 {
     self.sessionManager.responseSerializer = [AFImageResponseSerializer serializer];
     self.sessionManager.requestSerializer = [AFHTTPRequestSerializer serializer];
@@ -451,7 +479,7 @@
     
 }
 
--(void)getImageFromCacheWithKey:(NSString *)key addCompletionHandler:(dataResponseBlockResponse)completionHandler
+-(void)getImageFromCacheWithKey:(NSString *)key addCompletionHandler:(blockResponse)completionHandler
 {
     dispatch_async(dispatch_get_main_queue(), ^{
         
@@ -469,7 +497,7 @@
     
 }
 
--(void)getImageFromCachePersistenceStorageWithKey:(NSString *)key addCompletionHandler:(dataResponseBlockResponse)completionHandler
+-(void)getImageFromCachePersistenceStorageWithKey:(NSString *)key addCompletionHandler:(blockResponse)completionHandler
 {
     if(!key) completionHandler(nil);
     else{
@@ -534,7 +562,7 @@
 
 #pragma mark -
 #pragma mark - Sort Methods
--(void)sortArray:(NSArray *)array byKey:(NSString *)key ascending:(BOOL)shouldAscend localizeCompare:(BOOL)shouldLocalize addCompletion:(dataResponseBlockResponse)completionHandler
+-(void)sortArray:(NSArray *)array byKey:(NSString *)key ascending:(BOOL)shouldAscend localizeCompare:(BOOL)shouldLocalize addCompletion:(blockResponse)completionHandler
 {
     if(!array) completionHandler(nil);
     
@@ -671,8 +699,7 @@
                 CLLocationDistance distanceFromUserMeters = [appDelegate.locationManager managerDistanceMetersFromLocation:user toLocation:eventLocation];
                 
                 CLLocationDistance convertedDistance = [appDelegate.locationManager managerConvertDistance:distanceFromUserMeters];
-                
-                //[mapAnnotation distanceFromUser:[NSString stringWithFormat:@"%.1f", convertedDistance]];
+
                 [mapAnnotation setDistanceFromUser:convertedDistance];
                 
                 [deal setAnnotation:mapAnnotation];
@@ -707,6 +734,14 @@
     [self.sessionManager.operationQueue cancelAllOperations];
     
     [self.delegate operationsCancelled];
+}
+
+#pragma mark -
+#pragma mark - Web Socket Delegate Methods
+-(void)newDealAdded:(id)newDeal
+{
+    NSLog(@"New Deal ADDED");
+    NSLog(@"%@",newDeal);
 }
 
 @end

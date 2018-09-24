@@ -38,11 +38,8 @@
 {
     [super viewDidAppear:animated];
     
-    //NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
     AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
-    //UserAccount* user = appDelegate.accountManager.getSignedAccount;
-    //NSString* budgetValue = [defaults valueForKey:NSLocalizedString(@"BUDGET", nil)];
-    
+
     __block BudglitHomeViewController* blocksafeSelf = self;
     
     [appDelegate.accountManager validateSessionForDomain:@"www.budglit.com" addCompletion:^(id object) {
@@ -78,7 +75,21 @@
                 }];
                 
             }
-            else [blocksafeSelf launchLoadingPage];
+            else{
+                
+                UserAccount* user = [appDelegate.accountManager managerSignedAccount];
+                
+                NSString* userID = [user getUserID];
+
+                [appDelegate.databaseManager managerConstructWebSocket:userID addCompletionBlock:^(id response) {
+                    
+                    NSLog(@"%@", response);
+                    
+                    [blocksafeSelf launchLoadingPage];
+                    
+                }];
+                
+            }
             
         }
         

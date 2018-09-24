@@ -81,6 +81,24 @@ static DatabaseManager* sharedManager;
     return self;
 }
 
+-(void)managerConstructWebSocket:(NSString *)token addCompletionBlock:(dataBlockResponse)completionHandler
+{
+    if(token){
+        
+        [self.engine constructWebSocket:token addCompletion:^(id response) {
+           
+            if(response){
+                
+                [self.engine setSocketEventsAddCompletion:^(id eventResponse) {
+                    completionHandler(eventResponse);
+                }];
+                
+            }
+            
+        }];
+    }
+}
+
 -(NSArray*)managerGetSavedDeals
 {
     return self.fetchedDeals.copy;
@@ -191,7 +209,7 @@ static DatabaseManager* sharedManager;
     return [self.engine primaryDefaultForSearchFilterAtLocation];
 }
 
--(NSArray *)managerExtractDeals:(NSArray *)filteredDeals fromDeals:(NSArray *)deals
+-(NSArray*)managerExtractDeals:(NSArray *)filteredDeals fromDeals:(NSArray *)deals
 {
     if(!filteredDeals) return nil;
     

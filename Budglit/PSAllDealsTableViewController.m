@@ -9,6 +9,7 @@
 #import "PSAllDealsTableViewController.h"
 #import "DealDetailViewController.h"
 #import "Deal.h"
+#import "DealMapAnnotation.h"
 #import "DrawerViewController.h"
 #import "AppDelegate.h"
 #import "LoadingLocalDealsViewController.h"
@@ -549,6 +550,8 @@ static NSString* const emptyCellIdentifier = @"holderCell";
         ACDDVC.venueName = selectedDeal.venueName;
         
         ACDDVC.descriptionText = selectedDeal.dealDescription;
+        
+        ACDDVC.distanceText = [NSString stringWithFormat:@"%.1f mi away", selectedDeal.annotation.getDistanceFromUser];
         
         ACDDVC.addressText = [NSString stringWithFormat:@"\n%@ \n"
                               "%@, %@ %@", selectedDeal.address, selectedDeal.city, selectedDeal.state, selectedDeal.zipcode];

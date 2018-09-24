@@ -67,7 +67,7 @@ static NSString *userProfileIdentifier = @"profileCell";
 {
     AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
-    UserAccount* user = [appDelegate.accountManager getSignedAccount];
+    UserAccount* user = [appDelegate.accountManager managerSignedAccount];
     
     UserProfileTableViewCell* profileCell = (UserProfileTableViewCell*) notification.object;
 

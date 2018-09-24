@@ -11,10 +11,6 @@
 
 #define USERNAME_IMAGE @"icon_username.png"
 #define PASSWORD_IMAGE @"icon_lock.png"
-//#define EMAIL_FIELD @"user_email"
-//#define PASSWORD_FIELD @"user_password"
-//#define FIRST_NAME_FIELD @"user_FName"
-//#define LAST_NAME_FIELD @"user_LName"
 #define EMAIL_FIELD @"email"
 #define PASSWORD_FIELD @"password"
 #define FIRST_NAME_FIELD @"firstName"
@@ -352,12 +348,19 @@
     [self.view layoutIfNeeded];
 
     NSLayoutConstraint* constraints[2];
+    
     constraints[0] = self.kbConstraint;
     constraints[1] = self.viewConstraint;
+
+    NSArray* constraintArray = [NSArray arrayWithObjects:constraints[0], constraints[1], nil];
     
-    [self.view removeConstraints:[NSArray arrayWithObjects:constraints count:2]];
-    
-    [self toggleButtonConstraintsActivate:YES];
+    if(constraintArray && constraintArray.count > 0){
+        
+        [self.view removeConstraints:constraintArray];
+        
+        [self toggleButtonConstraintsActivate:YES];
+        
+    }
     
     [self.view layoutIfNeeded];
 }

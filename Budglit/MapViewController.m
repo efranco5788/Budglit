@@ -650,6 +650,8 @@ static double USE_CURRENT_RADIUS = -1;
             
             detailedViewController.distanceText = [NSString stringWithFormat:@"%.1f mi away", annotation.getDistanceFromUser];
             
+            detailedViewController.venueName = annotation.parentDeal.venueName;
+            
             detailedViewController.addressText = [NSString stringWithFormat:@"\n%@ \n"
                                                   "%@, %@ %@", annotation.parentDeal.address, annotation.parentDeal.city, annotation.parentDeal.state, annotation.parentDeal.zipcode];
             

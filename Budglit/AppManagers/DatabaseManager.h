@@ -52,6 +52,8 @@ typedef void (^newDataFetchedResponse)(UIBackgroundFetchResult result);
 
 -(instancetype) initWithEngineHostName:(NSString*)hostName NS_DESIGNATED_INITIALIZER;
 
+-(void)managerConstructWebSocket:(NSString*)token addCompletionBlock:(dataBlockResponse)completionHandler;
+
 -(NSDictionary*)managerFetchPrimaryDefaultSearchFiltersWithLocation;
 
 -(void)managerFetchDeals:(NSDictionary*)searchCriteria addCompletionBlock:(dataBlockResponse)completionHandler;

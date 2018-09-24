@@ -18,6 +18,7 @@
 @class DrawerViewController;
 @class DealTableViewCell;
 @class Deal;
+@class DealMapAnnotation;
 @class PSEditZipcodeOfflineTableViewController;
 
 

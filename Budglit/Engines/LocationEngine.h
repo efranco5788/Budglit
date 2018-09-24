@@ -9,7 +9,7 @@
 #import "Engine.h"
 #import <MapKit/MapKit.h>
 
-typedef void (^dataResponseBlockResponse)(id response);
+//typedef void (^dataResponseBlockResponse)(id response);
 
 @protocol LocationEngineDelegate <NSObject>
 @optional
@@ -45,6 +45,6 @@ typedef void (^dataResponseBlockResponse)(id response);
 
 -(CLLocation*)convertAddressToLocation:(NSDictionary*)addressInfo;
 
--(void)GNFetchPostalCodesForCity:(NSDictionary *)parameters addCompletionHandler:(dataResponseBlockResponse)completionHandler;
+-(void)GNFetchPostalCodesForCity:(NSDictionary *)parameters addCompletionHandler:(blockResponse)completionHandler;
 
 @end

@@ -8,10 +8,20 @@
 
 #import "UserAccount.h"
 
+#define kHOST_ACCOUNT @"host"
+#define kATTENDEE_ACCOUNT @"attendee"
 
 static UserAccount* loggedAccount;
 
-@interface UserAccount()
+typedef NS_ENUM(NSUInteger, AccountType) {
+    Account_Default = 0,
+    Account_Host = 1,
+    Account_Attendee = 2,
+};
+
+@interface UserAccount(){
+    AccountType accountType;
+}
 
 @property (nonatomic, strong) NSString* userID;
 
@@ -20,18 +30,6 @@ static UserAccount* loggedAccount;
 
 @implementation UserAccount
 
-+(UserAccount*) currentSignedUser
-{
-    if (loggedAccount == nil) {
-        loggedAccount = [[super alloc] init];
-        [loggedAccount.firstName isEqualToString:NSLocalizedString(@"DEFAULT_NAME", nil)];
-        [loggedAccount.lastName isEqualToString:@""];
-        loggedAccount.profileImage = [UIImage imageNamed:NSLocalizedString(@"DEFAULT_PROFILE_IMAGE", nil)];
-        
-    }
-    return loggedAccount;
-}
-
 -(instancetype)initWithCoder:(NSCoder *)aDecoder
 {
     self = [self initWithFirstName:nil andLastName:nil andProfileImage:nil andEmail:nil andID:nil];
@@ -39,7 +37,7 @@ static UserAccount* loggedAccount;
     if (!self) {
         return nil;
     }
-    
+
     self.userID = [aDecoder decodeObjectForKey:@"id"];
     self.firstName = [aDecoder decodeObjectForKey:NSLocalizedString(@"DEFAULT_KEY_FIRST_NAME", nil)];
     self.lastName = [aDecoder decodeObjectForKey:NSLocalizedString(@"DEFAULT_KEY_LAST_NAME", nil)];
@@ -145,6 +143,21 @@ static UserAccount* loggedAccount;
 -(NSString *)getUserID
 {
     return self.userID.copy;
+}
+
+-(void)setAccountType:(NSString *)type
+{
+    if(!type) return;
+    
+    type = type.lowercaseString;
+    
+    if([type isEqualToString:kHOST_ACCOUNT]){
+        accountType = Account_Host;
+    }
+    else if ([type isEqualToString:kATTENDEE_ACCOUNT]){
+        accountType = Account_Attendee;
+    }
+    else accountType = Account_Default;
 }
 
 -(void)clear

@@ -8,15 +8,18 @@
 
 #import <Foundation/Foundation.h>
 #import "OAuthObject.h"
+#import "WebSocket.h"
 
 #define KEY_SESSION_ID @"sessionID"
 
 typedef void (^generalBlockResponse)(BOOL success);
+typedef void (^blockResponse)(id response);
 
 @interface Engine : NSObject
 
 @property (nonatomic, strong) AFHTTPSessionManager* sessionManager;
 @property (nonatomic, strong) OAuthObject* OAuth;
+@property (nonatomic, strong) WebSocket* socket;
 @property (readonly) NSString* baseURLString;
 @property (nonatomic, strong) NSString* sessionID;
 

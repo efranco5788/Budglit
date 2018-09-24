@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="0Jg-98-CE3">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14313.18" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="0Jg-98-CE3">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
-        <capability name="Alignment constraints to the first baseline" minToolsVersion="6.0"/>
-        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14283.14"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -251,7 +249,7 @@
                                 <rect key="frame" x="169" y="91" width="37" height="37"/>
                                 <color key="color" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </activityIndicatorView>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" bouncesZoom="NO" editable="NO" textAlignment="natural" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="J9v-Vd-bkx">
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" bouncesZoom="NO" editable="NO" textAlignment="natural" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="J9v-Vd-bkx">
                                 <rect key="frame" x="0.0" y="220" width="375" height="58"/>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
@@ -269,33 +267,25 @@
                                     </userDefinedRuntimeAttribute>
                                 </userDefinedRuntimeAttributes>
                             </textView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jA5-F9-pCN">
-                                <rect key="frame" x="248" y="278" width="127" height="22"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jA5-F9-pCN">
+                                <rect key="frame" x="248" y="278" width="127" height="27"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="127" id="fhh-aJ-gmn"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="11"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="12"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Nxz-2F-vea">
-                                <rect key="frame" x="0.0" y="278" width="248" height="22"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" text="" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Nxz-2F-vea">
+                                <rect key="frame" x="0.0" y="278" width="248" height="27"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="14"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="address_icon.png" translatesAutoresizingMaskIntoConstraints="NO" id="ItR-4E-3Xg">
-                                <rect key="frame" x="0.0" y="300" width="160" height="31"/>
-                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="31" id="icf-zb-jEn"/>
-                                    <constraint firstAttribute="width" constant="160" id="piD-L3-rrX"/>
-                                </constraints>
-                            </imageView>
                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="phone_icon.png" translatesAutoresizingMaskIntoConstraints="NO" id="C1d-8H-dAM">
-                                <rect key="frame" x="160" y="300" width="215" height="31"/>
+                                <rect key="frame" x="160" y="305" width="215" height="26"/>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             </imageView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="J0a-iD-VAU">
@@ -320,13 +310,21 @@
                                     <constraint firstItem="DzZ-61-UTU" firstAttribute="top" secondItem="J0a-iD-VAU" secondAttribute="top" id="yfu-8K-w9b"/>
                                 </constraints>
                             </view>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="address_icon.png" translatesAutoresizingMaskIntoConstraints="NO" id="ItR-4E-3Xg">
+                                <rect key="frame" x="0.0" y="305" width="160" height="26"/>
+                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="26" id="icf-zb-jEn"/>
+                                    <constraint firstAttribute="width" constant="160" id="piD-L3-rrX"/>
+                                </constraints>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" red="0.82420957088470459" green="0.82753884792327881" blue="0.82412904500961304" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <gestureRecognizers/>
                         <constraints>
                             <constraint firstItem="jA5-F9-pCN" firstAttribute="leading" secondItem="Nxz-2F-vea" secondAttribute="trailing" id="3Iv-Qk-hdf"/>
-                            <constraint firstItem="ItR-4E-3Xg" firstAttribute="top" secondItem="J9v-Vd-bkx" secondAttribute="bottom" constant="22" id="7jj-ws-4Pa"/>
+                            <constraint firstItem="ItR-4E-3Xg" firstAttribute="top" secondItem="J9v-Vd-bkx" secondAttribute="bottom" constant="27" id="7jj-ws-4Pa"/>
                             <constraint firstItem="J9v-Vd-bkx" firstAttribute="leading" secondItem="ItR-4E-3Xg" secondAttribute="leading" id="D34-ZA-WTl"/>
                             <constraint firstItem="TSX-bn-6sL" firstAttribute="leading" secondItem="dF4-A1-cie" secondAttribute="leading" id="E7A-uy-4CD"/>
                             <constraint firstItem="ItR-4E-3Xg" firstAttribute="leading" secondItem="J0a-iD-VAU" secondAttribute="leading" id="HEJ-Bn-pS0"/>
@@ -371,6 +369,7 @@
                         <outlet property="socialMediaNavItem" destination="wI7-Os-dQU" id="jTu-aP-1ur"/>
                         <outlet property="twitterViewGesture" destination="xTf-Af-k7I" id="YXO-F0-NeS"/>
                         <outlet property="venueImage" destination="TSX-bn-6sL" id="4es-kS-6pH"/>
+                        <outlet property="venueLbl" destination="Nxz-2F-vea" id="xad-8U-J0L"/>
                         <segue destination="aJO-LD-GyB" kind="unwind" identifier="unwindToDeals" unwindAction="returned:" id="2Im-hM-SXz"/>
                     </connections>
                 </viewController>

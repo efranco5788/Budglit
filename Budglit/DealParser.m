@@ -19,7 +19,7 @@
 #define KEY_DEAL_END @"duration_end"
 #define KEY_DEAL_TAGS @"tags"
 #define KEY_VENUE_PHONE_NUMBER @"phone"
-#define KEY_VENUE_NAME @"name"
+#define KEY_VENUE_NAME @"venue"
 #define KEY_VENUE_ADDRESS @"address"
 #define KEY_VENUE_CITY @"city"
 #define KEY_VENUE_STATE @"state"
@@ -50,7 +50,6 @@
 
 -(NSArray*)parseDeals:(NSArray *)list
 {
-    //NSLog(@"%@", list);
     
     if(!list){return nil;}
     

@@ -13,8 +13,7 @@
 @class DealMapAnnotation;
 @class ImageData;
 
-typedef void (^fetchedDataResponse)(UIImage* imageResponse, NSHTTPURLResponse* response, NSURLRequest* request);
-typedef void (^dataResponseBlockResponse)(id response);
+typedef void (^fetchedImageDataResponse)(UIImage* imageResponse, NSHTTPURLResponse* response, NSURLRequest* request);
 
 
 @protocol DatabaseEngineDelegate <NSObject>
@@ -29,9 +28,14 @@ typedef void (^dataResponseBlockResponse)(id response);
 
 @property (nonatomic, strong) id <DatabaseEngineDelegate> delegate;
 
+
 -(instancetype)init;
 
 -(instancetype)initWithHostName:(NSString*)hostName NS_DESIGNATED_INITIALIZER;
+
+-(void)constructWebSocket:(NSString*)token addCompletion:(blockResponse)completionHandler;
+
+-(void)setSocketEventsAddCompletion:(blockResponse)completionHandler;
 
 // Constructs the basic default data for the app
 -(NSDictionary*)constructDefaultFetchingObjects;
@@ -42,27 +46,27 @@ typedef void (^dataResponseBlockResponse)(id response);
 
 -(NSDictionary*)primaryDefaultForSearchFilterAtLocation;
 
--(void)sortArray:(NSArray*)array byKey:(NSString*)key ascending:(BOOL)shouldAscend localizeCompare:(BOOL)shouldLocalize addCompletion:(dataResponseBlockResponse)completionHandler;
+-(void)sortArray:(NSArray*)array byKey:(NSString*)key ascending:(BOOL)shouldAscend localizeCompare:(BOOL)shouldLocalize addCompletion:(blockResponse)completionHandler;
 
--(void)sendGetRequestSearchCriteria:(NSDictionary*)searchCriteria addCompletion:(dataResponseBlockResponse) completionBlock;
+-(void)sendGetRequestSearchCriteria:(NSDictionary*)searchCriteria addCompletion:(blockResponse) completionBlock;
 
--(void)sendSearchCriteria:(NSDictionary*)searchCriteria addCompletion:(dataResponseBlockResponse) completionBlock;
+-(void)sendSearchCriteria:(NSDictionary*)searchCriteria addCompletion:(blockResponse) completionBlock;
 
--(void)sendAddressForGeocode:(NSDictionary*)params addCompletionHandler:(dataResponseBlockResponse)completionHandler;
+-(void)sendAddressForGeocode:(NSDictionary*)params addCompletionHandler:(blockResponse)completionHandler;
 
--(void)sendAddressesForGeocode:(NSDictionary*)params addCompletionHandler:(dataResponseBlockResponse)completionHandler;
+-(void)sendAddressesForGeocode:(NSDictionary*)params addCompletionHandler:(blockResponse)completionHandler;
 
--(void)downloadImageFromURL:(NSString*)urlString forImageView:(UIImageView*)imageView addCompletionHandler:(fetchedDataResponse)completionHandler;
+-(void)downloadImageFromURL:(NSString*)urlString forImageView:(UIImageView*)imageView addCompletionHandler:(fetchedImageDataResponse)completionHandler;
 
--(void)downloadImageFromURL:(NSString*)urlSting addCompletionHandler:(fetchedDataResponse)completionHandler;
+-(void)downloadImageFromURL:(NSString*)urlSting addCompletionHandler:(fetchedImageDataResponse)completionHandler;
 
 -(void)cacheImage:(UIImage*)img forKey:(NSString*)key addCompletionHandler:(generalBlockResponse)completionHandler;
 
 -(void)saveToCachePersistenceStorageImage:(UIImage*)img forKey:(NSString*)key addCompletionHandler:(generalBlockResponse)completionHandler;
 
--(void)getImageFromCacheWithKey:(NSString*)key addCompletionHandler:(dataResponseBlockResponse)completionHandler;
+-(void)getImageFromCacheWithKey:(NSString*)key addCompletionHandler:(blockResponse)completionHandler;
 
--(void)getImageFromCachePersistenceStorageWithKey:(NSString*)key addCompletionHandler:(dataResponseBlockResponse)completionHandler;
+-(void)getImageFromCachePersistenceStorageWithKey:(NSString*)key addCompletionHandler:(blockResponse)completionHandler;
 
 -(BOOL)extractAuthetication:(NSDictionary*)info;
 

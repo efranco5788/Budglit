@@ -146,17 +146,12 @@ static AccountManager* sharedManager;
 #pragma mark -
 #pragma mark - Signed User Account Methods
 // Get User information already stored in device
--(UserAccount*)getSignedAccount
+-(UserAccount*)managerSignedAccount
 {
-    NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
+    UserAccount* user = [self.engine signedAccount];
     
-    NSData* userData = [defaults valueForKey:NSLocalizedString(@"ACCOUNT", nil)];
-    
-    if (!userData) return nil;
-    
-    UserAccount* user = [NSKeyedUnarchiver unarchiveObjectWithData:userData];
-    
-    return user;
+    if(!user) return nil;
+    else return user;
 }
 
 -(void)removeUserAccountClearSavedAccount:(BOOL)clear AddCompletion:(generalBlockResponse)completionHandler
@@ -164,11 +159,6 @@ static AccountManager* sharedManager;
     [self.engine deleteLoggedInUserAccountAddCompletion:^(BOOL success) {
         
         if(success){
-            
-            if(clear){
-                [self.signedAccount clear];
-            }
-            
             
         }
        
@@ -190,19 +180,14 @@ static AccountManager* sharedManager;
                 
                 NSDictionary* userInfo = (NSDictionary*) dataResponse;
                 
-                NSLog(@"%@", userInfo);
+                UserAccount* user = [self.engine parseUserAccount:userInfo];
                 
-                
-                self.signedAccount = [self.engine parseUserAccount:userInfo];
-                
-                NSLog(@"%@", self.signedAccount);
-                
-                if(!self.signedAccount) completionHandler(NO);
+                if(!user) completionHandler(NO);
                 else{
                     
                     if(save){
                         
-                        [self.engine saveLoggedInUserAccount:self.signedAccount addCompletion:^(BOOL success) {
+                        [self.engine saveLoggedInUserAccount:user addCompletion:^(BOOL success) {
                             if(success)completionHandler(YES);
                         }];
                     }
@@ -237,14 +222,14 @@ static AccountManager* sharedManager;
         {
             NSLog(@"%@", dataResponse);
             
-            self.signedAccount = [self.engine parseUserAccount:dataResponse];
+            UserAccount* user = [self.engine parseUserAccount:dataResponse];
             
-            if(!self.signedAccount) signUpCompletionHandler(nil);
+            if(!user) signUpCompletionHandler(nil);
             else{
                 
                 if(save){
                     
-                    [self.engine saveLoggedInUserAccount:self.signedAccount addCompletion:^(BOOL success) {
+                    [self.engine saveLoggedInUserAccount:user addCompletion:^(BOOL success) {
                         if(success)signUpCompletionHandler(dataResponse);
                     }];
                     

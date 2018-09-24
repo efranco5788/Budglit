@@ -16,8 +16,6 @@
 @property (nonatomic, strong) NSString* imageURL;
 @property (NS_NONATOMIC_IOSONLY, getter=getProfileImage, strong) UIImage *profileImage;
 
-+(UserAccount*) currentSignedUser;
-
 -(instancetype)initWithFirstName:(NSString*)fName andLastName:(NSString*)lName;
 
 -(instancetype)initWithFirstName:(NSString*)fName andLastName:(NSString*)lName andProfileImage:(NSString*)URL;
@@ -27,6 +25,8 @@
 -(instancetype)initWithFirstName:(NSString*)fName andLastName:(NSString*)lName andProfileImage:(NSString*)URL andEmail:(NSString*)anEmail andID:(NSString*)sID NS_DESIGNATED_INITIALIZER;
 
 -(NSString*)getUserID;
+
+-(void)setAccountType:(NSString*)type;
 
 -(void)clear;
 

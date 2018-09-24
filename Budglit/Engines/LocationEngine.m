@@ -129,21 +129,15 @@ DISTANCE_CONERSION conversionType;
     return maxDistance;
 }
 
--(void)GNFetchPostalCodesForCity:(NSDictionary *)parameters addCompletionHandler:(dataResponseBlockResponse)completionHandler
+-(void)GNFetchPostalCodesForCity:(NSDictionary *)parameters addCompletionHandler:(blockResponse)completionHandler
 {
     
     [self.sessionManager GET:POSTAL_CODE_NEARBY_SEARCH_URL parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         
         [self addToRequestHistory:task];
         
-        if(responseObject)
-        {
-            completionHandler(responseObject);
-        }
-        else
-        {
-            completionHandler(nil);
-        }
+        if(responseObject) completionHandler(responseObject);
+        else completionHandler(nil);
         
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         

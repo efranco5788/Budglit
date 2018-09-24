@@ -32,7 +32,7 @@
 
 
 @implementation DealDetailViewController
-@synthesize descriptionTextView, addressTextView, distanceLbl, phoneNumberTextView, addressText, phoneText, venueImage;
+@synthesize descriptionTextView, addressTextView, venueLbl, distanceLbl, phoneNumberTextView, addressText, phoneText, venueImage;
 
 - (void)viewDidLoad
 {
@@ -43,6 +43,8 @@
     (self.descriptionTextView).text = self.descriptionText;
     
     self.distanceLbl.text = self.distanceText;
+    
+    self.venueLbl.text = self.venueName;
     
     self.descriptionTextView.layer.borderColor = [UIColor grayColor].CGColor;
     

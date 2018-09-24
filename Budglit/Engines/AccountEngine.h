@@ -9,8 +9,6 @@
 #import "Engine.h"
 #import "UserAccount.h"
 
-typedef void (^fetchedResponse)(id dataResponse);
-
 @protocol AccountEngineDelegate <NSObject>
 @optional
 -(void) credentialsSaved;
@@ -35,13 +33,15 @@ typedef void (^fetchedResponse)(id dataResponse);
 
 -(UserAccount*)parseUserAccount:(NSDictionary*)data;
 
+-(UserAccount*)signedAccount;
+
 -(void)saveLoggedInUserAccount:(UserAccount*)user addCompletion:(generalBlockResponse)completionHandler;
 
 -(void)deleteLoggedInUserAccountAddCompletion:(generalBlockResponse)completionHandler;
 
--(void)loginWithCredentials:(NSDictionary*)userCredentials addCompletion:(fetchedResponse)completionHandler;
+-(void)loginWithCredentials:(NSDictionary*)userCredentials addCompletion:(blockResponse)completionHandler;
 
--(void)signupWithNewAccount:(NSDictionary*)userCredentials addCompletion:(fetchedResponse)completionHandler;
+-(void)signupWithNewAccount:(NSDictionary*)userCredentials addCompletion:(blockResponse)completionHandler;
 
 -(void)sendPasswordResetEmail:(NSDictionary*) email;
 

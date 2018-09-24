@@ -65,6 +65,8 @@
         
         [self.budgetManager resetBudget];
         
+        
+        
         /*
         
         NSString* sessionID = [self.accountManager getSessionID];

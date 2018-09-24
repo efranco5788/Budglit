@@ -33,9 +33,11 @@ typedef void (^generalBlockResponse)(BOOL success);
 
 @property (nonatomic, strong) id <AccountManagerDelegate> delegate;
 @property (nonatomic, strong) AccountEngine* engine;
-@property (nonatomic, strong) UserAccount *signedAccount;
+//@property (nonatomic, strong) UserAccount *signedAccount;
 
 +(AccountManager*) sharedAccountManager;
+
+-(UserAccount*)managerSignedAccount;
 
 -(instancetype) initWithEngineHostName:(NSString*)hostName NS_DESIGNATED_INITIALIZER;
 
@@ -44,8 +46,6 @@ typedef void (^generalBlockResponse)(BOOL success);
 -(void)login:(NSDictionary*)loginCredentials shouldSaveCredentials:(BOOL)save addCompletion:(generalBlockResponse)completionHandler;
 
 -(void)logoutFromDomain:(NSString*)domainName addCompletion:(generalReturnBlockResponse)completionHandler;
-
--(UserAccount*)getSignedAccount;
 
 -(id)getValidationValue:(NSDictionary*)validationInfo;
 

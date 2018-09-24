@@ -28,6 +28,7 @@
 @property (strong, nonatomic) IBOutlet UIActivityIndicatorView *imgActivityIndicator;
 @property (weak, nonatomic) IBOutlet UITextView* descriptionTextView;
 @property (weak, nonatomic) IBOutlet UILabel *distanceLbl;
+@property (weak, nonatomic) IBOutlet UILabel *venueLbl;
 
 @property (strong, nonatomic) IBOutlet UIImageView *addressImage;
 @property (strong, nonatomic) IBOutlet UIImageView *phoneImage;
