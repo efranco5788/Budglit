@@ -1,0 +1,9 @@
+{
+  "commitish" : "v13.3.0",
+  "iOS" : [
+    {
+      "name" : "SocketIO",
+      "hash" : "10dd6c45dfbe7ca8b881eff628a77113211ccc13e0ea627b82559b40756ee6dd"
+    }
+  ]
+}
