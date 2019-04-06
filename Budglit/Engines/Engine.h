@@ -14,9 +14,17 @@
 
 typedef void (^generalBlockResponse)(BOOL success);
 typedef void (^blockResponse)(id response);
+typedef void (^blockImageResponse)(UIImage* response);
+typedef void (^fetchedImageDataResponse)(UIImage* imageResponse, NSHTTPURLResponse* response, NSURLRequest* request);
+
+@protocol EngineDelegate <NSObject>
+@optional
+-(void) requestFailedWithError:(NSDictionary*)info;
+@end
 
 @interface Engine : NSObject
 
+@property (nonatomic, strong) id <EngineDelegate> delegate;
 @property (nonatomic, strong) AFHTTPSessionManager* sessionManager;
 @property (nonatomic, strong) OAuthObject* OAuth;
 @property (nonatomic, strong) WebSocket* socket;
@@ -30,9 +38,17 @@ typedef void (^blockResponse)(id response);
 
 -(instancetype)initWithHostName:(NSString*)hostName NS_DESIGNATED_INITIALIZER;
 
--(void) addToRequestHistory:(id)request;
+-(void)constructWebSocket:(NSString*)token addCompletion:(blockResponse)completionHandler;
 
--(void) logFailedRequest:(id)failedRequest;
+-(void)headRequestToPath:(NSString*)path parameters:(id)params addCompletion:(blockResponse)completionHandler;
+
+-(void)getRequestToPath:(NSString*)path parameters:(id)params addCompletion:(blockResponse)completionHandler;
+
+-(void)postRequestToPath:(NSString*)path parameters:(id)params addCompletion:(blockResponse)completionHandler;
+
+-(void)addToRequestHistory:(id)request;
+
+-(void)logFailedRequest:(id)failedRequest;
 
 -(NSDictionary*)constructParameterWithKey:(NSString*)key AndValue:(id)value addToDictionary:(NSDictionary*)dict;
 

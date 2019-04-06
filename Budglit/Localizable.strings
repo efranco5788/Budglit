@@ -56,4 +56,6 @@
 "PS_POST_NOTIFICATION_LOCATION_CHAGED" = "PSDealsLocationHasChanged";
 "UNWIND_TO_HOME" = "unwindToHome";
 "USER_CHANGED_NOTIFICATION" = "USER_DID_CHANGE";
-
+"NEW_UPDATES_NOTIFICATION" = "NewUpdatesNoftification";
+"HOST_BACK_ONLINE_NOTIFICATION" = "HostBackOnlineNoftification";
+"HOST_OFFLINE_NOTIFICATION" = "HostOfflineNoftification";

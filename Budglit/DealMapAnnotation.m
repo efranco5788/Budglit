@@ -15,7 +15,7 @@
 
 @implementation DealMapAnnotation
 {
-    double distanceFromUser;
+    
 }
 @synthesize coordinate = _coordinate;
 @synthesize title = _title;
@@ -23,21 +23,21 @@
 
 +(MKAnnotationView*)createViewAnnotationForMapView:(MKMapView *)mapView annotation:(id <MKAnnotation>)annotation
 {
-    MKAnnotationView* returnedAnnotationView = (GeneralEventPinAnnotationView*) [mapView dequeueReusableAnnotationViewWithIdentifier:NSStringFromClass([DealMapAnnotation class])];
+    MKAnnotationView* annotationView = (GeneralEventPinAnnotationView*) [mapView dequeueReusableAnnotationViewWithIdentifier:NSStringFromClass([DealMapAnnotation class])];
     
-    if(returnedAnnotationView == nil)
+    if(annotationView == nil)
     {
-        returnedAnnotationView =  [[GeneralEventPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:NSStringFromClass([DealMapAnnotation class])];
+        annotationView =  [[GeneralEventPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:NSStringFromClass([DealMapAnnotation class])];
         
-        NSLog(@"was nil %@", returnedAnnotationView);
+        //NSLog(@"was nil %@", returnedAnnotationView);
         
         //((MKPinAnnotationView *)returnedAnnotationView).pinTintColor = [MKPinAnnotationView purplePinColor];
         //((MKPinAnnotationView *)returnedAnnotationView).animatesDrop = YES;
         //((MKPinAnnotationView *)returnedAnnotationView).canShowCallout = YES;
     }
-    else returnedAnnotationView.annotation = annotation;
+    else annotationView.annotation = annotation;
     
-    return returnedAnnotationView;
+    return annotationView;
 }
 
 
@@ -52,7 +52,6 @@
     self.parentDeal = deal;
     
     _title = self.parentDeal.venueName;
-    NSLog(@"--------------- Title Set -------------");
     self.locationName = self.parentDeal.venueName;
     self.distanceFromUserString = [NSString stringWithFormat:@"%@ mi", kDEFAULT_DISTANCE_FROM_USER];
     self.discipline = @"Event";
@@ -81,21 +80,18 @@
 
 -(CLLocationDistance)getDistanceFromUser
 {
-    return distanceFromUser;
-}
-
--(NSString*)getDistanceFromUserString
-{
-    return self.distanceFromUserString;
-}
-
--(void)setDistanceFromUser:(double)distance
-{
-    if (distance < 0) distance = 0;
+    LocationSeviceManager* locationManager = [LocationSeviceManager sharedLocationServiceManager];
     
-    distanceFromUser = distance;
+    CLLocation* user = [locationManager getCurrentLocation];
     
-    self.distanceFromUserString = [NSString stringWithFormat:@"%.1f mi", distance];
+    CLLocation* currentLocation = [[CLLocation alloc] initWithLatitude:self.coordinate.latitude longitude:self.coordinate.longitude];
+    
+    
+    CLLocationDistance distanceFromUserMeters = [locationManager managerDistanceMetersFromLocation:user toLocation:currentLocation];
+    
+    CLLocationDistance convertedDistance = [locationManager managerConvertDistance:distanceFromUserMeters];
+    
+    return convertedDistance;
 }
 
 -(void)setCoordinate:(CLLocationCoordinate2D)newCoordinate

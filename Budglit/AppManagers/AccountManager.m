@@ -14,59 +14,53 @@
 #import "UserAccount.h"
 #import <dispatch/dispatch.h>
 
+#define HOST_NAME @"https://www.budglit.com"
 #define VALID_KEY @"valid"
 #define LOGGED_OUT_KEY @"loggedOut"
 
 static AccountManager* sharedManager;
 
-@interface AccountManager() <AccountEngineDelegate>
+@interface AccountManager() <EngineDelegate>
 {
     dispatch_queue_t backgroundQueue;
     
 }
 
-//@property (nonatomic, strong) UserAccount* signedAccount;
-
 @end
 
 @implementation AccountManager
 
-+(AccountManager *)sharedAccountManager
+static AccountManager* sharedManager;
+
++(id)sharedAccountManager
 {
-    if (sharedManager == nil) {
-        sharedManager = [[super alloc] init];
-    }
+    static dispatch_once_t onceToken;
+    
+    dispatch_once(&onceToken, ^{
+        
+        sharedManager = [[self alloc] initWithEngineHostName:HOST_NAME];
+        
+    });
     
     return sharedManager;
 }
 
--(instancetype)init
+-(id)initWithEngineHostName:(NSString *)hostName
 {
-    self = [self initWithEngineHostName:nil];
-    
-    if(!self) return nil;
-    
-    return self;
-}
-
--(instancetype)initWithEngineHostName:(NSString *)hostName
-{
-    self = [super init];
+    self = [super initWithEngineHostName:hostName];
     
     if (!self) return nil;
     
     self.engine = [[AccountEngine alloc] initWithHostName:hostName];
     
     (self.engine).delegate = self;
-    
-    //self.signedAccount = [[UserAccount alloc] init];
-    
+
     return self;
 }
 
 -(BOOL)checkLoggedOut:(NSDictionary *)loggedOutInfo
 {
-    if(!loggedOutInfo) return nil;
+    if(!loggedOutInfo) return NO;
     
     BOOL value = [loggedOutInfo valueForKey:LOGGED_OUT_KEY];
     
@@ -188,7 +182,9 @@ static AccountManager* sharedManager;
                     if(save){
                         
                         [self.engine saveLoggedInUserAccount:user addCompletion:^(BOOL success) {
+                            
                             if(success)completionHandler(YES);
+                            
                         }];
                     }
                     else completionHandler(YES);
@@ -211,7 +207,7 @@ static AccountManager* sharedManager;
        
         if([dataResponse isKindOfClass:[NSError class]])
         {
-            
+            signUpCompletionHandler(dataResponse);
         }
         else if ([dataResponse isKindOfClass:[UIAlertController class]])
         {
@@ -220,26 +216,32 @@ static AccountManager* sharedManager;
         }
         else if([dataResponse isKindOfClass:[NSDictionary class]])
         {
-            NSLog(@"%@", dataResponse);
-            
             UserAccount* user = [self.engine parseUserAccount:dataResponse];
             
-            if(!user) signUpCompletionHandler(nil);
+            NSLog(@"%@", user);
+            
+            if(!user){
+                
+                NSLog(@"There was an issue parsing the user account. ");
+                signUpCompletionHandler(nil);
+
+            }
             else{
                 
                 if(save){
                     
                     [self.engine saveLoggedInUserAccount:user addCompletion:^(BOOL success) {
-                        if(success)signUpCompletionHandler(dataResponse);
+                        if(success) signUpCompletionHandler(user);
                     }];
                     
                 }
-                else signUpCompletionHandler(dataResponse);
+                else signUpCompletionHandler(user);
                 
             }
             
         }
         else signUpCompletionHandler(nil);
+        
     }];
 }
 
@@ -310,20 +312,20 @@ static AccountManager* sharedManager;
 }
 
 #pragma mark -
-#pragma mark - Account Engine Delegates
--(void)loginFailedWithError:(NSError *)error
+#pragma mark - Engine Delegates
+-(void)requestFailedWithError:(NSDictionary *)info
 {
-    [self.delegate loginFailedWithError:error];
-}
-
--(void)signupSucessfully
-{
-    [self.delegate signupSucessfully];
-}
-
--(void)signupFailedWithError:(NSError *)error
-{
-    [self.delegate signupFailedWithError:error];
+    NSString* failedTitle = @"Connection Issue";
+    NSString* failedMessage = @"Oops. It seems we are having some issues on our end. Please try again later";
+    NSString* retry = @"OK";
+    
+    UIAlertAction* actionRetry = [UIAlertAction actionWithTitle:retry style:UIAlertActionStyleCancel handler:nil];
+    
+    UIAlertController* failedAlert = [UIAlertController alertControllerWithTitle:failedTitle message:failedMessage preferredStyle:UIAlertControllerStyleAlert];
+    
+    [failedAlert addAction:actionRetry];
+    
+    [self.delegate networkRequestFailedWithError:failedAlert];
 }
 
 @end

@@ -11,7 +11,6 @@
 @class BudgetManager;
 @class AppDelegate;
 @class MapViewController;
-@class DatabaseManager;
 @class LoadingLocalDealsViewController;
 
 typedef void (^UILablesUpdated)(BOOL success);

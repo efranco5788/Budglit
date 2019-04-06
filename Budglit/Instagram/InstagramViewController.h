@@ -1,5 +1,5 @@
 //
-//  PSInstagramViewController.h
+//  InstagramViewController.h
 //  PocketStretch
 //
 //  Created by Emmanuel Franco on 12/1/16.
@@ -13,7 +13,7 @@
 @class InstagramManager;
 @class InstagramTableViewController;
 
-@interface PSInstagramViewController : SocialMediaViewController<UIWebViewDelegate>
+@interface InstagramViewController : SocialMediaViewController<UIWebViewDelegate>
 
 @property (weak, nonatomic) IBOutlet UIWebView *webView;
 

@@ -7,16 +7,17 @@
 //
 
 #import "MapToListAnimationController.h"
-#import "MapViewController.h"
-#import "PSAllDealsTableViewController.h"
+
 
 @implementation MapToListAnimationController
 
 - (void)animateTransition:(nonnull id<UIViewControllerContextTransitioning>)transitionContext {
     
-    MapViewController* from = (MapViewController*) [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
+    //Map View Controller
+    UIViewController* from = [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
     
-    PSAllDealsTableViewController* to = (PSAllDealsTableViewController*) [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
+    // All Deals Table View Controller
+    UIViewController* to = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
     
     UIView* containerView = [transitionContext containerView];
     

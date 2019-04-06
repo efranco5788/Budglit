@@ -10,11 +10,11 @@
 #import <dispatch/dispatch.h>
 #import "AppDelegate.h"
 #import "DatabaseEngine.h"
-#import "FilterViewController.h"
 #import "Deal.h"
 #import "DealParser.h"
-#import "DealTableViewCell.h"
 #import "InstagramObject.h"
+
+#define HOST_NAME @"https://www.budglit.com"
 
 #define DEFAULT_ATTEMPT_RETRIES 1
 
@@ -22,52 +22,60 @@
 
 #define KEY_FOR_RETURNED_DEALS @"allDeals"
 #define KEY_FOR_TOTAL_COUNT @"totalDeals"
+#define KEY_ADDRESS_INFO @"addressInfo"
 #define KEY_ADDRESS @"address"
+#define KEY_ADDRESS_COMPONENT @"addressComponent"
+#define KEY_DEALS @"deals"
+#define KEY_DEALS_ID @"dealID"
+#define KEY_TIMESTAMP @"timestamp"
 
 static DatabaseManager* sharedManager;
 
-@interface DatabaseManager()<DatabaseEngineDelegate>
+
+@interface DatabaseManager()<EngineDelegate>
 {
     dispatch_queue_t backgroundQueue;
-    NSInteger totalCountAttempts;
 }
-@property (nonatomic, strong) NSArray* fetchedDeals;
+@property (nonatomic, strong) NSDictionary* dealsInfo;
+//@property (nonatomic, strong) NSArray* fetchedDeals;
+@property (nonatomic, strong) NSArray* tmpDeals;
 @property (nonatomic, strong) NSDictionary* searchFilter;
 @property (nonatomic, strong) NSArray* plottedMapAnnotations;
+@property (nonatomic, strong) NSTimer* timerRequest;
 @end
 
 @implementation DatabaseManager
 
 +(DatabaseManager *)sharedDatabaseManager
 {
-    if (sharedManager == nil) {
-        sharedManager = [[super alloc] init];
-    }
-    return sharedManager;
-}
-
--(instancetype)init {
+    static dispatch_once_t onceToken;
     
-    return [self initWithEngineHostName:nil];
+    dispatch_once(&onceToken, ^{
+        
+        sharedManager = [[self alloc] initWithEngineHostName:HOST_NAME];
+        
+    });
+    
+    return sharedManager;
 }
 
 -(instancetype)initWithEngineHostName:(NSString *)hostName
 {
-    self = [super init];
+    self = [super initWithEngineHostName:hostName];
     
     if (!self) {
         return nil;
     }
     
-    (self.engine).delegate = self;
-    
     self.engine = [[DatabaseEngine alloc] initWithHostName:hostName];
+    
+    (self.engine).delegate = self;
     
     self.dealParser = [[DealParser alloc] initParser];
     
     self.plottedMapAnnotations = [[NSArray alloc] init];
     
-    self.fetchedDeals = nil;
+    self.dealsInfo = nil;
     
     NSString* sqliteDB = [[NSBundle mainBundle] pathForResource:SQLITE_DB_NAME ofType:@"sqlite3"];
     
@@ -81,8 +89,11 @@ static DatabaseManager* sharedManager;
     return self;
 }
 
+#pragma mark -
+#pragma mark - Websocket Methods
 -(void)managerConstructWebSocket:(NSString *)token addCompletionBlock:(dataBlockResponse)completionHandler
 {
+    
     if(token){
         
         [self.engine constructWebSocket:token addCompletion:^(id response) {
@@ -99,18 +110,67 @@ static DatabaseManager* sharedManager;
     }
 }
 
--(NSArray*)managerGetSavedDeals
+-(void)managerDisconnectWebSocket
 {
-    return self.fetchedDeals.copy;
+    [super managerDisconnectWebSocket];
+    
+    [self.engine.socket disconnect];
 }
 
--(BOOL)managerSaveFetchedDeals:(NSArray *)dealsFetched
+#pragma mark -
+#pragma mark - Saved Deals Methods
+-(NSArray*)managerGetSavedDeals
+{
+    if(self.dealsInfo){
+        
+        NSArray* deals = (NSArray*) [self.dealsInfo valueForKey:KEY_DEALS];
+        
+        if(deals) return deals;
+        else return nil;
+        
+    }
+    else return nil;
+}
+
+-(NSDate*)managerGetTimestamp
+{
+    if(self.dealsInfo){
+        
+        NSDate* timestamp = (NSDate*) [self.dealsInfo valueForKey:KEY_TIMESTAMP];
+        
+        if(timestamp) return timestamp;
+        else return nil;
+        
+    }
+    else return nil;
+    
+}
+
+-(BOOL)managerSaveFetchedDeals:(NSArray*)dealsFetched
 {
     if(dealsFetched){
+
+        NSDate* timestamp = [NSDate date];
         
-        self.fetchedDeals = dealsFetched;
+        self.dealsInfo = @{KEY_DEALS : dealsFetched,
+                           KEY_TIMESTAMP : timestamp
+                           };
         
         return YES;
+    }
+    else return NO;
+}
+
+-(BOOL)managerUpdateFetechedDeals:(NSArray *)newDeals
+{
+    if(newDeals){
+        
+        NSMutableArray* mutableDeals = [[self managerGetSavedDeals] mutableCopy];
+        
+        [mutableDeals addObjectsFromArray:newDeals];
+        
+        return [self managerSaveFetchedDeals:mutableDeals.copy];
+        
     }
     else return NO;
 }
@@ -167,19 +227,6 @@ static DatabaseManager* sharedManager;
 
 -(NSDictionary *)managerGetUsersCurrentCriteria
 {
-    /*
-    NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
-    
-    NSDictionary* searchFilters = [defaults valueForKey:NSLocalizedString(@"KEY_CURRENT_SEARCH_FILTERS", nil)];
-    
-    NSArray* keys = searchFilters.allKeys;
-    NSArray* values = searchFilters.allValues;
-    
-    NSDictionary* critera = [NSDictionary dictionaryWithObjects:values forKeys:keys];
-
-    return critera;
-     
-     */
     
     return self.searchFilter.copy;
 }
@@ -209,65 +256,34 @@ static DatabaseManager* sharedManager;
     return [self.engine primaryDefaultForSearchFilterAtLocation];
 }
 
--(NSArray*)managerExtractDeals:(NSArray *)filteredDeals fromDeals:(NSArray *)deals
-{
-    if(!filteredDeals) return nil;
-    
-    NSMutableSet* newDealsSet;
-    
-    if (deals) newDealsSet = [NSMutableSet setWithArray:deals];
-    else newDealsSet = [NSMutableSet setWithArray:self.managerGetSavedDeals];
-
-    NSSet* filteredSet = [NSSet setWithArray:filteredDeals];
-    
-    [newDealsSet minusSet:filteredSet];
-    
-    NSArray* extractedDeals = [newDealsSet allObjects];
-    
-    if(!extractedDeals) return nil;
-    
-    return extractedDeals;
-}
-
--(NSArray*)managerFilterDeals:(NSArray*)deals byBudget:(double)budget
+-(NSArray*)managerFilterDeals:(NSArray*)deals byType:(FilterType)type filterCriteria:(double)criteria
 {
     if(!deals){
         deals = [self managerGetSavedDeals];
     }
-    
-    NSPredicate* dealPredicate = [NSPredicate predicateWithFormat:@"SELF.class == %@", [Deal class]];
-    
-    NSArray* foundDeals = [deals filteredArrayUsingPredicate:dealPredicate];
-    
-    if(!foundDeals || foundDeals.count < 1){
-        return nil;
-    }
-    
-    NSArray* filtered = [self.engine filterOutDeals:foundDeals byBudgetAmount:budget];
-    
-    return filtered;
-    
-}
-
--(NSArray*)managerFilterDeals:(NSArray *)deals byDistance:(double)distance
-{
-    if(!deals){
-        deals = [self managerGetSavedDeals];
+    else if (deals.count == 0){
+        return @[];
     }
     
     NSPredicate* dealPredicate = [NSPredicate predicateWithFormat:@"SELF.class == %@", [Deal class]];
     
-    NSArray* foundDeals = [deals filteredArrayUsingPredicate:dealPredicate];
+    NSArray* foundDealsMutable = [deals filteredArrayUsingPredicate:dealPredicate];
     
-    if(!foundDeals || foundDeals.count < 1){
+    if(!foundDealsMutable){
         return nil;
     }
     
-    NSArray* filtered = [self.engine filterOutDeals:foundDeals byDistance:distance];
+    NSArray* filtered;
     
-    NSLog(@"Distance ---- %@", filtered);
+    if(type == FilterTypeBudget) {
+        filtered = [self.engine filterOutDeals:foundDealsMutable byBudgetAmount:criteria];
+    }
+    else {
+        filtered = [self.engine filterOutDeals:foundDealsMutable byDistance:criteria];
+    }
     
     return filtered;
+    
 }
 
 -(NSInteger)managerGetLowestBudgetFromDeals:(NSArray*)deals
@@ -286,46 +302,102 @@ static DatabaseManager* sharedManager;
 }
 
 #warning needs better error handling
--(void)managerFetchDeals:(NSDictionary *)searchCriteria addCompletionBlock:(dataBlockResponse)completionHandler
+-(void)managerFetchDeals:(NSDictionary*)searchCriteria addCompletionBlock:(dataBlockResponse)completionHandler
 {
-    // Fetches Deals from Server
-    NSMutableArray* newDealArray = [[NSMutableArray alloc] init];
-    
-    if (searchCriteria == nil) searchCriteria = [[self managerGetUsersCurrentCriteria] copy];
-    
-    NSLog(@"%@", searchCriteria);
+    [self managerFetchDeals:searchCriteria shouldClearCurrentDeals:YES addCompletionBlock:completionHandler];
+}
+
+-(void)managerFetchDeals:(NSDictionary *)searchCriteria shouldClearCurrentDeals:(BOOL)shouldClear addCompletionBlock:(dataBlockResponse)completionHandler
+{
+    searchCriteria = searchCriteria ? searchCriteria : [[self managerGetUsersCurrentCriteria] copy];
     
     [self.engine sendSearchCriteria:searchCriteria addCompletion:^(id response) {
         
-        if(response){
+        if([response isKindOfClass:[NSDictionary class]]){
             
             NSDictionary* dict = (NSDictionary*) response;
             
             BOOL authenticated = [self.engine extractAuthetication:dict];
             
-            if(authenticated == FALSE) [self.delegate userNotAuthenticated];
+            if(authenticated == FALSE) [self.delegate managerUserNotAuthenticated];
             else{
                 
-                NSArray* deals = [self.engine extractDeals:dict];
+                NSArray* dealsExtracted = [self.engine extractDeals:dict];
                 
-                NSArray* parsedDeals = [self.dealParser parseDeals:deals];
+                NSArray* parsedDeals = [self.dealParser parseDeals:dealsExtracted];
                 
                 if(parsedDeals){
                     
-                    for (Deal* node in parsedDeals) {
-                        [newDealArray addObject:node];
+                    NSMutableArray* newDealArray = [[NSMutableArray alloc] init];
+                    
+                    NSArray* deals = [self managerGetSavedDeals];
+                    
+                    if(deals.count < 1){
+                        
+                        for (Deal* node in parsedDeals) {
+                            [newDealArray addObject:node];
+                        }
+                        
+                        BOOL saved = [self managerSaveFetchedDeals:newDealArray];
+                        
+                        NSNumber* savedValue = [NSNumber numberWithBool:saved];
+                        
+                        completionHandler(savedValue);
+                        
+                        
+                    }
+                    else{
+                        
+                        for (Deal* node in parsedDeals) {
+                            
+                            NSPredicate* dealIDPredicate = [NSPredicate predicateWithFormat:@"SELF.dealID LIKE %@", node.dealID];
+                            
+                            NSArray* dealFoundArry = [deals filteredArrayUsingPredicate:dealIDPredicate];
+                            
+                            if(dealFoundArry.count < 1){
+                                [newDealArray addObject:node];
+                            }
+                            
+                        }
+                        
+
+                        if(shouldClear) [self managerResetDeals];
+
+                        BOOL updated = [self managerUpdateFetechedDeals:newDealArray];
+                        
+                        NSNumber* updatedValue = [NSNumber numberWithBool:updated];
+                        
+                        completionHandler(updatedValue);
+                        
                     }
                     
-                    // reset and add current Deals
-                    //[self resetDeals];
-                    
-                    //self.fetchedDeals = newDealArray.copy;
-                    completionHandler(newDealArray);
                     
                 }
-                else completionHandler(nil);
+                else{
+                    
+                    NSArray* savedDeals = [self managerGetSavedDeals];
+                    
+                    if(savedDeals > 0) completionHandler(savedDeals);
+                    else{
+                        
+                        NSNumber* savedValue = [NSNumber numberWithBool:NO];
+                        
+                        completionHandler(savedValue);
+                        
+                    }
+                    
+                }
                 
             }
+            
+        }
+        else if ([response isKindOfClass:[NSError class]])
+        {
+            NSError* error = (NSError*) response;
+            
+            NSLog(@"%@", error.localizedDescription);
+            
+            completionHandler(error);
             
         }
         else completionHandler(nil);
@@ -333,6 +405,99 @@ static DatabaseManager* sharedManager;
     }];  //End of search criteria method
             
     
+}
+
+-(NSArray*)managerExtractAddressesFromDeals:(NSArray*)deals
+{
+    if(deals.count < 1) return nil;
+    
+    NSMutableArray* mutableDeals = deals.mutableCopy;
+    
+    for (Deal* d in deals) {
+        
+        NSLog(@"The address is %@", d.standardizeAddress);
+        
+        if(d.standardizeAddress != nil){
+            
+            [mutableDeals removeObject:d];
+            
+            NSLog(@"Removed!!");
+            
+        }
+    }
+    
+    if(mutableDeals.count < 1) return nil;
+    
+    NSLog(@"%@", mutableDeals);
+    
+    return [self.engine extractAddressFromDeals:mutableDeals.copy];
+}
+
+-(void)managerContinousRetryRequest:(NSTimer*)timer
+{
+    if([timer isValid]){
+        
+        NSDictionary* info = [timer userInfo];
+        
+        NSString* path = [info valueForKey:@"path"];
+        
+        [self.engine headRequestToPath:path parameters:nil addCompletion:^(id response) {
+            
+            if([response isKindOfClass:[NSNumber class]]){
+                
+                NSNumber* responseData = (NSNumber*) response;
+                
+                BOOL isOnline = [responseData boolValue];
+                
+                if(isOnline == YES){
+                    [timer invalidate];
+                    
+                    [self.delegate managerHostBackOnline];
+                }
+                
+            }
+            
+
+        }];
+
+    }
+    
+}
+
+-(void)managerSaveStandardizedAddressesForDeals:(NSArray*)info
+{
+    if(info){
+        
+        for (NSDictionary* nodeAry in info) {
+
+            NSArray* dealIDAry = [nodeAry valueForKey:KEY_DEALS_ID];
+            
+            NSDictionary* dict = [nodeAry valueForKey:KEY_ADDRESS_COMPONENT];
+            
+            NSString* uniqueID = [dealIDAry firstObject];
+            
+            NSPredicate* predicate = [NSPredicate predicateWithFormat:@"SELF.dealID LIKE %@", uniqueID];
+            
+            NSArray* savedDeals = [self managerGetSavedDeals];
+            
+            NSArray* filtered = [savedDeals filteredArrayUsingPredicate:predicate];
+            
+            if(filtered.count > 0){
+                
+                NSString* standardAddress = [dict valueForKey:@"formatted_address"];
+                
+                Deal* d = [filtered firstObject];
+                
+                [d setStandardizeAddress:standardAddress];
+                
+                [d setAddressInfo:dict];
+                
+            }
+
+            
+        }
+        
+    }
 }
 
 -(void)managerFetchGeocodeForAddress:(NSString *)address additionalParams:(NSDictionary *)params shouldParse:(BOOL)parse addCompletetion:(dataBlockResponse)completionHandler
@@ -358,13 +523,17 @@ static DatabaseManager* sharedManager;
         if(!response) completionHandler(nil);
         else{
             
-            if (!parse) completionHandler(response);
+            if (!parse){ completionHandler(response);}
+            else{
+                
+                NSDictionary* unparsedAddress = (NSDictionary*) response;
+                
+                NSDictionary* parsedAddress = [self.engine parseGeocodeLocation:unparsedAddress];
+                
+                completionHandler(parsedAddress);
+                
+            }
             
-            NSDictionary* unparsedAddress = (NSDictionary*) response;
-            
-            NSDictionary* parsedAddress = [self.engine parseGeocodeLocation:unparsedAddress];
-            
-            completionHandler(parsedAddress);
             
         }
         
@@ -376,23 +545,20 @@ static DatabaseManager* sharedManager;
     NSMutableDictionary* tmpMutableParameters = [[NSMutableDictionary alloc] init];
     
     if(addressList){
-        NSDictionary* parameters = [self.engine constructParameterWithKey:KEY_ADDRESS AndValue:addressList addToDictionary:params];
+        
+        NSArray* unorderedAddressList = [self.engine removeDuplicateFromArray:addressList Unordered:YES];
+        
+        NSDictionary* parameters = [self.engine constructParameterWithKey:KEY_ADDRESS_INFO AndValue:unorderedAddressList addToDictionary:params];
+        
         tmpMutableParameters = parameters.mutableCopy;
+
     }
     
     if(params){
         [tmpMutableParameters addEntriesFromDictionary:params];
     }
     
-    NSArray* address = [tmpMutableParameters valueForKey:KEY_ADDRESS];
-    
-    NSArray* unorderedAddressList = [self.engine removeDuplicateFromArray:address Unordered:YES];
-    
-    [tmpMutableParameters setObject:unorderedAddressList forKey:KEY_ADDRESS];
-    
-    NSDictionary* finalParameters = tmpMutableParameters.copy;  
-    
-    [self.engine sendAddressesForGeocode:finalParameters addCompletionHandler:^(id response) {
+    [self.engine sendAddressesForGeocode:tmpMutableParameters.copy addCompletionHandler:^(id response) {
         
         if(!response) completionHandler(nil);
         else{
@@ -404,14 +570,25 @@ static DatabaseManager* sharedManager;
                 
                 NSMutableArray* mutableParsedList = [[NSMutableArray alloc] init];
                 
-                for (NSDictionary* address in addressList) {
-                    NSDictionary* parsedAddress = [self.engine parseGeocodeLocation:address];
-                    [mutableParsedList addObject:parsedAddress];
+                for (NSArray* node in addressList) {
+
+                    NSArray* fullAddressAry = [node firstObject];
+                    
+                    NSDictionary* addressInfo = [fullAddressAry firstObject];
+                    
+                    NSDictionary* componentsDict = [addressInfo valueForKey:KEY_ADDRESS_COMPONENT];
+
+                    NSDictionary* parsedAddress = [self.engine parseGeocodeLocation:componentsDict];
+                    
+                    NSDictionary* dealIDInfo = [fullAddressAry valueForKey:KEY_DEALS_ID];
+                    
+                    NSDictionary* info = [[NSDictionary alloc] initWithObjects:@[parsedAddress, dealIDInfo] forKeys:@[KEY_ADDRESS_COMPONENT, KEY_DEALS_ID]];
+                    
+                    [mutableParsedList addObject:info];
+                    
                 }
                 
-                NSDictionary* parsedList = mutableParsedList.copy;
-                
-                completionHandler(parsedList);
+                completionHandler(mutableParsedList.copy);
                 
             }
             
@@ -429,7 +606,7 @@ static DatabaseManager* sharedManager;
 // Fetch Memory Cahce for Image
 -(void)managerFetchCachedImageForKey:(NSString *)key addCompletion:(fetchedImageResponse)completionHandler
 {
-
+    
     [self.engine getImageFromCacheWithKey:key addCompletionHandler:^(id response) {
         
         if(!response) completionHandler(nil);
@@ -441,144 +618,127 @@ static DatabaseManager* sharedManager;
         }
         
     }];
-    
-    
+
 }
 
 // Fetch Persistent Storage Cache for Image
 -(void)managerFetchPersistentStorageCachedImageForKey:(NSString *)key deal:(Deal *)aDeal addCompletion:(fetchedImageResponse)completionHandler
 {
-    __block UIImage* cachedImage = [[UIImage alloc] init];
     
-    [self.engine getImageFromCachePersistenceStorageWithKey:key addCompletionHandler:^(id response) {
+    [self.engine getImageFromCachePersistenceStorageWithKey:key addCompletionHandler:^(UIImage *response) {
         
         if(!response){
             completionHandler(nil);
         }
         else{
             
-            cachedImage = (UIImage*) response;
-            completionHandler(cachedImage);
-            
-            [self.engine cacheImage:cachedImage forKey:key addCompletionHandler:^(BOOL success) {
+            [self.engine cacheImage:response forKey:key addCompletionHandler:^(BOOL success) {
                 
-                if(!success) completionHandler(nil);
+                if(!success){
+                    completionHandler(nil);
+                }
                 else{
                     
                     [aDeal.imgStateObject recordImageHTTPResponse:nil andRequest:nil hasImage:YES];
                     
-                    //completionHandler(cachedImage);
+                    completionHandler(response);
                     
                 }
                 
             }];
+            
         }
         
     }];
+    
 }
 
-// Download Image Manager
--(void)managerStartDownloadImageFromURLString:(NSString *)requestString forDeal:(Deal *)deal addCompletion:(fetchedImageResponse)completionHandler
-{
-    
-    [self.engine downloadImageFromURL:requestString addCompletionHandler:^(UIImage *imageResponse, NSHTTPURLResponse *response, NSURLRequest *request) {
-        
-        [self.engine cacheImage:imageResponse forKey:deal.imgStateObject.imagePath addCompletionHandler:^(BOOL success) {
-            
-            if(success){
-                
-                [deal.imgStateObject recordImageHTTPResponse:response andRequest:request hasImage:YES];
 
+#pragma mark -
+#pragma mark - Image Download Methods
+-(void) managerStartDownloadImageFromURL:(NSString*)url forObject:(id)object forIndexPath:(NSIndexPath *)indexPath imageView:(UIImageView *)imgView addCompletion:(fetchedImageResponse)completionHandler
+{
+    __block BOOL imageExist = NO;
+    
+    UIImage* defaultImg = [UIImage imageNamed:@"Cell_ImagePlaceholder.jpg"];
+
+    if(!url || url.length < 1){
+        
+        Deal* deal = (Deal*) object;
+        
+        [deal.imgStateObject recordImageHTTPResponse:nil andRequest:nil hasImage:NO];
+        
+        if(completionHandler)completionHandler(defaultImg);
+        else{
+            [self.delegate imageFetchedForObject:deal forIndexPath:indexPath andImage:defaultImg andImageView:imgView];
+        }
+        
+    }
+    else{
+        
+    
+        [self.engine downloadImageFromURL:url forImageView:imgView addCompletionHandler:^(UIImage* imageResponse, NSHTTPURLResponse* response, NSURLRequest* request) {
+            
+            NSLog(@"url is %@", url);
+            
+            NSLog(@"img is %@", imageResponse);
+            
+            if (imageResponse) imageExist = YES;
+            
+            if(!object) {
                 
-                [self.engine saveToCachePersistenceStorageImage:imageResponse forKey:deal.imgStateObject.imagePath addCompletionHandler:^(BOOL success) {
+                if(completionHandler){
+                    completionHandler(defaultImg);
+                    
+                }
+                else{
+                    [self.delegate imageFetchedForObject:defaultImg forIndexPath:indexPath andImage:imageResponse andImageView:imgView];
+                }
+                
+                
+            }
+            else if([object isMemberOfClass:[Deal class]]) {
+                
+                Deal* deal = (Deal*) object;
+                
+                if(completionHandler){
+                    
+                    [deal.imgStateObject recordImageHTTPResponse:nil andRequest:nil hasImage:NO];
                     
                     completionHandler(imageResponse);
                     
-                }];
-
+                }
+                else{
+                    
+                    [deal.imgStateObject recordImageHTTPResponse:response andRequest:request hasImage:YES];
+                    
+                    [self.delegate imageFetchedForObject:object forIndexPath:indexPath andImage:imageResponse andImageView:imgView];
+                }
+                
+                
+            }
+            else if ([object isMemberOfClass:[InstagramObject class]]) {
+                
+                InstagramObject* obj = (InstagramObject*) object;
+                
+                if(completionHandler)completionHandler(imageResponse);
+                else{
+                    
+                    [obj.mediaStateHandler recordImageHTTPResponse:response andRequest:request hasImage:imageExist];
+                    
+                    [self.delegate imageFetchedForObject:obj forIndexPath:indexPath andImage:imageResponse andImageView:imgView];
+                    
+                }
+                
+                
             }
             
         }];
         
-    }];
+    }
     
-}
-
--(void)managerStartDownloadImageFromURL:(NSString *)url forObject:(id)object forIndexPath:(NSIndexPath *)indexPath imageView:(UIImageView *)imgView
-{
-    [self.engine downloadImageFromURL:url forImageView:imgView addCompletionHandler:^(UIImage *imageResponse, NSHTTPURLResponse *response, NSURLRequest *request) {
-        
-        __block BOOL imgExist = NO;
-        
-        dispatch_async(dispatch_get_main_queue(), ^{
-            
-            if ([object isMemberOfClass:[InstagramObject class]]) {
-                
-                InstagramObject* obj = (InstagramObject*) object;
-                
-                [obj.mediaStateHandler recordImageHTTPResponse:response andRequest:request hasImage:imgExist];
-                
-                [self.delegate imageFetchedForObject:obj forIndexPath:indexPath andImage:imageResponse andImageView:imgView];
-                
-            }
-            else if ([object isMemberOfClass:[DealTableViewCell class]]){
-                
-                if (imageResponse) {
-                    
-                    imgExist = YES;
-                    
-                    Deal* objDeal = self.fetchedDeals[indexPath.row];
-                    
-                    //Cache the image
-                    [self.engine cacheImage:imageResponse forKey:objDeal.imgStateObject.imagePath addCompletionHandler:^(BOOL success) {
-                       
-                        if(success){
-                            
-                            [objDeal.imgStateObject recordImageHTTPResponse:response andRequest:request hasImage:imgExist];
-                            
-                            [self.engine saveToCachePersistenceStorageImage:imageResponse forKey:objDeal.imgStateObject.imagePath addCompletionHandler:^(BOOL success) {
-                                
-                                [self.delegate imageFetchedForObject:object forIndexPath:indexPath andImage:imageResponse andImageView:imgView];
-                                
-                            }];
-                            
-                        }
-                        
-                    }];
-                    
-                }
-                
-            }
-        });
-        
-    }];
-}
-
--(void)managerStartDownloadImageFromURL:(NSString *)url forDeal:(Deal *)deal forIndexPath:(NSIndexPath *)indexPath imageView:(UIImageView *)imgView
-{
     
-    [self.engine downloadImageFromURL:url forImageView:imgView addCompletionHandler:^(UIImage* imageResponse, NSHTTPURLResponse* response, NSURLRequest* request) {
-        BOOL imageExist = NO;
-        
-        if (imageResponse) {
-            imageExist = YES;
-        }
-        
-        [deal.imgStateObject recordImageHTTPResponse:response andRequest:request hasImage:imageExist];
-        
-        [self.delegate imageFetchedForDeal:deal forIndexPath:indexPath andImage:imageResponse andImageView:imgView];
-        
-    }];
-}
-
-// Methods to download general images
--(void)managerStartDownloadImageFromURL:(NSString *)url forIndexPath:(NSIndexPath *)indexPath andImageView:(UIImageView *)imgView
-{
     
-    [self.engine downloadImageFromURL:url forImageView:imgView addCompletionHandler:^(UIImage *imageResponse, NSHTTPURLResponse *response, NSURLRequest *request) {
-        
-        [self.delegate imageFetchedForObject:nil forIndexPath:indexPath andImage:imageResponse andImageView:imgView];
-    }];
 }
 
 -(void)managerCancelDownloads:(generalBlockResponse)completionHandler
@@ -609,11 +769,11 @@ static DatabaseManager* sharedManager;
     
 }
 
--(NSArray *)managerCreateMapAnnotationsForDeals:(NSArray *)deals addressInfo:(NSArray*)info
+-(NSArray*)managerCreateMapAnnotationsForDeals:(NSArray *)deals
 {
-    if(!deals || !info) return nil;
+    if(!deals || deals.count < 1) return nil;
     
-    return [self.engine createMapAnnotationsForDeals:deals addressInfo:info];
+    return [self.engine createMapAnnotationsForDeals:deals];
 }
 
 -(NSString*)managerGetCurrentDateString
@@ -623,49 +783,30 @@ static DatabaseManager* sharedManager;
     return today;
 }
 
--(NSInteger)totalCountDealsLoaded
-{
-    return totalLoadedDeals_Count;
-}
-
--(void) incrementTotalCountsAttempts
-{
-    totalCountAttempts++;
-    NSLog(@"Attempt #%ld", (long)totalCountAttempts);
-}
-
--(void) resetTotalCountsAttempts
-{
-    totalCountAttempts = 0;
-    NSLog(@"Total count attempts has been reset");
-}
-
 -(void)managerResetDeals
 {
-    self.fetchedDeals = [[NSArray alloc] init];
-    totalLoadedDeals_Count = 0;
+    self.dealsInfo = nil;
     NSLog(@"Deals removed!");
+}
+
+-(void)managerClearSearchFilter
+{
+    [self.engine clearCurrentSearchFilter];
 }
 
 #pragma mark -
 #pragma mark - Database Engine delegates
--(void)totalDealCountFailedWithError:(NSError *)error
+-(void)requestFailedWithError:(NSDictionary*)info
 {
-    NSLog(@"%@", error);
+    [self.delegate managerRequestFailed];
     
-    [self.delegate dealsDidNotLoad];
-}
-
--(void)dealsFailedWithError:(NSError *)error
-{
-    NSLog(@"%@", error);
-    
-    [self.delegate dealsDidNotLoad];
-}
-
--(void)operationsCancelled
-{
-    NSLog(@"Operations Cancelled");
+    if(!self.timerRequest){
+        
+         self.timerRequest = [NSTimer scheduledTimerWithTimeInterval:(NSTimeInterval)(17.0) target:self selector:@selector(managerContinousRetryRequest:) userInfo:info repeats:YES];
+        
+        [self.timerRequest fire];
+        
+    }
     
     
 }

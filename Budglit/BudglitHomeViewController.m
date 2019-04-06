@@ -19,6 +19,7 @@
 #import "UINavigationController+CompletionHandler.h"
 #import "MapViewController.h"
 
+#define DOMAIN_NAME @"www.budglit.com"
 #define PUSH_TO_MAIN_CONTAINER_VIEW @"pushToMainContainer"
 #define PUSH_TO_DRAWER_CONTROLLER @"pushToDrawerController"
 
@@ -38,33 +39,37 @@
 {
     [super viewDidAppear:animated];
     
-    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
-
+    [self.navigationController setNavigationBarHidden:NO];
+    
+    AccountManager* accountManager = [AccountManager sharedAccountManager];
+    
+    DatabaseManager* databaseManager = [DatabaseManager sharedDatabaseManager];
+    
     __block BudglitHomeViewController* blocksafeSelf = self;
     
-    [appDelegate.accountManager validateSessionForDomain:@"www.budglit.com" addCompletion:^(id object) {
+    [accountManager validateSessionForDomain:DOMAIN_NAME addCompletion:^(id object) {
         
         NSLog(@"%@", object);
         
-        if(object == nil || object == NULL) [blocksafeSelf launchLoginPage];
-        else if ([object isKindOfClass:[NSError class]]){
-            
+        if(object == nil || object == NULL)
+        {
+            [blocksafeSelf launchLoginPage];
         }
-        else{
-            
+        else if ([object isKindOfClass:[NSDictionary class]])
+        {
             NSDictionary* validInfo = (NSDictionary*) object;
             
-            id validationValue = [appDelegate.accountManager getValidationValue:validInfo];
+            id validationValue = [accountManager getValidationValue:validInfo];
             
             BOOL isValid = [validationValue integerValue];
             
             if(isValid == NO){
                 
-                [appDelegate.accountManager logoutFromDomain:@"www.budglit.com" addCompletion:^(id logoutInfo) {
+                [accountManager logoutFromDomain:DOMAIN_NAME addCompletion:^(id logoutInfo) {
                     
                     if(logoutInfo) {
                         
-                        BOOL loggedOffSuccess = [appDelegate.accountManager checkLoggedOut:object];
+                        BOOL loggedOffSuccess = [accountManager checkLoggedOut:object];
                         
                         if(loggedOffSuccess == YES) {
                             [blocksafeSelf launchLoginPage];
@@ -77,19 +82,31 @@
             }
             else{
                 
-                UserAccount* user = [appDelegate.accountManager managerSignedAccount];
+                UserAccount* user = [accountManager managerSignedAccount];
                 
-                NSString* userID = [user getUserID];
-
-                [appDelegate.databaseManager managerConstructWebSocket:userID addCompletionBlock:^(id response) {
+                if(!user) [blocksafeSelf launchLoginPage];
+                else{
                     
-                    NSLog(@"%@", response);
+                    NSString* userID = [user getUserID];
                     
-                    [blocksafeSelf launchLoadingPage];
+                    [databaseManager managerConstructWebSocket:userID addCompletionBlock:^(id response) {
+                        
+                        NSLog(@"%@", response);
+                        
+                        [blocksafeSelf launchLoadingPage];
+                        
+                    }];
                     
-                }];
+                }
                 
             }
+        }
+        else if ([object isKindOfClass:[NSError class]])
+        {
+            
+        }
+        else{
+            
             
         }
         
@@ -99,22 +116,26 @@
 
 -(void)launchLoginPage
 {
-    if (self.loginPage == nil) {
-        
+    
+    if(!self.loginPage){
         self.loginPage = [[LoginPageViewController alloc] initWithNibName:@"LoginPageViewController" bundle:nil];
-        
-        (self.loginPage).delegate = self;
-        
-        (self.loginPage).modalTransitionStyle = UIModalTransitionStyleCoverVertical;
     }
     
-    [self presentViewController:self.loginPage animated:NO completion:nil];
-}
-
--(void)destroyLoginPage
-{
-    self.loginPage.delegate = nil;
-    self.loginPage = nil;
+    //(self.loginPage).modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+    
+    self.loginPage.delegate = self;
+    
+    //[self presentViewController:self.loginPage animated:NO completion:nil];
+    
+    
+    [self.navigationController completionhandler_pushViewController:self.loginPage withController:self.navigationController animated:NO completion:^{
+        
+        NSLog(@"Delegate is %@", self.loginPage.delegate);
+        
+        [self.navigationController setNavigationBarHidden:YES];
+        
+    }];
+    
 }
 
 -(void)launchLoadingPage
@@ -137,9 +158,59 @@
     
 }
 
+-(void)destroyLoginPage
+{
+    
+    [self.navigationController completionhandler_popViewController:self.loginPage withController:self.navigationController animated:NO completion:^{
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:
+         NSLocalizedString(@"USER_CHANGED_NOTIFICATION", nil) object:nil userInfo:nil];
+        
+        self.loginPage.delegate = nil;
+        
+    }];
+    
+}
+
 -(void)destroyLoadingPage
 {
-    self.loadingPage.delegate = nil;
+    [self.navigationController completionhandler_popViewController:self.loadingPage withController:self.navigationController animated:NO completion:^{
+        
+        self.loadingPage.delegate = nil;
+        
+        AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
+        
+        if(![self.navigationController.topViewController isKindOfClass:[DrawerViewController class]]) {
+            
+            [self.navigationController pushViewController:appDelegate.drawerController animated:NO];
+            
+        }
+    }];
+}
+
+#pragma mark -
+#pragma mark - Frame Methods
+-(void)adjustFrameForView:(UIView*)subview
+{
+    if (@available(iOS 11, *)) {
+        
+        UILayoutGuide * guide = self.view.safeAreaLayoutGuide;
+        
+        [subview.leadingAnchor constraintEqualToAnchor:guide.leadingAnchor].active = YES;
+        [subview.trailingAnchor constraintEqualToAnchor:guide.trailingAnchor].active = YES;
+        [subview.topAnchor constraintEqualToAnchor:guide.topAnchor].active = YES;
+        [subview.bottomAnchor constraintEqualToAnchor:guide.bottomAnchor].active = YES;
+        
+    } else {
+        
+        UILayoutGuide *margins = self.view.layoutMarginsGuide;
+        
+        [subview.leadingAnchor constraintEqualToAnchor:margins.leadingAnchor].active = YES;
+        [subview.trailingAnchor constraintEqualToAnchor:margins.trailingAnchor].active = YES;
+        [subview.topAnchor constraintEqualToAnchor:self.topLayoutGuide.bottomAnchor].active = YES;
+        [subview.bottomAnchor constraintEqualToAnchor:self.bottomLayoutGuide.topAnchor].active = YES;
+    }
+        
 }
 
 #pragma mark -
@@ -190,31 +261,19 @@
 #pragma mark - Loading Page Delegate
 -(void)loadingPageDismissed:(id)object
 {
-    [self.presentingViewController dismissViewControllerAnimated:NO completion:^{
-        [self destroyLoadingPage];
-    }];
-    
-    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
-    
-    if(![self.navigationController.topViewController isKindOfClass:[DrawerViewController class]]) {
-        
-        [self.navigationController pushViewController:appDelegate.drawerController animated:NO];
-        
-    }
-
+    [self destroyLoadingPage];
 }
 
 #pragma mark -
 #pragma mark - Login Page Delegate
 -(void)loginSucessful
 {
-    [self dismissViewControllerAnimated:YES completion:^{
-        
-        [self destroyLoginPage];
-        
-    }];
+    [self destroyLoginPage];
 }
 
+
+#pragma mark -
+#pragma mark - Memory Managment
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
 }

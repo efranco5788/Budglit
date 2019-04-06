@@ -6,7 +6,7 @@
 //  Copyright © 2015 Emmanuel Franco. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import "Manager.h"
 
 @class AppDelegate;
 @class DatabaseEngine;
@@ -14,46 +14,35 @@
 @class AccountEngine;
 @class UserAccount;
 
-typedef void (^generalReturnBlockResponse)(id object);
-typedef void (^generalBlockResponse)(BOOL success);
 
 @protocol AccountManagerDelegate <NSObject>
 @optional
--(void) credentialsSaved;
--(void) credentialsNotSaved;
--(void) loginFailedWithError:(NSError*)error;
--(void) logoutSucessfully;
--(void) signupSucessfully;
--(void) signupFailedWithError:(NSError*)error;
--(void) emailSentSucessfully;
--(void) emailSentFailed;
+-(void) networkRequestFailedWithError:(UIAlertController*)alertView;
 @end
 
-@interface AccountManager : NSObject
+@interface AccountManager : Manager
 
 @property (nonatomic, strong) id <AccountManagerDelegate> delegate;
 @property (nonatomic, strong) AccountEngine* engine;
-//@property (nonatomic, strong) UserAccount *signedAccount;
 
-+(AccountManager*) sharedAccountManager;
 
--(UserAccount*)managerSignedAccount;
++(id)sharedAccountManager;
 
--(instancetype) initWithEngineHostName:(NSString*)hostName NS_DESIGNATED_INITIALIZER;
+-(UserAccount*) managerSignedAccount;
 
 -(void)signup:(NSDictionary*)newCredentials shouldSaveCredentials:(BOOL)save addCompletion:(generalReturnBlockResponse)signUpCompletionHandler;
 
--(void)login:(NSDictionary*)loginCredentials shouldSaveCredentials:(BOOL)save addCompletion:(generalBlockResponse)completionHandler;
+-(void)login:(NSDictionary*)loginCredentials shouldSaveCredentials:(BOOL)save addCompletion:(generalCompletionHandler)completionHandler;
 
 -(void)logoutFromDomain:(NSString*)domainName addCompletion:(generalReturnBlockResponse)completionHandler;
 
 -(id)getValidationValue:(NSDictionary*)validationInfo;
 
--(void)removeUserAccountClearSavedAccount:(BOOL)clear AddCompletion:(generalBlockResponse)completionHandler;
+-(void)removeUserAccountClearSavedAccount:(BOOL)clear AddCompletion:(generalCompletionHandler)completionHandler;
 
 -(void)validateSessionForDomain:(NSString*)domain addCompletion:(generalReturnBlockResponse) completionHandler;
 
--(void)removeAccountSessionCookieForDomain:(NSString*)domainName addCompletion:(generalBlockResponse)completionHandler;
+-(void)removeAccountSessionCookieForDomain:(NSString*)domainName addCompletion:(generalCompletionHandler)completionHandler;
 
 -(void)passwordResetEmail:(NSDictionary*) emailCredentials;
 

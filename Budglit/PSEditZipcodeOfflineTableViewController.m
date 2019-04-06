@@ -39,7 +39,6 @@
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
     
-    
     statusBarHeight = [UIApplication sharedApplication].statusBarFrame.size.height;
     
     UIBarButtonItem* cancel = [[UIBarButtonItem alloc] init];
@@ -171,10 +170,12 @@
         }
         
     }
+
+    DatabaseManager* databaseManager = [DatabaseManager sharedDatabaseManager];
     
-    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
+    LocationSeviceManager* locationManager = [LocationSeviceManager sharedLocationServiceManager];
     
-    NSString* currentZip = [appDelegate.databaseManager getZipcode];
+    NSString* currentZip = [databaseManager getZipcode];
     
     if ([selectedCity.postal isEqualToString:currentZip]) {
         
@@ -183,7 +184,7 @@
     }
     else{
         
-        [appDelegate.locationManager attemptToAddCurrentLocation:selectedCity addCompletionHandler:^(BOOL success) {
+        [locationManager attemptToAddCurrentLocation:selectedCity addCompletionHandler:^(BOOL success) {
             
             if (success) {
                 
@@ -208,14 +209,16 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     
     if ([segue.identifier isEqualToString:UNWIND_TO_ALL_CURRENT_DEALS]) {
+
+        LocationSeviceManager* locationManager = [LocationSeviceManager sharedLocationServiceManager];
         
-        AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
+        BudgetManager* budgetManager = [BudgetManager sharedBudgetManager];
         
         PSAllDealsTableViewController* ACLDDVC = segue.destinationViewController;
         
-        (ACLDDVC.menuButton).title = [appDelegate.locationManager retrieveCurrentLocationString];
+        (ACLDDVC.menuButton).title = [locationManager retrieveCurrentLocationString];
         
-        (ACLDDVC.budgetButton).title = [appDelegate.budgetManager retreieveBudget];
+        (ACLDDVC.budgetButton).title = [budgetManager retreieveBudget];
         
     }
 }
@@ -224,11 +227,13 @@
 #pragma mark - Location Manager Delegate
 -(void)locationDidFinish
 {
-    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
+    LocationSeviceManager* locationManager = [LocationSeviceManager sharedLocationServiceManager];
     
-    (appDelegate.locationManager).delegate = self;
+    DatabaseManager* databaseManager = [DatabaseManager sharedDatabaseManager];
+
+    (locationManager).delegate = self;
     
-    [appDelegate.databaseManager managerSetZipcodeCriteria:selectedCity.postal];
+    [databaseManager managerSetZipcodeCriteria:selectedCity.postal];
     
     //[self.searchControl setActive:NO];
     

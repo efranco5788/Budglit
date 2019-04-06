@@ -23,6 +23,7 @@
 @property (strong, nonatomic) IBOutlet UIImageView *instaImageView;
 @property (strong, nonatomic) IBOutlet UILabel* instaUsername;
 @property (strong, nonatomic) IBOutlet UIImageView *instaUserProfile;
+@property (strong, nonatomic) IBOutlet UILabel *captionLbl;
 
 
 //-(void)configure;

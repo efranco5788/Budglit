@@ -733,10 +733,24 @@
             return;
     }
     
-    self.sessionManager.requestSerializer = [AFHTTPRequestSerializer serializer];
+    //self.sessionManager.requestSerializer = [AFHTTPRequestSerializer serializer];
     
-    self.sessionManager.responseSerializer = [AFHTTPResponseSerializer serializer];
+    //self.sessionManager.responseSerializer = [AFHTTPResponseSerializer serializer];
     
+    [self getRequestToPath:twitterRequest.urlPath parameters:twitterRequest.query addCompletion:^(id responseObject) {
+        
+        if(!responseObject) completionBlock(nil);
+        else{
+            
+            NSString* HTTP_responseString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
+            
+            completionBlock(HTTP_responseString);
+            
+        }
+        
+    }];
+    
+    /*
     [self.sessionManager GET:twitterRequest.urlPath parameters:twitterRequest.query progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         
         [self addToRequestHistory:task];
@@ -756,6 +770,7 @@
         [self logFailedRequest:task];
         
     }];
+     */
     
 }
 
@@ -869,6 +884,13 @@
     
     if ([twitterRequest.httpMethod isEqualToString:@"GET"]) {
         
+        [self getRequestToPath:twitterRequest.urlPath parameters:params.copy addCompletion:^(id responseObject) {
+            
+            completionBlock(YES, responseObject);
+            
+        }];
+        
+        /*
         [self.sessionManager GET:twitterRequest.urlPath parameters:params.copy progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
             
             [self addToRequestHistory:task];
@@ -902,6 +924,7 @@
             [self logFailedRequest:task];
             
         }];
+         */
         
     }
     else

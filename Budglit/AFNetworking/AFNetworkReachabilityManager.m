@@ -85,7 +85,9 @@ static void AFPostReachabilityStatusChange(SCNetworkReachabilityFlags flags, AFN
             block(status);
         }
         NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
+        
         NSDictionary *userInfo = @{ AFNetworkingReachabilityNotificationStatusItem: @(status) };
+        
         [notificationCenter postNotificationName:AFNetworkingReachabilityDidChangeNotification object:nil userInfo:userInfo];
     });
 }

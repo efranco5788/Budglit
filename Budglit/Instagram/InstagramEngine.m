@@ -22,7 +22,7 @@
 #define API_ACCESS_USER_MEDIA @"/v1/users/self/media/recent/?"
 #define API_RESPONSE_CODE_META @"meta"
 #define API_RESPONSE_CODE_CODE @"code"
-#define REDIRECT_URI @"https://www.budglit.com/instagram/token_handler.php"
+#define REDIRECT_URI @"https://www.budglit.com/api/instagram/token_handler"
 
 //https://api.instagram.com/oauth/authorize/?client_id=CLIENT-ID&redirect_uri=REDIRECT-URI&response_type=code
 //https://api.instagram.com/v1/tags/nofilter/media/recent?access_token=ACCESS_TOKEN
@@ -61,7 +61,7 @@
     if (!self) {
         return nil;
     }
-    
+
     [self.OAuth setOAuthVersion:CURRENT_OAUTH_VERSION];
     
     self.clientID = [[NSString alloc] initWithString:cID];
@@ -176,16 +176,41 @@
 
 -(void)sendInstagramRequest:(NSString *)strURL withCompletionHandler:(InstagramResponseResult)completionBlock
 {
-    NSURLSessionConfiguration* config = [NSURLSessionConfiguration defaultSessionConfiguration];
+    //NSURLSessionConfiguration* config = [NSURLSessionConfiguration defaultSessionConfiguration];
     
-    NSURL* base = [NSURL URLWithString:self.baseURLString];
+    //NSURL* base = [NSURL URLWithString:self.baseURLString];
     
-    self.sessionManager = [[AFHTTPSessionManager alloc] initWithBaseURL:base sessionConfiguration:config];
+    //self.sessionManager = [[AFHTTPSessionManager alloc] initWithBaseURL:base sessionConfiguration:config];
     
-    self.sessionManager.requestSerializer = [AFHTTPRequestSerializer serializer];
+    //self.sessionManager.requestSerializer = [AFHTTPRequestSerializer serializer];
+    //self.sessionManager.responseSerializer = [AFJSONResponseSerializer serializer];
     
-    self.sessionManager.responseSerializer = [AFJSONResponseSerializer serializer];
+    [self getRequestToPath:strURL parameters:nil addCompletion:^(id responseObject) {
+        
+        NSDictionary* responseDic = (NSDictionary*) responseObject;
+        
+        NSDictionary* objDict = responseDic[API_RESPONSE_CODE_META];
+        
+        NSString* codeString = [objDict valueForKey:API_RESPONSE_CODE_CODE];
+        
+        NSInteger code = codeString.integerValue;
+        
+        NSLog(@"Resposne %ld", (long)code);
+        
+        if (code == 200) {
+            
+            completionBlock(responseObject);
+        }
+        else if (code == 400)
+        {
+            NSLog(@"Failed");
+            completionBlock(nil);
+        }
+        else completionBlock(nil);
+        
+    }];
     
+    /*
     [self.sessionManager GET:strURL parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         
         [self addToRequestHistory:task];
@@ -216,6 +241,7 @@
         NSLog(@"Error %@", error);
         
     }];
+     */
     
 }
 

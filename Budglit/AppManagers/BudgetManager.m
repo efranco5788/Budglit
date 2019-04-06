@@ -12,17 +12,22 @@ static BudgetManager* sharedManager;
 
 @implementation BudgetManager
 
-+(BudgetManager *)sharedBudgetManager
++(id)sharedBudgetManager
 {
-    if (sharedManager == nil) {
-        sharedManager = [[super alloc] init];
-    }
+    static dispatch_once_t onceToken;
+    
+    dispatch_once(&onceToken, ^{
+        
+        sharedManager = [[self alloc] initWithEngineHostName:nil];
+        
+    });
+    
     return sharedManager;
 }
 
 -(instancetype)init
 {
-    self = [super init];
+    self = [super initWithEngineHostName:nil];
     
     if (!self) {
         return nil;

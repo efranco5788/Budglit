@@ -1,12 +1,12 @@
 //
-//  PSInstagramViewController.m
+//  InstagramViewController.m
 //  PocketStretch
 //
 //  Created by Emmanuel Franco on 12/1/16.
 //  Copyright © 2016 Emmanuel Franco. All rights reserved.
 //
 
-#import "PSInstagramViewController.h"
+#import "InstagramViewController.h"
 #import "AppDelegate.h"
 #import "InstagramManager.h"
 #import "InstagramTableViewController.h"
@@ -14,25 +14,32 @@
 
 #define RESTORATION_STRING @"instagramDetailViewController"
 
-@interface PSInstagramViewController ()<InstagramManagerDelegate>
+@interface InstagramViewController ()<InstagramManagerDelegate>
 
 @end
 
-@implementation PSInstagramViewController
+@implementation InstagramViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.restorationIdentifier = RESTORATION_STRING;
     (self.webView).delegate = self;
+    [self.webView setOpaque:NO];
+    
+    if (@available(iOS 11.0, *)) {
+        self.webView.scrollView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+    } else {
+        // Fallback on earlier versions
+    }
 }
 
 -(void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
     
-    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
+    InstagramManager* instagramManager = [InstagramManager sharedInstagramManager];
     
-    (appDelegate.instagramManager).delegate = self;
+    (instagramManager).delegate = self;
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
         
@@ -41,11 +48,13 @@
             
             [self toggleWebView:YES];
             [self.pageActivityIndicator startAnimating];
+            
         });
         
         
-        if (![appDelegate.instagramManager.engine accessTokenExists]) {
-            NSString* apiURL = [appDelegate.instagramManager getAuthorizationURL_String];
+        if (![instagramManager.engine accessTokenExists]) {
+            
+            NSString* apiURL = [instagramManager getAuthorizationURL_String];
             NSURL* url = [NSURL URLWithString:apiURL];
             NSURLRequest* request = [NSURLRequest requestWithURL:url];
             NSLog(@"String is %@", request.URL);
@@ -74,6 +83,8 @@
 #pragma mark - Web View Delegate
 -(BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
 {
+    InstagramManager* instagramManager = [InstagramManager sharedInstagramManager];
+    
     NSURL* requestURL = request.URL;
     
     NSString* host = requestURL.host;
@@ -90,14 +101,12 @@
     }
     else if ([host isEqualToString:@"www.budglit.com"])
     {
-        AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
-        
         NSString* url = requestURL.absoluteString;
         
-        [appDelegate.instagramManager.engine retrieveAccessTokenFromString:url WithCompletionHandler:^(BOOL tokenGranted) {
+        [instagramManager.engine retrieveAccessTokenFromString:url WithCompletionHandler:^(BOOL tokenGranted) {
             
             if (tokenGranted) {
-                [appDelegate.instagramManager pullUserInfo];
+                [instagramManager pullUserInfo];
             }
             
         }];
@@ -132,9 +141,9 @@
 
 -(void)frameWebView
 {
-    CGRect screenSize = [UIScreen mainScreen].bounds;
+    CGRect screenSize = self.view.superview.bounds;
     
-    CGRect frameSize = CGRectMake(self.view.bounds.origin.x, self.view.bounds.origin.y, screenSize.size.width, self.view.bounds.size.height);
+    CGRect frameSize = CGRectMake(0, 0, screenSize.size.width, screenSize.size.height);
     
     (self.webView).frame = frameSize;
 }
@@ -156,11 +165,7 @@
         
         self.instagramTableView = [[InstagramTableViewController alloc] initWithNibName:@"InstagramTableViewController" bundle:nil];
         
-        NSLog(@"Creating Table");
-        
-        CGRect screenSize = [UIScreen mainScreen].bounds;
-        
-        CGRect frameSize = CGRectMake(self.view.bounds.origin.x, self.view.bounds.origin.y, screenSize.size.width, self.instagramTableView.view.frame.size.height);
+        CGRect frameSize= CGRectMake(0, 0, self.view.superview.bounds.size.width, self.view.superview.bounds.size.height);
         
         (self.instagramTableView.view).frame = frameSize;
         

@@ -7,21 +7,19 @@
 //
 
 #import "PSAllDealsTableViewController.h"
-#import "DealDetailViewController.h"
+#import "AppDelegate.h"
 #import "Deal.h"
+#import "DealViewModel.h"
+#import "DealDetailViewController.h"
 #import "DealMapAnnotation.h"
 #import "DrawerViewController.h"
-#import "AppDelegate.h"
-#import "LoadingLocalDealsViewController.h"
-#import "AccountManager.h"
-#import "BudgetManager.h"
-#import "DatabaseManager.h"
-#import "LocationServiceManager.h"
+#import "FilterViewController.h"
 #import "DealTableViewCell.h"
+#import "TransitionToFilterViewController.h"
 #import "DealDetailedAnimationController.h"
 #import "DismissDetailedAnimationController.h"
+#import "LoadingLocalDealsViewController.h"
 #import "PSEditZipcodeOfflineTableViewController.h"
-#import "UINavigationController+CompletionHandler.h"
 #import "UIImageView+AFNetworking.h"
 
 
@@ -36,7 +34,8 @@
 #define PANEL_WIDTH .15
 
 #define MENU_ICON_IMAGE @"menu_icon.png"
-#define CELL_PLACEHOLDER_IMAGE @"Cell_ImagePlaceholder.jpg"
+#define PLACE_HOLDER_IMAGE @"Cell_ImagePlaceholder.jpg"
+#define FILTER_ICON_IMAGE @"empty_filter_app_icon_unselected.png"
 
 #define PERCENTAGE_CELL_HEIGHT 0.15
 #define customRowCount 1
@@ -51,11 +50,13 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
 typedef void(^menuDisplayCompletion)(BOOL finished);
 typedef void(^dimmerDisplayCompletion)(BOOL finished);
 
-@property (nonatomic, strong) NSMutableDictionary* imageDownloadInProgress;
-@property (nonatomic, strong) UIImage* placeholderImage;
-@property (nonatomic, strong) NSMutableArray* dealTimers;
-@property (strong, nonatomic) DealDetailedAnimationController* transitionController;
-@property (strong, nonatomic) DismissDetailedAnimationController* dismissTransitionController;
+@property (strong, nonatomic) FilterViewController* filterView;
+@property (strong, nonatomic) NSMutableDictionary* imageDownloadInProgress;
+@property (strong, nonatomic) UIImage* placeholderImage;
+@property (strong, nonatomic) NSMutableArray* dealTimers;
+@property (strong, nonatomic) TransitionToFilterViewController* transitionToFilterController;
+@property (strong, nonatomic) DealDetailedAnimationController* transitionToDetailController;
+@property (strong, nonatomic) DismissDetailedAnimationController* dismissTransitionFromDetailController;
 @end
 
 @implementation PSAllDealsTableViewController
@@ -70,6 +71,7 @@ static NSString* const reuseIdentifier = @"Cell";
 static NSString* const emptyCellIdentifier = @"holderCell";
 
 - (instancetype)initWithCoder:(NSCoder *)aDecoder{
+    
     self = [super initWithCoder:aDecoder];
     
     if (!self) return nil;
@@ -85,13 +87,27 @@ static NSString* const emptyCellIdentifier = @"holderCell";
     
     self.dealsTableView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
     
-    self.transitionController = [[DealDetailedAnimationController alloc] init];
+    self.transitionToFilterController = [[TransitionToFilterViewController alloc] init];
     
-    self.dismissTransitionController = [[DismissDetailedAnimationController alloc] init];
+    self.transitionToDetailController = [[DealDetailedAnimationController alloc] init];
+    
+    self.dismissTransitionFromDetailController = [[DismissDetailedAnimationController alloc] init];
+    
+    self.filterView = [[FilterViewController alloc] init];
+
+    self.drawer = [[DrawerViewController alloc] init];
+//
+//    [self.drawer setShowsShadow:YES];
+//
+//    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
+//
+//    appDelegate.window.rootViewController = nil;
+//
+//    appDelegate.window.rootViewController = self.drawer;
+//
+//    [self.drawer configureCenterViewController:self.navigationController leftDrawerViewController:nil rightDrawerViewController:self.filterView];
     
     self.imageDownloadInProgress = [NSMutableDictionary dictionary];
-    
-    self.placeholderImage = [UIImage imageNamed:CELL_PLACEHOLDER_IMAGE];
     
     [self.dealsTableView registerClass:[UITableViewCell class] forCellReuseIdentifier:emptyCellIdentifier];
     
@@ -106,42 +122,52 @@ static NSString* const emptyCellIdentifier = @"holderCell";
     self.refreshControl.tintColor = [UIColor blackColor];
     
     [self.refreshControl addTarget:self action:@selector(refreshDeals) forControlEvents:UIControlEventValueChanged];
+    
+    [self.dealsTableView setScrollEnabled:YES];
+    
+    [self constructEventUpdateButton];
+    
+    [self.view addSubview:self.eventUpdatesButton];
+    
+    [self.view bringSubviewToFront:self.eventUpdatesButton];
+    
+    UIBarButtonItem* rightFilterBtn = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:FILTER_ICON_IMAGE] style:UIBarButtonItemStylePlain target:self action:@selector(FilterButtonPressed:)];
+    
+    [self.navigationItem setRightBarButtonItem:rightFilterBtn];
+    
 }
 
 -(void)viewWillAppear:(BOOL)animated
 {
-    [self.dealsTableView setScrollEnabled:YES];
+    [self.eventUpdatesButton setHidden:YES];
     
     [self.navigationController setNavigationBarHidden:NO];
 
-    NSNotificationCenter* center = [NSNotificationCenter defaultCenter];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(alertOfNewEvents) name:NSLocalizedString(@"NEW_UPDATES_NOTIFICATION", nil) object:nil];
     
-    [center addObserver:self selector:@selector(dealEnded:) name:kDefaultEventEndNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dealEnded:) name:kDefaultEventEndNotification object:nil];
 }
 
--(void)viewDidAppear:(BOOL)animated
+- (void)viewDidAppear:(BOOL)animated
 {
-    if (@available(iOS 11.0, *)) {
-        [self.tableView setContentInsetAdjustmentBehavior:UIScrollViewContentInsetAdjustmentNever];
-    } else {
-        // Fallback on earlier versions
-    }
-    
-    CGRect frame = self.dealsTableView.frame;
-    
-    [self.dealsTableView setFrame:CGRectMake(0, self.navigationController.navigationBar.frame.size.height, frame.size.width, frame.size.height - self.navigationController.navigationBar.frame.size.height)];
-    
-    [self.view layoutIfNeeded];
     
 }
 
 -(void)viewDidDisappear:(BOOL)animated
 {
-    NSNotificationCenter* center = [NSNotificationCenter defaultCenter];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:NSLocalizedString(@"NEW_UPDATES_NOTIFICATION", nil) object:nil];
     
-    [center removeObserver:self name:kDefaultEventEndNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kDefaultEventEndNotification object:nil];
 }
 
+-(void)viewDidLayoutSubviews
+{
+    [super viewDidLayoutSubviews];
+    
+}
+
+#pragma mark -
+#pragma mark - Construct Methods
 -(void)constructBackgroundDimmer
 {
     UIView* newView = [[UIView alloc] initWithFrame:CGRectZero];
@@ -153,13 +179,51 @@ static NSString* const emptyCellIdentifier = @"holderCell";
     self.backgroundDimmer = newView;
 }
 
+-(void)constructEventUpdateButton
+{
+    if (!self.eventUpdatesButton) {
+        
+        CGFloat width = (self.view.frame.size.width / 2.5);
+        
+        CGFloat height = (self.view.frame.size.height / 15);
+        
+        CGFloat xPosition = (self.view.center.x - (width / 2));
+        
+        CGRect tmpBtnFrame = CGRectMake(xPosition, 0, width, height);
+        
+        CGRect btnFrame = CGRectOffset(tmpBtnFrame, 0, 10);
+        
+        self.eventUpdatesButton = [[UIButton alloc] initWithFrame:btnFrame];
+        
+        [self.eventUpdatesButton setTitle:@"New Events added" forState:UIControlStateNormal];
+        
+        self.eventUpdatesButton.titleLabel.font = [UIFont fontWithName:@"Helvetica" size:14.0f];
+        
+        self.eventUpdatesButton.layer.cornerRadius = 15.0f;
+        
+        self.eventUpdatesButton.layer.shadowOpacity = 0.9f;
+        
+        self.eventUpdatesButton.layer.shadowOffset = CGSizeMake(5.0f, 10.0f);
+        
+        UIColor* color = [UIColor colorWithRed:(float)80/255
+                                         green:(float)141/255
+                                          blue:(float)234/255
+                                         alpha:(float)1];
+        
+        [self.eventUpdatesButton setBackgroundColor:color];
+        
+        [self.eventUpdatesButton addTarget:self action:@selector(refreshDeals) forControlEvents:UIControlEventPrimaryActionTriggered];
+        
+    }
+    
+    
+}
+
+#pragma mark -
+#pragma mark - Deal Loading Methods
 #warning Needs error handling
 -(void)refreshDeals
 {
-    //AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
-    
-    //(appDelegate.databaseManager).delegate = self;
-    
     if (self.refreshControl) {
         
         NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
@@ -184,23 +248,6 @@ static NSString* const emptyCellIdentifier = @"holderCell";
         [self.view layoutIfNeeded];
     });
     
-    /*
-    [appDelegate.databaseManager fetchDeals:nil addCompletionBlock:^(BOOL success) {
-        
-        if (self.refreshControl) {
-            [self.refreshControl endRefreshing];
-        }
-        
-        if(success){
-            [self loadDeals];
-            
-        }
-        else{
-
-        }
-        
-    }];
-     */
 }
 
 -(void)loadDeals
@@ -218,24 +265,19 @@ static NSString* const emptyCellIdentifier = @"holderCell";
 #pragma mark - Image Handling Methods
 -(void)startImageDownloadForDeal:(Deal*)deal forIndexPath:(NSIndexPath*) indexPath andTableCell:(DealTableViewCell*)cell
 {
+    DatabaseManager* dbManager = [DatabaseManager sharedDatabaseManager];
+    
+    (dbManager).delegate = self;
+    
     __block Deal* fetchingImageForDeal = (self.imageDownloadInProgress)[indexPath];
     
     if (fetchingImageForDeal == nil) {
         
-        AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
+        (self.imageDownloadInProgress)[indexPath] = deal;
         
-        (appDelegate.databaseManager).delegate = self;
+        NSLog(@"CELL %@", cell.dealImage);
         
-        // Background Queue Token
-        backgroundQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0);
-        
-        dispatch_async(backgroundQueue, ^{
-            
-            [appDelegate.databaseManager managerStartDownloadImageFromURL:deal.imgStateObject.imagePath forObject:cell forIndexPath:indexPath imageView:cell.dealImage];
-            
-            (self.imageDownloadInProgress)[indexPath] = deal;
-            
-        });
+        [dbManager managerStartDownloadImageFromURL:deal.imgStateObject.imagePath forObject:deal forIndexPath:indexPath imageView:cell.dealImage addCompletion:nil];
         
     }
 }
@@ -243,9 +285,9 @@ static NSString* const emptyCellIdentifier = @"holderCell";
 
 -(void)loadOnScreenDealImages
 {
-    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
+    DatabaseManager* dbManager = [DatabaseManager sharedDatabaseManager];
 
-    if ([appDelegate.databaseManager managerGetSavedDeals].count > 0) {
+    if ([dbManager managerGetSavedDeals].count > 0) {
         
         PSAllDealsTableViewController* __weak weakSelf = self;
         
@@ -253,40 +295,17 @@ static NSString* const emptyCellIdentifier = @"holderCell";
         
         for (DealTableViewCell* visibleCell in visibleOnScreenDeals) {
             
-            NSIndexPath* index = [self.dealsTableView indexPathForCell:visibleCell];
-            
-            __block Deal* visibleDeal = [appDelegate.databaseManager managerGetSavedDeals][index.row];
-            
-            [appDelegate.databaseManager managerFetchCachedImageForKey:visibleDeal.imgStateObject.imagePath addCompletion:^(UIImage *image) {
+            if(visibleCell.dealImage.image == nil){
                 
-                if(image){
-                    [visibleCell.dealImage setImage:image];
-                    [visibleCell.imageLoadingActivityIndicator stopAnimating];
-                }
-                else{
-                    
-                    // Disable any interaction if image for the deal has not loaded yet
-                    //[visibleCell setUserInteractionEnabled:NO];
-                    
-                    [appDelegate.databaseManager managerFetchPersistentStorageCachedImageForKey:visibleDeal.imgStateObject.imagePath deal:visibleDeal addCompletion:^(UIImage *img) {
-                        
-                        if(img){
-                            
-                            dispatch_async(dispatch_get_main_queue(), ^{
-                                
-                                [visibleCell.imageLoadingActivityIndicator stopAnimating];
-                                visibleCell.dealImage.image = img;
-                                //[visibleCell setUserInteractionEnabled:YES];
-                                
-                            });
-                            
-                        }
-                        else [weakSelf startImageDownloadForDeal:visibleDeal forIndexPath:index andTableCell:visibleCell];
-                        
-                    }]; // End of Persistent Storage Fetch
-                }
+                NSIndexPath* index = [self.dealsTableView indexPathForCell:visibleCell];
                 
-            }]; // End of Memory Cache image search
+                Deal* visibleDeal = [dbManager managerGetSavedDeals][index.row];
+                
+                [weakSelf startImageDownloadForDeal:visibleDeal forIndexPath:index andTableCell:visibleCell];
+                
+                
+            }
+            
             
             
         } // End of visible cell for loop
@@ -296,9 +315,9 @@ static NSString* const emptyCellIdentifier = @"holderCell";
 
 -(void)terminateDownloadingImages
 {
-    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
+    DatabaseManager* databaseManager = [DatabaseManager sharedDatabaseManager];
     
-    [appDelegate.databaseManager managerCancelDownloads:^(BOOL success) {
+    [databaseManager managerCancelDownloads:^(BOOL success) {
         
         [self.imageDownloadInProgress removeAllObjects];
         
@@ -307,20 +326,12 @@ static NSString* const emptyCellIdentifier = @"holderCell";
 
 
 #pragma mark -
-#pragma mark - Account Manager Delegate
--(void)logoutSucessfully
-{
-    [self performSegueWithIdentifier:UNWIND_TO_HOME sender:self];
-}
-
-
-#pragma mark -
 #pragma mark - Table View Data Source
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+
+    DatabaseManager* databaseManager = [DatabaseManager sharedDatabaseManager];
     
-    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
-    
-    NSArray* deals = [NSArray arrayWithArray:[appDelegate.databaseManager managerGetSavedDeals]];
+    NSArray* deals = [NSArray arrayWithArray:[databaseManager managerGetSavedDeals]];
     
     if (deals && deals.count >= 1) {
         return 1;
@@ -348,14 +359,14 @@ static NSString* const emptyCellIdentifier = @"holderCell";
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+
+    DatabaseManager* databaseManager = [DatabaseManager sharedDatabaseManager];
     
-    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
-    
-    if ([appDelegate.databaseManager managerGetSavedDeals] == nil) {
+    if ([databaseManager managerGetSavedDeals] == nil) {
         return customRowCount;
     }
     
-    NSUInteger totalCount = [appDelegate.databaseManager managerGetSavedDeals].count;
+    NSUInteger totalCount = [databaseManager managerGetSavedDeals].count;
     
     if (totalCount < 1)
     {
@@ -369,106 +380,53 @@ static NSString* const emptyCellIdentifier = @"holderCell";
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
-
-    DealTableViewCell* dealCell = nil;
+    DealTableViewCell* dealCell = (DealTableViewCell*) [tableView dequeueReusableCellWithIdentifier:reuseIdentifier forIndexPath:indexPath];
     
-    NSUInteger nodeCount = [appDelegate.databaseManager managerGetSavedDeals].count;
+    //DatabaseManager* dbManager = [DatabaseManager sharedDatabaseManager];
+    //Deal* deal = [dbManager managerGetSavedDeals][indexPath.row];
+    //CFTimeInterval startTime = CACurrentMediaTime();
     
-    if (nodeCount == 0 && indexPath.row == 0) {
-        
-        //dealCell = (DealTableViewCell*) [self.dealsTableView dequeueReusableCellWithIdentifier:emptyCellIdentifier forIndexPath:indexPath];
-        
-    }
-    else{
-        
-        dealCell = (DealTableViewCell*) [self.dealsTableView dequeueReusableCellWithIdentifier:reuseIdentifier forIndexPath:indexPath];
-        
-        if (nodeCount > 0) {
-
-            Deal* deal = [appDelegate.databaseManager managerGetSavedDeals][indexPath.row];
-            
-            dealCell.dealDescription.text = deal.dealDescription;
-            
-        }
-        
-    }
+    dealCell.tag = indexPath.row;
     
     return dealCell;
 }
 
 -(void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    
-    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
-    
-    NSUInteger nodeCount = [appDelegate.databaseManager managerGetSavedDeals].count;
-    
-    if (nodeCount > 0) {
-        
-        if([indexPath row] == ((NSIndexPath*)[[tableView indexPathsForVisibleRows] lastObject]).row){
+    DatabaseManager* dbManager = [DatabaseManager sharedDatabaseManager];
 
-        }
+    DealTableViewCell* dealCell = (DealTableViewCell*) cell;
+    
+    Deal* deal = [dbManager managerGetSavedDeals][indexPath.row];
+    
+    dealCell.dealDescription.text = deal.dealDescription;
+    
+    if(deal.budget <= 0) dealCell.budgetLbl.text = [NSString stringWithFormat:@"Free"];
+    else if(deal.budget > 0 && deal.budget < 1) dealCell.budgetLbl.text = [NSString stringWithFormat:@"Under a dollar"];
+    else{
         
-        Deal* deal = [appDelegate.databaseManager managerGetSavedDeals][indexPath.row];
+        NSInteger budgetInteger = ceil(deal.budget);
         
-        DealTableViewCell* dealCell = (DealTableViewCell*) cell;
+        dealCell.budgetLbl.text = [NSString stringWithFormat:@"Under $%li", (long)budgetInteger];
+    }
+    
+    [dealCell.dealImage setImage:[UIImage imageNamed:PLACE_HOLDER_IMAGE]];
+    
+    dispatch_queue_t backgroundToken = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0);
+    
+    dispatch_async(backgroundToken, ^{
         
-        [appDelegate.databaseManager managerFetchCachedImageForKey:deal.imgStateObject.imagePath addCompletion:^(UIImage *image) {
-            
-            if (image){
-                
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    dealCell.dealImage.image = image;
-                    [dealCell.imageLoadingActivityIndicator stopAnimating];
-                });
-                
-            }
-            else {
-                
-                //[dealCell setUserInteractionEnabled:NO]; // Disable any interaction if image for the deal has not loaded yet
-                
-                dealCell.dealImage.image = self.placeholderImage;
-                
-                [dealCell.imageLoadingActivityIndicator startAnimating];
-                
-                [appDelegate.databaseManager managerFetchPersistentStorageCachedImageForKey:deal.imgStateObject.imagePath deal:deal addCompletion:^(UIImage *img) {
-                    
-                    if(!img){
-                        if (self.dealsTableView.dragging == NO && self.dealsTableView.decelerating == NO){
-                            
-                            if(dealCell){
-                                [self startImageDownloadForDeal:deal forIndexPath:indexPath andTableCell:dealCell];
-                            }
-                            
-                        }
-                    }
-                    else{
-                        
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            dealCell.dealImage.image = img;
-                            //[dealCell setUserInteractionEnabled:YES];
-                            [dealCell.imageLoadingActivityIndicator stopAnimating];
-                            
-                        });
-                        
-                    }
-                    
-                    
-                }]; // End of fetching image in Persistent Storage Cache
-                
-            }
-            
-        }]; // End of Fetching Image in Cache
-         
-         
-     
-        if ([dealCell.dealTimer.text isEqualToString:NSLocalizedString(@"TIMER_LABEL_DEFAULT_TEXT", nil)]) {
-            dealCell.dealTimer = [deal generateCountDownEndDate:dealCell.dealTimer];
-        }
+        [self startImageDownloadForDeal:deal forIndexPath:indexPath andTableCell:dealCell];
+        
+    });
+    
+    if ([dealCell.dealTimer.text isEqualToString:NSLocalizedString(@"TIMER_LABEL_DEFAULT_TEXT", nil)]) {
+        
+        dealCell.dealTimer = [deal generateCountDownEndDate:dealCell.dealTimer];
         
     }
     
+        
 }
 
 -(void)tableView:(UITableView *)tableView didEndDisplayingCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
@@ -478,14 +436,15 @@ static NSString* const emptyCellIdentifier = @"holderCell";
     if (dealCell) {
         [dealCell endAnimationLabel];
     }
+    
 }
 
  
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
+    DatabaseManager* databaseManager = [DatabaseManager sharedDatabaseManager];
     
-    NSArray* deals = [NSArray arrayWithArray:[appDelegate.databaseManager managerGetSavedDeals]];
+    NSArray* deals = [NSArray arrayWithArray:[databaseManager managerGetSavedDeals]];
     
     CGRect cellPosition = [tableView rectForRowAtIndexPath: indexPath];
     CGRect positionInSuperview = [tableView convertRect:cellPosition toView:tableView.superview];
@@ -525,15 +484,41 @@ static NSString* const emptyCellIdentifier = @"holderCell";
 */
 
 #pragma mark -
-#pragma mark - Navigation Methods
--(id<UIViewControllerAnimatedTransitioning>)animationControllerForPresentedController:(UIViewController *)presented presentingController:(UIViewController *)presenting sourceController:(UIViewController *)source
+#pragma mark - Filter View Methods
+-(IBAction)FilterButtonPressed:(id)sender
 {
-    return self.transitionController;
+    DatabaseManager* dbManager = [DatabaseManager sharedDatabaseManager];
+    
+    NSArray* deals = [dbManager managerGetSavedDeals];
+    
+    if(deals) self.filterView.dealsDisplayed = deals;
+    else self.filterView.dealsDisplayed = nil;
+    
+    self.filterView.transitioningDelegate = self;
+    
+    //[self.filterView setDelegate:self];
+    
+    //[self.navigationController pushViewController:self.filterView animated:YES];
+}
+
+#pragma mark -
+#pragma mark - Navigation Methods
+-(id<UIViewControllerAnimatedTransitioning>)animationControllerForPresentedController:(UIViewController *)presented presentingController:(UIViewController*)presenting sourceController:(UIViewController *)source
+{
+    if([presenting isKindOfClass:[DealDetailViewController class]])
+    {
+        return self.transitionToDetailController;
+    }
+    else return nil;
 }
 
 -(id<UIViewControllerAnimatedTransitioning>)animationControllerForDismissedController:(UIViewController *)dismissed
 {
-    return self.dismissTransitionController;
+    if([dismissed isKindOfClass:[DealDetailViewController class]])
+    {
+        return self.dismissTransitionFromDetailController;
+    }
+    else return nil;
 }
 
 
@@ -546,26 +531,17 @@ static NSString* const emptyCellIdentifier = @"holderCell";
         ACDDVC.transitioningDelegate = self;
         
         [ACDDVC setOriginalPosition:[selectedDeal getOriginalPosition]];
-        
-        ACDDVC.venueName = selectedDeal.venueName;
-        
-        ACDDVC.descriptionText = selectedDeal.dealDescription;
-        
-        ACDDVC.distanceText = [NSString stringWithFormat:@"%.1f mi away", selectedDeal.annotation.getDistanceFromUser];
-        
-        ACDDVC.addressText = [NSString stringWithFormat:@"\n%@ \n"
-                              "%@, %@ %@", selectedDeal.address, selectedDeal.city, selectedDeal.state, selectedDeal.zipcode];
-        
-        ACDDVC.phoneText = [NSString stringWithFormat:@"\n%@", selectedDeal.phoneNumber];
-        
-        ACDDVC.dealSelected = selectedDeal;
-        
+
+        [ACDDVC setDealSelected:selectedDeal];
         
     }
-    else if ([segue.identifier isEqualToString:SEGUE_ALL_CURRENT_DEAL_TO_EDIT_ZIPCODE_OFFLINE_CONTROLLER]) {
-        AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
+    else if ([segue.identifier
+              
+        isEqualToString:SEGUE_ALL_CURRENT_DEAL_TO_EDIT_ZIPCODE_OFFLINE_CONTROLLER]) {
+
+        LocationSeviceManager* locationManager = [LocationSeviceManager sharedLocationServiceManager];
         
-        NSString* zipcode = [appDelegate.locationManager getCurrentZipcode];
+        NSString* zipcode = [locationManager getCurrentZipcode];
         
         PSEditZipcodeOfflineTableViewController* EZCOD = (PSEditZipcodeOfflineTableViewController*) segue.destinationViewController;
         
@@ -599,37 +575,28 @@ static NSString* const emptyCellIdentifier = @"holderCell";
 
 #pragma mark -
 #pragma mark - Database Delegate Methods
--(void)imageFetchedForObject:(id)obj forIndexPath:(NSIndexPath *)indexPath andImage:(UIImage *)image andImageView:(UIImageView *)imageView
+-(void)imageFetchedForObject:(id)obj forIndexPath:(NSIndexPath*)indexPath andImage:(UIImage *)image andImageView:(UIImageView *)imageView
 {
     
-    DealTableViewCell* cell = (DealTableViewCell*) [self.dealsTableView cellForRowAtIndexPath:indexPath];
-    
-    __block CATransition* transition = [CATransition animation];
-    
-    transition.duration = 0.1f;
-    transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn];
-    transition.type = kCATransitionFade;
-    
-    if(cell){
+    dispatch_async(dispatch_get_main_queue(), ^{
+        
+        [self.imageDownloadInProgress removeObjectForKey:indexPath];
 
-        [cell.dealImage.layer addAnimation:transition forKey:nil];
+        NSArray* nodes = self.dealsTableView.visibleCells;
+
+        DealTableViewCell* cell = (DealTableViewCell*) [self.dealsTableView cellForRowAtIndexPath:indexPath];
         
-        dispatch_async(dispatch_get_main_queue(), ^{
-            
-            cell.dealImage.image = image;
-            
-            //[cell setUserInteractionEnabled:YES];
-            
+        
+        if([nodes containsObject:cell])
+        {
             [cell.imageLoadingActivityIndicator stopAnimating];
-            
-            [self.imageDownloadInProgress removeObjectForKey:indexPath];
-            
-        });
+            cell.dealImage.image = image;
+        }
+         
         
-    }
+    });
     
 }
-
 
 #pragma mark -
 #pragma mark - Scroll View Delegate
@@ -646,6 +613,21 @@ static NSString* const emptyCellIdentifier = @"holderCell";
     [self loadOnScreenDealImages];
 }
 
+-(void)scrollViewDidScroll:(UIScrollView *)scrollView
+{
+    if(self.eventUpdatesButton.isHidden == NO)
+    {
+        CGRect frame = self.eventUpdatesButton.frame;
+        
+        CGRect newBtnFrameOffset = CGRectOffset(scrollView.bounds, 0, 5);
+        
+        CGRect newFrame = CGRectMake(frame.origin.x, newBtnFrameOffset.origin.y, frame.size.width, frame.size.height);
+        
+        [self.eventUpdatesButton setFrame:newFrame];
+    }
+    
+    
+}
 
 #pragma mark -
 #pragma mark - Loading Page Delegate
@@ -656,41 +638,13 @@ static NSString* const emptyCellIdentifier = @"holderCell";
     self.loadingPage = nil;
 }
 
--(void)locationHasFinished
-{
-    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
-    
-    if (![appDelegate.budgetManager isBudgetExists]) {
-        [self.loadingPage inputBudget];
-    }
-    else{
-        
-        NSMutableDictionary* currentCriteria = [[appDelegate.databaseManager managerGetUsersCurrentCriteria] mutableCopy];
-        
-        NSString* currentDate = [appDelegate.databaseManager currentDate];
-        
-        [currentCriteria removeObjectForKey:NSLocalizedString(@"DATE_FILTER", nil)];
-        
-        currentCriteria[NSLocalizedString(@"DATE_FILTER", nil)] = currentDate;
-        
-        NSDictionary* updatedCriteria = [NSDictionary dictionaryWithDictionary:currentCriteria];
-        
-        [appDelegate.databaseManager managerSaveUsersCriteria:updatedCriteria];
-    }
-}
-
 -(void)budgetHasFinished
 {
-    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
+    BudgetManager* budgetManager = [BudgetManager sharedBudgetManager];
     
-    NSString* currentBudget = [NSString stringWithString:[appDelegate.budgetManager retreieveBudget]];
+    NSString* currentBudget = [NSString stringWithString:[budgetManager retreieveBudget]];
     
     (self.budgetButton).title = currentBudget;
-}
-
--(void)newDealsFetched
-{
-    [self loadDeals];
 }
 
 -(void)dealEnded:(NSNotification*)notification
@@ -699,13 +653,13 @@ static NSString* const emptyCellIdentifier = @"holderCell";
     if (!notification) return;
     
     dispatch_queue_t backgroundToken = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0);
-    
-    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
+
+    DatabaseManager* dbManager = [DatabaseManager sharedDatabaseManager];
     
     // Background Thread Queue
     dispatch_async(backgroundToken, ^{
         
-        NSArray* deals = [NSArray arrayWithArray:[appDelegate.databaseManager managerGetSavedDeals]];
+        NSArray* deals = [NSArray arrayWithArray:[dbManager managerGetSavedDeals]];
         
         Deal* endedDeal = (Deal*) notification.object;
         
@@ -737,9 +691,23 @@ static NSString* const emptyCellIdentifier = @"holderCell";
 }
 
 #pragma mark -
+#pragma mark - Notification Methods
+-(void)alertOfNewEvents
+{
+    if(self.eventUpdatesButton.hidden == YES)
+    {
+        [self.eventUpdatesButton setHidden:NO];
+    }
+}
+
+#pragma mark -
 #pragma mark - Memory Warning Methods
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:NSLocalizedString(@"NEW_UPDATES_NOTIFICATION", nil) object:nil];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kDefaultEventEndNotification object:nil];
                                                                                                              
     // terminate all pending image downloads
     [self terminateDownloadingImages];

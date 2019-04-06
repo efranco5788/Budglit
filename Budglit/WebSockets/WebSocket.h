@@ -13,7 +13,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @protocol WebSocketDelegate <NSObject>
 @optional
--(void)newDealAdded:(id)newDeal;
+
 @end
 
 @interface WebSocket : NSObject
@@ -22,11 +22,13 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) SocketIOClient* socket;
 @property (nonatomic, strong) id <WebSocketDelegate> delegate;
 
--(id)initWebSocketForDomain:(NSURL*)url withToken:(NSString*)token;
+-(id)initWebSocketForStringDomain:(NSString*)urlString userToken:(NSString*)token;
 
--(void)setSocketEventsShouldConnect:(BOOL)shouldConnect;
+-(id)initWebSocketForDomain:(NSURL*)url userToken:(NSString*)token;
 
 -(void)connectSocket;
+
+-(void)disconnect;
 
 @end
 

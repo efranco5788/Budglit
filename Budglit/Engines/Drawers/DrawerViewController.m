@@ -8,7 +8,9 @@
 
 #import "DrawerViewController.h"
 #import "AppDelegate.h"
+#import "AccountMenuTableViewController.h"
 #import "LoadingLocalDealsViewController.h"
+#import "MapViewController.h"
 #import "MenuOptions.h"
 #import "MMDrawerBarButtonItem.h"
 #import "MMDrawerVisualState.h"
@@ -20,9 +22,13 @@
 #define MAX_RIGHT_DRAWER_WIDTH 0.65
 #define MAX_LEFT_DRAWER_WIDTH 0.80
 #define LOADING_PAGE_VIEW_CONTROLLER @"LoadingLocalDealsViewController"
+#define MAP_VIEW @"MapView"
+#define DEALS_TABLE_VIEW @"DealsTableView"
+#define ALL_DEALS_TABLE_VIEW @"PSAllDealsTableViewController"
+#define FILTER_VIEW @"FilterView"
 
 
-@interface DrawerViewController () <MenuViewDelegate, LoadingPageDelegate, AccountManagerDelegate>
+@interface DrawerViewController () <MenuViewDelegate, LoadingPageDelegate, AccountManagerDelegate, UIGestureRecognizerDelegate>
 
 @end
 
@@ -72,10 +78,10 @@
     [super viewDidAppear:animated];
     
     [self.navigationItem setHidesBackButton:YES];
+
+    LocationSeviceManager* locationManager = [LocationSeviceManager sharedLocationServiceManager];
     
-    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
-    
-    NSString* currentLocation = [NSString stringWithString:[appDelegate.locationManager retrieveCurrentLocationString]];
+    NSString* currentLocation = [NSString stringWithString:[locationManager retrieveCurrentLocationString]];
     
     MMDrawerBarButtonItem * rightDrawerButton = [[MMDrawerBarButtonItem alloc] initWithTarget:self action:@selector(rightDrawerButtonPress:)];
     
@@ -96,14 +102,14 @@
     MenuTableViewController* menu = (MenuTableViewController*) self.rightDrawerViewController;
     
     [menu setDelegate:nil];
+    
 }
 
+#pragma mark -
+#pragma mark - Drawers Panel Gesture Methods
 -(void)slideDrawerSide:(MMDrawerSide)drawerSide Animated:(BOOL)isAnimated
 {
-    [self toggleDrawerSide:drawerSide animated:isAnimated completion:^(BOOL finished) {
-
-    }];
-    
+    [self toggleDrawerSide:drawerSide animated:isAnimated completion:nil];
 }
 
 -(void)leftDrawerButtonPress:(id)sender
@@ -116,6 +122,22 @@
     [self slideDrawerSide:MMDrawerSideRight Animated:YES];
 }
 
+-(void)closeDrawerAnimated:(BOOL)animated completion:(void (^)(BOOL))completion
+{
+    UIView* accountMenuView = (UIView*) [self.view viewWithTag:101];
+    
+    if(accountMenuView.superview != nil)
+    {
+        [accountMenuView removeFromSuperview];
+    }
+    
+    [super closeDrawerAnimated:animated completion:completion];
+
+}
+
+
+#pragma mark -
+#pragma mark - Configure Methods
 -(void)configureCenterViewController:(UIViewController *)centerViewController leftDrawerViewController:(UIViewController *)leftDrawerViewController rightDrawerViewController:(UIViewController *)rightDrawerViewController
 {
     [super configureCenterViewController:centerViewController leftDrawerViewController:leftDrawerViewController rightDrawerViewController:rightDrawerViewController];
@@ -125,11 +147,11 @@
     }
     
     if (rightDrawerViewController) {
-        self.rightPanelMenuView = (MenuTableViewController*)rightDrawerViewController;
+        self.rightPanelMenuView = rightDrawerViewController;
     }
     
     if (leftDrawerViewController) {
-        self.leftDrawerViewController = (MenuTableViewController*)leftDrawerViewController;
+        self.leftDrawerViewController = leftDrawerViewController;
     }
 }
 
@@ -138,86 +160,65 @@
 #pragma mark - Right Panel Menu Delegate
 -(void)menuSelected:(NSInteger)menuOption
 {
-    [self closeDrawerAnimated:YES completion:^(BOOL finished) {
-        
-        if (finished)
+    NSLog(@"%ld", (long)menuOption);
+    
+    if(menuOption == MENUACCOUNT)
+    {
+        if([self.rightPanelMenuView isKindOfClass:[MenuTableViewController class]])
         {
-            switch (menuOption) {
-                case MENUSWITCHMODE:
-                {
-                    [self.delegate switchViewPressed];
-                }
-                    break;
-                case MENUCURRENTLOCATION:
-                {
-                    if (![CLLocationManager locationServicesEnabled]) {
-                        NSString* alertMessage = @"Please turn on your Location Services. Settings > Privacy > Location Services";
-                        UIAlertController* locationsNotification = [UIAlertController alertControllerWithTitle:@"" message:alertMessage preferredStyle:UIAlertControllerStyleAlert];
-                        UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil];
-                        [locationsNotification addAction:defaultAction];
-                        [self presentViewController:locationsNotification animated:YES completion:nil];
-                    }
-                    else [self changeCurrentLocation];
-                }
-                    break;
-                case MENUCHANGELOCATION:
-                {
-                    [self changeLocation];
-                }
-                    break;
-                case MENUCHANGEBUDGET:
-                {
-                    [self changeBudget];
-                }
-                    break;
-                case MENULOGOUT:
-                {
-                    [self logout];
-                }
-                    break;
-                default:
-                    break;
-            }
+            [(MenuTableViewController*) self.rightPanelMenuView presentAccountMenuTable];
         }
         
+    }
+    else{
         
-    }];
+        [self closeDrawerAnimated:YES completion:^(BOOL finished) {
+            
+            if (finished)
+            {
+                switch (menuOption) {
+                    case MENUSWITCHMODE:
+                    {
+                        [self.delegate switchViewPressed];
+                    }
+                        break;
+                    case MENUCURRENTLOCATION:
+                    {
+                        if (![CLLocationManager locationServicesEnabled]) {
+                            NSString* alertMessage = @"Please turn on your Location Services. Settings > Privacy > Location Services";
+                            UIAlertController* locationsNotification = [UIAlertController alertControllerWithTitle:@"" message:alertMessage preferredStyle:UIAlertControllerStyleAlert];
+                            UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil];
+                            [locationsNotification addAction:defaultAction];
+                            [self presentViewController:locationsNotification animated:YES completion:nil];
+                        }
+                        else [self changeCurrentLocation];
+                    }
+                        break;
+                    case MENUCHANGELOCATION:
+                    {
+                        [self changeLocation];
+                    }
+                        break;
+                    case MENULOGOUT:
+                    {
+                        [self logout];
+                    }
+                        break;
+                    default:
+                        break;
+                }
+            }
+            
+            
+        }];
+        
+    }
+    
 }
 
 /*
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    
-    if ([segue.identifier isEqualToString:SEGUE_ALL_CUURENT_DEAL_TO_DEAL_DETAIL_CONTROLLER]) {
-        
-        DealDetailViewController* ACDDVC = (DealDetailViewController*) segue.destinationViewController;
-        
-        ACDDVC.transitioningDelegate = self;
-        
-        [ACDDVC setOriginalPosition:[selectedDeal getOriginalPosition]];
-        
-        ACDDVC.venueName = selectedDeal.venueName;
-        
-        ACDDVC.descriptionText = selectedDeal.dealDescription;
-        
-        ACDDVC.addressText = [NSString stringWithFormat:@"\n%@ \n"
-                              "%@, %@ %@", selectedDeal.address, selectedDeal.city, selectedDeal.state, selectedDeal.zipcode];
-        
-        ACDDVC.phoneText = [NSString stringWithFormat:@"\n%@", selectedDeal.phoneNumber];
-        
-        ACDDVC.dealSelected = selectedDeal;
-        
-        ACDDVC.image = self.placeholderImage;
-        
-    }
-    else if ([segue.identifier isEqualToString:SEGUE_ALL_CURRENT_DEAL_TO_EDIT_ZIPCODE_OFFLINE_CONTROLLER]) {
-        AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
-        
-        NSString* zipcode = [appDelegate.locationManager getCurrentZipcode];
-        
-        PSEditZipcodeOfflineTableViewController* EZCOD = (PSEditZipcodeOfflineTableViewController*) segue.destinationViewController;
-        
-        EZCOD.currentZipcode = zipcode;
-    }
+
 }
 
 
@@ -225,17 +226,6 @@
 -(BOOL)canPerformUnwindSegueAction:(SEL)action fromViewController:(UIViewController *)fromViewController withSender:(id)sender
 {
     
-    if ([self respondsToSelector:action]) {
-        
-        NSString* viewID = fromViewController.restorationIdentifier;
-        
-        if ([viewID isEqualToString:@"PSDealsDetailViewController"]) {
-            return YES;
-        }
-    }
-    
-    
-    return NO;
 }
 
 -(void)returned:(UIStoryboardSegue *)segue
@@ -268,32 +258,19 @@
     }];
 }
 
--(void)changeBudget
-{
-    [self.navigationController completionhandler_pushViewController:self.loadingPage withController:self.navigationController animated:NO completion:^{
-        
-        (self.loadingPage).delegate = self;
-       
-        [self.loadingPage inputBudget];
-        
-    }];
-}
-
 -(void)logout
 {
-    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
+    AccountManager* accountManager = [AccountManager sharedAccountManager];
     
-    (appDelegate.accountManager).delegate = self;
+    (accountManager).delegate = self;
     
-    [appDelegate.accountManager logoutFromDomain:nil addCompletion:^(id object) {
+    [accountManager logoutFromDomain:nil addCompletion:^(id object) {
         
-        BOOL loggedOffSuccess = [appDelegate.accountManager checkLoggedOut:object];
+        BOOL loggedOffSuccess = [accountManager checkLoggedOut:object];
         
         if(loggedOffSuccess == TRUE){
             
-            AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
-            
-            [appDelegate.accountManager setDelegate:nil];
+            [accountManager setDelegate:nil];
             
             [self.navigationController popToRootViewControllerAnimated:NO];
             
@@ -337,6 +314,44 @@
         [view refreshDeals];
         
     }];
+}
+
+#pragma mark -
+#pragma mark - Gesture Recognizers Delegate Methods
+-(BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
+{
+    [super gestureRecognizer:gestureRecognizer shouldReceiveTouch:touch];
+    
+    NSLog(@"Gesture is %@", touch.view.superview.restorationIdentifier);
+    
+    if([touch.view.superview.restorationIdentifier isEqualToString:MAP_VIEW])
+    {
+        return NO;
+    }
+    
+    if([touch.view.superview.restorationIdentifier isEqualToString:FILTER_VIEW])
+    {
+        return NO;
+    }
+    
+    if ([[touch.view.superview class] isSubclassOfClass:[UITableViewCell class]])
+    {
+        return NO;
+    }
+    
+    if([touch.view.superview.restorationIdentifier isEqualToString:ALL_DEALS_TABLE_VIEW])
+    {
+        return NO;
+    }
+    
+    if([touch.view.restorationIdentifier isEqualToString:DEALS_TABLE_VIEW])
+    {
+        return NO;
+    }
+     
+    
+    
+    return YES;
 }
 
 #pragma mark -

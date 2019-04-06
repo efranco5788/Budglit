@@ -33,10 +33,6 @@
 
 -(CLLocationDistance)getDistanceFromUser;
 
--(NSString*)getDistanceFromUserString;
-
--(void)setDistanceFromUser:(double)distance;
-
 -(void)showCustomCallout;
 
 @end

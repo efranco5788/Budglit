@@ -33,6 +33,25 @@
 }
 */
 
+-(instancetype)initWithCoder:(NSCoder *)aDecoder
+{
+    self = [super initWithCoder:aDecoder];
+    
+    if (!self) return nil;
+    
+    return self;
+}
+
+-(void)configureCell
+{
+    CATransition* transition = [CATransition animation];
+    transition.duration = 3.0f;
+    transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn];
+    transition.type = kCATransitionFade;
+    
+    [self.dealImage.layer addAnimation:transition forKey:nil];
+}
+
 -(void)animateLabel
 {
     self.endTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 repeats:YES block:^(NSTimer * _Nonnull timer) {

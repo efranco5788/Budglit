@@ -9,7 +9,7 @@
 #import "InstagramTableViewCell.h"
 
 @interface InstagramTableViewCell()
-@property (nonatomic, strong) InstagramObject* object;
+//@property (nonatomic, strong) InstagramObject* object;
 @end
 
 @implementation InstagramTableViewCell
@@ -44,14 +44,11 @@
 -(void)beginLoadingReuqest:(InstagramObject *)obj
 {
     
-    if (!self.object) {
-        self.object = obj;
-    }
 }
 
 -(void)cellDidDisappear
 {
-    [self.object.avPlayer pause];
+    //[self.object.avPlayer pause];
 }
 
 @end

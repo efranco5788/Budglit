@@ -9,7 +9,6 @@
 #import <UIKit/UIKit.h>
 
 @class BudgetManager;
-@class DatabaseManager;
 @class DrawerViewController;
 @class LoadingLocalDealsViewController;
 @class LoginPageViewController;

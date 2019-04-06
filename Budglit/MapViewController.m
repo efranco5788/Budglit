@@ -14,18 +14,20 @@
 #import "MapToListAnimationController.h"
 #import "DismissMapToListAnimationController.h"
 
+
 static double USE_CURRENT_RADIUS = -1;
 
-@interface MapViewController()<DrawerControllerDelegate, DatabaseManagerDelegate, FilterDelegate, LoginPageDelegate, UIViewControllerTransitioningDelegate, UINavigationControllerDelegate, MKMapViewDelegate>
+@interface MapViewController()<DrawerControllerDelegate, DatabaseManagerDelegate, FilterDelegate, LoginPageDelegate, UIViewControllerTransitioningDelegate, UINavigationControllerDelegate, MKMapViewDelegate, UIGestureRecognizerDelegate>
 {
     BOOL hasAppearedOnce;
+    BOOL networkErrorStatusLinkHidden;
+    BOOL updateEventsBtnHidden;
 }
 
 @property (strong, nonatomic) MapToListAnimationController* transitionController;
 @property (strong, nonatomic) DismissMapToListAnimationController* dismissTransitionController;
 @property (strong, nonatomic) UIView* annotationCalloutView;
 @property (strong, nonatomic) FilterViewController* filterView;
-//@property (strong, nonatomic) NSMutableArray* annotations;
 
 @end
 
@@ -41,38 +43,57 @@ static double USE_CURRENT_RADIUS = -1;
     self.transitionController = [[MapToListAnimationController alloc] init];
     self.dismissTransitionController = [[DismissMapToListAnimationController alloc] init];
     self.filterView = [[FilterViewController alloc] init];
+    
+    self.viewModel = [[MapViewModel alloc] init];
+    
+    [self.viewModel setUpdateEventsBtn:self.updateEventsBtn];
+
 
     hasAppearedOnce = NO;
+    networkErrorStatusLinkHidden = YES;
+    updateEventsBtnHidden = YES;
 }
 
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:NO];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(alertOfNewEvents) name:NSLocalizedString(@"NEW_UPDATES_NOTIFICATION", nil) object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(alertOfNewEvents) name:NSLocalizedString(@"HOST_BACK_ONLINE_NOTIFICATION", nil) object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(alertOfNewEvents) name:NSLocalizedString(@"HOST_OFFLINE_NOTIFICATION", nil) object:nil];
+    
     [self.navigationController setNavigationBarHidden:YES];
     
-    [super.view setNeedsLayout];
+    [self.updateEventsBtn setHidden:YES];
+    [self.lbl_NetworkConnectivityIssue setHidden:YES];
+    
 }
 
 -(void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:YES];
     
-    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
+    DatabaseManager* databaseManager = [DatabaseManager sharedDatabaseManager];
     
     CLLocation* currentLocation = self.mapView.userLocation.location;
     
-    if(!self.mapView.userLocationVisible) if (!currentLocation) currentLocation = [appDelegate.locationManager getCurrentLocation];
+    if(!self.mapView.userLocationVisible){
+        
+        LocationSeviceManager* locationManager = [LocationSeviceManager sharedLocationServiceManager];
+        
+        if (!currentLocation) currentLocation = [locationManager getCurrentLocation];
+        
+    }
+    
+    [super.view layoutIfNeeded];
+
+    databaseManager.delegate = self;
     
     if (hasAppearedOnce == NO) {
         
-        NSDictionary* filter = [appDelegate.databaseManager managerGetUsersCurrentCriteria];
-        
-        NSInteger miles = [[filter valueForKey:NSLocalizedString(@"DISTANCE_FILTER", nil)] integerValue];
-        
-        double meters = (miles * 1609.34);
-        
-        CLLocationDistance radius = meters;
+        CLLocationDistance radius = [self.viewModel getRadius];
 
         [self centerMapOnLocation:currentLocation isUserLocation:NO AndRadius:radius animate:NO addCompletion:^(BOOL success){
             
@@ -80,29 +101,128 @@ static double USE_CURRENT_RADIUS = -1;
 
             if (success) {
                 
-                [self reloadDealsShouldFetchDeals:YES AddCompletion:^(BOOL reloadSuccess) {
+                [self reloadDealsShouldFetchDeals:YES shouldAnimate:YES shouldClearDeals:YES AddCompletion:^(BOOL reloadSuccess) {
                     
                     if(reloadSuccess){
+                        
                         [self.mapView layoutIfNeeded];
+                        
                         hasAppearedOnce = YES;
+                        
                     }
                     
                 }];
             
-            } // If success
-
+            } // If center map location is success
+            
         }];
         
-    }
+    } // If View has not appeared once
 
 }
 
 -(void)viewDidDisappear:(BOOL)animated
 {
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:NSLocalizedString(@"NEW_UPDATES_NOTIFICATION", nil) object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:NSLocalizedString(@"HOST_BACK_ONLINE_NOTIFICATION", nil) object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:NSLocalizedString(@"HOST_OFFLINE_NOTIFICATION", nil) object:nil];
+    
     [self.mapView setDelegate:nil];
+    
+    DatabaseManager* databaseManager = [DatabaseManager sharedDatabaseManager];
+    
+    [databaseManager setDelegate:nil];
 }
 
+-(void)toggleNetworkConnectionStatusLbl
+{
+    
+    if(networkErrorStatusLinkHidden == YES)
+    {
+        
+        [UIView animateWithDuration:1.0 animations:^{
+
+            [self.lbl_NetworkConnectivityIssue setAlpha:1.0];
+            
+        } completion:^(BOOL finished) {
+            
+            if(finished == YES) networkErrorStatusLinkHidden = NO;
+            
+        }];
+        
+        
+    }
+    else
+    {
+        [UIView animateWithDuration:1.0 animations:^{
+
+            [self.lbl_NetworkConnectivityIssue setAlpha:0.0];
+            
+        } completion:^(BOOL finished) {
+            
+            if(finished == YES) networkErrorStatusLinkHidden = YES;
+            
+        }];
+    }
+}
+
+-(void)toggleUpdatedEventsButton
+{
+    
+    if(updateEventsBtnHidden == YES)
+    {
+        
+        [self.updateEventsBtn setHidden:NO];
+        
+        updateEventsBtnHidden = NO;
+        
+    }
+    else
+    {
+        [self.updateEventsBtn setHidden:YES];
+        
+        updateEventsBtnHidden = YES;
+
+    }
+    
+}
+
+-(void)alertOfNewEvents
+{
+    if(updateEventsBtnHidden == YES)
+    {
+        [self toggleUpdatedEventsButton];
+    }
+}
+
+-(void)toggleAlertOfConnectivityIssues:(BOOL)toggleOn
+{
+    NSTimer* networkErrorTimerFlash;
+    
+    if([networkErrorTimerFlash isValid]) [networkErrorTimerFlash invalidate];
+    
+    if(toggleOn){
+        
+        [self.lbl_NetworkConnectivityIssue setHidden:NO];
+        
+        networkErrorTimerFlash = [NSTimer scheduledTimerWithTimeInterval:(NSTimeInterval)(0.5) target:self selector:@selector(toggleNetworkConnectionStatusLbl) userInfo:nil repeats:YES];
+        
+        [networkErrorTimerFlash fire];
+        
+    }
+    else{
+        
+        [networkErrorTimerFlash invalidate];
+        
+        [self.lbl_NetworkConnectivityIssue setHidden:YES];
+        
+    }
+}
+
+#pragma mark -
+#pragma mark - Interface User Interaction
 - (IBAction)menuBtnPressed:(id)sender {
+    
     AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
 
     [appDelegate.drawerController slideDrawerSide:MMDrawerSideRight Animated:YES];
@@ -133,13 +253,38 @@ static double USE_CURRENT_RADIUS = -1;
     if(deals) self.filterView.dealsDisplayed = deals;
     else self.filterView.dealsDisplayed = nil;
     
-    NSLog(@"%@", deals);
-    
     [appDelegate.drawerController setLeftDrawerViewController:self.filterView];
 
     [self.filterView setDelegate:self];
 
     [appDelegate.drawerController slideDrawerSide:MMDrawerSideLeft Animated:YES];
+    
+}
+
+-(IBAction)updateEventsBtnWasDragged:(id)sender withEvent:(UIEvent*)event
+{
+
+}
+
+-(IBAction)updateEventsBtnPressed:(id)sender
+{
+    
+    if([sender isMemberOfClass:[UIButton class]]){
+
+        [self reloadDealsShouldFetchDeals:YES shouldAnimate:YES shouldClearDeals:NO AddCompletion:^(BOOL reloadSuccess) {
+            
+            if(reloadSuccess){
+                
+                [self.mapView layoutIfNeeded];
+                
+                hasAppearedOnce = YES;
+                
+                [self toggleUpdatedEventsButton];
+                
+            }
+            
+        }];
+    }
     
 }
 
@@ -154,87 +299,124 @@ static double USE_CURRENT_RADIUS = -1;
     return startFrame;
 }
 
--(void)tapGestureRecognized:(UIGestureRecognizer*)gesture
-{
-    [self.annotationCalloutView removeFromSuperview];
-    
-    [self.view layoutIfNeeded];
-    
-    [self.backgroundScreen removeFromSuperview];
-    
-    [self.view layoutIfNeeded];
-}
-
 - (IBAction)currentLocationBtnPressed:(UIButton *)sender
 {
     CLLocation* currentLocation = self.mapView.userLocation.location;
     
-    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
+    CLLocationDistance radius = [self.viewModel getRadius];
     
-    NSDictionary* filter = [appDelegate.databaseManager managerGetUsersCurrentCriteria];
-    
-    NSInteger miles = [[filter valueForKey:NSLocalizedString(@"DISTANCE_FILTER", nil)] integerValue];
-    
-    double meters = (miles * 1609.34);
-    
-    CLLocationDistance radius = meters;
-    
-    NSLog(@"%li", (long)miles);
-    
-    [self centerMapOnLocation:currentLocation isUserLocation:YES AndRadius:radius animate:YES addCompletion:^(BOOL success) {
-        
-    }];
+    [self centerMapOnLocation:currentLocation isUserLocation:YES AndRadius:radius animate:YES addCompletion:nil];
 }
 
 #pragma mark -
 #pragma mark - Deal Methods
--(void)reloadDealsShouldFetchDeals:(BOOL)shouldFetch AddCompletion:(generalBlockResponse) completionHandler;
+-(void)reloadDealsShouldFetchDeals:(BOOL)shouldFetch shouldAnimate:(BOOL)animate shouldClearDeals:(BOOL)shouldClear AddCompletion:(generalBlockResponse) completionHandler;
 {
-    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
+    DatabaseManager* databaseManager = [DatabaseManager sharedDatabaseManager];
     
-    (appDelegate.databaseManager).delegate = self;
+    (databaseManager).delegate = self;
     
     if(shouldFetch){
         
-        NSDictionary* criteria = [appDelegate.databaseManager managerGetUsersCurrentCriteria];
-        
-        [appDelegate.databaseManager managerFetchDeals:criteria addCompletionBlock:^(id response) {
-            
-            if(response){
+        NSDictionary* criteria = [databaseManager managerGetUsersCurrentCriteria];
+
+        [databaseManager managerFetchDeals:criteria shouldClearCurrentDeals:shouldClear addCompletionBlock:^(id response) {
+
+            if([response isKindOfClass:[NSError class]]){
                 
-                NSArray* fetchedDeals = (NSArray*) response;
+                UIAlertController* dealsAlert = [UIAlertController alertControllerWithTitle:@"Sorry!" message:@"Seems to be some connectivity issues" preferredStyle:UIAlertControllerStyleAlert];
                 
-                [appDelegate.databaseManager managerResetDeals];
-                
-                BOOL saved = [appDelegate.databaseManager managerSaveFetchedDeals:fetchedDeals];
-                
-                if(saved){
+                UIAlertAction* retryAction = [UIAlertAction actionWithTitle:@"Retry" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
                     
-                    NSArray* deals = [appDelegate.databaseManager managerGetSavedDeals];
+                }];
+                
+                UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+                    
+                    
+                    
+                }];
+                
+                [dealsAlert addAction:retryAction];
+                [dealsAlert addAction:cancelAction];
+                
+                [self presentViewController:dealsAlert animated:YES completion:nil];
+                
+                
+                
+            }
+            else if([response isKindOfClass:[NSArray class]]){
+                
+                NSArray* deals = (NSArray*) response;
+                
+                if(deals && deals.count > 1){
+                    
+                    [self plotDealsOnMap:deals Animated:animate addCompletion:^(BOOL dealsPlotted) {
+                        
+                        [self.view layoutIfNeeded];
+                        completionHandler(dealsPlotted);
+                        
+                    }];
+                    
+                }
+                else if (deals.count == 1){
+                    
+                    Deal* deal = [deals firstObject];
+                    
+                    if(deal){
+
+                        [self plotDealsOnMap:[NSArray arrayWithObject:deal] Animated:animate addCompletion:^(BOOL success) {
+                            
+                            [self.view layoutIfNeeded];
+                            completionHandler(success);
+                            
+                        }];
+                        
+                    }
+                    
+                }
+
+                
+            } // End of if response is array
+            else if ([response isKindOfClass:[NSNumber class]]){
+                
+                NSNumber* value = (NSNumber*)response;
+                BOOL boolValue = [value boolValue];
+                
+                if(boolValue == YES){
+                    
+                    NSArray* deals = [databaseManager managerGetSavedDeals];
                     
                     if(deals && deals.count > 1){
                         
-                        [self plotDealsOnMap:deals Animated:YES addCompletion:^(BOOL dealsPlotted) {
+                        [self plotDealsOnMap:deals Animated:animate addCompletion:^(BOOL dealsPlotted){
                             
                             [self.view layoutIfNeeded];
-                            
                             completionHandler(dealsPlotted);
                             
                         }];
                         
                     }
-                    else if (deals.count == 1)
-                    {
-                        Deal* deal = [deals objectAtIndex:0];
+                    else if (deals.count == 1){
                         
-                        [self plotDealOnMap:deal addCompletion:^(BOOL dealPlotted) {
-                            completionHandler(dealPlotted);
-                        }];
+                        Deal* deal = [deals firstObject];
+                        
+                        if(deal){
+                            
+                            [self plotDealsOnMap:[NSArray arrayWithObject:deal] Animated:animate addCompletion:^(BOOL success) {
+                                
+                                [self.view layoutIfNeeded];
+                                completionHandler(success);
+                                
+                            }];
+                            
+                        }
+                        
                     }
+                    
                     
                 }
                 
-            } // End of if response is non-nill
+            }
             
         }];
         
@@ -242,10 +424,58 @@ static double USE_CURRENT_RADIUS = -1;
     else{
         
     }
-    
 
 }
 
+#pragma mark -
+#pragma mark - Gesture Methods
+-(void)tapGestureRecognized:(UIGestureRecognizer*)gesture
+{
+    [self.annotationCalloutView removeFromSuperview];
+    
+    [self.backgroundScreen removeFromSuperview];
+    
+    [self.view layoutIfNeeded];
+}
+
+-(IBAction)swipeView:(UISwipeGestureRecognizer*)sender
+{
+    UIView* snapshotBtn = [self.updateEventsBtn snapshotViewAfterScreenUpdates:NO];
+    
+    [snapshotBtn setFrame:self.updateEventsBtn.frame];
+    
+    snapshotBtn.layer.cornerRadius = 5.0f;
+    snapshotBtn.layer.shadowOpacity = 0.7f;
+    snapshotBtn.layer.shadowOffset = CGSizeMake(5.0f, 10.0f);
+    
+    [self.mapView addSubview:snapshotBtn];
+    
+    [UIView animateWithDuration:0.6f animations:^{
+        
+        [self toggleUpdatedEventsButton];
+        
+        
+        if (sender.direction == UISwipeGestureRecognizerDirectionLeft) {
+            
+            snapshotBtn.frame = CGRectMake(0 - (self.updateEventsBtn.frame.size.width + 20), self.updateEventsBtn.frame.origin.y, self.updateEventsBtn.frame.size.width, self.updateEventsBtn.frame.size.height);
+            
+        }
+        else if (sender.direction == UISwipeGestureRecognizerDirectionRight) {
+            
+            snapshotBtn.frame = CGRectMake(self.view.superview.frame.size.width, self.updateEventsBtn.frame.origin.y, self.updateEventsBtn.frame.size.width, self.updateEventsBtn.frame.size.height);
+            
+        }
+        
+    } completion:^(BOOL finished) {
+        
+        if(finished){
+            [snapshotBtn removeFromSuperview];
+            [self.mapView layoutIfNeeded];
+        }
+        
+    }];
+    
+}
 
 #pragma mark -
 #pragma mark - Map Methods
@@ -304,7 +534,7 @@ static double USE_CURRENT_RADIUS = -1;
             
         } completion:^(BOOL finished) {
             [self.mapView layoutIfNeeded];
-            completionHandler(finished);
+            if(completionHandler) completionHandler(finished);
         }];
     }
     else
@@ -325,8 +555,10 @@ static double USE_CURRENT_RADIUS = -1;
                 [self.mapView setRegion:newRegion];
                 
             } completion:^(BOOL finished) {
+                
                 [self.mapView layoutIfNeeded];
-                completionHandler(YES);
+                
+                if(completionHandler) completionHandler(YES);
             }];
             
         }
@@ -336,7 +568,8 @@ static double USE_CURRENT_RADIUS = -1;
             
             [self.mapView setRegion:coordinateRegion animated:animated];
             [self.mapView layoutIfNeeded];
-            completionHandler(YES);
+            
+            if(completionHandler) completionHandler(YES);
         }
     }
 
@@ -353,54 +586,32 @@ static double USE_CURRENT_RADIUS = -1;
             [[self.mapView viewForAnnotation:annotation] setHidden:NO];
         }
         
-        completionHandler(YES);
+        if(completionHandler) completionHandler(YES);
         
     }
-}
-
--(void)plotDealOnMap:(Deal *)deal addCompletion:(generalBlockResponse)completionHandler
-{
-    if(!deal) return;
-    
-    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
-    
-    NSString* address = deal.address.copy;
-    
-    [appDelegate.databaseManager managerFetchGeocodeForAddress:address additionalParams:nil shouldParse:YES addCompletetion:^(id response) {
-        
-        
-    }];
-}
-
--(void)plotDealsOnMap:(NSArray *)deals
-{
-    [self plotDealsOnMap:deals Animated:NO addCompletion:^(BOOL success) {
-        
-    }];
 }
 
 -(void)plotDealsOnMap:(NSArray *)deals Animated:(BOOL)animate addCompletion:(generalBlockResponse)completionHandler
 {
     if(!deals || deals.count < 1) return;
+ 
+    DatabaseManager* databaseManager = [DatabaseManager sharedDatabaseManager];
     
-    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
+    NSArray* addressList = [databaseManager managerExtractAddressesFromDeals:deals];
     
-    NSArray* addressList = [appDelegate.databaseManager.engine extractAddressFromDeals:deals];
-    
-    //__block NSMutableArray* annotations = [[NSMutableArray alloc] init];
-    //self.annotations = [[NSMutableArray alloc] init];
-    
-    [appDelegate.databaseManager managerFetchGeocodeForAddresses:addressList additionalParams:nil shouldParse:YES addCompletetion:^(id response) {
+    [databaseManager managerFetchGeocodeForAddresses:addressList additionalParams:nil shouldParse:YES addCompletetion:^(id response) {
         
         NSArray* addressInfoList = (NSArray*) response;
         
-        NSArray* annotations = [appDelegate.databaseManager managerCreateMapAnnotationsForDeals:deals addressInfo:addressInfoList];
+        [databaseManager managerSaveStandardizedAddressesForDeals:addressInfoList];
+        
+        NSArray* annotations = [databaseManager managerCreateMapAnnotationsForDeals:deals];
+        
+        NSLog(@"%@", addressInfoList);
         
         if(!annotations) completionHandler(NO);
         else{
-            
             [self.mapView addAnnotations:annotations];
-            
             completionHandler(YES);
         }
         
@@ -440,70 +651,70 @@ static double USE_CURRENT_RADIUS = -1;
 }
 
 #pragma mark -
-#pragma mark - Budget Picker View Delegate Methods
--(void)startButtonPressed:(NSArray *)filter
+#pragma mark - Filter View Delegate Methods
+-(void)startButtonPressed:(NSArray*)filter
 {
+    DatabaseManager* databaseManager = [DatabaseManager sharedDatabaseManager];
+    
     AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
-    NSArray* filteredOutDeals = [appDelegate.databaseManager managerExtractDeals:filter fromDeals:appDelegate.databaseManager.managerGetSavedDeals];
-    
-    if(filter == nil) [appDelegate.drawerController closeDrawerAnimated:YES completion:nil];
-    
-    if(filteredOutDeals){
+    [appDelegate.drawerController closeDrawerAnimated:YES completion:^(BOOL finished) {
         
-        [self displayAllAnnotationsAddCompletion:^(BOOL success) {
+        for (Deal* deal in databaseManager.managerGetSavedDeals) {
             
-            NSLog(@"%i", success);
-            NSLog(@"%@", filteredOutDeals);
+            NSPredicate* budgetPredicate = [NSPredicate predicateWithFormat:@"SELF.dealID LIKE %@", deal.dealID];
             
-            if(success){
+            NSArray* dealsFoundArry = [filter filteredArrayUsingPredicate:budgetPredicate];
+            
+            if(dealsFoundArry.count > 0) {
                 
-                NSMutableArray* mapAnnotations = [[self.mapView annotations] mutableCopy];
-                
-                [mapAnnotations removeObject:self.mapView.userLocation];
-                
-                for(Deal* deal in filteredOutDeals){
-                    
-                    [[self.mapView viewForAnnotation:deal.annotation] setHidden:YES];
-                    [mapAnnotations removeObject:deal.annotation];
-                    
-                }
-                
-                [appDelegate.drawerController closeDrawerAnimated:YES completion:nil];
+                Deal* foundDeal = [dealsFoundArry firstObject];
+                if(foundDeal.annotation) [self.mapView removeAnnotation:foundDeal.annotation];
                 
             }
-            
-        }]; // End of display annotation method
+            else {
+                [self.mapView addAnnotation:deal.annotation];
+            }
+        }
+         
         
-    }
-    else [appDelegate.drawerController closeDrawerAnimated:YES completion:nil];
+    }];
+    
 }
 
 #pragma mark -
 #pragma mark - Database Manager Delegate
--(void)userNotAuthenticated
+-(void)managerUserNotAuthenticated
 {
-    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
+    AccountManager* accountManager = [AccountManager sharedAccountManager];
     
-    [appDelegate.accountManager logoutFromDomain:@"www.budglit.com" addCompletion:^(id object) {
+    [accountManager logoutFromDomain:@"www.budglit.com" addCompletion:^(id object) {
         
-        BOOL loggedOffSuccess = [appDelegate.accountManager checkLoggedOut:object];
+        BOOL loggedOffSuccess = [accountManager checkLoggedOut:object];
         
         if(loggedOffSuccess) {
             
-            UIViewController* loginPage = [[LoginPageViewController alloc] initWithNibName:@"LoginPageViewController" bundle:nil];
+            UIStoryboard* storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
             
-            //loginPage.delegate = self;
+            UIViewController* home = [storyboard instantiateViewControllerWithIdentifier:NSLocalizedString(@"mainNavigationController", nil)];
             
-            loginPage.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
-            
-            [self presentViewController:loginPage animated:NO completion:^{
-                
-            }];
+            [self presentViewController:home animated:NO completion:nil];
             
         }
         
     }];
+}
+
+-(void)managerHostBackOnline
+{
+    [self toggleAlertOfConnectivityIssues:NO];
+    
+    
+}
+
+-(void)managerRequestFailed
+{
+    [self toggleAlertOfConnectivityIssues:YES];
 }
 
 #pragma mark -
@@ -571,11 +782,14 @@ static double USE_CURRENT_RADIUS = -1;
     PSAllDealsTableViewController* destinationController = (PSAllDealsTableViewController*) segue.destinationViewController;
     
     destinationController.transitioningDelegate = self;
+    
 }
 
 -(void)prepareAnnotationCalloutViewForAnnotationView:(MKAnnotationView*)view addCompletionBlock:(generalBlockResponse)completionBlock
 {
-    if(!view) completionBlock(NO);
+    if(!view){
+        if(completionBlock) completionBlock(NO);
+    }
     
     DealMapAnnotation* annotation = (DealMapAnnotation*) view.annotation;
 
@@ -596,17 +810,9 @@ static double USE_CURRENT_RADIUS = -1;
     
     self.annotationCalloutView = prepView;
     
-    [self.annotationCalloutView setAlpha:1.0];
+    [self.viewModel setAnnotationCalloutView:self.annotationCalloutView];
     
     [self.annotationCalloutView setFrame:startFrame];
-    
-    self.annotationCalloutView.layer.cornerRadius = 5.0f;
-    
-    self.annotationCalloutView.layer.shadowOpacity = 0.5f;
-    
-    self.annotationCalloutView.layer.shadowOffset = CGSizeMake(5.0f, 10.0f);
-    
-    self.annotationCalloutView.backgroundColor = [UIColor whiteColor];
     
     self.backgroundScreen = [[UIView alloc] initWithFrame:self.view.bounds];
     
@@ -641,31 +847,20 @@ static double USE_CURRENT_RADIUS = -1;
             UIStoryboard* storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
             
             DealDetailViewController* detailedViewController = (DealDetailViewController*) [storyboard instantiateViewControllerWithIdentifier:@"DealsDetailViewController"];
-            
-            detailedViewController.dealSelected = annotation.parentDeal;
-            
-            detailedViewController.venueName = annotation.parentDeal.venueName;
-            
-            detailedViewController.descriptionText = annotation.parentDeal.dealDescription;
-            
-            detailedViewController.distanceText = [NSString stringWithFormat:@"%.1f mi away", annotation.getDistanceFromUser];
-            
-            detailedViewController.venueName = annotation.parentDeal.venueName;
-            
-            detailedViewController.addressText = [NSString stringWithFormat:@"\n%@ \n"
-                                                  "%@, %@ %@", annotation.parentDeal.address, annotation.parentDeal.city, annotation.parentDeal.state, annotation.parentDeal.zipcode];
-            
-            NSLog(@"%@", detailedViewController.distanceLbl);
-            
-            detailedViewController.phoneText = [NSString stringWithFormat:@"\n%@", annotation.parentDeal.phoneNumber];
+  
+            [detailedViewController setDealSelected:annotation.parentDeal];
             
             [self.annotationCalloutView addSubview:detailedViewController.view];
             
             [detailedViewController.view setFrame:self.annotationCalloutView.bounds];
             
+            [detailedViewController.view setBounds:self.annotationCalloutView.bounds];
+            
+            [detailedViewController.view setNeedsLayout];
+            
             detailedViewController.view.layer.cornerRadius = 5.0f;
             
-            completionBlock(YES);
+            if(completionBlock) completionBlock(YES);
         }
         
     }];
@@ -692,7 +887,11 @@ static double USE_CURRENT_RADIUS = -1;
 #pragma mark
 #pragma mark - Memory Managment Methods
 - (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+    
+    [super didReceiveMemoryWarning];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:NSLocalizedString(@"NEW_UPDATES_NOTIFICATION", nil) object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:NSLocalizedString(@"HOST_BACK_ONLINE_NOTIFICATION", nil) object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:NSLocalizedString(@"HOST_OFFLINE_NOTIFICATION", nil) object:nil];
 }
 @end

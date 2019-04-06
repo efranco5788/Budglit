@@ -66,7 +66,7 @@
 {
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     [request addValue:@"image/*" forHTTPHeaderField:@"Accept"];
-
+    
     [self setImageWithURLRequest:request placeholderImage:placeholderImage success:nil failure:nil];
 }
 
@@ -75,22 +75,24 @@
                        success:(void (^)(NSURLRequest *request, NSHTTPURLResponse * _Nullable response, UIImage *image))success
                        failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse * _Nullable response, NSError *error))failure
 {
-
     if ([urlRequest URL] == nil) {
-        [self cancelImageDownloadTask];
         self.image = placeholderImage;
+        if (failure) {
+            NSError *error = [NSError errorWithDomain:NSURLErrorDomain code:NSURLErrorBadURL userInfo:nil];
+            failure(urlRequest, nil, error);
+        }
         return;
     }
-
-    if ([self isActiveTaskURLEqualToURLRequest:urlRequest]){
+    
+    if ([self isActiveTaskURLEqualToURLRequest:urlRequest]) {
         return;
     }
-
+    
     [self cancelImageDownloadTask];
-
+    
     AFImageDownloader *downloader = [[self class] sharedImageDownloader];
     id <AFImageRequestCache> imageCache = downloader.imageCache;
-
+    
     //Use the image from the image cache if it exists
     UIImage *cachedImage = [imageCache imageforRequest:urlRequest withAdditionalIdentifier:nil];
     if (cachedImage) {
@@ -104,7 +106,7 @@
         if (placeholderImage) {
             self.image = placeholderImage;
         }
-
+        
         __weak __typeof(self)weakSelf = self;
         NSUUID *downloadID = [NSUUID UUID];
         AFImageDownloadReceipt *receipt;
@@ -116,23 +118,23 @@
                        if ([strongSelf.af_activeImageDownloadReceipt.receiptID isEqual:downloadID]) {
                            if (success) {
                                success(request, response, responseObject);
-                           } else if(responseObject) {
+                           } else if (responseObject) {
                                strongSelf.image = responseObject;
                            }
                            [strongSelf clearActiveDownloadInformation];
                        }
-
+                       
                    }
                    failure:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, NSError * _Nonnull error) {
                        __strong __typeof(weakSelf)strongSelf = weakSelf;
-                        if ([strongSelf.af_activeImageDownloadReceipt.receiptID isEqual:downloadID]) {
-                            if (failure) {
-                                failure(request, response, error);
-                            }
-                            [strongSelf clearActiveDownloadInformation];
-                        }
+                       if ([strongSelf.af_activeImageDownloadReceipt.receiptID isEqual:downloadID]) {
+                           if (failure) {
+                               failure(request, response, error);
+                           }
+                           [strongSelf clearActiveDownloadInformation];
+                       }
                    }];
-
+        
         self.af_activeImageDownloadReceipt = receipt;
     }
 }
@@ -141,7 +143,7 @@
     if (self.af_activeImageDownloadReceipt != nil) {
         [[self.class sharedImageDownloader] cancelTaskForImageDownloadReceipt:self.af_activeImageDownloadReceipt];
         [self clearActiveDownloadInformation];
-     }
+    }
 }
 
 - (void)clearActiveDownloadInformation {

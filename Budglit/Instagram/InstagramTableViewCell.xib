@@ -1,19 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13196" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14313.18" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13173"/>
-        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14283.14"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
-    <customFonts key="customFonts">
-        <array key="Helvetica.ttc">
-            <string>Helvetica</string>
-        </array>
-    </customFonts>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
@@ -25,12 +19,14 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="j2X-Fw-uPu">
-                        <rect key="frame" x="169" y="301.5" width="37" height="37"/>
+                        <rect key="frame" x="168.5" y="301.5" width="37" height="37"/>
                         <color key="color" cocoaTouchSystemColor="darkTextColor"/>
                     </activityIndicatorView>
-                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" adjustsImageSizeForAccessibilityContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Wak-ZT-bGh">
-                        <rect key="frame" x="8" y="8" width="52" height="52"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" adjustsImageSizeForAccessibilityContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Wak-ZT-bGh">
+                        <rect key="frame" x="8" y="28" width="52" height="53"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="52" id="USy-pr-19U"/>
+                        </constraints>
                         <userDefinedRuntimeAttributes>
                             <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
                             <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
@@ -39,34 +35,52 @@
                         </userDefinedRuntimeAttributes>
                     </imageView>
                     <imageView hidden="YES" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="o8z-w8-eWk">
-                        <rect key="frame" x="0.0" y="68" width="374" height="402"/>
+                        <rect key="frame" x="0.0" y="91" width="374" height="376"/>
                         <color key="backgroundColor" red="0.0" green="0.67450980390000004" blue="0.92941176469999998" alpha="1" colorSpace="calibratedRGB"/>
                     </imageView>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Username" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Vcj-JQ-sbq">
-                        <rect key="frame" x="70" y="24" width="211" height="21"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Username" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Vcj-JQ-sbq">
+                        <rect key="frame" x="70" y="44" width="211" height="21"/>
                         <fontDescription key="fontDescription" name="Helvetica" family="Helvetica" pointSize="15"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rEh-Rw-CWp">
+                        <rect key="frame" x="16" y="494" width="342" height="122"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="14"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
                 </subviews>
                 <color key="backgroundColor" red="0.19215686269999999" green="0.56862745100000001" blue="0.46666666670000001" alpha="1" colorSpace="calibratedRGB"/>
                 <constraints>
+                    <constraint firstItem="rEh-Rw-CWp" firstAttribute="bottom" secondItem="H2p-sc-9uM" secondAttribute="bottomMargin" constant="-13" id="AiT-JB-ifh"/>
                     <constraint firstItem="o8z-w8-eWk" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="D7x-PB-EW0"/>
                     <constraint firstItem="o8z-w8-eWk" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" constant="60" id="LBN-F6-WG6"/>
+                    <constraint firstItem="Vcj-JQ-sbq" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" constant="13" id="Py5-se-faE"/>
                     <constraint firstAttribute="bottomMargin" secondItem="o8z-w8-eWk" secondAttribute="bottom" constant="162" id="TOn-1Z-RvO"/>
                     <constraint firstAttribute="trailing" secondItem="o8z-w8-eWk" secondAttribute="trailing" id="TTq-nB-lvR"/>
                     <constraint firstItem="j2X-Fw-uPu" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="WIn-3e-r27"/>
+                    <constraint firstAttribute="trailingMargin" secondItem="Vcj-JQ-sbq" secondAttribute="trailing" constant="77" id="WPm-bM-Jl4"/>
                     <constraint firstItem="o8z-w8-eWk" firstAttribute="centerX" secondItem="j2X-Fw-uPu" secondAttribute="centerX" id="Y1L-Id-A8A"/>
+                    <constraint firstItem="rEh-Rw-CWp" firstAttribute="trailing" secondItem="H2p-sc-9uM" secondAttribute="trailingMargin" id="Zqf-Pw-FpP"/>
+                    <constraint firstItem="Wak-ZT-bGh" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" constant="-8" id="aBi-pg-6bF"/>
+                    <constraint firstItem="Wak-ZT-bGh" firstAttribute="centerY" secondItem="Vcj-JQ-sbq" secondAttribute="centerY" id="gOn-Ee-hYN"/>
+                    <constraint firstItem="o8z-w8-eWk" firstAttribute="top" secondItem="Vcj-JQ-sbq" secondAttribute="bottom" constant="26" id="iq7-Xm-Fbp"/>
+                    <constraint firstItem="Vcj-JQ-sbq" firstAttribute="leading" secondItem="Wak-ZT-bGh" secondAttribute="trailing" constant="10" id="q4r-HH-vDk"/>
+                    <constraint firstItem="rEh-Rw-CWp" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" id="utU-Db-tok"/>
+                    <constraint firstItem="o8z-w8-eWk" firstAttribute="top" secondItem="Wak-ZT-bGh" secondAttribute="bottom" constant="10" id="wG2-An-Blh"/>
+                    <constraint firstItem="rEh-Rw-CWp" firstAttribute="top" secondItem="o8z-w8-eWk" secondAttribute="bottom" constant="27" id="zXU-BJ-sSB"/>
                 </constraints>
             </tableViewCellContentView>
             <connections>
                 <outlet property="activityIndicator" destination="j2X-Fw-uPu" id="KGz-5h-vWo"/>
+                <outlet property="captionLbl" destination="rEh-Rw-CWp" id="HxB-EJ-b8a"/>
                 <outlet property="instaImageView" destination="o8z-w8-eWk" id="oK5-vg-cti"/>
                 <outlet property="instaUserProfile" destination="Wak-ZT-bGh" id="c3U-DX-u0d"/>
                 <outlet property="instaUsername" destination="Vcj-JQ-sbq" id="yT3-l3-pWF"/>
             </connections>
-            <point key="canvasLocation" x="54" y="168"/>
+            <point key="canvasLocation" x="52.799999999999997" y="167.31634182908547"/>
         </tableViewCell>
     </objects>
 </document>

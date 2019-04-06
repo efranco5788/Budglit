@@ -12,11 +12,22 @@
 
 -(instancetype)init
 {
+    self = [self initWithURL:nil];
+    
+    if(!self) return nil;
+    
+    return self;
+}
+
+-(instancetype)initWithURL:(NSString *)urlString
+{
     self = [super init];
     
     if(!self) return nil;
     
-    self.imagePath = nil;
+    if(!urlString) self.imagePath = nil;
+    else self.imagePath = urlString;
+    
     self.request = nil;
     self.response = nil;
     [self setHasImage:NO];
@@ -28,12 +39,11 @@
 
 -(void)recordImageHTTPResponse:(NSHTTPURLResponse *)response andRequest:(NSURLRequest *)request hasImage:(BOOL)exist
 {
-    NSLog(@"%@", self.request);
     [self setHasImage:exist];
     imageCached = YES;
     self.request = request;
     self.response = response;
-    
+    NSLog(@"Image Response Recorded");
     
 }
 

@@ -15,6 +15,8 @@
 #import "AppDelegate.h"
 #import "PostalCode.h"
 
+#define HOST_NAME @"https://www.budglit.com"
+
 #define HAS_LAUNCHED_ONCE @"HasLaunchedOnce"
 #define ADDRESS @"address"
 #define STATE_NAME @"Name"
@@ -45,7 +47,7 @@
 
 static LocationSeviceManager* sharedManager;
 
-@interface LocationSeviceManager()<LocationEngineDelegate>
+@interface LocationSeviceManager()<EngineDelegate>
 
 @property NSArray* locationHistory;
 @property (nonatomic, strong) CityDataObject* currentCity;
@@ -54,7 +56,7 @@ static LocationSeviceManager* sharedManager;
 
 @implementation LocationSeviceManager
 
-+ (LocationSeviceManager*) sharedLocationServiceManager
++ (id) sharedLocationServiceManager
 {
     if (sharedManager == nil) {
         
@@ -62,32 +64,36 @@ static LocationSeviceManager* sharedManager;
         
         dispatch_once(&onceToken, ^{
             
-            sharedManager = [[super alloc] init];
+            sharedManager = [[super alloc] initWithEngineHostName:HOST_NAME];
         });
     }
     return sharedManager;
 }
 
-- (instancetype)init
+-(instancetype)init
 {
-    return [self initWithEngineHostName:nil];
+    self = [self initWithEngineHostName:nil];
+    
+    if(!self) return nil;
+    
+    return self;
 }
 
 -(instancetype)initWithEngineHostName:(NSString *)hostName
 {
-    self = [super init];
+    self = [super initWithEngineHostName:hostName];
     
     if (!self) {
         return nil;
     }
     
-    self.engine = [[LocationEngine alloc] initWithHostName:hostName];
-    
-    (self.engine).delegate = self;
-    
     self.currentCity = nil;
     
     self.locationHistory = [[NSArray alloc] init];
+    
+    self.engine = [[LocationEngine alloc] initWithHostName:hostName];
+    
+    (self.engine).delegate = self;
     
     return self;
 }

@@ -10,10 +10,10 @@
 
 @interface UserAccount : NSObject <NSCoding>
 
-@property (nonatomic, strong) NSString* firstName;
-@property (nonatomic, strong) NSString* lastName;
 @property (nonatomic, strong) NSString* email;
 @property (nonatomic, strong) NSString* imageURL;
+@property (nonatomic, strong) NSString* firstName;
+@property (nonatomic, strong) NSString* lastName;
 @property (NS_NONATOMIC_IOSONLY, getter=getProfileImage, strong) UIImage *profileImage;
 
 -(instancetype)initWithFirstName:(NSString*)fName andLastName:(NSString*)lName;

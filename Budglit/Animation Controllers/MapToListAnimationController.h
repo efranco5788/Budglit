@@ -9,8 +9,6 @@
 #import <Foundation/Foundation.h>
 #import "AnimationHelper.h"
 
-@class MapViewController;
-@class PSAllDealsTableViewController;
 
 @interface MapToListAnimationController : NSObject <UIViewControllerAnimatedTransitioning>
 

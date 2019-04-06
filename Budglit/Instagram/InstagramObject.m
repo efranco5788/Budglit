@@ -22,10 +22,9 @@
 
 -(instancetype)init
 {
-    self = [self initWithInstagrameID:nil andAttribution:nil andCaption:nil andTimestamp:0 andType:nil andInstagramLink:nil andCommnents:nil andImages:nil andVideos:nil andLocation:nil andTags:nil];
-    
+    self = [super init];
+
     if (!self) return nil;
-    
 
     return self;
 }
@@ -38,7 +37,6 @@
     
     if (idInt) self.instagramID = [NSString stringWithString:idInt];
     else self.instagramID = [[NSString alloc] init];
-    
     
     if (timestamp) self.timeCreatedString = [NSString stringWithFormat:@"%li", (long)timestamp];
     else self.timeCreatedString = [[NSString alloc] init];

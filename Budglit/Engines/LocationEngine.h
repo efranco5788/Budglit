@@ -9,19 +9,8 @@
 #import "Engine.h"
 #import <MapKit/MapKit.h>
 
-//typedef void (^dataResponseBlockResponse)(id response);
-
-@protocol LocationEngineDelegate <NSObject>
-@optional
--(void) zipcodeCoordinatesFound:(NSDictionary*)coordinates;
--(void) zipcodeCoordinatesFailedWithError:(NSError*)error;
--(void) nearbyPostalCodesFound:(NSDictionary*) postalCodes;
--(void) nearbyPostalCodesFailedWithError:(NSError*) error;
-@end
 
 @interface LocationEngine : Engine
-
-@property (nonatomic, strong) id <LocationEngineDelegate> delegate;
 
 -(instancetype) init;
 

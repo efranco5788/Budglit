@@ -11,7 +11,7 @@
 
 #define KEY_DEAL_ID @"_id"
 #define KEY_DEAL_BUDGET @"budget"
-#define KEY_VENUE_ZIPCODE @"zipcode"
+#define KEY_VENUE_ZIPCODE @"postal"
 #define KEY_DEAL_DESCRIPTION @"dealDescription"
 //#define KEY_DEAL_DATE @"date_of_event"
 #define KEY_DEAL_DATE @"date"
@@ -85,7 +85,7 @@
             
             NSString* twtrUsername = event[KEY_VENUE_TWTR_USERNAME];
             
-            NSString* zipcode = [event[KEY_VENUE_ZIPCODE] stringValue];
+            NSString* zipcode = event[KEY_VENUE_ZIPCODE];
             
             NSString* venuePhone = event[KEY_VENUE_PHONE_NUMBER];
             
@@ -99,10 +99,10 @@
                 
             }
             else arryOfTags = [dealTags componentsSeparatedByString:@","];
+
+            DatabaseManager* databaseManager = [DatabaseManager sharedDatabaseManager];
             
-            AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
-            
-            NSString* localEventTime = [appDelegate.databaseManager.engine convertUTCDateToLocalString:dealDate];
+            NSString* localEventTime = [databaseManager.engine convertUTCDateToLocalString:dealDate];
             
             NSLog(@"%@", localEventTime);
             

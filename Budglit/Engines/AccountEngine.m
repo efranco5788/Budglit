@@ -14,20 +14,26 @@
 #define VALIDATE_SESSION_PATH @"validate"
 #define RESET_PASSWORD @"reset_password"
 #define KEY_AUTHENTICATED @"authenticated"
-#define KEY_ACCOUNTS_FOUND @"accounts"
+//#define KEY_ACCOUNTS_FOUND @"accounts"
+#define KEY_ACCOUNTS_FOUND @"accountExists"
 #define KEY_MESSAGE @"message"
 //#define KEY_EMAIL_SENT @"email_sent"
 #define KEY_CREATED @"created"
 #define KEY_LOGGED_IN @"isLogin"
 #define KEY_LOGGED_OUT @"loggedOut"
 #define KEY_ACCOUNT_TYPE @"type"
-#define KEY_USER @"user"
 #define KEY_USER_ID @"_id"
+#define KEY_USER @"user"
 #define KEY_EMAIL @"email"
 #define KEY_FIRST_NAME @"firstName"
 #define KEY_LAST_NAME @"lastName"
 #define KEY_IMAGE_URL @"userImg"
 #define KEY_ERROR @"error"
+#define KEY_MESSAGE @"message"
+
+@interface AccountEngine() <EngineDelegate>
+
+@end
 
 @implementation AccountEngine
 
@@ -48,6 +54,8 @@
     
     self.sessionManager.responseSerializer = [AFJSONResponseSerializer serializer];
     self.sessionManager.requestSerializer = [AFHTTPRequestSerializer serializer];
+    
+    [self setDelegate:self];
     
     return self;
 }
@@ -134,12 +142,8 @@
 
 -(void)loginWithCredentials:(NSDictionary *)userCredentials addCompletion:(blockResponse)completionHandler
 {
-//    self.sessionManager.responseSerializer = [AFJSONResponseSerializer serializer];
-//    self.sessionManager.requestSerializer = [AFHTTPRequestSerializer serializer];
     
-    [self.sessionManager POST:LOGIN_PATH parameters:userCredentials progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        
-        [self addToRequestHistory:task];
+    [self postRequestToPath:LOGIN_PATH parameters:userCredentials addCompletion:^(id responseObject) {
         
         if(!responseObject){
             
@@ -153,69 +157,48 @@
                                                  code:-57
                                              userInfo:userInfo];
             
-            [self.delegate signupFailedWithError:error];
+            completionHandler(error);
             
         }
         else{
             
+            NSInteger loggedIn = [[responseObject valueForKey:KEY_LOGGED_IN] integerValue];
+            
+            if (loggedIn == 0) completionHandler(nil);
+            else{
+                
+                NSDictionary* dict = [responseObject valueForKey:KEY_USER];
+                
+                NSMutableDictionary* tmpUser = [[NSMutableDictionary alloc] init];
+                
+                NSLog(@"%@", dict);
+                
+                NSString* userID = [dict valueForKey:KEY_USER_ID] ?: @"";
+                NSString* email = [dict valueForKey:KEY_EMAIL] ?: @"";
+                NSString* fname = [dict valueForKey:KEY_FIRST_NAME] ?: @"";
+                NSString* lname = [dict valueForKey:KEY_LAST_NAME] ?: @"";
+                NSString* img = [dict valueForKey:KEY_IMAGE_URL] ?: @"";
+                
+                [tmpUser setValue:userID forKey:KEY_USER_ID];
+                [tmpUser setValue:email forKey:KEY_EMAIL];
+                [tmpUser setValue:fname forKey:KEY_FIRST_NAME];
+                [tmpUser setValue:lname forKey:KEY_LAST_NAME];
+                [tmpUser setValue:img forKey:KEY_IMAGE_URL];
+                
+                completionHandler(tmpUser.copy);
+                
+            } // End of else if logged in statement
+            
+            /*
             NSHTTPURLResponse* response = (NSHTTPURLResponse*) task.response;
             
-            NSLog(@"Headers %@", response.allHeaderFields);
-            
-            NSLog(@"Response %@", responseObject);
-
             if(response.statusCode == 300){
                 
             }
-            else if (response.statusCode == 200){
-                
-                NSInteger loggedIn = [[responseObject valueForKey:KEY_LOGGED_IN] integerValue];
-                
-                if (loggedIn == 0) [self.delegate loginFailedWithError:nil];
-                else{
-                    
-                    NSLog(@"%@", response.allHeaderFields);
-                    
-                    NSDictionary* dict = [responseObject valueForKey:KEY_USER];
-                    
-                    NSMutableDictionary* tmpUser = [[NSMutableDictionary alloc] init];
-                    
-                    NSLog(@"%@", dict);
-                    
-                    NSString* userID = [dict valueForKey:KEY_USER_ID];
-                    NSString* email = [dict valueForKey:KEY_EMAIL];
-                    NSString* fname = [dict valueForKey:KEY_FIRST_NAME];
-                    NSString* lname = [dict valueForKey:KEY_LAST_NAME];
-                    NSString* img = [dict valueForKey:KEY_IMAGE_URL];
-                    
-                    [tmpUser setValue:userID forKey:KEY_USER_ID];
-                    [tmpUser setValue:email forKey:KEY_EMAIL];
-                    [tmpUser setValue:fname forKey:KEY_FIRST_NAME];
-                    [tmpUser setValue:lname forKey:KEY_LAST_NAME];
-                    [tmpUser setValue:img forKey:KEY_IMAGE_URL];
-
-                    completionHandler(tmpUser.copy);
-                    
-                } // End of else if logged in statement
-                
-            } // End of else status code 200 statement
+             */
             
-        } // End of if responseObject is defined
+        }
         
-        
-    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        
-        [self logFailedRequest:task];
-        
-        NSHTTPURLResponse* httpResponse = (NSHTTPURLResponse*) task.response;
-        
-        NSLog(@"%ld", (long)httpResponse.statusCode);
-        
-        NSDictionary* errInfo = error.userInfo;
-        
-        NSLog(@"Error %@", errInfo);
-        
-        [self.delegate loginFailedWithError:error];
         
     }];
     
@@ -223,45 +206,40 @@
 
 -(void)signupWithNewAccount:(NSDictionary *)userCredentials addCompletion:(blockResponse)completionHandler
 {
-//    self.sessionManager.responseSerializer = [AFJSONResponseSerializer serializer];
-//    self.sessionManager.requestSerializer = [AFHTTPRequestSerializer serializer];
     
-    [self.sessionManager POST:REGISTER_PATH parameters:userCredentials progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        
-        [self addToRequestHistory:task];
+    [self postRequestToPath:REGISTER_PATH parameters:userCredentials addCompletion:^(id responseObject) {
         
         NSDictionary* response = (NSDictionary*) responseObject;
-
+        
         NSUInteger accountExistIntValue = [[response valueForKey:KEY_ACCOUNTS_FOUND] integerValue];
         
         NSString* message = [response valueForKey:KEY_MESSAGE];
         
-        if (accountExistIntValue) {
+        if (accountExistIntValue == 1) {
             
-            //[self.delegate signupSucessfully];
-            if (accountExistIntValue <= 0) {
-                completionHandler(nil);
-            }
-            else{
-                UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Account Exists" message:message preferredStyle:UIAlertControllerStyleAlert];
-                
-                completionHandler(alert);
-            }
+            UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Account Exists" message:message preferredStyle:UIAlertControllerStyleAlert];
+            
+            completionHandler(alert);
             
         }
         else{
             
             BOOL created = [[response valueForKey:KEY_CREATED] integerValue];
             
-            if(created){
+            if(created == YES){
                 
                 id userDict = [response valueForKey:KEY_USER];
                 
+                NSLog(@"%@", userDict);
+                
                 if (!userDict) completionHandler(nil);
-                
-                NSDictionary* user = (NSDictionary*) userDict;
-                
-                completionHandler(user);
+                else{
+                    
+                    NSDictionary* user = (NSDictionary*) userDict;
+                    
+                    completionHandler(user);
+                    
+                }
                 
             }
             else{
@@ -278,21 +256,14 @@
             }
         }
         
-        
-    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        
-        [self logFailedRequest:task];
-        //[self.delegate signupFailedWithError:error];
-        completionHandler(error);
-        
     }];
     
 }
 
 -(void)logoutAddCompletion:(generalBlockResponse)completionHandler
 {
-
-    [self.sessionManager POST:LOGOUT_PATH parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    
+    [self postRequestToPath:LOGOUT_PATH parameters:nil addCompletion:^(id responseObject) {
         
         if(!responseObject){
             completionHandler(false);
@@ -301,7 +272,7 @@
             
             NSDictionary* response = (NSDictionary*) responseObject;
             NSInteger loggedOut = [[response valueForKey:KEY_LOGGED_OUT] integerValue];
-
+            
             if(loggedOut == true){
                 completionHandler(true);
             }
@@ -310,14 +281,9 @@
             }
         }
         
-    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        
-        [self logFailedRequest:task];
-        [self.delegate signupFailedWithError:error];
-        //completionHandler(error);
-        
     }];
     
+
 }
 
 -(void)sendPasswordResetEmail:(NSDictionary *)email
@@ -345,5 +311,6 @@
 {
     
 }
+
 
 @end

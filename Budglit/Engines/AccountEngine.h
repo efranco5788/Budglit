@@ -9,21 +9,9 @@
 #import "Engine.h"
 #import "UserAccount.h"
 
-@protocol AccountEngineDelegate <NSObject>
-@optional
--(void) credentialsSaved;
--(void) credentialsNotSaved;
--(void) loginFailedWithError:(NSError*)error;
--(void) logoutSucessfully;
--(void) signupSucessfully;
--(void) signupFailedWithError:(NSError*)error;
--(void) emailSentSucessfully;
--(void) emailSentFailed;
-@end
-
 @interface AccountEngine : Engine
 
-@property (nonatomic, strong) id <AccountEngineDelegate> delegate;
+//@property (nonatomic, strong) id <AccountEngineDelegate> delegate;
 
 -(instancetype)init;
 

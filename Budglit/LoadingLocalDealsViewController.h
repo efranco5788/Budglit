@@ -8,21 +8,17 @@
 
 #import <UIKit/UIKit.h>
 
-@class FilterViewController;
-@class BudgetManager;
-@class DatabaseManager;
+//@class BudgetManager;
+//@class DatabaseManager;
 @class Deal;
 @class LocationSeviceManager;
 @class PSEditZipcodeOfflineTableViewController;
-@class PSTransitionToBudgetViewController;
 
 typedef void (^completionBlock)(id results);
 
 @protocol LoadingPageDelegate <NSObject>
 @optional
 -(void)loadingPageDismissed:(id)object;
-#warning deprecating method
--(void)loadingPageBudgetHasFinished;
 -(void)loadingPageErrorFound:(NSError*)error;
 -(void)newDealsAvailable;
 @end
@@ -35,8 +31,6 @@ typedef void (^completionBlock)(id results);
 
 @property (nonatomic, strong) PSEditZipcodeOfflineTableViewController* editOfflinePage;
 
-@property (nonatomic, strong) FilterViewController* filterView;
-
 -(void) fetchInitialUserLocationOffline;
 
 -(void) fetchUserLocationOfflineHideBackButton:(BOOL)hide;
@@ -46,8 +40,6 @@ typedef void (^completionBlock)(id results);
 //-(void) fetchSurroundingZipcodes:(NSString*)zipcode;
 
 -(void) applicationReactivated;
-
--(void) inputBudget;
 
 -(void) toggleBackgroundDimmer;
 

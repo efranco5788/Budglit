@@ -101,6 +101,10 @@ typedef void (^MMDrawerControllerDrawerVisualStateBlock)(MMDrawerController * dr
 /// @name Accessing Drawer Container View Controller Properties
 ///---------------------------------------
 
+@property (nonatomic, strong) UIPanGestureRecognizer* pan;
+
+@property (nonatomic, strong) UITapGestureRecognizer* tap;
+
 /**
  The center view controller. 
  

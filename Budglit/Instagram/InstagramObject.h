@@ -35,14 +35,12 @@
 @property (nonatomic, strong) AVPlayer* avPlayer;
 @property (nonatomic, strong) AVPlayerLayer* playerLayer;
 
-- (instancetype)initWithInstagrameID:(NSString*)idInt andAttribution:(NSString*)attri andCaption:(NSString*)cap andTimestamp:(NSInteger)timestamp andType:(NSString*)aType andInstagramLink:(NSString*)linkString andCommnents:(NSDictionary*)instaComments andImages:(NSDictionary*)imgs andVideos:(NSDictionary*)vids andLocation:(NSDictionary*)instaLocation andTags:(NSDictionary*)instaTags NS_DESIGNATED_INITIALIZER;
+@property (NS_NONATOMIC_IOSONLY, getter=getHeight) CGFloat height;
+@property (NS_NONATOMIC_IOSONLY, getter=getMediaFrame, readonly) CGRect mediaFrame;
+
+- (instancetype)initWithInstagrameID:(NSString*)idInt andAttribution:(NSString*)attri andCaption:(NSString*)cap andTimestamp:(NSInteger)timestamp andType:(NSString*)aType andInstagramLink:(NSString*)linkString andCommnents:(NSDictionary*)instaComments andImages:(NSDictionary*)imgs andVideos:(NSDictionary*)vids andLocation:(NSDictionary*)instaLocation andTags:(NSDictionary*)instaTags;
 
 -(void)recordMedia:(NSHTTPURLResponse*)response andRequest:(NSURLRequest*)request;
-
-
-@property (NS_NONATOMIC_IOSONLY, getter=getHeight) CGFloat height;
-
-@property (NS_NONATOMIC_IOSONLY, getter=getMediaFrame, readonly) CGRect mediaFrame;
 
 -(void)toggleMuteButton;
 

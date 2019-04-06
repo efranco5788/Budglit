@@ -11,6 +11,7 @@
 @class MenuTableViewController;
 @class MMDrawerVisualState;
 @class LoadingLocalDealsViewController;
+@class MapViewController;
 
 @protocol DrawerControllerDelegate <NSObject>
 @optional
@@ -21,9 +22,9 @@
 
 @property (nonatomic, strong) id <DrawerControllerDelegate> delegate;
 
-@property (nonatomic, strong) MenuTableViewController* rightPanelMenuView;
+@property (nonatomic, strong) UIViewController* rightPanelMenuView;
 
-@property (nonatomic, strong) MenuTableViewController* leftPanelMenuView;
+@property (nonatomic, strong) UIViewController* leftPanelMenuView;
 
 @property (nonatomic, strong) LoadingLocalDealsViewController* loadingPage;
 

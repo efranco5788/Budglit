@@ -14,9 +14,9 @@
 #import <Fabric/Fabric.h>
 #import "TwitterKit/TwitterKit.h"
 #import "PSAllDealsTableViewController.h"
-#import "FilterViewController.h"
 #import "MapViewController.h"
 #import "MenuTableViewController.h"
+#import "WebSockets/WebSocket.h"
 
 
 #define HOST_NAME @"https://www.budglit.com"
@@ -50,76 +50,17 @@
         
         static dispatch_once_t onceToken;
         dispatch_once(&onceToken, ^{
-            
-            [self construct_AccountManager];
-            [self construct_DatabaseManager];
-            [self construct_LocationServiceManager];
-            [self construct_BudgetManager];
+
             [self construct_FacebookManager];
             [self construct_imageDocumentCache];
             [self construct_TwitterEngine];
-            [self construct_InstagramManager];
+            //[self construct_InstagramManager];
             [self construct_DrawerController];
-            
+
         });
         
-        [self.budgetManager resetBudget];
-        
-        
-        
-        /*
-        
-        NSString* sessionID = [self.accountManager getSessionID];
-        
-        NSDictionary* appDefaults;
-        
-        NSLog(@"Session ID %@", sessionID);
-        
-        // If Session ID does not exists
-        if (!sessionID){
-            
-            appDefaults = [self constructDefaultObjects];
-            
-            NSDictionary* userAcnt = [self constructDefaultUserAccount];
-            
-            NSMutableDictionary* appendDicts = [[NSMutableDictionary alloc] initWithDictionary:appDefaults];
-            
-            [appendDicts addEntriesFromDictionary:userAcnt];
-            
-            NSDictionary* finalDefaults = appendDicts.copy;
-            
-            [[NSUserDefaults standardUserDefaults] registerDefaults:finalDefaults];
-        }
-        else{
-            
-            UserAccount* loggedAcount = [self.accountManager getSignedAccount];
-            
-            if (!loggedAcount) {
-                // Session ID exists but no User Account
-                [self.accountManager clearSessionInfo];
-                
-                appDefaults = [self constructDefaultObjects];
-                
-                NSDictionary* userAcnt = [self constructDefaultUserAccount];
-                
-                NSMutableDictionary* appendDicts = [[NSMutableDictionary alloc] initWithDictionary:appDefaults];
-                
-                [appendDicts addEntriesFromDictionary:userAcnt];
-                
-                NSDictionary* finalDefaults = appDefaults.copy;
-                
-                [[NSUserDefaults standardUserDefaults] registerDefaults:finalDefaults];
-            }
-            else{
-                
-                appDefaults = [self constructDefaultObjects];
-                
-                [[NSUserDefaults standardUserDefaults] registerDefaults:appDefaults];
-                
-            }
-            
-        }
-         */
+        //[self.budgetManager resetBudget];
+
         
         return YES;
     }
@@ -154,11 +95,12 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 
 -(void)application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
 {
-    if (self.databaseManager) {
-        [self.databaseManager managerFetchNewDataWithCompletion:^(UIBackgroundFetchResult result) {
+    
+    DatabaseManager* databaseManager = [DatabaseManager sharedDatabaseManager];
+    
+    [databaseManager managerFetchNewDataWithCompletion:^(UIBackgroundFetchResult result) {
             completionHandler(result);
         }];
-    }
 }
 
 
@@ -217,9 +159,13 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 - (void)applicationWillTerminate:(UIApplication *)application {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     // Saves changes in the application's managed object context before the application terminates.
-    [self.imageDataCache removeAllObjects];
+    DatabaseManager* databaseManager = [DatabaseManager sharedDatabaseManager];
+    ImageDataCache* imageDataCache = [ImageDataCache sharedImageDataCache];
+    
+    [imageDataCache removeAllObjects];
     [self saveContext];
-    [self.databaseManager.engine clearCurrentSearchFilter];
+    [databaseManager managerClearSearchFilter];
+    [databaseManager managerDisconnectWebSocket];
 }
 
 -(BOOL)application:(UIApplication *)application shouldRestoreApplicationState:(NSCoder *)coder
@@ -257,35 +203,9 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
 }
 
--(void)construct_AccountManager
-{
-    self.accountManager = [[AccountManager alloc] initWithEngineHostName:HOST_NAME];
-}
-
--(void)construct_BudgetManager
-{
-    self.budgetManager = [[BudgetManager alloc] init];
-}
-
--(void)construct_DatabaseManager
-{
-    self.databaseManager = [[DatabaseManager alloc] initWithEngineHostName:HOST_NAME];
-}
-
 -(void)construct_FacebookManager
 {
     self.fbManager = [[FacebookManager alloc] initWithEngine];
-}
-
--(void)construct_InstagramManager
-{
-    self.instagramManager = [[InstagramManager alloc] initWithEngineHostName:INSTAGRAM_HOST_NAME andClientID:INSTAGRAM_CLIENT_ID andClientSecret:INSTAGRAM_CLIENT_SECRET];
-}
-
--(void)construct_LocationServiceManager
-{
-    self.locationManager = [[LocationSeviceManager alloc] initWithEngineHostName:HOST_NAME];
-    [self.locationManager setDistanceConversionType:0];
 }
 
 -(void)construct_DrawerController
@@ -298,13 +218,7 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
     MenuTableViewController* rigthPanel = [[MenuTableViewController alloc] init];
     
-    FilterViewController* filterPanel = [[FilterViewController alloc] init];
-    
-    UINavigationController* budgetNavigationController = [[UINavigationController alloc] initWithRootViewController:filterPanel];
-    
-    [FilterViewController setNavigationBar:budgetNavigationController.navigationBar];
-    
-    [drawer configureCenterViewController:centerView leftDrawerViewController:budgetNavigationController rightDrawerViewController:rigthPanel];
+    [drawer configureCenterViewController:centerView leftDrawerViewController:nil rightDrawerViewController:rigthPanel];
     
     [drawer setShowsShadow:YES];
     
@@ -313,9 +227,9 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 
 -(void)construct_imageDocumentCache
 {
-    self.imageDataCache = [[ImageDataCache alloc] init];
+    ImageDataCache* imageDataCache = [ImageDataCache sharedImageDataCache];
     
-    [self.imageDataCache setName:IMAGE_CACHE_NAME];
+    [imageDataCache setName:IMAGE_CACHE_NAME];
 }
 
 -(UIColor *)getPrimaryColor

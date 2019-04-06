@@ -26,7 +26,9 @@
 @property (nonatomic, strong) InstagramFeed* filteredTmpInstaFeed;
 @property (nonatomic, strong) id <InstagramManagerDelegate> delegate;
 
-- (instancetype)init NS_UNAVAILABLE;
++(id)sharedInstagramManager;
+
+-(instancetype)init NS_UNAVAILABLE;
 -(instancetype)initWithEngine;
 -(instancetype) initWithEngineHostName:(NSString*)hostName andClientID:(NSString*)cID andClientSecret:(NSString*)cSecret NS_DESIGNATED_INITIALIZER;
 -(InstagramObject*)instaAtIndex:(NSUInteger)index;

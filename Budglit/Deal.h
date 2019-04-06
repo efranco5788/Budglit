@@ -37,7 +37,8 @@ extern NSString* const kDefaultEventEndNotification;
 @property (nonatomic, strong) NSString* dealDescription;
 @property (nonatomic, strong) NSArray* tags;
 @property (nonatomic, strong) NSString* address;
-@property (nonatomic, strong) NSDictionary* googleAddressInfo;
+@property (nonatomic, strong) NSString* standardizeAddress;
+@property (nonatomic, strong) NSDictionary* addressInfo;
 @property (nonatomic, strong) NSString* phoneNumber;
 @property (nonatomic, strong) NSString* city;
 @property (nonatomic, strong) NSString* state;
@@ -58,6 +59,14 @@ extern NSString* const kDefaultEventEndNotification;
 -(double)budget;
 
 -(void)addTags:(NSArray*)tags;
+
+-(DealMapAnnotation*)createMapAnnotation;
+
+-(void)displayMapAnnotation;
+
+-(void)hideMapAnnotation;
+
+-(CLLocationDistance)getDistanceFromUser;
 
 -(UILabel*)generateCountDownEndDate:(UILabel*)aLabel;
 

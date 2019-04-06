@@ -9,6 +9,9 @@
 #import "UserProfileTableViewCell.h"
 
 @implementation UserProfileTableViewCell
+{
+    NSInteger menuOption;
+}
 
 NSString* const kDefaultNotificationProfileCellDrawn = @"profileCellDrawnNotification";
 
@@ -30,6 +33,22 @@ NSString* const kDefaultNotificationProfileCellDrawn = @"profileCellDrawnNotific
     NSNotificationCenter* defaultCenter = [NSNotificationCenter defaultCenter];
     
     [defaultCenter postNotificationName:kDefaultNotificationProfileCellDrawn object:self userInfo:nil];
+}
+
+-(void)setMenuOption:(NSInteger)option
+{
+    menuOption = option;
+}
+
+-(NSInteger)getMenuOption
+{
+    return menuOption;
+}
+
+
+-(void)dealloc
+{
+    
 }
 
 @end

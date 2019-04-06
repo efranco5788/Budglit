@@ -1,5 +1,5 @@
 //
-//  PSDismissTransitionFromBudgetViewController.h
+//  DismissTransitionFromBudgetViewController.h
 //  PocketStretch
 //
 //  Created by Emmanuel Franco on 9/27/15.
@@ -10,7 +10,7 @@
 #import <UIKit/UIKit.h>
 
 
-@interface PSDismissTransitionFromBudgetViewController : NSObject <UIViewControllerAnimatedTransitioning>
+@interface DismissTransitionFromBudgetViewController : NSObject <UIViewControllerAnimatedTransitioning>
 
 
 @end

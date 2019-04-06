@@ -23,20 +23,15 @@
 
 @property (nonatomic, strong) UIWindow *window;
 @property (nonatomic, strong) DrawerViewController* drawerController;
-@property (nonatomic, strong) AccountManager* accountManager;
-@property (nonatomic, strong) BudgetManager* budgetManager;
-@property (nonatomic, strong) DatabaseManager* databaseManager;
 @property (nonatomic, strong) FacebookManager* fbManager;
-@property (nonatomic, strong) InstagramManager* instagramManager;
-@property (nonatomic, strong) LocationSeviceManager* locationManager;
 @property (nonatomic, strong) TwitterManager* twitterManager;
-@property (nonatomic, strong) ImageDataCache* imageDataCache;
 @property (NS_NONATOMIC_IOSONLY, readonly, copy) NSURL *applicationDocumentsDirectory;
 @property (readonly, strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 @property (readonly, strong, nonatomic) NSManagedObjectModel *managedObjectModel;
 @property (readonly, strong, nonatomic) NSPersistentStoreCoordinator *persistentStoreCoordinator;
 
 - (void) saveContext;
+
 -(UIColor*)getPrimaryColor;
 
 

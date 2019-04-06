@@ -10,6 +10,10 @@
 #import "InstagramFeed.h"
 #import "InstagramObject.h"
 
+#define INSTAGRAM_HOST_NAME @"https://api.instagram.com"
+#define INSTAGRAM_CLIENT_ID @"f14e6defc65e4a2abd9ac34130b8dda0"
+#define INSTAGRAM_CLIENT_SECRET @"48d0454056ce4a4781b2219b6df4591e"
+
 #define KEY_INSTAGRAM_DICTIONARY @"data"
 #define KEY_INSTAGRAM_ATTRIBUTION @"attribution"
 #define KEY_INSTAGRAM_CAPTION @"caption"
@@ -48,8 +52,22 @@
 @property (nonatomic, strong) InstagramFeed* instagramFeed;
 @end
 
-
 @implementation InstagramManager
+
+static InstagramManager* sharedInstagramManager;
+
++(id)sharedInstagramManager
+{
+    static dispatch_once_t onceToken;
+    
+    dispatch_once(&onceToken, ^{
+        
+        sharedInstagramManager = [[self alloc] initWithEngineHostName:INSTAGRAM_HOST_NAME andClientID:INSTAGRAM_CLIENT_ID andClientSecret:INSTAGRAM_CLIENT_ID];
+        
+    });
+    
+    return sharedInstagramManager;
+}
 
 -(instancetype)initWithEngine
 {
@@ -126,6 +144,8 @@
                 
                 InstagramObject* insta = [[InstagramObject alloc] init];
                 
+                NSLog(@"%@", obj);
+                
                 //NSString* instagramLink = [obj valueForKey:KEY_INSTAGRAM_LINK];
                 
                 //NSURL* instaURL = [[NSURL alloc] initWithString:instagramLink];
@@ -136,11 +156,19 @@
                 NSString* urlString;
                 NSURL* instaURL;
                 
+                NSString* instaID = [obj valueForKey:KEY_INSTAGRAM_ID];
+                
                 NSDictionary* usrInfo = [obj valueForKey:KEY_INSTAGRAM_USER];
                 
                 NSString* usr = [usrInfo valueForKey:KEY_INSTAGRAM_USERNAME];
                 
                 NSString* imgString = [usrInfo valueForKey:KEY_INSTAGRAM_USER_PROFILE_PICTURE];
+                
+                NSArray* captionArry = [obj valueForKey:KEY_INSTAGRAM_CAPTION];
+                
+                NSString* instaCaptions = [captionArry valueForKey:@"text"];
+                
+                NSLog(@"%@", instaCaptions);
                 
                 if ([type isEqualToString:KEY_INSTAGRAM_TYPE_IMAGE]) {
                     
@@ -157,6 +185,8 @@
                     if (height) {
                         preferredHeight = [height floatValue];
                     }
+
+                    
                     
                     insta.type = type;
                     insta.images = images;
@@ -188,9 +218,13 @@
                     
                 } // End of Video if statement
                 
+                insta.instagramID = instaID;
                 insta.username = usr;
                 insta.userImgURLString = imgString;
                 insta.link = instaURL;
+                
+                if([instaCaptions isEqual:[NSNull null]]) insta.caption = @"";
+                else insta.caption = instaCaptions;
                 
                 [self.instagramFeed addObjectToFeed:insta];
                 

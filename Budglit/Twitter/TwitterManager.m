@@ -163,18 +163,20 @@ typedef NS_ENUM(NSInteger, NSTwitterFilterType) {
 
 -(void)constructTwitterSearchRequestForDeal:(Deal *)deal addCompletion:(dataBlockResponse)completionBlock
 {
-    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
+    DatabaseManager* databaseManager = [DatabaseManager sharedDatabaseManager];
     
-    [appDelegate.databaseManager managerFetchGeocodeForAddress:deal.address additionalParams:nil shouldParse:YES addCompletetion:^(id response) {
+    LocationSeviceManager* locationManager = [LocationSeviceManager sharedLocationServiceManager];
+    
+    [databaseManager managerFetchGeocodeForAddress:deal.address additionalParams:nil shouldParse:YES addCompletetion:^(id response) {
         
         NSDictionary* geocodeResponse = (NSDictionary*)response;
         
         NSArray* coords = [geocodeResponse valueForKey:@"coordinates"];
         NSString* latitude = [coords valueForKey:@"lat"];
         NSString* longtitude = [coords valueForKey:@"lng"];
-        NSLog(@"lng %@ nd lat %@",longtitude, latitude);
-        NSLog(@"Deal %@", deal.addressString);
-        CLLocation* location = [appDelegate.locationManager managerCreateLocationFromStringLongtitude:longtitude andLatitude:latitude];
+        //NSLog(@"lng %@ nd lat %@",longtitude, latitude);
+        //NSLog(@"Deal %@", deal.addressString);
+        CLLocation* location = [locationManager managerCreateLocationFromStringLongtitude:longtitude andLatitude:latitude];
         
         CLLocationCoordinate2D coordinates = CLLocationCoordinate2DMake(location.coordinate.latitude, location.coordinate.longitude);
         

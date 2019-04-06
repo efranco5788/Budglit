@@ -7,15 +7,15 @@
 //
 
 #import "FilterViewController.h"
+#import "math.h"
+#import <dispatch/dispatch.h>
 #import "AppDelegate.h"
-#import "BudgetManager.h"
-#import "DatabaseManager.h"
 #import "MapViewController.h"
 #import "LoadingLocalDealsViewController.h"
 #import "LocationServiceManager.h"
 #import "PostalCode.h"
-#import "math.h"
-#import <dispatch/dispatch.h>
+
+#define FILTER_VIEW @"FilterView"
 
 #define MINIMUM_BUDGET_LBL_DEFAULT @"Free"
 #define MAXIMUM_BUDGET_LBL_DEFAULT @"Expensive"
@@ -29,7 +29,7 @@
 #define ANIMATION_BACKGROUND_COLOR_CHANGE @"backgroundColorChange"
 
 
-@interface FilterViewController ()<BudgetManagerDelegate, DatabaseManagerDelegate, LoadingPageDelegate, LocationManagerDelegate, UIViewControllerTransitioningDelegate>
+@interface FilterViewController ()<BudgetManagerDelegate, DatabaseManagerDelegate, LoadingPageDelegate, LocationManagerDelegate, UIViewControllerTransitioningDelegate, UINavigationControllerDelegate>
 {
     dispatch_queue_t backgroundQueue;
     
@@ -75,15 +75,17 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
     
     [self resetValues];
     
-    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
+    LocationSeviceManager* locationManager = [LocationSeviceManager sharedLocationServiceManager];
     
     [self.navigationItem setTitle:@"Filter"];
+    
+    self.view.restorationIdentifier = FILTER_VIEW;
     
     [self.budgetSlider addTarget:self
                action:@selector(valueChanged:)
      forControlEvents:UIControlEventValueChanged];
     
-    NSString* location = [appDelegate.locationManager retrieveCurrentLocationString];
+    NSString* location = [locationManager retrieveCurrentLocationString];
     
     colorButtonAnimation = [[CABasicAnimation animationWithKeyPath:@"backgroundColor"] init];
     colorFillTransitionAnimation = [CATransition animation];
@@ -105,9 +107,6 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
 {
     [super viewDidAppear:YES];
     
-    // Update the current results
-    //NSDictionary* criteria = @{NSLocalizedString(@"DISTANCE_FILTER", nil): distance};
-    
     [self.viewResultsButton setEnabled:NO];
     
     [self toggleButtons];
@@ -117,24 +116,28 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
 
 - (IBAction)startPressed:(UIButton *)sender {
     
-    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
+    DatabaseManager* databaseManager = [DatabaseManager sharedDatabaseManager];
 
-    NSArray* deals = [appDelegate.databaseManager managerGetSavedDeals];
+    NSArray* deals = [databaseManager managerGetSavedDeals];
     
-    NSArray* distanceFiltered = [appDelegate.databaseManager managerFilterDeals:deals byDistance:self.distanceSlider.value];
     
-    NSArray* budgetFiltered = [appDelegate.databaseManager managerFilterDeals:distanceFiltered byBudget:self.budgetSlider.value];
+    NSArray* distanceFiltered = [databaseManager managerFilterDeals:deals byType:FilterTypeDistance filterCriteria:distanceSlider.value];
+    
+    NSArray* budgetFiltered = [databaseManager managerFilterDeals:deals byType:FilterTypeBudget filterCriteria:budgetSlider.value];
+
+    NSMutableSet* setDistance = [NSMutableSet setWithArray:distanceFiltered];
+    
+    NSMutableSet* setBudget = [NSMutableSet setWithArray:budgetFiltered];
+    
+    [setDistance unionSet:setBudget];
+    
+    NSArray* allFiltered = [setDistance allObjects];
     
     [self saveSliderValues:@[self.budgetSlider, self.distanceSlider]];
     
     currentState = CLEAR;
     
-    NSLog(@"Budget complete, app state is now clear");
-    
-    if(budgetFiltered.count < 1 || !budgetFiltered){
-        [self.delegate startButtonPressed:nil];
-    }
-    else [self.delegate startButtonPressed:budgetFiltered];
+    [self.delegate startButtonPressed:allFiltered];
 }
 
 - (IBAction)dragStarted:(id)sender {
@@ -322,9 +325,9 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
 
 -(void)updateLabels
 {
-    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
+    DatabaseManager* databaseManager = [DatabaseManager sharedDatabaseManager];
     
-    NSArray* deals = [appDelegate.databaseManager managerGetSavedDeals];
+    NSArray* deals = [databaseManager managerGetSavedDeals];
     
     if(deals && deals.count > 0){
         
@@ -338,13 +341,13 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
 
 -(void)updateBudgetLabel:(NSArray*)list
 {
-    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
+    DatabaseManager* databaseManager = [DatabaseManager sharedDatabaseManager];
     
     NSString* minimumBudgetLbl = MINIMUM_BUDGET_LBL_DEFAULT;
     NSString* maximumBudgetLbl = MAXIMUM_BUDGET_LBL_DEFAULT;
     
-    NSInteger lowestBudget = [appDelegate.databaseManager managerGetLowestBudgetFromDeals:list];
-    NSInteger highestBudget = [appDelegate.databaseManager managerGetHighestBudgetFromDeals:list];
+    NSInteger lowestBudget = [databaseManager managerGetLowestBudgetFromDeals:list];
+    NSInteger highestBudget = [databaseManager managerGetHighestBudgetFromDeals:list];
     
     if(lowestBudget < 0){
         
@@ -394,13 +397,13 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
 
 -(void)updateDistanceLabel:(NSArray *)list
 {
-    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
+    LocationSeviceManager* locationManager = [LocationSeviceManager sharedLocationServiceManager];
     
     NSString* maximumDistanceLbl = MAXIMUM_DISTANCE_LBL_DEFAULT;
     NSString* minimumDistanceLbl = MINIMUM_DISTANCE_LBL_DEFAULT;
 
-    NSInteger minDistance = [appDelegate.locationManager managerGetShortestDistanceFromDeals:list];
-    NSInteger maxDistance = [appDelegate.locationManager managerGetLongestDistanceFromDeals:list];
+    NSInteger minDistance = [locationManager managerGetShortestDistanceFromDeals:list];
+    NSInteger maxDistance = [locationManager managerGetLongestDistanceFromDeals:list];
     
     
     if(minDistance <= -1) {

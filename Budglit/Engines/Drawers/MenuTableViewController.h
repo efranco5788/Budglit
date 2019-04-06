@@ -10,6 +10,7 @@
 #import "UIViewController+MMDrawerController.h"
 
 @class MenuTableViewCell;
+@class AccountMenuTableViewController;
 
 @protocol MenuViewDelegate <NSObject>
 @optional
@@ -30,6 +31,10 @@ typedef NS_ENUM(NSInteger, MMDrawerSection){
 
 @property (nonatomic, assign) id<MenuViewDelegate> delegate;
 
+@property (nonatomic, strong) AccountMenuTableViewController* accountTable;
+
 @property (nonatomic,strong) NSArray * drawerWidths;
+
+-(void) presentAccountMenuTable;
 
 @end

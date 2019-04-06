@@ -10,6 +10,8 @@
 
 @interface UserProfileTableViewCell : UITableViewCell
 
+-(void)setMenuOption:(NSInteger)option;
+
 extern NSString* const kDefaultNotificationProfileCellDrawn;
 
 

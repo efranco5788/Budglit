@@ -12,28 +12,19 @@
 @class Deal;
 @class DealMapAnnotation;
 @class ImageData;
-
-typedef void (^fetchedImageDataResponse)(UIImage* imageResponse, NSHTTPURLResponse* response, NSURLRequest* request);
+@class ImageDataCache;
 
 
 @protocol DatabaseEngineDelegate <NSObject>
 @optional
--(void)totalDealCountFailedWithError:(NSError*)error;
--(void)dealsFailedWithError:(NSError*)error;
--(void)operationsCancelled;
 
 @end
 
 @interface DatabaseEngine : Engine
 
-@property (nonatomic, strong) id <DatabaseEngineDelegate> delegate;
-
-
 -(instancetype)init;
 
 -(instancetype)initWithHostName:(NSString*)hostName NS_DESIGNATED_INITIALIZER;
-
--(void)constructWebSocket:(NSString*)token addCompletion:(blockResponse)completionHandler;
 
 -(void)setSocketEventsAddCompletion:(blockResponse)completionHandler;
 
@@ -48,8 +39,6 @@ typedef void (^fetchedImageDataResponse)(UIImage* imageResponse, NSHTTPURLRespon
 
 -(void)sortArray:(NSArray*)array byKey:(NSString*)key ascending:(BOOL)shouldAscend localizeCompare:(BOOL)shouldLocalize addCompletion:(blockResponse)completionHandler;
 
--(void)sendGetRequestSearchCriteria:(NSDictionary*)searchCriteria addCompletion:(blockResponse) completionBlock;
-
 -(void)sendSearchCriteria:(NSDictionary*)searchCriteria addCompletion:(blockResponse) completionBlock;
 
 -(void)sendAddressForGeocode:(NSDictionary*)params addCompletionHandler:(blockResponse)completionHandler;
@@ -58,15 +47,13 @@ typedef void (^fetchedImageDataResponse)(UIImage* imageResponse, NSHTTPURLRespon
 
 -(void)downloadImageFromURL:(NSString*)urlString forImageView:(UIImageView*)imageView addCompletionHandler:(fetchedImageDataResponse)completionHandler;
 
--(void)downloadImageFromURL:(NSString*)urlSting addCompletionHandler:(fetchedImageDataResponse)completionHandler;
-
 -(void)cacheImage:(UIImage*)img forKey:(NSString*)key addCompletionHandler:(generalBlockResponse)completionHandler;
 
 -(void)saveToCachePersistenceStorageImage:(UIImage*)img forKey:(NSString*)key addCompletionHandler:(generalBlockResponse)completionHandler;
 
 -(void)getImageFromCacheWithKey:(NSString*)key addCompletionHandler:(blockResponse)completionHandler;
 
--(void)getImageFromCachePersistenceStorageWithKey:(NSString*)key addCompletionHandler:(blockResponse)completionHandler;
+-(void)getImageFromCachePersistenceStorageWithKey:(NSString*)key addCompletionHandler:(blockImageResponse)completionHandler;
 
 -(BOOL)extractAuthetication:(NSDictionary*)info;
 
@@ -74,7 +61,7 @@ typedef void (^fetchedImageDataResponse)(UIImage* imageResponse, NSHTTPURLRespon
 
 -(NSArray*)extractAddressFromDeals:(NSArray*)deals;
 
--(NSArray*)createMapAnnotationsForDeals:(NSArray*)deals addressInfo:(NSArray*)info;
+-(NSArray*)createMapAnnotationsForDeals:(NSArray*)deals;
 
 -(NSArray*)filterOutDeals:(NSArray*)deals byBudgetAmount:(double)amount;
 

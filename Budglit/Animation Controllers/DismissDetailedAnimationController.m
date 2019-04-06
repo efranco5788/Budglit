@@ -7,8 +7,6 @@
 //
 
 #import "DismissDetailedAnimationController.h"
-#import "PSAllDealsTableViewController.h"
-#import "DealDetailViewController.h"
 
 @implementation DismissDetailedAnimationController
 {
@@ -22,9 +20,11 @@
 
 -(void)animateTransition:(id<UIViewControllerContextTransitioning>)transitionContext
 {
-    DealDetailViewController* fromViewController = (DealDetailViewController*) [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
+    // Deal Details View Controller
+    UIViewController* fromViewController = [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
     
-    PSAllDealsTableViewController* toViewController = (PSAllDealsTableViewController*) [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
+    // All Deals Table View Controller
+    UIViewController*toViewController = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
     
     UIView* containerView = [transitionContext containerView];
     

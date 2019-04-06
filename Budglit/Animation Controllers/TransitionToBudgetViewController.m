@@ -1,14 +1,12 @@
 //
-//  PSTransitionToBudgetViewController.m
+//  TransitionToBudgetViewController.m
 //  PocketStretch
 //
 //  Created by Emmanuel Franco on 9/27/15.
 //  Copyright © 2015 Emmanuel Franco. All rights reserved.
 //
 
-#import "PSTransitionToBudgetViewController.h"
-#import "FilterViewController.h"
-#import "LoadingLocalDealsViewController.h"
+#import "TransitionToBudgetViewController.h"
 #import "math.h"
 
 #define PS_WHOLE_PERCENTAGE 100;
@@ -17,13 +15,16 @@
 #define PS_DESIRED_PERCENTAGE_FOR_WIDTH 100;
 #define PS_DESIRED_PERCENTAGE_FOR_HEIGHT 55;
 
-@implementation PSTransitionToBudgetViewController
+@implementation TransitionToBudgetViewController
 
 -(void)animateTransition:(id<UIViewControllerContextTransitioning>)transitionContext
 {
-    LoadingLocalDealsViewController* fromViewController = (LoadingLocalDealsViewController*) [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
     
-    FilterViewController* toViewController = (FilterViewController*) [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
+    // Loading Local Deals View Controller
+    UIViewController* fromViewController = [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
+    
+    // Filter View Controller
+    UIViewController* toViewController = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
     
     UIView *containerView = [transitionContext containerView];
     
@@ -49,6 +50,7 @@
     
     CGRect finalFrame = CGRectMake(newDesiredX, newDesiredY, newDesiredWidth, newDesiredHeight);
     
+
     toViewController.view.frame = finalFrame;
     
     toViewController.view.alpha = 1.0;

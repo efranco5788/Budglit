@@ -29,6 +29,8 @@
 #define AUTHENTICATED_KEY @"authenticated"
 #define AUTHENTICATED_STATUS_KEY @"status"
 #define KEY_FORMATTED_ADDRESS @"formatted_address"
+#define WEB_SOCKET_CONNECT @"connect"
+#define WEB_SOCKET_NEW_DEALS_PULLED @"deals_updated"
 
 #define RESCALE_IMAGE_WIDTH 1024
 #define RESCALE_IMAGE_HEIGHT 1024
@@ -55,9 +57,9 @@
     if (!self) {
         return nil;
     }
-    
+
     self.sessionManager.responseSerializer = [AFJSONResponseSerializer serializer];
-    self.sessionManager.requestSerializer = [AFHTTPRequestSerializer serializer];
+    self.sessionManager.requestSerializer = [AFJSONRequestSerializer serializer];
     
     self.sessionManager.requestSerializer.HTTPShouldHandleCookies = YES;
     self.sessionManager.session.configuration.HTTPCookieStorage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
@@ -67,14 +69,18 @@
 
 -(void)constructWebSocket:(NSString *)token addCompletion:(blockResponse)completionHandler
 {
+    [super constructWebSocket:token addCompletion:completionHandler];
     
     if(!self.socket){
         
         NSURL* baseURL = [NSURL URLWithString:self.baseURLString];
         
-        self.socket = [[WebSocket alloc] initWebSocketForDomain:baseURL withToken:token];
+        self.socket = [[WebSocket alloc] initWebSocketForDomain:baseURL userToken:token];
         
         self.socket.delegate = self;
+        
+        NSLog(@"%@", self.socket);
+        
     }
 
     if(!self.socket) completionHandler(nil);
@@ -87,12 +93,28 @@
     if(!self.socket) completionHandler(nil);
     else{
         
-        [self.socket setSocketEventsShouldConnect:YES];
+        [self.socket.socket on:WEB_SOCKET_CONNECT callback:^(NSArray* data, SocketAckEmitter* ack) {
+            
+            NSLog(@"Socket for Database Engine is now connected");
+            
+        }];
+        
+        [self.socket.socket on:WEB_SOCKET_NEW_DEALS_PULLED callback:^(NSArray* data, SocketAckEmitter* ack) {
+            
+            NSLog(@"New Events have been added.");
+
+            [[NSNotificationCenter defaultCenter] postNotificationName:NSLocalizedString(@"NEW_UPDATES_NOTIFICATION", nil) object:nil];
+            
+        }];
+        
+        
+        [self.socket connectSocket];
         
         completionHandler(self.socket);
         
     }
 }
+
 
 // Constructs the basic default data for the app
 -(NSDictionary*)constructDefaultFetchingObjects
@@ -119,7 +141,12 @@
 {
     NSDictionary* authenStatus = [info valueForKey:AUTHENTICATED_KEY];
     
-    BOOL authenticationStauts = [[authenStatus valueForKey:AUTHENTICATED_STATUS_KEY] boolValue];
+    BOOL authenticationStauts;
+    
+    if(!authenStatus) authenticationStauts = FALSE;
+    else{
+        authenticationStauts = [[authenStatus valueForKey:AUTHENTICATED_STATUS_KEY] boolValue];
+    }
     
     return authenticationStauts;
 }
@@ -131,15 +158,11 @@
     return deals;
 }
 
--(NSArray*)filterOutDeals:(NSArray *)deals byBudgetAmount:(double)amount
+-(NSArray*)filterOutDeals:(NSArray*)deals byBudgetAmount:(double)amount
 {
-    //NSLog(@"budget is ----- %f", amount);
-    
-    NSPredicate* budgetPredicate = [NSPredicate predicateWithFormat:@"SELF.budget <= %f", amount];
+    NSPredicate* budgetPredicate = [NSPredicate predicateWithFormat:@"SELF.budget > %f", amount];
     
     NSArray* filteredArray = [deals filteredArrayUsingPredicate:budgetPredicate];
-    
-    //NSLog(@"%@", filteredArray);
     
     if(!filteredArray){
         return nil;
@@ -149,9 +172,9 @@
     }
 }
 
--(NSArray*)filterOutDeals:(NSArray *)deals byDistance:(double)distance
+-(NSArray*)filterOutDeals:(NSArray*)deals byDistance:(double)distance
 {
-    NSPredicate* distancePredicate = [NSPredicate predicateWithFormat:@"SELF.annotation.getDistanceFromUser <= %f", distance];
+    NSPredicate* distancePredicate = [NSPredicate predicateWithFormat:@"SELF.getDistanceFromUser > %f", distance];
     
     NSArray* filteredArray = [deals filteredArrayUsingPredicate:distancePredicate];
     
@@ -221,9 +244,9 @@
     
     NSString* budgetCriteria = NSLocalizedString(@"DEFAULT_BUDGET", nil);
     
-    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
+    LocationSeviceManager* locationManager = [LocationSeviceManager sharedLocationServiceManager];
     
-    CityDataObject* city = appDelegate.locationManager.getCurrentLocationCityObject;
+    CityDataObject* city = locationManager.getCurrentLocationCityObject;
     
     NSString* cityName = city.name;
     
@@ -249,28 +272,10 @@
     return currentDate;
 }
 
--(void)sendGetRequestSearchCriteria:(NSDictionary *)searchCriteria addCompletion:(blockResponse)completionBlock
-{
-    //self.sessionManager.responseSerializer = [AFJSONResponseSerializer serializer];
-    //self.sessionManager.requestSerializer = [AFJSONRequestSerializer serializer];
-    
-    [self.sessionManager GET:SEARCH_DEALS parameters:searchCriteria progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        
-    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        
-    }];
-}
-
 -(void)sendSearchCriteria:(NSDictionary *)searchCriteria addCompletion:(blockResponse)completionBlock
 {
     
-    [self.sessionManager POST:SEARCH_DEALS parameters:searchCriteria progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        
-        [self addToRequestHistory:task];
-        
-        NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse*) task.response;
-
-        if (httpResponse.statusCode == 200){
+    [self postRequestToPath:SEARCH_DEALS parameters:searchCriteria addCompletion:^(id responseObject) {
             
             if (responseObject) {
                 
@@ -315,10 +320,10 @@
                             
                             NSArray* array = [[NSArray alloc] init];
                             
-                            [mutableDict setObject:array forKey:@"deals"]; 
+                            [mutableDict setObject:array forKey:@"deals"];
                         }
                         else{
-
+                            
                             [mutableDict setObject:deals forKey:@"deals"];
                             
                         } // end of deals array count else statement
@@ -340,38 +345,24 @@
                 
             } // end of if response object is nil statement
             else completionBlock(nil);
-        }
         
-        
-    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        
-        [self logFailedRequest:task];
-        NSLog(@"%@", task.response);
-        completionBlock(error);
     }];
-    
+ 
 }
 
 -(void)sendAddressForGeocode:(NSDictionary *)params addCompletionHandler:(blockResponse)completionHandler
 {
     if(!params) return;
     
-    self.sessionManager.responseSerializer = [AFJSONResponseSerializer serializer];
-    self.sessionManager.requestSerializer = [AFJSONRequestSerializer serializer];
+    //self.sessionManager.responseSerializer = [AFJSONResponseSerializer serializer];
+    //self.sessionManager.requestSerializer = [AFJSONRequestSerializer serializer];
     
-    [self.sessionManager POST:API_PLACES parameters:params progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [self postRequestToPath:API_PLACES parameters:params addCompletion:^(id responseObject) {
         
         if(!responseObject) completionHandler(nil);
+        else completionHandler(responseObject);
         
-        completionHandler(responseObject);
-        
-    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        NSLog(@"%@", error);
-        [self logFailedRequest:task];
-        completionHandler(error);
-        //[self.delegate dealsFailedWithError:error];
     }];
-    
  
 }
 
@@ -380,21 +371,17 @@
 {
     if(!params) return;
     
-    self.sessionManager.responseSerializer = [AFJSONResponseSerializer serializer];
-    self.sessionManager.requestSerializer = [AFJSONRequestSerializer serializer];
+    //self.sessionManager.responseSerializer = [AFJSONResponseSerializer serializer];
+    //self.sessionManager.requestSerializer = [AFJSONRequestSerializer serializer];
     
-    [self.sessionManager POST:API_PLACES parameters:params progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [self postRequestToPath:API_PLACES parameters:params addCompletion:^(id responseObject) {
         
         if(!responseObject) completionHandler(nil);
-        
-        NSLog(@"%@", responseObject);
-        
-        completionHandler(responseObject);
-        
-        
-    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        else completionHandler(responseObject);
+
         
     }];
+
 }
 
 -(NSDictionary *)parseGeocodeLocation:(NSDictionary *)locationInfo
@@ -406,12 +393,8 @@
     NSDictionary* geometry = [locationInfo valueForKey:@"geometry"];
     
     NSArray* preferredCoords = [geometry valueForKey:@"viewport"];
-    
-    NSArray* coordinatesArray = [preferredCoords valueForKey:@"northeast"];
-    
-    NSDictionary* coordinates = [coordinatesArray objectAtIndex:0];
-    
-    //NSLog(@"%@", coordinates);
+
+    NSDictionary* coordinates = [preferredCoords valueForKey:@"northeast"];
     
     NSString* locationType = [geometry valueForKey:@"location_type"];
     
@@ -426,6 +409,8 @@
     
     NSDictionary* parsedInfo = mutableParsedInfo.copy;
     
+    NSLog(@"%@", parsedInfo);
+    
     if(!parsedInfo) return nil;
     
     return parsedInfo;
@@ -436,84 +421,63 @@
     
     NSURLRequest* imageRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:urlString]];
     
-    NSLog(@"fetching image %@", imageRequest.URL);
-    
-    [imageView setImageWithURLRequest:imageRequest placeholderImage:nil success:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, UIImage * _Nonnull image) {
+    if(imageView){
         
-        NSLog(@"Image fetched %@", response);
+        NSLog(@"fetching image %@", imageRequest.URL);
         
-        completionHandler(image, response, request);
-        
-    } failure:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, NSError * _Nonnull error) {
-        
-        NSLog(@"%@", error);
-        
-        if (response.statusCode == 404) {
+        [imageView setImageWithURLRequest:imageRequest placeholderImage:nil success:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, UIImage * _Nonnull image) {
             
-            NSLog(@"Image fetched %@", error);
+            NSLog(@"Image fetched %@", response);
             
-            completionHandler(nil, response, request);
+            completionHandler(image, response, request);
             
-        }
+        } failure:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, NSError * _Nonnull error) {
+            
+            NSLog(@"%@", error);
+            
+            if (response.statusCode == 404) {
+                
+                NSLog(@"Image fetched %@", error);
+                
+                completionHandler(nil, response, request);
+                
+            }
+            
+        }];
         
-    }];
+    }
     
 }
 
--(void)downloadImageFromURL:(NSString *)urlSting addCompletionHandler:(fetchedImageDataResponse)completionHandler
-{
-    self.sessionManager.responseSerializer = [AFImageResponseSerializer serializer];
-    self.sessionManager.requestSerializer = [AFHTTPRequestSerializer serializer];
-    
-    [self.sessionManager GET:urlSting parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        
-        NSLog(@"Image fetched %@", responseObject);
-        
-        NSHTTPURLResponse *response = ((NSHTTPURLResponse *)[task response]);
-        
-        completionHandler(responseObject, response, task.originalRequest);
-        
-    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        NSLog(@"%@", error);
-    }];
-    
-}
 
 -(void)getImageFromCacheWithKey:(NSString *)key addCompletionHandler:(blockResponse)completionHandler
 {
-    dispatch_async(dispatch_get_main_queue(), ^{
+
+    if(!key) completionHandler(nil);
+    else{
         
-        AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
+        ImageDataCache* cache = [ImageDataCache sharedImageDataCache];
         
-        if(!key) completionHandler(nil);
-        else{
-            
-            id imgObject = [appDelegate.imageDataCache objectForKey:key];
-            
-            if(!imgObject) completionHandler(nil);
-            else completionHandler(imgObject);
-        }
-    });
+        id imgObject = [cache objectForKey:key];
+        
+        if(!imgObject) completionHandler(nil);
+        else completionHandler(imgObject);
+    }
     
 }
 
--(void)getImageFromCachePersistenceStorageWithKey:(NSString *)key addCompletionHandler:(blockResponse)completionHandler
+-(void)getImageFromCachePersistenceStorageWithKey:(NSString *)key addCompletionHandler:(blockImageResponse)completionHandler
 {
     if(!key) completionHandler(nil);
     else{
         
-        AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
+        ImageDataCache* cache = [ImageDataCache sharedImageDataCache];
         
-        [appDelegate.imageDataCache getFileFromPersistentStorageCache:key addCompletion:^(id object) {
+        [cache getFileFromPersistentStorageCache:key addCompletion:^(UIImage* object) {
             
             if(!object) completionHandler(nil);
             else{
-                
-                UIImage* img = [UIImage imageWithData:object];
-                
-                if(!img) completionHandler(nil);
-                else completionHandler(img);
-
+                completionHandler(object);
             }
             
         }];
@@ -528,13 +492,13 @@
     if(!img || !key) completionHandler(NO);
     else{
         
-        AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
+        ImageDataCache* cache = [ImageDataCache sharedImageDataCache];
         
-        [appDelegate.imageDataCache setObject:img forKey:key];
+        [cache setObject:img forKey:key];
         
         completionHandler(YES);
+        
     }
-    
 }
 
 -(void)saveToCachePersistenceStorageImage:(UIImage *)img forKey:(NSString *)key addCompletionHandler:(generalBlockResponse)completionHandler
@@ -542,7 +506,7 @@
     if(!img || !key) completionHandler(NO);
     else{
         
-        AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
+        ImageDataCache* cache = [ImageDataCache sharedImageDataCache];
         
         NSData* imgData = UIImagePNGRepresentation(img);
         
@@ -550,7 +514,7 @@
         
         NSString* imgName = [stringComponents lastObject];
         
-        [appDelegate.imageDataCache saveFileToPersistentStorageCache:imgData withKey:imgName addCompletion:^(BOOL success) {
+        [cache saveFileToPersistentStorageCache:imgData withKey:imgName addCompletion:^(BOOL success) {
             
             completionHandler(success);
             
@@ -647,66 +611,42 @@
     completionHandler(NO);
 }
 */
--(NSArray *)extractAddressFromDeals:(NSArray *)deals
+
+-(NSArray*)extractAddressFromDeals:(NSArray *)deals
 {
     if(!deals) return nil;
     
     NSMutableArray* tmpAddresses = [[NSMutableArray alloc] initWithCapacity:deals.count];
     
     for (Deal* deal in deals) {
-        NSString* address = deal.addressString;
+        
+        NSString* uniqueID = deal.dealID;
+        
+        NSString* addressString = deal.addressString;
+        
+        NSDictionary* address = @{
+                                        @"dealID":uniqueID,
+                                        @"address":addressString
+                                        };
         
         [tmpAddresses addObject:address];
     }
     
-    NSArray* addresses = tmpAddresses.copy;
-    
-    return addresses;
+    return tmpAddresses.copy;
 }
 
--(NSArray*)createMapAnnotationsForDeals:(NSArray*)deals addressInfo:(NSArray*)addressInfoList
-{
-    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
-    
+-(NSArray*)createMapAnnotationsForDeals:(NSArray*)deals
+{    
     NSMutableArray* mutableAnnotations = [[NSMutableArray alloc] init];
     
     for (Deal* deal in deals) {
         
-        NSString* deal_address = deal.addressString;
+        DealMapAnnotation* mapAnnotation = [deal createMapAnnotation];
+
+        [deal setAnnotation:mapAnnotation];
         
-        for (int count = 0; count < addressInfoList.count; count++) {
-            
-            NSDictionary* addressInfo = addressInfoList[count];
-            
-            NSArray* value = [addressInfo valueForKey:KEY_FORMATTED_ADDRESS];
-            NSString* formattedAddress = [value objectAtIndex:0];
-            
-            if([deal_address caseInsensitiveCompare:formattedAddress] == NSOrderedSame){
-                
-                deal.googleAddressInfo = addressInfo;
-                
-                CLLocation* eventLocation = [appDelegate.locationManager managerConvertAddressToLocation:addressInfo];
-                
-                CLLocationCoordinate2D coordinates = CLLocationCoordinate2DMake(eventLocation.coordinate.latitude, eventLocation.coordinate.longitude);
-
-                DealMapAnnotation* mapAnnotation = [[DealMapAnnotation alloc] initForDeal:deal];
-                
-                [mapAnnotation setCoordinate:coordinates];
-                
-                // Users current location
-                CLLocation* user = [appDelegate.locationManager getCurrentLocation];
-                
-                CLLocationDistance distanceFromUserMeters = [appDelegate.locationManager managerDistanceMetersFromLocation:user toLocation:eventLocation];
-                
-                CLLocationDistance convertedDistance = [appDelegate.locationManager managerConvertDistance:distanceFromUserMeters];
-
-                [mapAnnotation setDistanceFromUser:convertedDistance];
-                
-                [deal setAnnotation:mapAnnotation];
-                
-                [mutableAnnotations addObject:mapAnnotation];
-            }
-        }
+        [mutableAnnotations addObject:mapAnnotation];
+        
     }
     
     return mutableAnnotations.copy;
@@ -718,7 +658,6 @@
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         
         [self.sessionManager.operationQueue cancelAllOperations];
-        
         [self.sessionManager.operationQueue waitUntilAllOperationsAreFinished];
         
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -730,18 +669,12 @@
         });
         
     });
-    
-    [self.sessionManager.operationQueue cancelAllOperations];
-    
-    [self.delegate operationsCancelled];
+
 }
 
 #pragma mark -
 #pragma mark - Web Socket Delegate Methods
--(void)newDealAdded:(id)newDeal
-{
-    NSLog(@"New Deal ADDED");
-    NSLog(@"%@",newDeal);
-}
+
+
 
 @end

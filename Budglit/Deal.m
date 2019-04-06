@@ -9,8 +9,10 @@
 #import "Deal.h"
 #import "MZTimerLabel/MZTimerLabel.h"
 #import "DealMapAnnotation.h"
+#import "AppDelegate.h"
 
-#define kDefaultDateFormat @"yyyy-MM-dd HH:mm:ss"
+
+#define kDefaultDateFormat @"yyyy-MM-dd'T'HH:mm:ss.mmmZ"
 #define kDefaultTimeFormat @"dd:HH:mm:ss "
 #define kEventEnded @"Event Ended"
 
@@ -25,8 +27,6 @@
 @implementation Deal
 
 NSString* const kDefaultEventEndNotification = @"EventEndNotification";
-
-@synthesize venueName, venueDescription, dealDescription, address, phoneNumber, city, state;
 
 -(instancetype)init
 {
@@ -44,34 +44,32 @@ NSString* const kDefaultEventEndNotification = @"EventEndNotification";
     
     if(!self) return nil;
     
-    if(self)
-    {
-        self.dealID = aDealID;
-        self.venueName = venue;
-        self.venueTwtrUsername = useranme;
-        self.address = anAddress;
-        self.venueDescription = aVenueDes;
-        self.dealDescription = aDealDescription;
-        self.endDate = end;
-        self.phoneNumber = aNumber;
-        self.city = aCity;
-        self.state = aState;
-        self.zipcode = aZip;
-        budget = aBudget;
-        self.tags = dealTags;
-        self.imgStateObject = [[ImageStateObject alloc] init];
-        if (![url isEqual:nil]) {
-            self.imgStateObject.imagePath = url;
-        }
-        
-        NSDateFormatter* dateFormatter = [[NSDateFormatter alloc] init];
-        
-        [dateFormatter setDateFormat:NSLocalizedString(@"DATE_FORMAT", nil)];
-        
-        NSDate* date = [dateFormatter dateFromString:dateString];
-        
-        self.dealDate = date;
-    }
+    self.dealID = aDealID ? aDealID : @"";
+    self.venueName = venue ? venue : @"";
+    self.venueTwtrUsername = useranme ? useranme : @"";
+    self.address = anAddress ? anAddress : @"";
+    self.venueDescription = aVenueDes ? aVenueDes : @"";
+    self.dealDescription = aDealDescription ? aDealDescription : @"";
+    self.endDate = dateString ? dateString : @"";
+    self.phoneNumber = aNumber ? aNumber : @"";
+    self.city = aCity ? aCity : @"";
+    self.state = aState ? aState : @"";
+    self.zipcode = aZip ? aZip : @"";
+    
+    self.standardizeAddress = nil;
+    
+    budget = aBudget;
+    self.tags = dealTags;
+    
+    self.imgStateObject = [[ImageStateObject alloc] initWithURL:url ? url : nil];
+    
+    NSDateFormatter* dateFormatter = [[NSDateFormatter alloc] init];
+    
+    [dateFormatter setDateFormat:NSLocalizedString(@"DATE_FORMAT", nil)];
+    
+    NSDate* date = [dateFormatter dateFromString:dateString];
+    
+    self.dealDate = date;
     
     return self;
         
@@ -131,30 +129,76 @@ NSString* const kDefaultEventEndNotification = @"EventEndNotification";
     
 }
 
+-(DealMapAnnotation *)createMapAnnotation
+{
+    if(!self.annotation){
+        
+        LocationSeviceManager* locationManager = [LocationSeviceManager sharedLocationServiceManager];
+        
+        CLLocation* eventLocation = [locationManager managerConvertAddressToLocation:self.addressInfo];
+        
+        CLLocationCoordinate2D coordinates = CLLocationCoordinate2DMake(eventLocation.coordinate.latitude, eventLocation.coordinate.longitude);
+        
+        self.annotation = [[DealMapAnnotation alloc] initForDeal:self];
+        
+        [self.annotation setCoordinate:coordinates];
+        
+    }
+    
+    return self.annotation;
+}
+
+-(CLLocationDistance)getDistanceFromUser
+{
+    if(self.annotation){
+        
+        return [self.annotation getDistanceFromUser];
+        
+    }
+    else return -1;
+}
+
+-(void)displayMapAnnotation
+{
+    if(self.annotation){
+        
+        [self.annotation.calloutView.view setHidden:NO];
+        
+    }
+}
+
+-(void)hideMapAnnotation
+{
+    if(self.annotation){
+        
+        [self.annotation.calloutView.view setHidden:YES];
+    }
+
+}
+
 #pragma mark - 
 #pragma mark - Timer Label Methods
 -(UILabel*)generateCountDownEndDate:(UILabel*)aLabel
-{
-    if (!self.eventCountDwn){
-
-        self.eventCountDwn = [[MZTimerLabel alloc] initWithLabel:aLabel andTimerType:MZTimerLabelTypeTimer];
-        
-        (self.eventCountDwn).delegate = self;
-        
-        self.eventCountDwn.timeFormat = kDefaultTimeFormat;
-        
-        NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
-        
-        [formatter setDateFormat:kDefaultDateFormat];
-        
-        formatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
-        
-        NSDate* evntEndDate = [formatter dateFromString:self.endDate];
-        
-        [self.eventCountDwn setCountDownToDate:evntEndDate];
-    }
+{    
+    self.eventCountDwn = [[MZTimerLabel alloc] initWithLabel:aLabel andTimerType:MZTimerLabelTypeTimer];
+    
+    (self.eventCountDwn).delegate = self;
+    
+    self.eventCountDwn.timeFormat = kDefaultTimeFormat;
+    
+    NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
+    
+    formatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
+    
+    [formatter setDateFormat:kDefaultDateFormat];
+    
+    NSDate* evntEndDate = [formatter dateFromString:self.endDate];
+    
+    [self.eventCountDwn setCountDownToDate:evntEndDate];
     
     [self.eventCountDwn start];
+    
+    NSLog(@"Text is %@", aLabel.text);
     
     return aLabel;
 }
@@ -170,9 +214,7 @@ NSString* const kDefaultEventEndNotification = @"EventEndNotification";
 #pragma mark - Timer Delegate Methods
 -(void)timerLabel:(MZTimerLabel *)timerLabel finshedCountDownTimerWithTime:(NSTimeInterval)countTime
 {
-    NSNotificationCenter* center = [NSNotificationCenter defaultCenter];
-    
-    [center postNotificationName:kDefaultEventEndNotification object:self];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kDefaultEventEndNotification object:self];
 }
 
 #pragma mark -

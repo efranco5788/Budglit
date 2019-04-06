@@ -7,16 +7,16 @@
 //
 
 #import "DismissMapToListAnimationController.h"
-#import "MapViewController.h"
-#import "PSAllDealsTableViewController.h"
 #import "AnimationHelper.h"
 
 @implementation DismissMapToListAnimationController
 
 - (void)animateTransition:(nonnull id<UIViewControllerContextTransitioning>)transitionContext {
     
+    // Map View Controller
     UIViewController* from = [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
     
+    //All Deals Table View Controller
     UIViewController* to = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
     
     UIView* snapshot = [from.view snapshotViewAfterScreenUpdates:NO];

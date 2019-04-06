@@ -1,21 +1,21 @@
 //
-//  PSDismissTransitionFromBudgetViewController.m
+//  DismissTransitionFromBudgetViewController.m
 //  PocketStretch
 //
 //  Created by Emmanuel Franco on 9/27/15.
 //  Copyright © 2015 Emmanuel Franco. All rights reserved.
 //
 
-#import "PSDismissTransitionFromBudgetViewController.h"
-#import "LoadingLocalDealsViewController.h"
-#import "FilterViewController.h"
+#import "DismissTransitionFromBudgetViewController.h"
 
 
-@implementation PSDismissTransitionFromBudgetViewController
+@implementation DismissTransitionFromBudgetViewController
 
 -(void)animateTransition:(id<UIViewControllerContextTransitioning>)transitionContext
 {
-    FilterViewController* fromViewController = (FilterViewController*) [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
+    
+    // Filter View Controller
+    UIViewController* fromViewController = [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
     
     //UIView *containerView = [transitionContext containerView];
     

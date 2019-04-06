@@ -10,6 +10,21 @@
 
 @implementation ImageDataCache
 
+static ImageDataCache* sharedImageDataCache;
+
++(id)sharedImageDataCache
+{
+    static dispatch_once_t onceToken;
+    
+    dispatch_once(&onceToken, ^{
+        
+        sharedImageDataCache = [[self alloc] init];
+        
+    });
+    
+    return sharedImageDataCache;
+}
+
 -(instancetype)init
 {
     self = [super init];
@@ -19,62 +34,101 @@
     return self;
 }
 
+-(void)setObject:(id)obj forKey:(id)key
+{
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+        
+        [super setObject:obj forKey:key];
+        
+    });
+}
+
 -(void)saveFileToPersistentStorageCache:(id)data withKey:(NSString *)key addCompletion:(generalBlockResponse)completionHandler
 {
-    if(!data)completionHandler(NO);
+    if(!data){
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            
+            completionHandler(NO);
+            
+        });
+        
+    }
     else{
         
-        NSArray* paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
-        NSString* cacheDirectory = [paths objectAtIndex:0];
-        
-        NSString* imgPath = [cacheDirectory stringByAppendingPathComponent:key];
-        
-        if(![[NSFileManager defaultManager] fileExistsAtPath:imgPath]){
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
             
-            NSDictionary* attributes = [NSDictionary dictionaryWithObject:@"NSFileCreationDate" forKey:@"NSFileAttributeKey"];
+            NSArray* paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
             
-            BOOL created = [[NSFileManager defaultManager] createFileAtPath:imgPath contents:data attributes:attributes];
+            NSString* cacheDirectory = [paths objectAtIndex:0];
             
-            NSArray* items = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:cacheDirectory error:nil];
+            NSString* imgPath = [cacheDirectory stringByAppendingPathComponent:key];
             
-            NSLog(@"Directory: %@", items);
+            if(![[NSFileManager defaultManager] fileExistsAtPath:imgPath]){
+                
+                NSDictionary* attributes = [NSDictionary dictionaryWithObject:@"NSFileCreationDate" forKey:@"NSFileAttributeKey"];
+                
+                BOOL created = [[NSFileManager defaultManager] createFileAtPath:imgPath contents:data attributes:attributes];
+                
+                NSArray* items = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:cacheDirectory error:nil];
+                
+                NSLog(@"Directory: %@", items);
+                
+                completionHandler(created);
+                
+            }
+            else{
+                
+                NSLog(@"File Exists");
+                completionHandler(YES);
+
+            }
             
-            completionHandler(created);
-            
-        }
-        else{
-            NSLog(@"File Already Exists");
-            completionHandler(YES);
-        }
+        });
         
         
     }
     
 }
 
--(void)getFileFromPersistentStorageCache:(NSString *)fileName addCompletion:(blockResponse)completionHandler
+-(void)getFileFromPersistentStorageCache:(NSString *)fileName addCompletion:(imageResponse)completionHandler
 {
-    if(!fileName) completionHandler(nil);
+    if(!fileName){
+        
+        completionHandler(nil);
+        
+    }
     else{
-        NSArray* paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
         
-        NSString* cacheDirectory = [paths objectAtIndex:0];
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+            
+            NSArray* paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+            
+            NSString* cacheDirectory = [paths objectAtIndex:0];
+            
+            NSArray* pathComponents = [fileName componentsSeparatedByString:@"/"];
+            
+            if (!pathComponents || pathComponents.count < 1) completionHandler(nil);
+            else{
+                
+                NSString* imgName = pathComponents.lastObject;
+                
+                NSString* filePath = [cacheDirectory stringByAppendingPathComponent:imgName];
+                
+                NSData* imgData = [NSData dataWithContentsOfFile:filePath];
+                
+                UIImage* img = [UIImage imageWithData:imgData scale:UIScreen.mainScreen.scale];
+                
+                if(!img) completionHandler(nil);
+                else completionHandler(img);
+                
+                
+            }
+            
+            
+        });
         
-        NSArray* pathComponents = [fileName componentsSeparatedByString:@"/"];
         
-        if (!pathComponents || pathComponents.count < 1) completionHandler(nil);
-        else{
-            
-            NSString* imgName = pathComponents.lastObject;
-            
-            NSString* filePath = [cacheDirectory stringByAppendingPathComponent:imgName];
-            
-            NSData* data = [[NSFileManager defaultManager] contentsAtPath:filePath];
-            
-            if(!data) completionHandler(nil);
-            else completionHandler(data);
-            
-        }
     }
     
 }

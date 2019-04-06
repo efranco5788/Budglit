@@ -126,10 +126,10 @@ typedef NS_ENUM(NSUInteger, AccountType) {
 
 -(UIImage *)getProfileImage
 {
-    if (!self.imageURL || [self.imageURL isEqual:[NSNull null]]) {
+    if (!self.imageURL || [self.imageURL isEqual:[NSNull null]] || [self.imageURL isEqualToString:@""]) {
         
         UIImage* img = [UIImage imageNamed:NSLocalizedString(@"DEFAULT_USER_PROFILE", nil)];
-        
+
         return img;
     }
     else

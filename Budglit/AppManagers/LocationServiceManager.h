@@ -6,7 +6,7 @@
 //  Copyright © 2015 Emmanuel Franco. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import "Manager.h"
 #import <CoreLocation/CoreLocation.h>
 #import <UIKit/UIKit.h>
 
@@ -15,10 +15,6 @@
 @class CityDataObject;
 @class LocationEngine;
 @class Deal;
-
-typedef void (^addLocationResponse)(BOOL success);
-typedef void (^generalCompletionHandler)(BOOL success);
-typedef void (^fetchPostalCompletionHandler)(id object);
 
 @protocol LocationManagerDelegate <NSObject>
 @optional
@@ -29,13 +25,13 @@ typedef void (^fetchPostalCompletionHandler)(id object);
 //-(void) surroundingZipcodesReturned:(NSArray*) zipcodes;
 @end
 
-@interface LocationSeviceManager : NSObject<CLLocationManagerDelegate, UINavigationControllerDelegate>
+@interface LocationSeviceManager : Manager <CLLocationManagerDelegate, UINavigationControllerDelegate>
 {
 @private NSInteger attempts;
 @private dispatch_queue_t backgroundQueue;
 }
 
-+ (LocationSeviceManager *) sharedLocationServiceManager;
++ (id) sharedLocationServiceManager;
 
 @property (nonatomic, strong) CLLocationManager* locationManager;
 @property (nonatomic, strong) LocationEngine* engine;
@@ -45,7 +41,6 @@ typedef void (^fetchPostalCompletionHandler)(id object);
 //@property (nonatomic) int updateState;
 
 -(instancetype) init;
--(instancetype) initWithEngineHostName:(NSString*)hostName NS_DESIGNATED_INITIALIZER;
 
 -(void) startUpdates;
 

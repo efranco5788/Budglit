@@ -71,6 +71,11 @@
     return self;
 }
 
+-(void)constructWebSocket:(NSString *)token addCompletion:(blockResponse)completionHandler
+{
+    
+}
+
 -(NSDictionary *)constructParameterWithKey:(NSString *)key AndValue:(id)value addToDictionary:(NSDictionary *)dict
 {
     if (!key || !value)  return nil;
@@ -95,6 +100,98 @@
     return tmpParams.copy;
 }
 
+-(void)headRequestToPath:(NSString *)path parameters:(id)params addCompletion:(blockResponse)completionHandler
+{
+    [self.sessionManager HEAD:path parameters:params success:^(NSURLSessionDataTask * _Nonnull task) {
+        
+        NSHTTPURLResponse* httpResponse = (NSHTTPURLResponse*) task.response;
+        
+        NSNumber* isOnline;
+        
+        if(httpResponse.statusCode >= 500){
+            
+            isOnline = [NSNumber numberWithBool:NO];
+            completionHandler(isOnline);
+            
+        }
+        else if (httpResponse.statusCode >= 400){
+            
+            isOnline = [NSNumber numberWithBool:NO];
+            completionHandler(isOnline);
+            
+        }
+        else{
+            
+            isOnline = [NSNumber numberWithBool:YES];
+            completionHandler(isOnline);
+        }
+        
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        
+        NSLog(@"fail and %@", task);
+        
+    }];
+}
+
+-(void)getRequestToPath:(NSString*)path parameters:(id)params addCompletion:(blockResponse)completionHandler
+{
+    [self.sessionManager GET:path parameters:params progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        
+        [self addToRequestHistory:task];
+        
+        NSHTTPURLResponse* httpResponse = (NSHTTPURLResponse*) task.response;
+        
+        if(httpResponse.statusCode == 200){
+            
+            if(!responseObject) completionHandler(nil);
+            else completionHandler(responseObject);
+            
+        }
+        
+        
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        
+        [self logFailedRequest:task];
+        
+        NSDictionary* requestInfo = @{
+                                      @"path" : path,
+                                      @"parameters" : params
+                                      };
+        
+        [self.delegate requestFailedWithError:requestInfo];
+        
+    }];
+}
+
+-(void)postRequestToPath:(NSString*)path parameters:(id)params addCompletion:(blockResponse)completionHandler
+{
+    [self.sessionManager POST:path parameters:params progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        
+        [self addToRequestHistory:task];
+        
+        NSHTTPURLResponse* httpResponse = (NSHTTPURLResponse*) task.response;
+        
+        if(httpResponse.statusCode == 200){
+            
+            if(!responseObject) completionHandler(nil);
+            else completionHandler(responseObject);
+            
+        }
+        
+    } failure:^(NSURLSessionDataTask* _Nullable task, NSError * _Nonnull error) {
+        
+        [self logFailedRequest:task];
+        
+        NSDictionary* requestInfo = @{
+                                      @"path" : path,
+                                      @"parameters" : params
+                                      };
+        
+        [self.delegate requestFailedWithError:requestInfo];
+        
+    }];
+}
+
 -(id)getSavedCookieForDomain:(NSString*)domain
 {
     if(!domain) return nil;
@@ -115,9 +212,9 @@
 {
     NSDate* date = cookie.expiresDate;
     
-    NSLog(@"%@", cookie.expiresDate);
-    
     NSDate* localDate = [self convertUTCDateToLocal:date];
+    
+    NSLog(@"%@", cookie.expiresDate);
     
     NSLog(@"%@", localDate);
     

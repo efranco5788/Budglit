@@ -10,41 +10,46 @@
 #import "AppDelegate.h"
 #import "DatabaseEngine.h"
 #import "Deal.h"
+#import "DealViewModel.h"
 #import "PSFacebookViewController.h"
 #import "TwitterViewController.h"
 #import "PSAllDealsTableViewController.h"
-#import "PSInstagramViewController.h"
+#import "InstagramViewController.h"
 #import <QuartzCore/QuartzCore.h>
 
 #define UNWIND_TO_ALL_CURRENT_DEALS @"unwindToDeals"
 #define ALLDEALS_VC_SB_ID @"PSAllDealsTableViewController"
 #define LAST_INDEX 2
 
-@interface DealDetailViewController ()<UIGestureRecognizerDelegate, TwitterViewDelegate, UIPageViewControllerDelegate, UIPageViewControllerDataSource, PSAllDealsTableViewControllerDelegate, DatabaseManagerDelegate>
+@interface DealDetailViewController ()<UIGestureRecognizerDelegate, UIPageViewControllerDelegate, UIPageViewControllerDataSource, PSAllDealsTableViewControllerDelegate, DatabaseManagerDelegate>
 {
-    CGRect originalTwitterView;
+    CGRect originalSocialMediaView;
     UIView* backgroundDimmerMainView;
     BOOL isSocialMediaViewInView;
     CGRect tableCellPosition;
+    Deal* dealSelected;
 }
 @end
 
 
-
 @implementation DealDetailViewController
-@synthesize descriptionTextView, addressTextView, venueLbl, distanceLbl, phoneNumberTextView, addressText, phoneText, venueImage;
+@synthesize descriptionTextView, addressTextView, budgetLbl, venueLbl, distanceLbl, phoneNumberTextView, venueImage;
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     
+    self.dealViewModel = [[DealViewModel alloc] initWithDeal:dealSelected];
+    
+    (self.descriptionTextView).text = self.dealViewModel.descriptionText;
+    
+    self.distanceLbl.text = self.dealViewModel.distanceText;
+    
+    (self.venueLbl).text = self.dealViewModel.venueName;
+    
+    self.budgetLbl.text = self.dealViewModel.budgetText;
+    
     self.descriptionTextView.contentInset = UIEdgeInsetsMake(0, 0, 7, 0);
-    
-    (self.descriptionTextView).text = self.descriptionText;
-    
-    self.distanceLbl.text = self.distanceText;
-    
-    self.venueLbl.text = self.venueName;
     
     self.descriptionTextView.layer.borderColor = [UIColor grayColor].CGColor;
     
@@ -60,13 +65,13 @@
     
     (self.addressTextView.layer).cornerRadius = 5.0;
     
-    (self.addressTextView).text = self.addressText;
+    (self.addressTextView).text = self.dealViewModel.addressText;
     
     self.addressTextView.linkTextAttributes = @{NSForegroundColorAttributeName:[UIColor blackColor]};
     
     self.addressTextView.layer.borderColor = [UIColor grayColor].CGColor;
     
-    (self.phoneNumberTextView).text = self.phoneText;
+    (self.phoneNumberTextView).text = self.dealViewModel.phoneText;
     
     self.phoneNumberTextView = [[UITextView alloc] initWithFrame:CGRectMake(self.phoneImage.frame.origin.x, self.phoneImage.frame.origin.y, 0, 0)];
     
@@ -87,13 +92,15 @@
     self.SMPageViewController = [[UIPageViewController alloc] initWithTransitionStyle:UIPageViewControllerTransitionStyleScroll navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal options:nil];
     
     // Create the Social Media Container Frame
-    CGRect barFrame = self.socialMediaNavBar.frame;
+    CGRect barFrame = self.socialMediaNavBar.bounds;
     CGRect containerBounds = (self.socialMediaContainer).bounds;
-    CGRect newInsetFrame = CGRectInset(containerBounds, barFrame.origin.x, barFrame.origin.y);
-    CGRect newFrame = CGRectOffset(newInsetFrame, barFrame.origin.x, barFrame.size.height);
-
-    (self.SMPageViewController.view).frame = newFrame;
+    //CGRect newInsetFrame = CGRectInset(containerBounds, barFrame.origin.x, barFrame.origin.y);
+    CGRect newInsetFrame = CGRectInset(containerBounds, barFrame.origin.x, 0);
+    //CGRect newFrame = CGRectOffset(newInsetFrame, barFrame.origin.x, barFrame.size.height);
+    CGRect newFrame = CGRectOffset(newInsetFrame, 0, barFrame.size.height);
     
+    (self.SMPageViewController.view).frame = newFrame;
+
     [self.SMPageViewController.view setClipsToBounds:YES];
 
     (self.SMPageViewController).dataSource = self;
@@ -106,9 +113,7 @@
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:YES];
-    
-    self.image = nil;
-    
+
     UIBarButtonItem* backButton = [[UIBarButtonItem alloc] init];
     
     backButton.title = @"Back";
@@ -119,24 +124,23 @@
     
     self.navigationItem.leftBarButtonItem = backButton;
     
-    self.navigationItem.title = self.venueName;
-    
     isSocialMediaViewInView = NO;
 
     
-    if (!self.twitterViewController) {
-        [self constructTwitterView];
+    if (!self.instaViewController) {
+        [self constructInstagramView];
     }
     
-    NSArray* viewCntrlors = @[self.twitterViewController];
+    NSArray* viewCntrlors = @[self.instaViewController];
     
     [self.SMPageViewController setViewControllers:viewCntrlors direction:UIPageViewControllerNavigationDirectionForward animated:YES completion:nil];
     
-    [self.SMPageViewController addChildViewController:self.twitterViewController];
-    
     (self.SMPageViewController.view).backgroundColor = [UIColor clearColor];
     
+    [self.SMPageViewController addChildViewController:self.instaViewController];
+    
     [self addChildViewController:self.SMPageViewController];
+    
     [self.socialMediaContainer addSubview:self.SMPageViewController.view];
     
     [self addAllTapGestures];
@@ -158,64 +162,69 @@
     transition.type = kCATransitionFade;
     
     [self.venueImage.layer addAnimation:transition forKey:nil];
-    
-    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
-    
-    dispatch_queue_t background_queue = dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0);
+
+    DatabaseManager* databaseManager = [DatabaseManager sharedDatabaseManager];
     
     //Test response time 
     CFTimeInterval startTime = CACurrentMediaTime();
     
-    dispatch_async(background_queue, ^{
+    NSLog(@"%@", self.dealViewModel.deal.imgStateObject.imagePath);
+    
+    
+    // Check if image is cached in memory
+    [databaseManager managerFetchCachedImageForKey:self.dealViewModel.deal.imgStateObject.imagePath addCompletion:^(UIImage *cachedImage) {
         
-        NSLog(@"%@", self.dealSelected.imgStateObject.imagePath);
-        
-        // Check if image is cached in memory
-        [appDelegate.databaseManager managerFetchCachedImageForKey:self.dealSelected.imgStateObject.imagePath addCompletion:^(UIImage *cachedImage) {
+        if(cachedImage){
             
-            if (cachedImage) {
+            dispatch_async(dispatch_get_main_queue(), ^{
                 
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    
-                    CFTimeInterval elapsed = CACurrentMediaTime() - startTime;
-                    
-                    NSLog(@"Time for memory cache %f", elapsed);
-                    
-                    //self.image = cachedImage;
-                    
-                    (self.venueImage).image = cachedImage;
-                    
-                    [self.imgActivityIndicator setHidden:YES];
-
-                });
+                CFTimeInterval elapsed = CACurrentMediaTime() - startTime;
                 
-            }
-            else{
+                NSLog(@"Time for memory cache %f", elapsed);
                 
-                [appDelegate.databaseManager managerFetchPersistentStorageCachedImageForKey:self.dealSelected.imgStateObject.imagePath deal:self.dealSelected addCompletion:^(UIImage *persistentStorageImg) {
+                //self.image = cachedImage;
+                
+                (self.venueImage).image = cachedImage;
+                
+                [self.imgActivityIndicator setHidden:YES];
+                
+            });
+            
+        }
+        else{
+            
+            [databaseManager managerFetchPersistentStorageCachedImageForKey:self.dealViewModel.deal.imgStateObject.imagePath deal:self.dealViewModel.deal addCompletion:^(UIImage *persistentStorageImg) {
+                
+                // check if image is in Persistent Storage Caches
+                if(persistentStorageImg){
                     
-                    // check if image is in Persistent Storage Caches
-                    if(persistentStorageImg){
+                    dispatch_async(dispatch_get_main_queue(), ^{
                         
+                        CFTimeInterval elapsed = CACurrentMediaTime() - startTime;
+                        
+                        NSLog(@"Time for persistent storage cache %f", elapsed);
+                        
+                        (self.venueImage).image = persistentStorageImg;
+                        
+                        [self.imgActivityIndicator setHidden:YES];
+                        
+                    });
+                    
+                    
+                }
+                else{
+                    
+                    NSString* imgPath = self.dealViewModel.deal.imgStateObject.imagePath;
+                    
+                    if(!imgPath || imgPath.length < 1){
                         dispatch_async(dispatch_get_main_queue(), ^{
-                            
-                            CFTimeInterval elapsed = CACurrentMediaTime() - startTime;
-                            
-                            NSLog(@"Time for persistent storage cache %f", elapsed);
-                            
-                            //self.image = persistentStorageImg;
-                            
-                            (self.venueImage).image = persistentStorageImg;
-                            
+                           (self.venueImage).image = [UIImage imageNamed:@"Cell_ImagePlaceholder.jpg"];
                             [self.imgActivityIndicator setHidden:YES];
-                            
                         });
-                        
-                        
                     }
                     else{
                         
-                        [appDelegate.databaseManager managerStartDownloadImageFromURLString:self.dealSelected.imgStateObject.imagePath forDeal:self.dealSelected addCompletion:^(UIImage *imageResponse) {
+                        [databaseManager managerStartDownloadImageFromURL:imgPath forObject:self.dealViewModel.deal forIndexPath:nil imageView:self.venueImage addCompletion:^(UIImage *image) {
                             
                             dispatch_async(dispatch_get_main_queue(), ^{
                                 
@@ -223,40 +232,49 @@
                                 
                                 NSLog(@"Time for http request %f", elapsed);
                                 
-                                (self.venueImage).image = imageResponse;
+                                (self.venueImage).image = image ? image : [UIImage imageNamed:@"Cell_ImagePlaceholder.jpg"];
                                 
                                 [self.imgActivityIndicator setHidden:YES];
-
+                                
                             });
+                            
+                            
                             
                         }];
                         
-                    } // End of Web download of image
+                    }
                     
-                }]; // End of Persistent Storage Cache fetch
+                    
+                } // End of Web download of image
                 
-            }
+                
+            }]; // End of Persistent Storage Cache fetch
             
-        }]; // End of Memory Cache fetch
+        }
         
-    });
+    }]; // End of Memory Cache fetch
     
-    CGFloat originalTwitterViewX = self.socialMediaContainer.layer.bounds.origin.x;
+    CGFloat originalSocialMediaViewX = self.socialMediaContainer.layer.bounds.origin.x;
     
-    CGFloat originalTwitterViewY = (self.view.bounds.size.height - self.socialMediaContainer.layer.bounds.size.height);
+    CGFloat originalSocialMediaViewY = (self.view.bounds.size.height - self.socialMediaContainer.layer.bounds.size.height);
     
     // Save the original dimensions of the twitter view
-    originalTwitterView = CGRectMake(originalTwitterViewX, originalTwitterViewY, self.view.bounds.size.height, self.view.bounds.size.width);
+    originalSocialMediaView = CGRectMake(originalSocialMediaViewX, originalSocialMediaViewY, self.view.bounds.size.height, self.view.bounds.size.width);
 }
 
 -(void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:YES];
     
-    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
+    DatabaseManager* databaseManager = [DatabaseManager sharedDatabaseManager];
     
-    [appDelegate.databaseManager setDelegate:nil];
+    [databaseManager setDelegate:nil];
 
+}
+
+-(void)setDealSelected:(Deal *)aDeal
+{
+    if(aDeal) dealSelected = aDeal;
 }
 
 -(void)setOriginalPosition:(CGRect)frame
@@ -300,7 +318,7 @@
     }
     else if (sender.view == self.addressImage)
     {
-        UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Address" message:self.addressText preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Address" message:self.dealViewModel.addressText preferredStyle:UIAlertControllerStyleAlert];
         
         UIAlertAction* gpsAction = [UIAlertAction actionWithTitle:@"Directions" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
             
@@ -340,7 +358,7 @@
             
             [pasteBoard setPersistent:YES];
             
-            pasteBoard.string = self.addressText;
+            pasteBoard.string = self.dealViewModel.addressText;
             
         }];
         
@@ -355,11 +373,11 @@
     }
     else if (sender.view == self.phoneImage)
     {
-        UIAlertController* phoneAlert = [UIAlertController alertControllerWithTitle:@"Telephone Number" message:self.phoneText preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertController* phoneAlert = [UIAlertController alertControllerWithTitle:@"Telephone Number" message:self.dealViewModel.phoneText preferredStyle:UIAlertControllerStyleAlert];
         
         UIAlertAction* callAction = [UIAlertAction actionWithTitle:@"Call" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
             
-            NSString* phoneNum = [self.phoneText substringFromIndex:1];
+            NSString* phoneNum = [self.dealViewModel.phoneText substringFromIndex:1];
             
             NSURL *phoneUrl = [NSURL URLWithString:[NSString  stringWithFormat:@"tel://%@",phoneNum]];
 
@@ -374,7 +392,7 @@
             
             [pasteBoard setPersistent:YES];
             
-            pasteBoard.string = self.phoneText;
+            pasteBoard.string = self.dealViewModel.phoneText;
             
         }];
         
@@ -401,10 +419,7 @@
     
     self.tapDealView = tempTapDealView;
     self.tapTwitterView = tempTapTwitterView;
-    
-    //[self.view addGestureRecognizer:self.tapDealView];
-    
-    //[self.view addGestureRecognizer:self.tapTwitterView];
+
     
     if (self.addressImage) {
         UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapDetect:)];
@@ -456,21 +471,14 @@
             
             [self.view removeConstraint:self.SMContainerBtmConstraint];
             
+            [self.view layoutIfNeeded];
+            
             [self.view addConstraint:self.adjustedTopConstraint];
             
             [self.view addConstraint:self.adjustedBottomConstraint];
-            
+
             [UIView animateWithDuration:0.6 delay:0 usingSpringWithDamping:1 initialSpringVelocity:3 options:UIViewAnimationOptionTransitionNone animations:^{
-                /*
-                if (darkenBackground) {
-                    
-                    [self.view insertSubview:backgroundDimmerMainView belowSubview:self.socialMediaContainer];
-                    
-                    [backgroundDimmerMainView setOpaque:YES];
-                    
-                    backgroundDimmerMainView.alpha = 0.8;
-                }
-                */
+
                 [self.view layoutIfNeeded];
                 
                 [UIView commitAnimations];
@@ -524,14 +532,15 @@
         
     }
 }
- 
+
+/*
 -(void)constructTwitterView
 {
     self.twitterViewController = [[TwitterViewController alloc] init];
     
     NSLog(@"%@", self.twitterViewController.view);
     
-    (self.twitterViewController).currentDeal = self.dealSelected;
+    (self.twitterViewController).currentDeal = self.dealViewModel.deal;
     
     (self.twitterViewController).delegate = self;
     
@@ -539,7 +548,6 @@
     
     [self.twitterViewController setPageIndex:0];
     
-    //[self.SMPageViewController.view addSubview:self.twitterViewController.view];
 }
 
 -(void)constructFacebookView
@@ -549,17 +557,16 @@
     (self.fbViewController).delegate = self;
 
     [self.fbViewController setPageIndex:1];
-    
-    //[self.SMPageViewController.view addSubview:self.fbViewController.view];
 }
-
+*/
+ 
 -(void)constructInstagramView
 {
-    self.instaViewController = [[PSInstagramViewController alloc] init];
+    self.instaViewController = [[InstagramViewController alloc] init];
     
     (self.instaViewController).delegate = self;
     
-    [self.instaViewController setPageIndex:2];
+    [self.instaViewController setPageIndex:0];
 }
 
 #pragma mark -
@@ -596,6 +603,7 @@
     }
 }
 
+/*
 #pragma mark -
 #pragma mark - Page View Controller
 -(UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerAfterViewController:(UIViewController *)viewController
@@ -652,6 +660,7 @@
     }
     else return nil;
 }
+ */
 
 #pragma mark -
 #pragma mark - Page View Controller Delegate
@@ -684,7 +693,7 @@
         
         (self.socialMediaNavBar).barTintColor = [UIColor colorWithRed:0.23 green:0.35 blue:0.60 alpha:1.0];
     }
-    else if ([presentViewController isKindOfClass:[PSInstagramViewController class]])
+    else if ([presentViewController isKindOfClass:[InstagramViewController class]])
     {
 
         
@@ -694,14 +703,6 @@
     {
         (self.socialMediaNavBar).barTintColor = [UIColor whiteColor];
     }
-}
-
-
-#pragma mark -
-#pragma mark - Twitter View Methods
--(void)webViewWithContentView:(CGSize)contentArea
-{
-    
 }
 
 

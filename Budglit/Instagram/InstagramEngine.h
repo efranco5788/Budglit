@@ -29,6 +29,6 @@ typedef void (^InstagramResponseResult)(NSData* response);
 
 -(void)sendInstagramRequest:(NSString*)strURL withCompletionHandler:(InstagramResponseResult) completionBlock;
 
--(void)retrieveAccessTokenFromString:(NSString*)urlStr WithCompletionHandler:(OAuthTokenRequestResponse)completionBlock;;
+-(void)retrieveAccessTokenFromString:(NSString*)urlStr WithCompletionHandler:(OAuthTokenRequestResponse)completionBlock;
 
 @end

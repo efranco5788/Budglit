@@ -19,6 +19,10 @@
 //#define KILOMETER_CONVERSION @"kilometers"
 #define MakeLocation(lat,lon) [[CLLocation alloc]initWithLatitude: lat longitude: lon]
 
+@interface LocationEngine () <EngineDelegate>
+
+@end
+
 @implementation LocationEngine
 
 typedef NS_ENUM(NSInteger, DISTANCE_CONERSION){
@@ -49,6 +53,8 @@ DISTANCE_CONERSION conversionType;
     self.sessionManager.responseSerializer = [AFJSONResponseSerializer serializer];
     
     conversionType = MILE_CONVERSION;
+    
+    [self setDelegate:self];
     
     return self;
 }
@@ -88,19 +94,18 @@ DISTANCE_CONERSION conversionType;
 
 -(NSInteger)findShortestDistance:(NSArray *)deals
 {
-    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
 
     int minDistance = 0;
     
     for (Deal* deal in deals) {
-        
-        CLLocation* evntLocation = [appDelegate.locationManager managerConvertAddressToLocation:deal.googleAddressInfo];
-        
-        CLLocationDistance totalMeters = [appDelegate.locationManager managerDistanceMetersFromLocation:evntLocation toLocation:[appDelegate.locationManager getCurrentLocation]];
 
-        CLLocationDistance convertedDistance = [self convertLocationDistanceMeters:totalMeters];
-        
-        if (convertedDistance < minDistance) minDistance = floor(convertedDistance);
+        if(deal.annotation){
+            
+            CLLocationDistance distance = [deal getDistanceFromUser];
+            
+            if (distance < minDistance) minDistance = floor(distance);
+            
+        }
         
     }
     
@@ -110,19 +115,19 @@ DISTANCE_CONERSION conversionType;
 
 -(NSInteger)findLongestDistance:(NSArray *)deals
 {
-    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
-
     int maxDistance = 0;
     
     for (Deal* deal in deals) {
+
         
-        CLLocation* evntLocation = [appDelegate.locationManager managerConvertAddressToLocation:deal.googleAddressInfo];
+        if(deal.annotation){
+            
+            CLLocationDistance distance = [deal getDistanceFromUser];
+            
+             if (maxDistance < distance) maxDistance = ceil(distance);
+            
+        }
         
-        CLLocationDistance totalDistance = [appDelegate.locationManager managerDistanceMetersFromLocation:evntLocation toLocation:[appDelegate.locationManager getCurrentLocation]];
-        
-        CLLocationDistance convertedDistance = [self convertLocationDistanceMeters:totalDistance];
-        
-        if (maxDistance < convertedDistance) maxDistance = ceil(convertedDistance);
         
     }
     
@@ -132,18 +137,13 @@ DISTANCE_CONERSION conversionType;
 -(void)GNFetchPostalCodesForCity:(NSDictionary *)parameters addCompletionHandler:(blockResponse)completionHandler
 {
     
-    [self.sessionManager GET:POSTAL_CODE_NEARBY_SEARCH_URL parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        
-        [self addToRequestHistory:task];
+    [self getRequestToPath:POSTAL_CODE_NEARBY_SEARCH_URL parameters:parameters addCompletion:^(id responseObject) {
         
         if(responseObject) completionHandler(responseObject);
         else completionHandler(nil);
         
-    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        
-        [self logFailedRequest:task];
-        [self.delegate nearbyPostalCodesFailedWithError:error];
     }];
+    
 }
 
 -(CLLocation *)convertAddressToLocation:(NSDictionary *)addressInfo
@@ -153,7 +153,7 @@ DISTANCE_CONERSION conversionType;
     NSArray* coords = [addressInfo valueForKey:@"coordinates"];
     NSString* latitude = [coords valueForKey:@"lat"];
     NSString* longtitude = [coords valueForKey:@"lng"];
-    NSLog(@"lng %@ nd lat %@",longtitude, latitude);
+    //NSLog(@"lng %@ nd lat %@", longtitude, latitude);
     
     CLLocation* evntlocation = [self createLocationFromStringLongtitude:longtitude andLatitude:latitude];
 

@@ -21,6 +21,8 @@
 
 -(instancetype)init;
 
+-(instancetype)initWithURL:(NSString*)urlString;
+
 -(void)recordImageHTTPResponse:(NSHTTPURLResponse*)response andRequest:(NSURLRequest*)request hasImage:(BOOL)exist;
 
 @end

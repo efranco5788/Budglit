@@ -11,12 +11,10 @@
 #import "BudgetManager.h"
 #import "DatabaseManager.h"
 #import "LocationServiceManager.h"
-#import "FilterViewController.h"
-#import "LoginPageViewController.h"
 #import "PSEditZipcodeOfflineTableViewController.h"
 #import "PSAllDealsTableViewController.h"
-#import "PSTransitionToBudgetViewController.h"
-#import "PSDismissTransitionFromBudgetViewController.h"
+#import "DismissTransitionFromBudgetViewController.h"
+
 #import "UINavigationController+CompletionHandler.h"
 
 #define BUDGET_TITLE @"Budget"
@@ -32,10 +30,9 @@
 
 #define KEY_TMP_LOCATION @"tmpLocation"
 
-#define BUDGET_VIEW_CONTROLLER @"FilterViewController"
 #define EDIT_ZIPCODE_OFFLINE_VIEW_CONTROLLER @"EditZipcodeOffline_TableViewController"
 
-@interface LoadingLocalDealsViewController () <LocationManagerDelegate, DatabaseManagerDelegate, FilterDelegate, EditZipcodeOfflineDelegate>
+@interface LoadingLocalDealsViewController () <LocationManagerDelegate, DatabaseManagerDelegate, EditZipcodeOfflineDelegate>
 
 @property (nonatomic, strong) NSDictionary* tmpCriteriaStorage;
 @property (nonatomic, strong) UIView* backgroundDimmer;
@@ -117,62 +114,6 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
 {
     
 }
- 
-#pragma mark -
-#pragma mark - Budget Methods
--(void)inputBudget
-{
-    currentTotalDealCount = 0;
-    
-    NSLog(@"total count has been reset");
-    
-    [UIView animateWithDuration:3.0 animations:^{
-        
-        if (self.backgroundDimmer.isHidden) {
-            [self toggleBackgroundDimmer];
-        }
-        
-    } completion:^(BOOL finished) {
-        
-        FilterViewController* budgetView = [[FilterViewController alloc] initWithNibName:BUDGET_VIEW_CONTROLLER bundle:nil];
-        
-        self.filterView.delegate = self;
-        
-        self.filterView.view.autoresizesSubviews = YES;
-        
-        self.filterView = budgetView;
-        
-        (self.navigationController).delegate = self;
-        
-        [self.navigationController pushViewController:self.filterView animated:NO];
-        
-    }];
-    
-}
-
-
-#pragma mark -
-#pragma mark - Budget Picker Delegate
--(void)budgetSelected:(NSDictionary *)selectedCriteria
-{
-    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
-    
-    (appDelegate.databaseManager).delegate = self;
-    
-    [appDelegate.databaseManager managerSaveUsersCriteria:selectedCriteria];
-    
-    currentState = CLEAR;
-    
-    [appDelegate.budgetManager addBudget:selectedCriteria[NSLocalizedString(@"BUDGET_FILTER", nil)]];
-    
-    if (self.filterView) {
-        
-        [self dismissFilterView];
-    }
-    else [self.delegate loadingPageBudgetHasFinished];
-    
-    NSLog(@"Budget complete, app state is now clear");
-}
 
 -(void)dismiss
 {
@@ -181,7 +122,7 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
 
 #pragma mark -
 #pragma mark - Database Delegates
--(void)dealsDidNotLoad
+-(void)managerDealsDidNotLoad
 {
     
     UIAlertController* dealsAlert = [UIAlertController alertControllerWithTitle:@"Sorry!" message:@"Seems to be some connectivity issues" preferredStyle:UIAlertControllerStyleAlert];
@@ -240,10 +181,10 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
 -(BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
 {
     if (textField.tag == 100) {
+
+        LocationSeviceManager* locationManager = [LocationSeviceManager sharedLocationServiceManager];
         
-        AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
-        
-        if (![appDelegate.locationManager validateZipcodeInput:string withOldString:textField.text]) {
+        if (![locationManager validateZipcodeInput:string withOldString:textField.text]) {
             return NO;
         }
         else{
@@ -301,12 +242,12 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
     currentState = GATHERING_LOCATION;
     
     NSLog(@"Gathering user's location");
+
+    LocationSeviceManager* locationManager = [LocationSeviceManager sharedLocationServiceManager];
     
-    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
+    (locationManager).delegate = self;
     
-    (appDelegate.locationManager).delegate = self;
-    
-    [appDelegate.locationManager startUpdates];
+    [locationManager startUpdates];
 }
 
 
@@ -314,20 +255,18 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
 #pragma mark - Location Manager Delegate
 -(void)locationDidFinish
 {
-    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
+    DatabaseManager* databaseManager = [DatabaseManager sharedDatabaseManager];
 
-    NSDictionary* appDefaults = [appDelegate.databaseManager managerGetUsersCurrentCriteria];
+    NSDictionary* appDefaults = [databaseManager managerGetUsersCurrentCriteria];
     
     if(!appDefaults || appDefaults.count == 0){
         
-        appDefaults = [appDelegate.databaseManager managerFetchPrimaryDefaultSearchFiltersWithLocation];
+        appDefaults = [databaseManager managerFetchPrimaryDefaultSearchFiltersWithLocation];
         
     }
     
-    [appDelegate.databaseManager managerSaveUsersCriteria:appDefaults];
+    [databaseManager managerSaveUsersCriteria:appDefaults];
 
-    //[appDelegate.databaseManager.engine appendToCurrentSearchFilter:criteria];
-    
     [self.delegate loadingPageDismissed:appDefaults];
     
 }
@@ -360,40 +299,16 @@ typedef NS_ENUM(NSInteger, UICurrentState) {
     [self.delegate loadingPageDismissed:nil];
 }
 
-
+/*
 #pragma mark -
 #pragma mark - Navigation Delegate
+
 -(id<UIViewControllerAnimatedTransitioning>)navigationController:(UINavigationController *)navigationController animationControllerForOperation:(UINavigationControllerOperation)operation fromViewController:(UIViewController *)fromVC toViewController:(UIViewController *)toVC
 {
     
-    if (fromVC == self && [toVC isKindOfClass:[FilterViewController class]]) {
-        
-        return [[PSTransitionToBudgetViewController alloc] init];
-    }
-    else{
-        
-        return [[PSDismissTransitionFromBudgetViewController alloc] init];
-    }
-}
 
--(void) dismissFilterView
-{
-    (self.navigationController).delegate = self;
-    
-    [self.navigationController completionhandler_popViewControllerAnimated:NO navigationController:self.navigationController completion:^{
-        
-        self.filterView.delegate = nil;
-        
-        self.filterView = nil;
-        
-        [self.navigationController setDelegate:nil];
-        
-        [self.delegate loadingPageBudgetHasFinished];
-        
-    }];
-    
 }
-
+*/
 
 #pragma mark -
 #pragma mark - Memory Warning

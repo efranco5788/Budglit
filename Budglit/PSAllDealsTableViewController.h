@@ -9,15 +9,12 @@
 #import <UIKit/UIKit.h>
 
 @class DealDetailViewController;
-@class LoadingLocalDealsViewController;
 @class AppDelegate;
-@class AccountManager;
-@class BudgetManager;
-@class DatabaseManager;
-@class LocationSeviceManager;
+@class LoadingLocalDealsViewController;
 @class DrawerViewController;
 @class DealTableViewCell;
 @class Deal;
+@class DealViewModel;
 @class DealMapAnnotation;
 @class PSEditZipcodeOfflineTableViewController;
 
@@ -29,6 +26,8 @@
 @end
 
 @interface PSAllDealsTableViewController : UITableViewController
+
+@property (nonatomic, strong) DrawerViewController* drawer;
 
 @property (nonatomic, strong) id <PSAllDealsTableViewControllerDelegate> delegate;
 
@@ -42,7 +41,7 @@
 
 @property (nonatomic, strong) UIBarButtonItem* budgetButton;
 
-@property (nonatomic, weak) IBOutlet NSLayoutConstraint* btmNavBarLayout;
+@property (nonatomic, strong) UIButton* eventUpdatesButton;
 
 -(IBAction)returned:(UIStoryboardSegue*)segue;
 

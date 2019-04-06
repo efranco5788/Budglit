@@ -7,13 +7,14 @@
 //
 
 #import "MenuTableViewController.h"
+#import "AppDelegate.h"
+#import "AccountMenuTableViewController.h"
 #import "DrawerViewController.h"
 #import "MenuTableViewCell.h"
 #import "LocationServiceManager.h"
 #import "MenuOptions.h"
 #import "UserAccount.h"
 #import "UserProfileTableViewCell.h"
-#import "AppDelegate.h"
 #import <QuartzCore/QuartzCore.h>
 
 #define MAX_SECTION_DEFAULT_HEIGHT 44
@@ -23,7 +24,7 @@
 #define MAX_USER_ROW_HEIGHT 120
 #define RESTORATION_STRING @"menuTableViewController"
 
-@interface MenuTableViewController () <DrawerControllerDelegate>
+@interface MenuTableViewController () <DrawerControllerDelegate, MenuAccountDelegate>
 
 @end
 
@@ -65,13 +66,19 @@ static NSString *userProfileIdentifier = @"profileCell";
 
 -(void)updateUser:(NSNotification*)notification
 {
-    AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
+    AccountManager* accountManager = [AccountManager sharedAccountManager];
     
-    UserAccount* user = [appDelegate.accountManager managerSignedAccount];
+    UserAccount* user = [accountManager managerSignedAccount];
     
     UserProfileTableViewCell* profileCell = (UserProfileTableViewCell*) notification.object;
+    
+    NSIndexPath* indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
+    
+    if(!profileCell) profileCell = [self.tableView cellForRowAtIndexPath:indexPath];
 
     (profileCell.textLabel).text = user.firstName;
+    
+    (profileCell.detailTextLabel).text = @"Testing";
     
     UIImage* image = [user getProfileImage];
     
@@ -154,7 +161,6 @@ static NSString *userProfileIdentifier = @"profileCell";
     AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
     
     [view setTintColor:[appDelegate getPrimaryColor]];
-    
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -172,8 +178,8 @@ static NSString *userProfileIdentifier = @"profileCell";
     // First cell contains signed user's info
     if (indexPath.section == 0) {
         
-        UserProfileTableViewCell* cell = (UserProfileTableViewCell*) [self.tableView dequeueReusableCellWithIdentifier:userProfileIdentifier];
-
+        UserProfileTableViewCell* cell = (UserProfileTableViewCell*) [tableView dequeueReusableCellWithIdentifier:userProfileIdentifier];
+        
         CGRect frame = CGRectMake(15, 30, MAX_USER_ROW_HEIGHT - 60, MAX_USER_ROW_HEIGHT - 60);
         (cell.imageView).bounds = frame;
         (cell.imageView).frame = frame;
@@ -183,15 +189,21 @@ static NSString *userProfileIdentifier = @"profileCell";
         (cell.textLabel).frame = labelFrame;
         
         [cell.imageView.layer setMasksToBounds:YES];
-        (cell.imageView.layer).cornerRadius = (cell.imageView.frame.size.width / 2);
+        (cell.imageView.layer).cornerRadius = (cell.imageView.frame.size.width / 2.5);
         [cell.textLabel setAdjustsFontSizeToFitWidth:YES];
         cell.textLabel.textColor = [UIColor whiteColor];
-        cell.contentMode = UIViewContentModeScaleAspectFit;
-        cell.imageView.contentMode = UIViewContentModeScaleAspectFit;
         
+        [cell.detailTextLabel setAdjustsFontSizeToFitWidth:YES];
+        cell.detailTextLabel.textColor = [UIColor whiteColor];
+        cell.contentMode = UIViewContentModeScaleAspectFit;
+  
         AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
         
         [cell setBackgroundColor:[appDelegate getPrimaryColor]];
+        
+        [cell setMenuOption:MENUACCOUNT];
+        
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
         
         return cell;
     }
@@ -201,35 +213,33 @@ static NSString *userProfileIdentifier = @"profileCell";
         
         [cell.textLabel setAdjustsFontSizeToFitWidth:YES];
         
-        if (indexPath.row == MENUSWITCHMODE) {
+        NSInteger menuValue = (indexPath.row + 1);
+        
+        if (menuValue == MENUSWITCHMODE) {
             [cell setMenuOption:MENUSWITCHMODE];
             cell.textLabel.text = [NSString stringWithFormat:@"%@", NSLocalizedString(@"LIST_MODE", nil)];
             cell.textLabel.font = [cell.textLabel.font fontWithSize:14.0];
         }
         
-        if (indexPath.row == MENUCURRENTLOCATION) {
+        if (menuValue == MENUCURRENTLOCATION) {
             [cell setMenuOption:MENUCURRENTLOCATION];
             cell.textLabel.text = [NSString stringWithFormat:@"%@", NSLocalizedString(@"USE_CURRENT_LOCATION", nil)];
             cell.textLabel.font = [cell.textLabel.font fontWithSize:14.0];
         }
         
-        if (indexPath.row == MENUCHANGELOCATION) {
+        if (menuValue == MENUCHANGELOCATION) {
             [cell setMenuOption:MENUCHANGELOCATION];
             cell.textLabel.text = [NSString stringWithFormat:@"%@", NSLocalizedString(@"CHANGE_LOCATION", nil)];
             cell.textLabel.font = [cell.textLabel.font fontWithSize:14.0];
         }
-        /*
-        if (indexPath.row == MENUCHANGEBUDGET) {
-            [cell setMenuOption:MENUCHANGEBUDGET];
-            cell.textLabel.text = [NSString stringWithFormat:@"%@", NSLocalizedString(@"EDIT_MY_BUDGET", nil)];
-            cell.textLabel.font = [cell.textLabel.font fontWithSize:14.0];
-        }
-        */
+
         AppDelegate* appDelegate = (AppDelegate*) [UIApplication sharedApplication].delegate;
         
         [cell setBackgroundColor:[appDelegate getPrimaryColor]];
         
         cell.textLabel.textColor = [UIColor whiteColor];
+        
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
         
         return cell;
     }
@@ -251,6 +261,8 @@ static NSString *userProfileIdentifier = @"profileCell";
         
         cell.textLabel.textColor = [UIColor whiteColor];
         
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        
         return cell;
     }
     
@@ -260,11 +272,84 @@ static NSString *userProfileIdentifier = @"profileCell";
 // Method called when user selects a row from menu
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    NSLog(@"Tapped");
+    
     MenuTableViewCell* cell = (MenuTableViewCell*) [self.tableView cellForRowAtIndexPath:indexPath];
     
     NSInteger option = cell.getMenuOption;
     
     [self.delegate menuSelected:option];
+    
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+}
+
+#pragma mark -
+#pragma mark - Account Menu Methods
+-(void)presentAccountMenuTable
+{
+    if(!self.accountTable)
+    {
+        self.accountTable = [[AccountMenuTableViewController alloc] init];
+    }
+    
+     self.accountTable.view.translatesAutoresizingMaskIntoConstraints = NO;
+    
+    [self.accountTable setDelegate:self];
+    
+    [self addChildViewController:self.accountTable];
+    
+    CGRect statusBarFrame = [[UIApplication sharedApplication] statusBarFrame];
+    
+    [self.accountTable.view setFrame:CGRectMake(self.view.bounds.size.width, (0 - statusBarFrame.size.height), self.view.bounds.size.width, self.view.bounds.size.height)];
+    
+    
+    [UIView animateWithDuration:0.3f animations:^{
+        
+        [self.accountTable.view setFrame:self.view.bounds];
+        [self.view addSubview:self.accountTable.view];
+        
+    } completion:^(BOOL finished) {
+        
+       [self.accountTable didMoveToParentViewController:self];
+        
+        if (@available(iOS 11, *)) {
+            
+            UILayoutGuide * guide = self.view.safeAreaLayoutGuide;
+            
+            [self.accountTable.view.leadingAnchor constraintEqualToAnchor:guide.leadingAnchor].active = YES;
+            [self.accountTable.view.trailingAnchor constraintEqualToAnchor:guide.trailingAnchor].active = YES;
+            [self.accountTable.view.topAnchor constraintEqualToAnchor:guide.topAnchor].active = YES;
+            [self.accountTable.view.bottomAnchor constraintEqualToAnchor:guide.bottomAnchor].active = YES;
+            
+        } else {
+            
+            UILayoutGuide *margins = self.view.layoutMarginsGuide;
+            
+            [self.accountTable.view.leadingAnchor constraintEqualToAnchor:margins.leadingAnchor].active = YES;
+            [self.accountTable.view.trailingAnchor constraintEqualToAnchor:margins.trailingAnchor].active = YES;
+            [self.accountTable.view.topAnchor constraintEqualToAnchor:self.topLayoutGuide.bottomAnchor].active = YES;
+            [self.accountTable.view.bottomAnchor constraintEqualToAnchor:self.bottomLayoutGuide.topAnchor].active = YES;
+            
+        }
+    }];
+    
+}
+
+-(void)dissmissMenuAccountView
+{
+    //[self.accountTable.view removeFromSuperview];
+    //[self.accountTable removeFromParentViewController];
+
+    [UIView animateWithDuration:0.5f animations:^{
+        
+        [self.accountTable.view setFrame:CGRectMake(self.view.bounds.size.width, 0, self.view.bounds.size.width, self.view.bounds.size.height)];
+        
+    } completion:^(BOOL finished) {
+        [self.accountTable.view removeFromSuperview];
+        [self.accountTable removeFromParentViewController];
+        self.accountTable = nil;
+    }];
+    
 }
 
 #pragma mark -
